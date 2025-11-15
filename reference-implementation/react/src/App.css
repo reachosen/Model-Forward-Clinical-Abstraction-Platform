@@ -10,9 +10,31 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
 .app-header h1 {
   margin: 0;
   font-size: 1.5rem;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  opacity: 0.9;
 }
 
 .app-content {

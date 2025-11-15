@@ -5,6 +5,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { DomainConfigProvider, useDomainConfig } from './contexts/DomainConfigContext';
+import DomainSwitcher from './components/DomainSwitcher';
 import CaseListPage from './pages/CaseListPage';
 import CaseViewPage from './pages/CaseViewPage';
 import './App.css';
@@ -23,8 +24,15 @@ const AppContent: React.FC = () => {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🏥 {config.display_name} Platform</h1>
-        <p className="subtitle">Model-Forward Clinical Decision Support</p>
+        <div className="header-content">
+          <div className="header-left">
+            <h1>🏥 {config.display_name} Platform</h1>
+            <p className="subtitle">Model-Forward Clinical Decision Support</p>
+          </div>
+          <div className="header-right">
+            <DomainSwitcher />
+          </div>
+        </div>
       </header>
 
       <main className="app-main">

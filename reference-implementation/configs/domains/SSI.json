@@ -1,0 +1,177 @@
+{
+  "domain_name": "SSI",
+  "display_name": "Surgical Site Infection",
+  "episode_label": "SSI Episode",
+  "determination_label": "SSI Classification",
+  "short_description": "Surveillance and abstraction for surgical site infections",
+
+  "timeline_phases": [
+    {
+      "phase_id": "PRE_OP",
+      "label": "Pre-Operative",
+      "description": "Events before surgery"
+    },
+    {
+      "phase_id": "INTRA_OP",
+      "label": "Intra-Operative",
+      "description": "During surgical procedure"
+    },
+    {
+      "phase_id": "POST_OP_0_2",
+      "label": "Post-Op Day 0-2",
+      "description": "Immediate post-operative period"
+    },
+    {
+      "phase_id": "POST_OP_3_7",
+      "label": "Post-Op Day 3-7",
+      "description": "Early post-operative surveillance"
+    },
+    {
+      "phase_id": "POST_OP_8_30",
+      "label": "Post-Op Day 8-30",
+      "description": "30-day surveillance window"
+    }
+  ],
+
+  "signal_groups": [
+    {
+      "group_id": "PROCEDURE",
+      "label": "Surgical Procedure Signals",
+      "description": "Procedure type, duration, wound class",
+      "icon": "🏥"
+    },
+    {
+      "group_id": "LAB",
+      "label": "Laboratory Findings",
+      "description": "Wound cultures, inflammatory markers",
+      "icon": "🧪"
+    },
+    {
+      "group_id": "VITAL",
+      "label": "Clinical Symptoms",
+      "description": "Fever, wound appearance, drainage",
+      "icon": "❤️"
+    },
+    {
+      "group_id": "MEDICATION",
+      "label": "Medication Signals",
+      "description": "Prophylactic antibiotics, post-op antibiotics",
+      "icon": "💊"
+    },
+    {
+      "group_id": "DEVICE",
+      "label": "Implant Signals",
+      "description": "Implants, prosthetics, surgical hardware",
+      "icon": "🔌"
+    }
+  ],
+
+  "followup_question_templates": [
+    {
+      "question_id": "prophylaxis_timing",
+      "question_text": "Was prophylactic antibiotic given within 1 hour before incision?",
+      "category": "Clinical",
+      "required": true,
+      "linked_rules": ["appropriate_prophylaxis"]
+    },
+    {
+      "question_id": "wound_class",
+      "question_text": "What was the wound classification (clean, clean-contaminated, contaminated, dirty)?",
+      "category": "Clinical",
+      "required": true,
+      "linked_rules": ["wound_classification"]
+    },
+    {
+      "question_id": "ssi_type",
+      "question_text": "Is this superficial, deep incisional, or organ/space SSI?",
+      "category": "Determination",
+      "required": true,
+      "linked_rules": ["ssi_depth"]
+    },
+    {
+      "question_id": "nhsn_criteria",
+      "question_text": "Does this case meet all NHSN SSI criteria?",
+      "category": "Determination",
+      "required": true,
+      "linked_rules": ["meets_nhsn_criteria"]
+    },
+    {
+      "question_id": "reoperation",
+      "question_text": "Was reoperation or debridement required?",
+      "category": "Clinical",
+      "required": false,
+      "linked_rules": []
+    }
+  ],
+
+  "feedback_options": [
+    {
+      "value": "SUPERFICIAL_SSI",
+      "label": "Superficial Incisional SSI",
+      "description": "Infection involving only skin and subcutaneous tissue"
+    },
+    {
+      "value": "DEEP_SSI",
+      "label": "Deep Incisional SSI",
+      "description": "Infection involving deep soft tissues (fascia, muscle)"
+    },
+    {
+      "value": "ORGAN_SPACE_SSI",
+      "label": "Organ/Space SSI",
+      "description": "Infection involving organs or spaces accessed during procedure"
+    },
+    {
+      "value": "RULED_OUT",
+      "label": "Not an SSI",
+      "description": "Does not meet SSI criteria"
+    },
+    {
+      "value": "NEEDS_REVIEW",
+      "label": "Needs Further Review",
+      "description": "Requires additional information or clarification"
+    }
+  ],
+
+  "ask_examples": [
+    "Why is the risk level classified as HIGH?",
+    "Show me the post-operative timeline",
+    "What evidence supports S. aureus as the pathogen?",
+    "Was prophylactic antibiotic timing appropriate?",
+    "What was the surgical wound classification?",
+    "Summarize the clinical timeline in chronological order"
+  ],
+
+  "risk_levels": {
+    "CRITICAL": {
+      "label": "Critical",
+      "color": "#dc2626",
+      "description": "Meets all SSI criteria, organ/space involvement"
+    },
+    "HIGH": {
+      "label": "High",
+      "color": "#ef4444",
+      "description": "Likely SSI, deep or organ/space"
+    },
+    "MODERATE": {
+      "label": "Moderate",
+      "color": "#f59e0b",
+      "description": "Some SSI indicators, likely superficial"
+    },
+    "LOW": {
+      "label": "Low",
+      "color": "#10b981",
+      "description": "Unlikely SSI, missing key criteria"
+    }
+  },
+
+  "primary_color": "#10b981",
+  "secondary_color": "#059669",
+
+  "metadata": {
+    "version": "1.0.0",
+    "created_date": "2025-01-15",
+    "last_updated": "2025-01-15",
+    "nhsn_version": "2024",
+    "author": "Clinical Abstraction Platform Team"
+  }
+}
