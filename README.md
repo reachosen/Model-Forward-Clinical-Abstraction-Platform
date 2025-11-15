@@ -47,9 +47,9 @@ flowchart TD
         Ingest["Ingest & Orchestration<br/>Snowpipe, Streams/Tasks, Coalesce"]
 
         subgraph DataLayers["Data Refinement Pipeline"]
-            Silver["DIA_SILVER<br/>Raw-Normalized Facts"]
-            Gold["DIA_GOLD<br/>Domain Models & Metrics"]
-            GoldAI["DIA_GOLD_AI<br/>LLM-Ready Payloads"]
+            Silver["SILVER<br/>Raw-Normalized Facts"]
+            Gold["GOLD<br/>Domain Models & Metrics"]
+            GoldAI["GOLD_AI<br/>LLM-Ready Payloads"]
         end
 
         Vec["Vector Store<br/>Semantic Chunks"]
@@ -137,9 +137,9 @@ flowchart LR
     subgraph Snowflake["Snowflake Data Platform"]
         direction TB
         Ingest[Ingest Layer<br/>Snowpipe/Streams]
-        Silver[DIA_SILVER<br/>Raw Facts]
-        Gold[DIA_GOLD<br/>Domain Models]
-        GoldAI[DIA_GOLD_AI<br/>LLM Payloads]
+        Silver[SILVER<br/>Raw Facts]
+        Gold[GOLD<br/>Domain Models]
+        GoldAI[GOLD_AI<br/>LLM Payloads]
 
         Ingest --> Silver
         Silver --> Gold
@@ -167,7 +167,7 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph Data["Data Layer"]
-        GoldAI[DIA_GOLD_AI<br/>Structured Signals]
+        GoldAI[GOLD_AI<br/>Structured Signals]
         Vector[Vector Store<br/>Semantic Search]
         Ledger[Ledger<br/>Historical Context]
     end
@@ -222,9 +222,9 @@ flowchart TD
 
 ### 2. Data & AI Platform (Snowflake-Centric)
 - **Ingest & Orchestration**: Automated data ingestion using Snowpipe, Streams/Tasks, and Coalesce
-- **DIA_SILVER**: Raw-normalized clinical facts layer
-- **DIA_GOLD**: Domain-specific models and calculated metrics
-- **DIA_GOLD_AI**: LLM-ready data payloads including clinical signals, patient timelines, and note bundles
+- **SILVER**: Raw-normalized clinical facts layer
+- **GOLD**: Domain-specific models and calculated metrics
+- **GOLD_AI**: LLM-ready data payloads including clinical signals, patient timelines, and note bundles
 - **Vector Store**: Semantic chunking and vector embeddings for patient/encounter context
 - **Ledger**: Comprehensive tracking of signals, abstractions, decisions, and QA workflows
 
