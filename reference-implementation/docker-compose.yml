@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Python API service
+  api:
+    build:
+      context: ./python
+      dockerfile: ../setup/Dockerfile.api
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./python:/app
+    command: python api/simple_api.py
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - clabsi-network
+
+  # React UI service
+  ui:
+    build:
+      context: ./react
+      dockerfile: ../setup/Dockerfile.ui
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./react:/app
+      - /app/node_modules
+    depends_on:
+      - api
+    networks:
+      - clabsi-network
+
+networks:
+  clabsi-network:
+    driver: bridge
