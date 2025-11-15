@@ -1,0 +1,62 @@
+.case-list-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.case-list-page h1 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+}
+
+.demo-mode-banner {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  color: #856404;
+}
+
+.demo-mode-banner strong {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.case-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.case-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.case-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.case-card h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.case-card .patient-id {
+  font-size: 0.875rem;
+  color: #7f8c8d;
+  margin-bottom: 1rem;
+}
+
+.case-card .scenario {
+  color: #495057;
+  font-size: 0.875rem;
+}

@@ -1,0 +1,58 @@
+.signals-panel {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+
+.signals-panel h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.signals-group {
+  margin-bottom: 1.5rem;
+}
+
+.signals-group h4 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: #7f8c8d;
+  margin-bottom: 0.5rem;
+}
+
+.signal-item {
+  padding: 0.75rem;
+  border-left: 4px solid #95a5a6;
+  background-color: #f8f9fa;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.signal-item.critical { border-left-color: #dc3545; }
+.signal-item.warning { border-left-color: #ffc107; }
+.signal-item.info { border-left-color: #17a2b8; }
+
+.signal-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.signal-value {
+  color: #495057;
+  margin-bottom: 0.25rem;
+}
+
+.signal-rationale {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.signal-confidence {
+  font-size: 0.75rem;
+  color: #95a5a6;
+  margin-top: 0.25rem;
+}
