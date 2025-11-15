@@ -7,6 +7,7 @@ export interface TimelinePhase {
   phase_id: string;
   label: string;
   description: string;
+  color: string;
 }
 
 export interface SignalGroup {
@@ -91,11 +92,11 @@ export const DEFAULT_DOMAIN_CONFIG: DomainConfig = {
   determination_label: 'CLABSI Determination',
   short_description: 'Surveillance and abstraction for central line-associated bloodstream infections',
   timeline_phases: [
-    { phase_id: 'PRE_LINE', label: 'Pre-Line Placement', description: 'Events before central line insertion' },
-    { phase_id: 'LINE_PLACEMENT', label: 'Line Placement', description: 'Central line insertion procedure' },
-    { phase_id: 'MONITORING', label: 'Monitoring Period', description: 'Daily monitoring while line is in place' },
-    { phase_id: 'CULTURE', label: 'Culture Collection', description: 'Blood culture collection and results' },
-    { phase_id: 'POST_CULTURE', label: 'Post-Culture', description: 'Events after positive culture' },
+    { phase_id: 'PRE_LINE', label: 'Pre-Line Placement', description: 'Events before central line insertion', color: '#f0f4f8' },
+    { phase_id: 'LINE_PLACEMENT', label: 'Line Placement', description: 'Central line insertion procedure', color: '#dbeafe' },
+    { phase_id: 'MONITORING', label: 'Monitoring Period', description: 'Daily monitoring while line is in place', color: '#fef3c7' },
+    { phase_id: 'CULTURE', label: 'Culture Collection', description: 'Blood culture collection and results', color: '#fed7aa' },
+    { phase_id: 'POST_CULTURE', label: 'Post-Culture', description: 'Events after positive culture', color: '#fecaca' },
   ],
   signal_groups: [
     { group_id: 'DEVICE', label: 'Device Exposure Signals', description: 'Central line presence', icon: '🔌' },

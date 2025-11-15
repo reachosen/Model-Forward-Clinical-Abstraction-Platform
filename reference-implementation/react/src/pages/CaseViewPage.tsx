@@ -29,6 +29,7 @@ const CaseViewPage: React.FC = () => {
 
   useEffect(() => {
     loadCase();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientId]);
 
   const loadCase = async () => {
