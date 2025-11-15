@@ -9,6 +9,7 @@ import api from '../api/client';
 import { CaseView } from '../types';
 
 import CaseOverview from '../components/CaseOverview';
+import CaseSummaryStrip from '../components/CaseSummaryStrip';
 import TimelinePanel from '../components/TimelinePanel';
 import SignalsPanel from '../components/SignalsPanel';
 import QAPanel from '../components/QAPanel';
@@ -73,6 +74,14 @@ const CaseViewPage: React.FC = () => {
         <h1>CLABSI Abstraction - {caseData.case_info.name}</h1>
         <div className="mode-badge">{caseData.mode} Mode</div>
       </div>
+
+      {/* 80/20 Summary Strip */}
+      <CaseSummaryStrip
+        summary={caseData.summary}
+        signals={caseData.signals}
+        qaAnswered={caseData.summary.unresolved_questions.filter(q => q.type === 'ANSWERED').length}
+        qaTotal={caseData.summary.unresolved_questions.length}
+      />
 
       <div className="case-grid">
         {/* Left column */}
