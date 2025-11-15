@@ -43,7 +43,11 @@ Claude will:
 4. Update parent components with imports
 5. Test compilation
 6. Commit integrated changes
-7. Clean up staging folder
+7. **Clean up staging folder** (delete integrated component from toIntegrate/)
+8. Commit cleanup
+
+**Note:** Original Vercel-generated code is preserved in git history (integration commit).
+This keeps the repo clean while maintaining full audit trail.
 
 ---
 
