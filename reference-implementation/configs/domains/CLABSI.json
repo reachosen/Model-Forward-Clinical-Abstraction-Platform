@@ -9,27 +9,32 @@
     {
       "phase_id": "PRE_LINE",
       "label": "Pre-Line Placement",
-      "description": "Events before central line insertion"
+      "description": "Events before central line insertion",
+      "color": "#f0f4f8"
     },
     {
       "phase_id": "LINE_PLACEMENT",
       "label": "Line Placement",
-      "description": "Central line insertion procedure"
+      "description": "Central line insertion procedure",
+      "color": "#dbeafe"
     },
     {
       "phase_id": "MONITORING",
       "label": "Monitoring Period",
-      "description": "Daily monitoring while line is in place"
+      "description": "Daily monitoring while line is in place",
+      "color": "#fef3c7"
     },
     {
       "phase_id": "CULTURE",
       "label": "Culture Collection",
-      "description": "Blood culture collection and results"
+      "description": "Blood culture collection and results",
+      "color": "#fed7aa"
     },
     {
       "phase_id": "POST_CULTURE",
       "label": "Post-Culture",
-      "description": "Events after positive culture"
+      "description": "Events after positive culture",
+      "color": "#fecaca"
     }
   ],
 

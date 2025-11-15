@@ -11,7 +11,7 @@ import { useDomainConfig } from '../contexts/DomainConfigContext';
 
 import CaseOverview from '../components/CaseOverview';
 import CaseSummaryStrip from '../components/CaseSummaryStrip';
-import TimelinePanel from '../components/TimelinePanel';
+import EnhancedTimeline from '../components/EnhancedTimeline';
 import SignalsPanel from '../components/SignalsPanel';
 import QAPanel from '../components/QAPanel';
 import FeedbackPanel from '../components/FeedbackPanel';
@@ -89,7 +89,10 @@ const CaseViewPage: React.FC = () => {
         {/* Left column */}
         <div className="left-column">
           <CaseOverview summary={caseData.summary} caseInfo={caseData.case_info} />
-          <TimelinePanel timeline={caseData.timeline} />
+          <EnhancedTimeline
+            timeline={caseData.timeline}
+            phaseConfig={config.timeline_phases}
+          />
         </div>
 
         {/* Middle column */}
