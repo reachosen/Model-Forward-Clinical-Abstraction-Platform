@@ -6,70 +6,212 @@ This platform leverages a model-forward approach to clinical data abstraction, c
 
 ## System Architecture
 
+### High-Level Overview
+
+```mermaid
+flowchart TD
+    Source["📊 Clinical Source Systems<br/>EHR | Devices | Registries"]
+    Platform["☁️ Data & AI Platform<br/>Snowflake-Centric"]
+    Cognitive["🧠 Model-Forward Middle Tier<br/>Data & Abstraction Agents"]
+    Apps["🏥 Clinical Applications<br/>CLABSI | NAKI | UE | Ortho | Cardiac"]
+    Users["👥 Clinicians & Abstractors"]
+
+    Source ==> Platform
+    Platform ==> Cognitive
+    Cognitive ==> Apps
+    Apps <==> Users
+
+    style Source fill:#e1f5ff
+    style Platform fill:#fff4e1
+    style Cognitive fill:#ffe1f5
+    style Apps fill:#e1ffe1
+    style Users fill:#f0f0f0
+```
+
+### Detailed Architecture
+
+<details>
+<summary><b>Click to expand full detailed diagram</b></summary>
+
+```mermaid
+flowchart TD
+    %% SOURCE SYSTEMS
+    subgraph Source["📊 LAYER 1: Clinical Source Systems"]
+        EHR["Caboodle / Clarity<br/>EHR Extracts"]
+        OtherSrc["Other Feeds<br/>Devices, Registries, Externals"]
+    end
+
+    %% DATA PLATFORM
+    subgraph Platform["☁️ LAYER 2: Data & AI Platform - Snowflake"]
+        direction TB
+        Ingest["Ingest & Orchestration<br/>Snowpipe, Streams/Tasks, Coalesce"]
+
+        subgraph DataLayers["Data Refinement Pipeline"]
+            Silver["DIA_SILVER<br/>Raw-Normalized Facts"]
+            Gold["DIA_GOLD<br/>Domain Models & Metrics"]
+            GoldAI["DIA_GOLD_AI<br/>LLM-Ready Payloads"]
+        end
+
+        Vec["Vector Store<br/>Semantic Chunks"]
+        Ledger["Signal Ledger<br/>Cases, QA, Decisions"]
+
+        Ingest --> Silver
+        Silver --> Gold
+        Gold --> GoldAI
+        GoldAI --> Vec
+        GoldAI --> Ledger
+    end
+
+    %% MODEL-FORWARD MIDDLE TIER
+    subgraph Cognitive["🧠 LAYER 3: Model-Forward Middle Tier"]
+        direction TB
+
+        subgraph DataAgent["Data Agent"]
+            Tools["Tool Layer<br/>SQL | Rules | Vector Search"]
+            Planner["Orchestration<br/>Multi-step Planning"]
+            LLM["LLM Runtime<br/>OpenAI | Writer | Cortex"]
+        end
+
+        subgraph AbstractionAgent["Abstraction Agent"]
+            UXAPI["Abstraction API<br/>Domain Contracts"]
+            Reasoner["Reasoning Engine<br/>Draft Generation"]
+            QA["QA & Guardrails<br/>Validation"]
+        end
+
+        Tools --> Planner
+        Planner --> LLM
+        LLM --> Reasoner
+        Reasoner --> QA
+    end
+
+    %% APPLICATIONS
+    subgraph Apps["🏥 LAYER 4: Clinical Applications"]
+        direction LR
+        CLABSI["CLABSI<br/>Agent"]
+        NAKI["NAKI<br/>Agent"]
+        UE["Unplanned<br/>Extubation"]
+        Ortho["SCH/Ortho<br/>Quality"]
+        Flight["Cardiac<br/>Surgery"]
+    end
+
+    %% USERS
+    Users["👥 Clinicians & Abstractors"]
+    Feedback["📝 Clinical Feedback"]
+
+    %% CONNECTIONS
+    EHR --> Ingest
+    OtherSrc --> Ingest
+
+    GoldAI -.-> Tools
+    Vec -.-> Tools
+    Ledger -.-> Tools
+
+    QA --> Ledger
+
+    AbstractionAgent --> Apps
+    Apps --> Users
+    Users --> Feedback
+    Feedback --> Ledger
+
+    %% STYLING
+    style Source fill:#e1f5ff
+    style Platform fill:#fff4e1
+    style Cognitive fill:#ffe1f5
+    style Apps fill:#e1ffe1
+    style Users fill:#f0f0f0
+    style Feedback fill:#f0f0f0
+```
+
+</details>
+
+### Data Pipeline Details
+
 ```mermaid
 flowchart LR
-  %% 1. SOURCE SYSTEMS
-  subgraph Source["Clinical Source Systems"]
-    EHR["Caboodle / Clarity<br>EHR Extracts"]
-    OtherSrc["Other Feeds<br>Devices, Registries, Externals"]
-  end
-
-  %% 2. DATA & AI PLATFORM
-  subgraph Platform["Data & AI Platform (Snowflake-Centric)"]
-    Ingest["Ingest & Orchestration<br>Snowpipe, Streams/Tasks, Coalesce"]
-    Silver["DIA_SILVER<br>Raw-Normalized Facts"]
-    Gold["DIA_GOLD<br>Domain Models & Metrics"]
-    GoldAI["DIA_GOLD_AI<br>LLM-Ready Payloads<br>Signals, Timelines, Note Bundles"]
-    Vec["Semantic Chunking & Vector Store<br>Patient/Encounter Chunks"]
-    Ledger["Signal & Abstraction Ledger<br>Cases, Decisions, QA, Test/Prod"]
-  end
-
-  EHR --> Ingest
-  OtherSrc --> Ingest
-  Ingest --> Silver --> Gold --> GoldAI
-  GoldAI --> Vec
-  GoldAI --> Ledger
-
-  %% 3. COGNITIVE / MODEL-FORWARD MIDDLE TIER
-  subgraph Cognitive["Model-Forward Middle Tier"]
-    subgraph DataAgent["Data Agent (Model-Forward Data Layer)"]
-      Tools["Tool Layer<br>SQL, Rules Engine,<br>Validators, Search, Vector"]
-      Planner["Planning & Orchestration<br>Multi-step Tool Use"]
-      LLMCore["LLM Runtime<br>OpenAI / Writer / Palmyra / Cortex"]
+    subgraph Sources["Clinical Sources"]
+        EHR[EHR<br/>Caboodle/Clarity]
+        Devices[Medical<br/>Devices]
+        Registries[Clinical<br/>Registries]
     end
 
-    subgraph AbstractionAgent["Abstraction Agent (Clinician-Facing)"]
-      UXAPI["Abstraction API & UX Schema<br>Domain Contracts"]
-      Reasoner["Reasoning & Draft Generation<br>Signals to Summaries"]
-      QA["Automated QA & Guardrails<br>Rules, Contradictions, Checklists"]
+    subgraph Snowflake["Snowflake Data Platform"]
+        direction TB
+        Ingest[Ingest Layer<br/>Snowpipe/Streams]
+        Silver[DIA_SILVER<br/>Raw Facts]
+        Gold[DIA_GOLD<br/>Domain Models]
+        GoldAI[DIA_GOLD_AI<br/>LLM Payloads]
+
+        Ingest --> Silver
+        Silver --> Gold
+        Gold --> GoldAI
     end
-  end
 
-  GoldAI --> Tools
-  Vec --> Tools
-  Ledger --> Tools
+    subgraph Storage["Semantic Layer"]
+        Vec[Vector Store<br/>Embeddings]
+        Ledger[Signal Ledger<br/>Audit Trail]
+    end
 
-  Tools --> Planner
-  Planner --> LLMCore
-  LLMCore --> Reasoner
-  Reasoner --> QA
-  QA --> Ledger
+    EHR --> Ingest
+    Devices --> Ingest
+    Registries --> Ingest
+    GoldAI --> Vec
+    GoldAI --> Ledger
 
-  %% 4. CLINICAL APPLICATIONS
-  subgraph Apps["Clinical Abstraction Applications"]
-    CLABSI[CLABSI Agent]
-    NAKI[NAKI Agent]
-    UE[Unplanned Extubation Agent]
-    Ortho[SCH / Ortho Quality Agent]
-    Flight[Cardiac Surgery / FlightPlan Companion]
-  end
+    style Sources fill:#e1f5ff
+    style Snowflake fill:#fff4e1
+    style Storage fill:#ffe1e1
+```
 
-  AbstractionAgent --> Apps
-  Apps --> Clinicians[("Clinicians & Abstractors")]
-  Clinicians --> Apps
+### Model-Forward Agent Architecture
 
-  Apps --> Feedback[("Ops/Clinical Feedback")]
-  Feedback --> Ledger
+```mermaid
+flowchart TD
+    subgraph Data["Data Layer"]
+        GoldAI[DIA_GOLD_AI<br/>Structured Signals]
+        Vector[Vector Store<br/>Semantic Search]
+        Ledger[Ledger<br/>Historical Context]
+    end
+
+    subgraph DataAgent["Data Agent"]
+        Tools[Tool Layer]
+        Planner[Orchestration]
+        LLM[LLM Runtime]
+
+        Tools --> Planner
+        Planner --> LLM
+    end
+
+    subgraph AbstractionAgent["Abstraction Agent"]
+        API[Abstraction API]
+        Reasoner[Draft Generator]
+        QA[QA Engine]
+
+        API --> Reasoner
+        Reasoner --> QA
+    end
+
+    subgraph Apps["Clinical Apps"]
+        CLABSI[CLABSI]
+        NAKI[NAKI]
+        UE[UE]
+    end
+
+    GoldAI --> Tools
+    Vector --> Tools
+    Ledger --> Tools
+
+    LLM --> Reasoner
+    QA --> Ledger
+
+    AbstractionAgent --> Apps
+    Apps --> Clinicians[👥 Clinicians]
+    Clinicians --> Feedback[Feedback]
+    Feedback --> Ledger
+
+    style Data fill:#fff4e1
+    style DataAgent fill:#ffe1f5
+    style AbstractionAgent fill:#e1f5ff
+    style Apps fill:#e1ffe1
 ```
 
 ## Key Components
