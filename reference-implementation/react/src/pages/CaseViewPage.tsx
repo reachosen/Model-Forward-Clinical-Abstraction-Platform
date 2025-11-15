@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { CaseView } from '../types';
+import { useDomainConfig } from '../contexts/DomainConfigContext';
 
 import CaseOverview from '../components/CaseOverview';
 import CaseSummaryStrip from '../components/CaseSummaryStrip';
@@ -20,6 +21,7 @@ import './CaseViewPage.css';
 const CaseViewPage: React.FC = () => {
   const { patientId } = useParams<{ patientId: string }>();
   const navigate = useNavigate();
+  const { config } = useDomainConfig();
 
   const [caseData, setCaseData] = useState<CaseView | null>(null);
   const [loading, setLoading] = useState(true);
@@ -71,7 +73,7 @@ const CaseViewPage: React.FC = () => {
         <button className="back-button" onClick={() => navigate('/')}>
           ← Back to Cases
         </button>
-        <h1>CLABSI Abstraction - {caseData.case_info.name}</h1>
+        <h1>{config.episode_label} - {caseData.case_info.name}</h1>
         <div className="mode-badge">{caseData.mode} Mode</div>
       </div>
 

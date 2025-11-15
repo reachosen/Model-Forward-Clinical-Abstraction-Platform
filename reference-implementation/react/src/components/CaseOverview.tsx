@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { AbstractionSummary, CaseInfo } from '../types';
+import { useDomainConfig } from '../contexts/DomainConfigContext';
 import './CaseOverview.css';
 
 interface CaseOverviewProps {
@@ -13,6 +14,7 @@ interface CaseOverviewProps {
 }
 
 const CaseOverview: React.FC<CaseOverviewProps> = ({ summary, caseInfo }) => {
+  const { config } = useDomainConfig();
   const getRiskBadgeClass = (risk: string) => {
     const baseClass = 'risk-badge';
     switch (risk) {
@@ -61,9 +63,9 @@ const CaseOverview: React.FC<CaseOverviewProps> = ({ summary, caseInfo }) => {
           </span>
         </div>
 
-        <div className="clabsi-determination">
+        <div className="determination">
           <div className="determination-row">
-            <span className="label">Likely CLABSI:</span>
+            <span className="label">{config.determination_label}:</span>
             <span className={`value ${summary.likely_clabsi ? 'yes' : 'no'}`}>
               {summary.likely_clabsi ? 'YES' : 'NO'}
             </span>
@@ -75,7 +77,7 @@ const CaseOverview: React.FC<CaseOverviewProps> = ({ summary, caseInfo }) => {
             </span>
           </div>
           <div className="determination-row">
-            <span className="label">Meets NHSN Criteria:</span>
+            <span className="label">Meets Criteria:</span>
             <span className={`value ${summary.meets_nhsn_criteria ? 'yes' : 'no'}`}>
               {summary.meets_nhsn_criteria ? 'YES' : 'NO'}
             </span>

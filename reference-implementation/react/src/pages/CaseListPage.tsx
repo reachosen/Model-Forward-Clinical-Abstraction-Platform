@@ -1,16 +1,18 @@
 /**
  * Case List Page
- * Displays list of available CLABSI cases for review
+ * Displays list of available cases for review
  */
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { CaseInfo } from '../types';
+import { useDomainConfig } from '../contexts/DomainConfigContext';
 import './CaseListPage.css';
 
 const CaseListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { config } = useDomainConfig();
   const [cases, setCases] = useState<CaseInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,9 +58,9 @@ const CaseListPage: React.FC = () => {
   return (
     <div className="case-list-page">
       <div className="page-header">
-        <h1>CLABSI Cases for Review</h1>
+        <h1>{config.domain_name} Cases for Review</h1>
         <p className="description">
-          Select a case to view detailed abstraction and provide feedback
+          {config.short_description} - Select a case to view detailed abstraction and provide feedback
         </p>
       </div>
 
