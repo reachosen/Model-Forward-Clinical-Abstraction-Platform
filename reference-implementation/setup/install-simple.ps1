@@ -84,7 +84,7 @@ if (Test-Path "node_modules") {
     Write-Host "Node modules already exist, skipping..." -ForegroundColor Yellow
 } else {
     Write-Host "Installing React dependencies (this may take 2-3 minutes)..."
-    & npm install --loglevel=error
+    npm install
     if ($LASTEXITCODE -ne 0) {
         Write-Host "ERROR: Failed to install npm packages" -ForegroundColor Red
         exit 1
