@@ -1,11 +1,49 @@
 .case-list-page {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 1.5rem;
 }
 
-.case-list-page h1 {
-  color: #2c3e50;
+.page-header {
   margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+}
+
+.page-header .description {
+  color: #6c757d;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Case List Layout */
+.case-list-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 2rem;
+}
+
+.filter-sidebar {
+  position: sticky;
+  top: 1rem;
+  height: fit-content;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+.cases-content {
+  min-width: 0;
+}
+
+/* Cases Grid */
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
 .demo-mode-banner {
@@ -59,4 +97,132 @@
 .case-card .scenario {
   color: #495057;
   font-size: 0.875rem;
+}
+
+.case-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.case-header h3 {
+  margin: 0;
+}
+
+.case-header .mrn {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.case-body {
+  margin-bottom: 1rem;
+}
+
+.case-field {
+  display: flex;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.case-field .label {
+  color: #6c757d;
+  margin-right: 0.5rem;
+  min-width: 80px;
+}
+
+.case-field .value {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.case-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.review-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.review-button:hover {
+  background: #2563eb;
+}
+
+/* Loading and Error States */
+.loading,
+.error {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #6c757d;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.error button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.no-cases {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .case-list-layout {
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .case-list-page {
+    padding: 1rem;
+  }
+
+  .case-list-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .filter-sidebar {
+    position: static;
+    max-height: none;
+  }
+
+  .cases-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .page-header .description {
+    font-size: 0.875rem;
+  }
 }

@@ -9,7 +9,20 @@ export interface CaseInfo {
   mrn: string;
   name: string;
   scenario: string;
+  risk_level?: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL';
+  determination?: string;
+  domain?: string;
+  abstraction_datetime?: string;
+  risk_score?: number;
 }
+
+export interface FilterOptions {
+  riskLevels: Array<'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL'>;
+  determinations: string[];
+  domains: string[];
+}
+
+export type SortOption = 'date-desc' | 'date-asc' | 'risk-desc' | 'name-asc';
 
 export interface Signal {
   signal_id: string;
