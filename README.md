@@ -10,18 +10,18 @@ This platform leverages a model-forward approach to clinical data abstraction, c
 flowchart LR
   %% 1. SOURCE SYSTEMS
   subgraph Source["Clinical Source Systems"]
-    EHR[Caboodle / Clarity<br/>EHR Extracts]
-    OtherSrc[Other Feeds<br/>Devices, Registries, Externals]
+    EHR["Caboodle / Clarity<br>EHR Extracts"]
+    OtherSrc["Other Feeds<br>Devices, Registries, Externals"]
   end
 
   %% 2. DATA & AI PLATFORM
   subgraph Platform["Data & AI Platform (Snowflake-Centric)"]
-    Ingest[Ingest & Orchestration<br/>Snowpipe, Streams/Tasks, Coalesce]
-    Silver[DIA_SILVER<br/>Raw-Normalized Facts]
-    Gold[DIA_GOLD<br/>Domain Models & Metrics]
-    GoldAI[DIA_GOLD_AI<br/>LLM-Ready Payloads<br/>Signals, Timelines, Note Bundles]
-    Vec[Semantic Chunking & Vector Store<br/>(Patient/Encounter Chunks)]
-    Ledger[Signal & Abstraction Ledger<br/>Cases, Decisions, QA, Test/Prod]
+    Ingest["Ingest & Orchestration<br>Snowpipe, Streams/Tasks, Coalesce"]
+    Silver["DIA_SILVER<br>Raw-Normalized Facts"]
+    Gold["DIA_GOLD<br>Domain Models & Metrics"]
+    GoldAI["DIA_GOLD_AI<br>LLM-Ready Payloads<br>Signals, Timelines, Note Bundles"]
+    Vec["Semantic Chunking & Vector Store<br>Patient/Encounter Chunks"]
+    Ledger["Signal & Abstraction Ledger<br>Cases, Decisions, QA, Test/Prod"]
   end
 
   EHR --> Ingest
@@ -33,15 +33,15 @@ flowchart LR
   %% 3. COGNITIVE / MODEL-FORWARD MIDDLE TIER
   subgraph Cognitive["Model-Forward Middle Tier"]
     subgraph DataAgent["Data Agent (Model-Forward Data Layer)"]
-      Tools[Tool Layer<br/>(SQL, Rules Engine,<br/>Validators, Search, Vector)]
-      Planner[Planning & Orchestration<br/>(Multi-step Tool Use)]
-      LLMCore[LLM Runtime<br/>(OpenAI / Writer / Palmyra / Cortex)]
+      Tools["Tool Layer<br>SQL, Rules Engine,<br>Validators, Search, Vector"]
+      Planner["Planning & Orchestration<br>Multi-step Tool Use"]
+      LLMCore["LLM Runtime<br>OpenAI / Writer / Palmyra / Cortex"]
     end
 
     subgraph AbstractionAgent["Abstraction Agent (Clinician-Facing)"]
-      UXAPI[Abstraction API & UX Schema<br/>(Domain Contracts)]
-      Reasoner[Reasoning & Draft Generation<br/>(Signals → Summaries)]
-      QA[Automated QA & Guardrails<br/>(Rules, Contradictions, Checklists)]
+      UXAPI["Abstraction API & UX Schema<br>Domain Contracts"]
+      Reasoner["Reasoning & Draft Generation<br>Signals to Summaries"]
+      QA["Automated QA & Guardrails<br>Rules, Contradictions, Checklists"]
     end
   end
 
@@ -65,10 +65,10 @@ flowchart LR
   end
 
   AbstractionAgent --> Apps
-  Apps --> Clinicians[(Clinicians & Abstractors)]
+  Apps --> Clinicians[("Clinicians & Abstractors")]
   Clinicians --> Apps
 
-  Apps --> Feedback[(Ops/Clinical Feedback)]
+  Apps --> Feedback[("Ops/Clinical Feedback")]
   Feedback --> Ledger
 ```
 
