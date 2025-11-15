@@ -82,7 +82,8 @@ class DataAgentTools:
                 "severity": "CRITICAL",
                 "rationale": "Recognized pathogen in blood culture from central line",
                 "timestamp": "2024-01-15T14:00:00",
-                "confidence": 0.95
+                "confidence": 0.95,
+                "evidence_refs": ["EV001", "EV002", "EV003"]
             },
             {
                 "signal_id": "SIG002",
@@ -92,7 +93,8 @@ class DataAgentTools:
                 "severity": "WARNING",
                 "rationale": "Temperature elevation coinciding with culture",
                 "timestamp": "2024-01-15T18:00:00",
-                "confidence": 0.88
+                "confidence": 0.88,
+                "evidence_refs": ["EV004", "EV005"]
             },
             {
                 "signal_id": "SIG003",
@@ -102,7 +104,8 @@ class DataAgentTools:
                 "severity": "INFO",
                 "rationale": "Central line in place for 5 days at time of culture",
                 "timestamp": "2024-01-15T08:30:00",
-                "confidence": 1.0
+                "confidence": 1.0,
+                "evidence_refs": ["EV006", "EV007"]
             }
         ]
 
@@ -169,6 +172,134 @@ class DataAgentTools:
             success=True,
             data=timeline,
             metadata={"event_count": len(timeline)}
+        )
+
+    def fetch_evidence(self, signal_id: str) -> ToolResult:
+        """
+        Fetch evidence items for a specific signal
+
+        In production: Query GOLD layer for source data linked to signals
+        """
+        # Stub evidence database
+        evidence_store = {
+            "SIG001": [
+                {
+                    "evidence_id": "EV001",
+                    "evidence_type": "LAB",
+                    "timestamp": "2024-01-15T08:30:00",
+                    "description": "Blood culture specimen collected from central line port",
+                    "source_system": "LAB_SYSTEM",
+                    "source_table": "MICROBIOLOGY.CULTURES",
+                    "relevance_score": 0.98,
+                    "raw_data": {
+                        "specimen_type": "Blood Culture - Aerobic",
+                        "collection_site": "Central Line - Distal Port",
+                        "collection_method": "Line Draw"
+                    }
+                },
+                {
+                    "evidence_id": "EV002",
+                    "evidence_type": "LAB",
+                    "timestamp": "2024-01-16T14:00:00",
+                    "description": "Positive culture result: Staphylococcus aureus detected",
+                    "source_system": "LAB_SYSTEM",
+                    "source_table": "MICROBIOLOGY.RESULTS",
+                    "relevance_score": 1.0,
+                    "raw_data": {
+                        "organism": "Staphylococcus aureus",
+                        "colony_count": "Moderate growth",
+                        "detection_time": "14 hours",
+                        "bottle_type": "Aerobic"
+                    }
+                },
+                {
+                    "evidence_id": "EV003",
+                    "evidence_type": "LAB",
+                    "timestamp": "2024-01-17T09:00:00",
+                    "description": "Antibiotic sensitivity results available",
+                    "source_system": "LAB_SYSTEM",
+                    "source_table": "MICROBIOLOGY.SENSITIVITIES",
+                    "relevance_score": 0.85,
+                    "raw_data": {
+                        "organism": "Staphylococcus aureus",
+                        "sensitivities": {
+                            "Vancomycin": "Sensitive",
+                            "Cefazolin": "Sensitive",
+                            "Oxacillin": "Sensitive"
+                        }
+                    }
+                }
+            ],
+            "SIG002": [
+                {
+                    "evidence_id": "EV004",
+                    "evidence_type": "VITAL",
+                    "timestamp": "2024-01-15T06:00:00",
+                    "description": "Temperature elevation recorded",
+                    "source_system": "EMR_VITALS",
+                    "source_table": "CLINICAL.VITAL_SIGNS",
+                    "relevance_score": 0.92,
+                    "raw_data": {
+                        "temperature": 103.1,
+                        "temperature_unit": "F",
+                        "measurement_site": "Oral",
+                        "recorded_by": "RN_Smith"
+                    }
+                },
+                {
+                    "evidence_id": "EV005",
+                    "evidence_type": "NOTE",
+                    "timestamp": "2024-01-15T06:15:00",
+                    "description": "Nursing note: Patient reports chills and feeling unwell",
+                    "source_system": "EMR_NOTES",
+                    "source_table": "CLINICAL.NURSING_NOTES",
+                    "relevance_score": 0.75,
+                    "raw_data": {
+                        "note_type": "Nursing Assessment",
+                        "note_text": "Patient reports onset of chills at 05:30, states 'I don't feel right'. Temp 103.1F. MD notified."
+                    }
+                }
+            ],
+            "SIG003": [
+                {
+                    "evidence_id": "EV006",
+                    "evidence_type": "DEVICE",
+                    "timestamp": "2024-01-10T16:00:00",
+                    "description": "Central line insertion documented",
+                    "source_system": "EMR_PROCEDURES",
+                    "source_table": "CLINICAL.PROCEDURES",
+                    "relevance_score": 1.0,
+                    "raw_data": {
+                        "procedure": "Central Venous Catheter Insertion",
+                        "device_type": "Triple-lumen catheter",
+                        "insertion_site": "Right subclavian vein",
+                        "performed_by": "Dr. Johnson"
+                    }
+                },
+                {
+                    "evidence_id": "EV007",
+                    "evidence_type": "EVENT",
+                    "timestamp": "2024-01-15T08:30:00",
+                    "description": "Line documented as present during blood draw",
+                    "source_system": "EMR_CLINICAL",
+                    "source_table": "CLINICAL.DEVICE_STATUS",
+                    "relevance_score": 0.88,
+                    "raw_data": {
+                        "device_status": "In situ",
+                        "days_in_place": 5,
+                        "last_dressing_change": "2024-01-13"
+                    }
+                }
+            ]
+        }
+
+        evidence = evidence_store.get(signal_id, [])
+
+        return ToolResult(
+            tool_name="fetch_evidence",
+            success=True,
+            data=evidence,
+            metadata={"signal_id": signal_id, "evidence_count": len(evidence)}
         )
 
     def evaluate_rules(

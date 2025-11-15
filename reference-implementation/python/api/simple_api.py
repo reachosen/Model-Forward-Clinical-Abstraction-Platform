@@ -17,12 +17,14 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from agents.abstraction_agent import AbstractionAgent, ExecutionMode
+from agents.data_agent import DataAgentTools
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
-# Initialize agent
+# Initialize agents
 agent = AbstractionAgent(mode=ExecutionMode.TEST)
+data_tools = DataAgentTools(mode=ExecutionMode.TEST)
 
 
 # Sample test cases
@@ -128,6 +130,26 @@ def get_case(patient_id):
         return jsonify({"error": str(e)}), 500
 
 
+@app.route('/api/evidence/<signal_id>', methods=['GET'])
+def get_evidence(signal_id):
+    """Get evidence items for a specific signal"""
+    try:
+        # Fetch evidence using data agent tools
+        result = data_tools.fetch_evidence(signal_id)
+
+        if not result.success:
+            return jsonify({"error": result.error or "Failed to fetch evidence"}), 500
+
+        return jsonify({
+            "signal_id": signal_id,
+            "evidence": result.data,
+            "count": len(result.data)
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route('/api/feedback', methods=['POST'])
 def submit_feedback():
     """Submit clinician feedback on a case"""
@@ -192,6 +214,7 @@ if __name__ == '__main__':
     print("  GET  /api/health")
     print("  GET  /api/cases")
     print("  GET  /api/cases/<patient_id>")
+    print("  GET  /api/evidence/<signal_id>")
     print("  POST /api/feedback")
     print("  GET/POST /api/mode")
     print("\nRunning on http://localhost:5000")

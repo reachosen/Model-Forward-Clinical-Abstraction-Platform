@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Signal } from '../types';
+import EvidenceDrawer from './EvidenceDrawer';
 import './SignalsPanel.css';
 
 interface SignalsPanelProps {
@@ -16,6 +17,9 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
     new Set(['DEVICE', 'LAB', 'VITAL', 'MEDICATION', 'PROCEDURE'])
   );
+
+  // Track selected signal for evidence drawer
+  const [selectedSignal, setSelectedSignal] = useState<Signal | null>(null);
 
   const toggleGroup = (groupId: string) => {
     const newExpanded = new Set(expandedGroups);
@@ -55,24 +59,39 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
     return groupSignals.filter(s => s.severity === 'CRITICAL').length;
   };
 
-  const SignalCard: React.FC<{ signal: Signal }> = ({ signal }) => (
-    <div className={`signal-card ${getSeverityClass(signal.severity)}`}>
-      <div className="signal-header">
-        <div className="signal-badges">
-          <span className={`signal-severity-badge ${getSeverityClass(signal.severity)}`}>
-            {signal.severity}
-          </span>
-          <span className="signal-confidence">{formatConfidence(signal.confidence)}</span>
+  const SignalCard: React.FC<{ signal: Signal }> = ({ signal }) => {
+    const hasEvidence = signal.evidence_refs && signal.evidence_refs.length > 0;
+
+    return (
+      <div className={`signal-card ${getSeverityClass(signal.severity)}`}>
+        <div className="signal-header">
+          <div className="signal-badges">
+            <span className={`signal-severity-badge ${getSeverityClass(signal.severity)}`}>
+              {signal.severity}
+            </span>
+            <span className="signal-confidence">{formatConfidence(signal.confidence)}</span>
+          </div>
         </div>
+        <div className="signal-name">{signal.signal_name.replace(/_/g, ' ')}</div>
+        <div className="signal-value"><strong>Value:</strong> {signal.value}</div>
+        <div className="signal-rationale">{signal.rationale}</div>
+        <div className="signal-timestamp">
+          <small>Recorded: {new Date(signal.timestamp).toLocaleString()}</small>
+        </div>
+        {hasEvidence && (
+          <div className="signal-actions">
+            <button
+              className="btn-view-evidence"
+              onClick={() => setSelectedSignal(signal)}
+              title="View supporting evidence"
+            >
+              📋 View Evidence ({signal.evidence_refs!.length})
+            </button>
+          </div>
+        )}
       </div>
-      <div className="signal-name">{signal.signal_name.replace(/_/g, ' ')}</div>
-      <div className="signal-value"><strong>Value:</strong> {signal.value}</div>
-      <div className="signal-rationale">{signal.rationale}</div>
-      <div className="signal-timestamp">
-        <small>Recorded: {new Date(signal.timestamp).toLocaleString()}</small>
-      </div>
-    </div>
-  );
+    );
+  };
 
   const SignalGroup: React.FC<{
     group: typeof signalGroups[0] & { signals: Signal[] }
@@ -140,6 +159,13 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
 
       {signals.length === 0 && (
         <div className="no-data">No signals detected</div>
+      )}
+
+      {selectedSignal && (
+        <EvidenceDrawer
+          signal={selectedSignal}
+          onClose={() => setSelectedSignal(null)}
+        />
       )}
     </div>
   );

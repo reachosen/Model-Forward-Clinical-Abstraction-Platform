@@ -20,6 +20,18 @@ export interface Signal {
   rationale: string;
   timestamp: string;
   confidence: number;
+  evidence_refs?: string[]; // IDs of linked evidence items
+}
+
+export interface Evidence {
+  evidence_id: string;
+  evidence_type: 'LAB' | 'EVENT' | 'NOTE' | 'DEVICE' | 'VITAL' | 'PROCEDURE';
+  timestamp: string;
+  description: string;
+  source_system: string;
+  source_table?: string;
+  raw_data?: any;
+  relevance_score?: number;
 }
 
 export interface TimelineEvent {

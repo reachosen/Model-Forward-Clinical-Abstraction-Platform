@@ -3,7 +3,7 @@
  */
 
 import axios from 'axios';
-import { CaseInfo, CaseView, FeedbackSubmission } from '../types';
+import { CaseInfo, CaseView, FeedbackSubmission, Evidence } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -60,6 +60,14 @@ export const api = {
    */
   async healthCheck(): Promise<{ status: string }> {
     const response = await apiClient.get('/health');
+    return response.data;
+  },
+
+  /**
+   * Get evidence for a specific signal
+   */
+  async getEvidence(signalId: string): Promise<{ evidence: Evidence[]; signal_id: string }> {
+    const response = await apiClient.get(`/evidence/${signalId}`);
     return response.data;
   },
 };
