@@ -281,7 +281,7 @@ function Show-CompletionMessage {
     Write-Host "  5. Open your browser to:"
     Write-Host "     http://localhost:3000"
     Write-Host ""
-    Write-Info "For development guides, see:"
+    Write-Host "For development guides, see:"
     Write-Host "  - docs\QUICK_START.md - Get running in 5 minutes"
     Write-Host "  - docs\DEVELOPER_GUIDE.md - Understand the architecture"
     Write-Host "  - docs\DOMAIN_EXTENSION.md - Add new clinical domains"
