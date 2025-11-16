@@ -9,6 +9,7 @@ import api from '../api/client';
 import { CaseInfo } from '../types';
 import { useDomainConfig } from '../contexts/DomainConfigContext';
 import SearchFilterPanel from '../components/SearchFilterPanel';
+import EnhancedCaseCard from '../components/EnhancedCaseCard';
 import './CaseListPage.css';
 
 const CaseListPage: React.FC = () => {
@@ -79,29 +80,16 @@ const CaseListPage: React.FC = () => {
         <div className="cases-content">
           <div className="cases-grid">
             {filteredCases.map((caseInfo) => (
-              <div
+              <EnhancedCaseCard
                 key={caseInfo.patient_id}
-                className="case-card"
-                onClick={() => handleCaseClick(caseInfo.patient_id)}
-              >
-                <div className="case-header">
-                  <h3>{caseInfo.name}</h3>
-                  <span className="mrn">{caseInfo.mrn}</span>
-                </div>
-                <div className="case-body">
-                  <div className="case-field">
-                    <span className="label">Encounter:</span>
-                    <span className="value">{caseInfo.encounter_id}</span>
-                  </div>
-                  <div className="case-field">
-                    <span className="label">Scenario:</span>
-                    <span className="value scenario">{caseInfo.scenario}</span>
-                  </div>
-                </div>
-                <div className="case-footer">
-                  <button className="review-button">Review Case →</button>
-                </div>
-              </div>
+                caseInfo={{
+                  ...caseInfo,
+                  risk_level: caseInfo.risk_level || 'MODERATE',
+                  risk_score: caseInfo.risk_score || 50,
+                  status: caseInfo.status || 'PENDING'
+                }}
+                onClick={handleCaseClick}
+              />
             ))}
           </div>
 

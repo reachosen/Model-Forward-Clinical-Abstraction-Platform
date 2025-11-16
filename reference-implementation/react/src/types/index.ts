@@ -14,6 +14,11 @@ export interface CaseInfo {
   domain?: string;
   abstraction_datetime?: string;
   risk_score?: number;
+  status?: 'PENDING' | 'IN_REVIEW' | 'REVIEWED' | 'FLAGGED';
+  days_since_admission?: number;
+  line_days?: number;
+  culture_status?: 'NONE' | 'PENDING' | 'POSITIVE' | 'NEGATIVE';
+  last_updated?: string;
 }
 
 export interface FilterOptions {
