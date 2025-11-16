@@ -81,8 +81,38 @@ async def startup_event():
     global factory
 
     try:
-        # Determine project to load (from environment variable or default to CLABSI)
         import os
+
+        # Check APP_MODE (demo or production)
+        app_mode = os.getenv("APP_MODE", "demo").lower()
+
+        if app_mode not in ["demo", "production"]:
+            raise ValueError(f"Invalid APP_MODE: {app_mode}. Must be 'demo' or 'production'")
+
+        logger.info(f"Starting CA Factory API in {app_mode.upper()} mode")
+
+        # Production mode check
+        if app_mode == "production":
+            # Production mode requires Snowflake connection
+            snowflake_account = os.getenv("SNOWFLAKE_ACCOUNT")
+            snowflake_user = os.getenv("SNOWFLAKE_USER")
+            snowflake_database = os.getenv("SNOWFLAKE_DATABASE")
+
+            if not all([snowflake_account, snowflake_user, snowflake_database]):
+                raise RuntimeError(
+                    "PRODUCTION MODE NOT YET IMPLEMENTED\n"
+                    "===========================================\n"
+                    "Production mode requires Snowflake integration which is not yet available.\n\n"
+                    "Missing required environment variables:\n"
+                    f"  - SNOWFLAKE_ACCOUNT: {'✓ set' if snowflake_account else '✗ not set'}\n"
+                    f"  - SNOWFLAKE_USER: {'✓ set' if snowflake_user else '✗ not set'}\n"
+                    f"  - SNOWFLAKE_DATABASE: {'✓ set' if snowflake_database else '✗ not set'}\n\n"
+                    "To use CA Factory now, please set APP_MODE=demo\n"
+                    "See docs/QUICKSTART.md for demo mode setup instructions.\n"
+                    "===========================================\n"
+                )
+
+        # Determine project to load (from environment variable or default to CLABSI)
         project_id = os.getenv("CA_FACTORY_PROJECT", "clabsi")
 
         # Load project configuration using ConfigLoader
@@ -93,10 +123,13 @@ async def startup_event():
 
         config = loader.load_project(project_id, validate=True)
 
+        # Add app_mode to config
+        config["app_mode"] = app_mode
+
         # Initialize CA Factory
         factory = CAFactory(config=config)
 
-        logger.info(f"CA Factory initialized successfully for project: {project_id}")
+        logger.info(f"CA Factory initialized successfully for project: {project_id} in {app_mode} mode")
 
     except Exception as e:
         logger.error(f"Failed to initialize CA Factory: {str(e)}")
@@ -107,10 +140,16 @@ async def startup_event():
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
+    import os
+
     if factory is None:
         raise HTTPException(status_code=503, detail="Service not initialized")
 
     health = await factory.health_check()
+
+    # Add app_mode to health data
+    app_mode = os.getenv("APP_MODE", "demo").lower()
+    health["app_mode"] = app_mode
 
     return JSONResponse(
         status_code=200,

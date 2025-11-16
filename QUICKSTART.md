@@ -48,16 +48,16 @@ npm install
 
 ## Running the Demo (No Database Required)
 
-The CA Factory includes a **mock mode** that runs without any database, perfect for demos and development.
+The CA Factory includes a **demo mode** that runs without any database, perfect for demos and development.
 
-### Start Backend (Mock Mode)
+### Start Backend (Demo Mode)
 
 ```bash
 # From backend/ directory
 cd backend
 
-# Set mock mode (no DB required)
-export CA_FACTORY_MODE=mock
+# Set demo mode (no DB required)
+export APP_MODE=demo
 export CA_FACTORY_PROJECT=clabsi
 
 # Start the server
@@ -66,10 +66,19 @@ python api/main.py
 
 You should see:
 ```
-INFO:     CA Factory initialized successfully for project: clabsi
+INFO:     Starting CA Factory API in DEMO mode
+INFO:     Loading project configuration: clabsi
+INFO:     CA Factory initialized successfully for project: clabsi in demo mode
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000
 ```
+
+**Environment Variables:**
+- `APP_MODE` - Set to `demo` (no database) or `production` (requires Snowflake)
+  - Default: `demo`
+  - Production mode is not yet implemented - setting to `production` will show a clear error
+- `CA_FACTORY_PROJECT` - Which clinical domain to use (`clabsi`, `cauti`, etc.)
+  - Default: `clabsi`
 
 ### Start Frontend
 
@@ -209,6 +218,88 @@ python api/main.py
 ```
 
 Now the API will use CAUTI rules and knowledge.
+
+## Demo vs Production Mode
+
+CA Factory supports two operational modes controlled by the `APP_MODE` environment variable:
+
+### Demo Mode (Default)
+
+**Current Status**: ✅ **Fully Implemented**
+
+Demo mode uses in-memory mock implementations:
+- **Vector Store**: Text-based search (no Pinecone)
+- **Memory Cache**: In-memory cache (no Redis)
+- **Patient Data**: JSON files (no PostgreSQL/Snowflake)
+- **LLM**: Mock responses (no Anthropic API)
+
+**Use Cases:**
+- ✅ Local development
+- ✅ Testing and CI/CD
+- ✅ Stakeholder demos
+- ✅ Learning the system
+- ✅ Offline work
+
+**Setup:**
+```bash
+export APP_MODE=demo
+export CA_FACTORY_PROJECT=clabsi
+python api/main.py
+```
+
+### Production Mode
+
+**Current Status**: ⏳ **Not Yet Implemented**
+
+Production mode will use real infrastructure:
+- **Data Source**: Snowflake data warehouse
+- **Vector Store**: Pinecone for semantic search
+- **Memory Cache**: Redis for caching
+- **LLM**: Anthropic Claude API
+
+**Required Environment Variables (Future):**
+```bash
+export APP_MODE=production
+export SNOWFLAKE_ACCOUNT=your_account
+export SNOWFLAKE_USER=your_user
+export SNOWFLAKE_DATABASE=your_database
+export SNOWFLAKE_PASSWORD=your_password
+export PINECONE_API_KEY=your_key
+export REDIS_URL=redis://localhost:6379
+export ANTHROPIC_API_KEY=your_key
+```
+
+**What Happens Now:**
+
+If you try to run in production mode today, you'll get a clear error:
+
+```
+RuntimeError: PRODUCTION MODE NOT YET IMPLEMENTED
+===========================================
+Production mode requires Snowflake integration which is not yet available.
+
+Missing required environment variables:
+  - SNOWFLAKE_ACCOUNT: ✗ not set
+  - SNOWFLAKE_USER: ✗ not set
+  - SNOWFLAKE_DATABASE: ✗ not set
+
+To use CA Factory now, please set APP_MODE=demo
+See docs/QUICKSTART.md for demo mode setup instructions.
+===========================================
+```
+
+This prevents accidental misconfiguration and clearly communicates that production mode is planned but not ready.
+
+**Migration Path:**
+
+When production mode is implemented, the same code will work - just change the environment variable:
+```bash
+# Switch from demo to production (future)
+export APP_MODE=production  # Instead of APP_MODE=demo
+python api/main.py
+```
+
+All API endpoints, data schemas, and functionality remain identical.
 
 ## Project Structure Overview
 
