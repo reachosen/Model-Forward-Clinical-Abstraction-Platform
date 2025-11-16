@@ -1,0 +1,58 @@
+# Web Framework
+fastapi==0.108.0
+uvicorn[standard]==0.25.0
+gunicorn==21.2.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# AI/ML
+anthropic==0.8.0
+openai==1.6.0
+langchain==0.1.0
+langchain-anthropic==0.1.0
+tiktoken==0.5.2
+
+# Vector Stores
+pinecone-client==3.0.0
+weaviate-client==4.4.0
+chromadb==0.4.22
+
+# Caching and Storage
+redis==5.0.1
+hiredis==2.3.2
+
+# Database
+sqlalchemy==2.0.25
+alembic==1.13.1
+asyncpg==0.29.0
+
+# HTTP and Networking
+httpx==0.26.0
+aiohttp==3.9.1
+
+# Data Processing
+pandas==2.1.4
+numpy==1.26.2
+pyarrow==14.0.2
+
+# Utilities
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+email-validator==2.1.0
+python-dotenv==1.0.0
+
+# Monitoring and Logging
+prometheus-client==0.19.0
+structlog==24.1.0
+
+# Date/Time
+python-dateutil==2.8.2
+pytz==2023.3
+
+# Testing (also in requirements-dev.txt)
+pytest==7.4.3
+pytest-asyncio==0.23.2
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+httpx==0.26.0
