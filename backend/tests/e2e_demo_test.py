@@ -303,20 +303,30 @@ class TestDemoPipeline:
 
         data = response.json()
 
+        # Should still be a 404 for invalid case
         assert response.status_code == 404, "Should return 404 for invalid case"
 
-        # New structure expectations
-        assert data.get("success") is False, "Error response should set success=False"
-        assert "error" in data, "Error object should exist"
-        assert "code" in data["error"], "Error.code must exist"
-        assert "message" in data["error"], "Error.message must exist"
+        # New structure expectations based on actual API response:
+        # {
+        #   "success": false,
+        #   "error": {
+        #     "code": "HTTP_ERROR",
+        #     "message": "Case case-999 not found"
+        #   },
+        #   "metadata": { ... }
+        # }
 
-        # Optional stronger checks
+        assert data.get("success") is False, "Error response should set success=False"
+        assert "error" in data, "Error response should have 'error' object"
+        assert "code" in data["error"], "Error.error.code must exist"
+        assert "message" in data["error"], "Error.error.message must exist"
+
+        # Stronger checks on content
         assert data["error"]["code"] == "HTTP_ERROR"
         assert "not found" in data["error"]["message"].lower()
 
         # Metadata checks
-        assert "metadata" in data
+        assert "metadata" in data, "Error response should have metadata"
         assert "request_id" in data["metadata"]
         assert "timestamp" in data["metadata"]
 
