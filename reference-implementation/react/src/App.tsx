@@ -8,6 +8,7 @@ import { DomainConfigProvider, useDomainConfig } from './contexts/DomainConfigCo
 import NavigationMenu, { type BreadcrumbItem, type CaseContext } from './components/NavigationMenu';
 import CaseListPage from './pages/CaseListPage';
 import CaseViewPage from './pages/CaseViewPage';
+import RuleEvaluationPage from './pages/RuleEvaluationPage';
 import './App.css';
 
 const AppContent: React.FC = () => {
@@ -117,6 +118,7 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="/" element={<CaseListPage />} />
           <Route path="/case/:patientId" element={<CaseViewPage />} />
+          <Route path="/rules/:patientId" element={<RuleEvaluationPage />} />
         </Routes>
       </main>
 
