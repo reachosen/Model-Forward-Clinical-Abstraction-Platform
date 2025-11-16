@@ -1,0 +1,199 @@
+{
+  "version": "1.0.0",
+  "description": "Domain configuration for CA Factory reference implementation",
+  "defaultDomain": "clabsi",
+  "domains": [
+    {
+      "id": "clabsi",
+      "name": "CLABSI",
+      "fullName": "Central Line-Associated Bloodstream Infection",
+      "category": "Healthcare-Acquired Conditions",
+      "enabled": true,
+      "description": "Detection and evaluation of central line-associated bloodstream infections using NHSN criteria",
+      "nhsnCategory": "BSI",
+      "deviceType": "Central Line",
+      "config": {
+        "ruleCount": 6,
+        "requiredRules": 5,
+        "supportedDevices": ["PICC", "CVC", "tunneled", "implanted_port"],
+        "primaryCulture": "blood_culture",
+        "minDeviceDays": 2
+      },
+      "ui": {
+        "primaryColor": "#2563eb",
+        "icon": "activity",
+        "displayOrder": 1
+      },
+      "endpoints": {
+        "rules": "/v1/case/{patientId}/rules?domain=CLABSI",
+        "ask": "/v1/case/{patientId}/ask",
+        "evidence": "/v1/case/{patientId}/evidence"
+      },
+      "sampleCases": [
+        {
+          "id": "PAT-001",
+          "name": "CLABSI Positive - S. aureus",
+          "file": "data/clabsi/case-001.json",
+          "determination": "CLABSI_CONFIRMED",
+          "confidence": 0.95
+        },
+        {
+          "id": "PAT-002",
+          "name": "CLABSI Ruled Out - Urosepsis",
+          "file": "data/clabsi/case-002.json",
+          "determination": "NOT_CLABSI",
+          "confidence": 0.88
+        }
+      ],
+      "metadata": {
+        "createdAt": "2024-11-16T10:00:00Z",
+        "lastUpdated": "2024-11-16T10:00:00Z",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "cauti",
+      "name": "CAUTI",
+      "fullName": "Catheter-Associated Urinary Tract Infection",
+      "category": "Healthcare-Acquired Conditions",
+      "enabled": true,
+      "description": "Detection and evaluation of catheter-associated urinary tract infections using NHSN criteria",
+      "nhsnCategory": "UTI",
+      "deviceType": "Urinary Catheter",
+      "config": {
+        "ruleCount": 4,
+        "requiredRules": 4,
+        "supportedDevices": ["Foley", "straight_catheter", "suprapubic"],
+        "primaryCulture": "urine_culture",
+        "minDeviceDays": 2,
+        "cfuThreshold": 100000
+      },
+      "ui": {
+        "primaryColor": "#0891b2",
+        "icon": "droplet",
+        "displayOrder": 2
+      },
+      "endpoints": {
+        "rules": "/v1/case/{patientId}/rules?domain=CAUTI",
+        "ask": "/v1/case/{patientId}/ask",
+        "evidence": "/v1/case/{patientId}/evidence"
+      },
+      "sampleCases": [
+        {
+          "id": "PAT-101",
+          "name": "CAUTI Positive - E. coli",
+          "file": "data/cauti/case-001.json",
+          "determination": "CAUTI_CONFIRMED",
+          "confidence": 0.92
+        }
+      ],
+      "metadata": {
+        "createdAt": "2024-11-16T10:00:00Z",
+        "lastUpdated": "2024-11-16T10:00:00Z",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "id": "ssi",
+      "name": "SSI",
+      "fullName": "Surgical Site Infection",
+      "category": "Healthcare-Acquired Conditions",
+      "enabled": false,
+      "description": "Detection and evaluation of surgical site infections using NHSN criteria (Coming Soon)",
+      "nhsnCategory": "SSI",
+      "deviceType": null,
+      "config": {
+        "ruleCount": 0,
+        "requiredRules": 0,
+        "supportedProcedures": [],
+        "primaryCulture": "wound_culture",
+        "minPostOpDays": 0
+      },
+      "ui": {
+        "primaryColor": "#7c3aed",
+        "icon": "bandage",
+        "displayOrder": 3
+      },
+      "endpoints": {
+        "rules": "/v1/case/{patientId}/rules?domain=SSI",
+        "ask": "/v1/case/{patientId}/ask",
+        "evidence": "/v1/case/{patientId}/evidence"
+      },
+      "sampleCases": [],
+      "metadata": {
+        "createdAt": "2024-11-16T10:00:00Z",
+        "lastUpdated": "2024-11-16T10:00:00Z",
+        "version": "1.0.0",
+        "status": "planned"
+      }
+    },
+    {
+      "id": "vap",
+      "name": "VAP",
+      "fullName": "Ventilator-Associated Pneumonia",
+      "category": "Healthcare-Acquired Conditions",
+      "enabled": false,
+      "description": "Detection and evaluation of ventilator-associated pneumonia using NHSN criteria (Coming Soon)",
+      "nhsnCategory": "PNEU",
+      "deviceType": "Ventilator",
+      "config": {
+        "ruleCount": 0,
+        "requiredRules": 0,
+        "supportedDevices": ["mechanical_ventilator"],
+        "primaryCulture": "respiratory_culture",
+        "minDeviceDays": 2
+      },
+      "ui": {
+        "primaryColor": "#ea580c",
+        "icon": "wind",
+        "displayOrder": 4
+      },
+      "endpoints": {
+        "rules": "/v1/case/{patientId}/rules?domain=VAP",
+        "ask": "/v1/case/{patientId}/ask",
+        "evidence": "/v1/case/{patientId}/evidence"
+      },
+      "sampleCases": [],
+      "metadata": {
+        "createdAt": "2024-11-16T10:00:00Z",
+        "lastUpdated": "2024-11-16T10:00:00Z",
+        "version": "1.0.0",
+        "status": "planned"
+      }
+    }
+  ],
+  "globalConfig": {
+    "apiVersion": "v1",
+    "baseUrl": "http://localhost:8000",
+    "mockMode": true,
+    "qualityGates": {
+      "minConfidence": 0.7,
+      "minRelevanceScore": 0.75,
+      "minRecallAt5": 0.85,
+      "minMRR": 0.88
+    },
+    "ui": {
+      "theme": "light",
+      "showConfidenceScores": true,
+      "showEvidenceCitations": true,
+      "enableFollowUpQuestions": true,
+      "maxTimelineEvents": 50,
+      "defaultTopK": 10
+    },
+    "features": {
+      "askTheCase": true,
+      "ruleEvaluation": true,
+      "evidenceRetrieval": true,
+      "timeline": true,
+      "qualityMetrics": true,
+      "exportResults": false,
+      "smeValidation": false
+    }
+  },
+  "metadata": {
+    "createdAt": "2024-11-16T10:00:00Z",
+    "lastUpdated": "2024-11-16T10:00:00Z",
+    "version": "1.0.0",
+    "author": "CA Factory Team"
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "caseId": "CASE-CAUTI-001",
+  "patientId": "PAT-101",
+  "encounterId": "ENC-101",
+  "infectionType": "CAUTI",
+  "facility": {
+    "id": "HOSP-001",
+    "name": "Memorial Hospital",
+    "unit": "Medical Ward 2B"
+  },
+  "patient": {
+    "mrn": "MRN-789012",
+    "age": 72,
+    "gender": "F"
+  },
+  "timeline": {
+    "admissionDate": "2024-02-01",
+    "dischargeDate": null,
+    "eventDate": "2024-02-08",
+    "daysSinceAdmission": 7
+  },
+  "devices": {
+    "urinaryCatheter": {
+      "present": true,
+      "type": "Foley",
+      "insertionDate": "2024-02-01",
+      "insertionTime": "14:00:00",
+      "insertionIndication": "Urinary retention",
+      "removalDate": null,
+      "deviceDaysAtEvent": 7
+    }
+  },
+  "labs": [
+    {
+      "id": "LAB-101",
+      "type": "urine_culture",
+      "collectionDate": "2024-02-08",
+      "collectionTime": "10:00:00",
+      "resultDate": "2024-02-09",
+      "organism": "Escherichia coli",
+      "organismType": "recognized_pathogen",
+      "growth": "Positive",
+      "cfuCount": 100000,
+      "sampleType": "Catheter specimen"
+    },
+    {
+      "id": "LAB-102",
+      "type": "urinalysis",
+      "collectionDate": "2024-02-08",
+      "collectionTime": "10:00:00",
+      "resultDate": "2024-02-08",
+      "findings": {
+        "wbc": ">100/hpf",
+        "bacteria": "Many",
+        "nitrite": "Positive",
+        "leukocyteEsterase": "Positive"
+      }
+    }
+  ],
+  "clinicalSignals": [
+    {
+      "id": "SIG-101",
+      "type": "vital_sign",
+      "name": "temperature",
+      "timestamp": "2024-02-08T06:00:00Z",
+      "value": 38.8,
+      "unit": "°C",
+      "abnormal": true
+    },
+    {
+      "id": "SIG-102",
+      "type": "symptom",
+      "name": "suprapubic_tenderness",
+      "timestamp": "2024-02-08T08:00:00Z",
+      "value": "Present",
+      "abnormal": true
+    },
+    {
+      "id": "SIG-103",
+      "type": "lab_value",
+      "name": "wbc",
+      "timestamp": "2024-02-08T09:00:00Z",
+      "value": 14.2,
+      "unit": "10^3/μL",
+      "abnormal": true
+    }
+  ],
+  "events": [
+    {
+      "id": "EVT-101",
+      "type": "device_insertion",
+      "name": "Foley Catheter Insertion",
+      "timestamp": "2024-02-01T14:00:00Z",
+      "performedBy": "RN K. Lee",
+      "location": "Med-Surg 2B",
+      "details": {
+        "indication": "Urinary retention",
+        "size": "16 Fr",
+        "complications": "None"
+      }
+    },
+    {
+      "id": "EVT-102",
+      "type": "symptom_onset",
+      "name": "Fever and Dysuria Onset",
+      "timestamp": "2024-02-08T06:00:00Z",
+      "performedBy": "Nursing Staff",
+      "location": "Med-Surg 2B Room 215"
+    },
+    {
+      "id": "EVT-103",
+      "type": "culture_ordered",
+      "name": "Urine Culture Ordered",
+      "timestamp": "2024-02-08T09:00:00Z",
+      "performedBy": "Dr. Patel",
+      "location": "Med-Surg 2B"
+    }
+  ],
+  "notes": [
+    {
+      "id": "NOTE-101",
+      "type": "nursing_assessment",
+      "timestamp": "2024-02-08T06:00:00Z",
+      "author": "RN T. Martinez",
+      "content": "Patient reports burning sensation with urination and suprapubic discomfort. Temperature elevated at 38.8°C. Foley catheter in place since admission (2/1). Urine appears cloudy with sediment. Notified physician."
+    },
+    {
+      "id": "NOTE-102",
+      "type": "physician_progress_note",
+      "timestamp": "2024-02-08T10:00:00Z",
+      "author": "Dr. R. Patel",
+      "content": "72F with new fever, suprapubic tenderness, and cloudy urine. Foley catheter in place for 7 days. Clinical picture consistent with CAUTI. UA shows pyuria and bacteriuria. Urine culture sent. Started ciprofloxacin empirically. Plan to remove catheter if clinically appropriate."
+    },
+    {
+      "id": "NOTE-103",
+      "type": "microbiology_result",
+      "timestamp": "2024-02-09T14:00:00Z",
+      "author": "Microbiology Lab",
+      "content": "Urine culture positive for Escherichia coli >100,000 CFU/mL. Susceptible to ciprofloxacin, trimethoprim-sulfamethoxazole. Resistant to ampicillin."
+    }
+  ],
+  "nhsnEvaluation": {
+    "dateOfEvent": "2024-02-08",
+    "infectionWindow": {
+      "start": "2024-02-06",
+      "end": "2024-02-09"
+    },
+    "deviceDaysAtEvent": 7,
+    "criteriaMet": {
+      "urinaryCatheterPresent": true,
+      "catheterInPlace2Days": true,
+      "positiveCulture": true,
+      "cfuThreshold": true,
+      "clinicalSigns": true,
+      "noAlternateSource": true
+    },
+    "determination": "CAUTI_CONFIRMED",
+    "confidence": 0.92,
+    "rationale": "Patient meets all NHSN criteria for CAUTI: indwelling urinary catheter present for >2 days, positive urine culture with ≥100,000 CFU/mL of uropathogen (E. coli), clinical signs of UTI (fever, suprapubic tenderness), and no alternate infection source identified."
+  },
+  "riskFactors": [
+    {
+      "factor": "Indwelling urinary catheter",
+      "present": true
+    },
+    {
+      "factor": "Female gender",
+      "present": true
+    },
+    {
+      "factor": "Advanced age",
+      "present": true
+    },
+    {
+      "factor": "Prolonged catheterization",
+      "present": true
+    }
+  ],
+  "metadata": {
+    "createdAt": "2024-11-16T10:00:00Z",
+    "updatedAt": "2024-11-16T10:00:00Z",
+    "version": "1.0.0",
+    "source": "mock_data"
+  }
+}

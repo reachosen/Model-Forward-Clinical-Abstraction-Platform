@@ -1,0 +1,168 @@
+{
+  "caseId": "CASE-CLABSI-001",
+  "patientId": "PAT-001",
+  "encounterId": "ENC-001",
+  "infectionType": "CLABSI",
+  "facility": {
+    "id": "HOSP-001",
+    "name": "Memorial Hospital",
+    "unit": "ICU-A"
+  },
+  "patient": {
+    "mrn": "MRN-123456",
+    "age": 58,
+    "gender": "M"
+  },
+  "timeline": {
+    "admissionDate": "2024-01-15",
+    "dischargeDate": null,
+    "eventDate": "2024-01-20",
+    "daysSinceAdmission": 5
+  },
+  "devices": {
+    "centralLine": {
+      "present": true,
+      "type": "PICC",
+      "insertionDate": "2024-01-15",
+      "insertionTime": "10:30:00",
+      "insertionSite": "Right basilic vein",
+      "removalDate": null,
+      "deviceDaysAtEvent": 5
+    }
+  },
+  "labs": [
+    {
+      "id": "LAB-001",
+      "type": "blood_culture",
+      "collectionDate": "2024-01-20",
+      "collectionTime": "08:30:00",
+      "resultDate": "2024-01-20",
+      "organism": "Staphylococcus aureus",
+      "organismType": "recognized_pathogen",
+      "growth": "Positive",
+      "sampleType": "Peripheral blood"
+    }
+  ],
+  "clinicalSignals": [
+    {
+      "id": "SIG-001",
+      "type": "vital_sign",
+      "name": "temperature",
+      "timestamp": "2024-01-19T06:00:00Z",
+      "value": 39.2,
+      "unit": "°C",
+      "abnormal": true
+    },
+    {
+      "id": "SIG-002",
+      "type": "vital_sign",
+      "name": "heart_rate",
+      "timestamp": "2024-01-19T06:00:00Z",
+      "value": 115,
+      "unit": "bpm",
+      "abnormal": true
+    },
+    {
+      "id": "SIG-003",
+      "type": "lab_value",
+      "name": "wbc",
+      "timestamp": "2024-01-19T08:00:00Z",
+      "value": 16.8,
+      "unit": "10^3/μL",
+      "abnormal": true
+    }
+  ],
+  "events": [
+    {
+      "id": "EVT-001",
+      "type": "device_insertion",
+      "name": "PICC Line Insertion",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "performedBy": "IR Team",
+      "location": "Interventional Radiology",
+      "details": {
+        "indication": "Long-term IV access",
+        "technique": "Ultrasound-guided",
+        "complications": "None"
+      }
+    },
+    {
+      "id": "EVT-002",
+      "type": "fever_onset",
+      "name": "Fever Onset",
+      "timestamp": "2024-01-19T06:00:00Z",
+      "performedBy": "Nursing Staff",
+      "location": "ICU-A Bed 3"
+    },
+    {
+      "id": "EVT-003",
+      "type": "culture_ordered",
+      "name": "Blood Culture Ordered",
+      "timestamp": "2024-01-19T08:00:00Z",
+      "performedBy": "Dr. Johnson",
+      "location": "ICU-A"
+    }
+  ],
+  "notes": [
+    {
+      "id": "NOTE-001",
+      "type": "nursing_assessment",
+      "timestamp": "2024-01-19T06:00:00Z",
+      "author": "RN J. Smith",
+      "content": "Patient with new-onset fever (39.2°C), tachycardic (HR 115). PICC line site appears clean and dry, no redness or drainage noted. Patient reports feeling chills and fatigue. Blood cultures ordered by MD."
+    },
+    {
+      "id": "NOTE-002",
+      "type": "physician_progress_note",
+      "timestamp": "2024-01-19T10:00:00Z",
+      "author": "Dr. M. Johnson",
+      "content": "58M with new fever and leukocytosis. PICC line in place since 1/15. Differential includes CLABSI vs other infection source. Blood cultures obtained. Started empiric vancomycin and cefepime pending culture results. Will monitor closely."
+    },
+    {
+      "id": "NOTE-003",
+      "type": "microbiology_result",
+      "timestamp": "2024-01-20T16:00:00Z",
+      "author": "Microbiology Lab",
+      "content": "Blood culture positive for Staphylococcus aureus (MSSA). Susceptible to oxacillin. Notify physician for antibiotic adjustment."
+    }
+  ],
+  "nhsnEvaluation": {
+    "dateOfEvent": "2024-01-20",
+    "infectionWindow": {
+      "start": "2024-01-18",
+      "end": "2024-01-21"
+    },
+    "deviceDaysAtEvent": 5,
+    "criteriaMet": {
+      "centralLinePresent": true,
+      "lineInPlace2Days": true,
+      "positiveBloodCulture": true,
+      "recognizedPathogen": true,
+      "clinicalSigns": true,
+      "noAlternateSource": true
+    },
+    "determination": "CLABSI_CONFIRMED",
+    "confidence": 0.95,
+    "rationale": "Patient meets all NHSN criteria for CLABSI: central line present for >2 days, positive blood culture with recognized pathogen (S. aureus), clinical signs of infection (fever, leukocytosis), and no alternate infection source identified."
+  },
+  "riskFactors": [
+    {
+      "factor": "ICU admission",
+      "present": true
+    },
+    {
+      "factor": "Central venous catheter",
+      "present": true
+    },
+    {
+      "factor": "Prolonged hospitalization",
+      "present": true
+    }
+  ],
+  "metadata": {
+    "createdAt": "2024-11-16T10:00:00Z",
+    "updatedAt": "2024-11-16T10:00:00Z",
+    "version": "1.0.0",
+    "source": "mock_data"
+  }
+}
