@@ -1,0 +1,190 @@
+{
+  "case_metadata": {
+    "case_id": "CASE-CLABSI-002",
+    "patient_id": "PAT-002",
+    "encounter_id": "ENC-002",
+    "created_date": "2024-01-20T08:00:00Z",
+    "infection_type": "CLABSI_RULED_OUT",
+    "facility_id": "HOSP-001",
+    "unit": "Medical Ward"
+  },
+  "patient_demographics": {
+    "age": 45,
+    "gender": "F",
+    "mrn": "MRN-87654321"
+  },
+  "devices": {
+    "central_line": {
+      "insertion_date": "2024-01-20",
+      "insertion_time": "09:00:00",
+      "line_type": "CVC",
+      "insertion_site": "Right internal jugular",
+      "removal_date": "2024-01-21",
+      "removal_time": "16:00:00",
+      "removal_reason": "No longer needed",
+      "device_days_at_event": 1
+    }
+  },
+  "lab_results": [
+    {
+      "test_id": "LAB-010",
+      "test_type": "blood_culture",
+      "collection_date": "2024-01-25",
+      "collection_time": "10:00:00",
+      "result_date": "2024-01-26",
+      "result_time": "14:00:00",
+      "sample_type": "Blood - peripheral",
+      "organism": "Escherichia coli",
+      "organism_type": "recognized_pathogen",
+      "growth": "Positive",
+      "source_id": "BC-2024-010"
+    },
+    {
+      "test_id": "LAB-011",
+      "test_type": "urine_culture",
+      "collection_date": "2024-01-25",
+      "organism": "Escherichia coli",
+      "cfu_count": 100000,
+      "growth": "Positive",
+      "source_id": "UC-2024-005",
+      "note": "Same organism as blood culture"
+    }
+  },
+  "clinical_signals": [
+    {
+      "signal_id": "SIG-010",
+      "signal_type": "vital_sign",
+      "signal_name": "temperature",
+      "timestamp": "2024-01-25T08:00:00Z",
+      "value": 38.8,
+      "unit": "°C",
+      "source": "bedside_monitor",
+      "abnormal": true
+    },
+    {
+      "signal_id": "SIG-011",
+      "signal_type": "symptom",
+      "signal_name": "dysuria",
+      "timestamp": "2024-01-25T07:00:00Z",
+      "value": true,
+      "source": "nursing_assessment",
+      "severity": "moderate"
+    }
+  ],
+  "clinical_events": [
+    {
+      "event_id": "EVT-010",
+      "event_type": "device_insertion",
+      "event_name": "CVC insertion",
+      "timestamp": "2024-01-20T09:00:00Z",
+      "performed_by": "Dr. Smith",
+      "location": "Bedside",
+      "details": {
+        "indication": "Difficult IV access",
+        "site": "Right internal jugular"
+      }
+    },
+    {
+      "event_id": "EVT-011",
+      "event_type": "device_removal",
+      "event_name": "CVC removal",
+      "timestamp": "2024-01-21T16:00:00Z",
+      "details": {
+        "reason": "Peripheral IV access obtained, line no longer needed"
+      }
+    },
+    {
+      "event_id": "EVT-012",
+      "event_type": "fever_onset",
+      "event_name": "Fever documented",
+      "timestamp": "2024-01-25T08:00:00Z",
+      "details": {
+        "temperature": 38.8,
+        "note": "4 days after line removal"
+      }
+    }
+  },
+  "clinical_notes": [
+    {
+      "note_id": "NOTE-010",
+      "note_type": "physician_progress_note",
+      "timestamp": "2024-01-25T10:00:00Z",
+      "author": "Dr. B. Wilson",
+      "content": "45F with fever and dysuria. CVC was placed 1/20 and removed 1/21 (line present for only 1 day, needed for difficult IV access). Patient now presents with fever, dysuria, and flank pain. Urinalysis shows pyuria and bacteriuria. Urine and blood cultures drawn. Likely urosepsis given symptoms and UA findings. No signs of line-associated infection - line was only in for 1 day and removed 4 days ago.",
+      "extracted_concepts": ["fever", "dysuria", "urosepsis", "CVC removed", "pyuria"]
+    },
+    {
+      "note_id": "NOTE-011",
+      "note_type": "microbiology_result",
+      "timestamp": "2024-01-26T14:00:00Z",
+      "author": "Microbiology Lab",
+      "content": "BLOOD AND URINE CULTURE RESULTS: Both cultures positive for E. coli with identical sensitivities. Blood culture grew E. coli at 24 hours. Urine culture >100,000 CFU/mL E. coli. Consistent with urosepsis.",
+      "extracted_concepts": ["E. coli", "urosepsis", "blood culture", "urine culture"]
+    }
+  ],
+  "timeline_phases": [
+    {
+      "phase_name": "Device Placement",
+      "start_date": "2024-01-20",
+      "end_date": "2024-01-20",
+      "day_number": 1,
+      "events": ["CVC insertion"]
+    },
+    {
+      "phase_name": "Device Removal",
+      "start_date": "2024-01-21",
+      "end_date": "2024-01-21",
+      "day_number": 2,
+      "events": ["CVC removal - only 1 day in place"]
+    },
+    {
+      "phase_name": "Symptom Onset",
+      "start_date": "2024-01-25",
+      "end_date": "2024-01-25",
+      "day_number": 6,
+      "events": ["Fever", "Dysuria", "4 days post line removal"]
+    }
+  ],
+  "nhsn_evaluation": {
+    "date_of_event": "2024-01-25",
+    "device_days_at_event": 0,
+    "line_removed_days_ago": 4,
+    "criteria_met": {
+      "central_line_present_gt_2_days": false,
+      "positive_blood_culture": true,
+      "recognized_pathogen": true,
+      "clinical_signs": true,
+      "no_alternate_source": false,
+      "temporal_relationship": false
+    },
+    "nhsn_determination": "NOT_CLABSI",
+    "confidence": 0.98,
+    "rationale": "Line was only in place for 1 day (<2 days required). Positive cultures occurred 4 days after line removal (outside 1-day window). Alternate source identified (UTI with positive urine culture matching blood organism)."
+  },
+  "other_infections": [
+    {
+      "infection_type": "UTI",
+      "site": "Urinary tract",
+      "organism": "Escherichia coli",
+      "diagnosis_date": "2024-01-25",
+      "confidence": 0.95
+    }
+  ],
+  "exclusion_criteria_evaluated": [
+    {
+      "criterion": "Central line in place >2 days",
+      "met": false,
+      "rationale": "Line only in place for 1 day"
+    },
+    {
+      "criterion": "Positive culture within infection window",
+      "met": false,
+      "rationale": "Culture drawn 4 days after line removal"
+    },
+    {
+      "criterion": "Organism related to other infection site",
+      "met": true,
+      "rationale": "E. coli in both blood and urine with UTI symptoms - urosepsis"
+    }
+  ]
+}
