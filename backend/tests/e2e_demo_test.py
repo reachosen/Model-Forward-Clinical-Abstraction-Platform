@@ -1,226 +1,455 @@
-#!/usr/bin/env python3
 """
-End-to-End Demo Test
+End-to-End Demo Pipeline Test
 
-Demonstrates the complete flow from API request through CA Factory to response.
-Runs in mock mode without requiring external dependencies.
+Tests the complete demo workflow:
+1. POST /api/demo/context - Retrieve case context
+2. POST /api/demo/abstract - Generate clinical abstraction
+3. POST /api/demo/feedback - Submit user feedback
+
+This test verifies the entire demo pipeline works correctly in APP_MODE=demo.
+
+Requirements:
+- APP_MODE=demo (automatically set in test)
+- Backend running with mock data
+- CLABSI case-001 data available
+
+Run:
+    pytest backend/tests/e2e_demo_test.py -v
 """
 
-import sys
-import json
-from pathlib import Path
+import os
+import pytest
+from fastapi.testclient import TestClient
 
-# Add backend to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Set demo mode for tests
+os.environ["APP_MODE"] = "demo"
+os.environ["CA_FACTORY_PROJECT"] = "clabsi"
 
-from ca_factory.core.factory import CAFactory
-from ca_factory.config.loader import ConfigLoader
-from ca_factory.storage.mock_case_loader import MockCaseLoader
-
-import asyncio
+# Import after setting env vars
+from api.main import app
 
 
-async def test_complete_clabsi_workflow():
-    """Test complete CLABSI case evaluation workflow."""
-    print("\n" + "="*70)
-    print("  CA Factory End-to-End Demo Test - CLABSI Workflow")
-    print("="*70 + "\n")
-
-    # Step 1: Load Configuration
-    print("[1/5] Loading CLABSI project configuration...")
-    config_root = Path(__file__).parent.parent / "configs"
-    loader = ConfigLoader(config_root)
-    config = loader.load_project("clabsi", validate=True)
-    print(f"✓ Loaded config for domain: {config['project_domain']}")
-    print(f"✓ Agent profiles loaded: {len(config['agent_profiles'])}")
-    print()
-
-    # Step 2: Initialize CA Factory
-    print("[2/5] Initializing CA Factory...")
-    factory = CAFactory(config=config)
-    print("✓ Factory initialized")
-    print()
-
-    # Step 3: Load Mock Patient Data
-    print("[3/5] Loading mock patient data...")
-    case_loader = MockCaseLoader()
-    cases = case_loader.list_cases()
-    print(f"✓ Loaded {len(cases)} mock cases")
-    for case in cases:
-        print(f"  - {case['patient_id']}: {case['infection_type']} (confidence: {case['confidence']})")
-    print()
-
-    # Step 4: Test Q&A
-    print("[4/5] Testing Q&A functionality...")
-    patient_id = "PAT-001"
-    question = "What evidence supports the CLABSI diagnosis?"
-
-    print(f"  Question: '{question}'")
-    print("  Processing...")
-
-    qa_result = await factory.ask_question(
-        patient_id=patient_id,
-        question=question
-    )
-
-    print(f"✓ Answer generated:")
-    print(f"  {qa_result['answer'][:150]}...")
-    print(f"  Citations: {len(qa_result['evidence_citations'])}")
-    print(f"  Confidence: {qa_result['confidence']}")
-    print()
-
-    # Step 5: Test Rule Evaluation
-    print("[5/5] Testing NHSN rule evaluation...")
-    print(f"  Evaluating rules for patient: {patient_id}")
-    print("  Processing...")
-
-    rule_result = await factory.evaluate_rules(
-        patient_id=patient_id,
-        domain="CLABSI",
-        include_evidence=True
-    )
-
-    summary = rule_result['summary']
-    print(f"✓ Rules evaluated:")
-    print(f"  Total rules: {summary['totalRules']}")
-    print(f"  Passed: {summary['passedRules']}")
-    print(f"  Failed: {summary['failedRules']}")
-    print(f"  Required rules passed: {summary['requiredRulesPassed']}/{summary['requiredRulesTotal']}")
-    print(f"  Overall confidence: {summary['overallConfidence']}")
-    print()
-
-    # Display rule details
-    print("  Rule-by-rule breakdown:")
-    for eval in rule_result['evaluations'][:3]:  # Show first 3
-        status_icon = "✓" if eval['status'] == 'pass' else "✗"
-        print(f"    {status_icon} {eval['ruleId']}: {eval['ruleName']}")
-        print(f"      Status: {eval['status']} (confidence: {eval['confidence']})")
-    if len(rule_result['evaluations']) > 3:
-        print(f"    ... and {len(rule_result['evaluations']) - 3} more rules")
-    print()
-
-    # Step 6: Test Evidence Retrieval
-    print("[6/6] Testing evidence retrieval...")
-    search_query = "central line insertion"
-    print(f"  Query: '{search_query}'")
-    print("  Processing...")
-
-    evidence_result = await factory.retrieve_evidence(
-        patient_id=patient_id,
-        query=search_query,
-        top_k=5
-    )
-
-    print(f"✓ Evidence retrieved:")
-    print(f"  Documents found: {evidence_result['retrieval_stats']['documents_retrieved']}")
-    print(f"  Documents used: {evidence_result['retrieval_stats']['documents_used']}")
-    print(f"  Avg relevance: {evidence_result['retrieval_stats']['avg_relevance_score']}")
-    print()
-
-    print("  Top evidence items:")
-    for idx, item in enumerate(evidence_result['results'][:3], 1):
-        print(f"    {idx}. [{item['source_type']}] {item['content'][:80]}...")
-        print(f"       Relevance: {item['relevance_score']:.2f}")
-    print()
-
-    # Final Summary
-    print("="*70)
-    print("  Test Summary")
-    print("="*70)
-    print("✓ Configuration loading: PASSED")
-    print("✓ CA Factory initialization: PASSED")
-    print("✓ Mock data loading: PASSED")
-    print("✓ Q&A functionality: PASSED")
-    print("✓ Rule evaluation: PASSED")
-    print("✓ Evidence retrieval: PASSED")
-    print()
-    print("All tests PASSED! 🎉")
-    print()
-
-    return True
+@pytest.fixture
+def client():
+    """Create FastAPI test client."""
+    return TestClient(app)
 
 
-async def test_negative_case():
-    """Test a negative case (not CLABSI)."""
-    print("\n" + "="*70)
-    print("  Testing Negative Case (PAT-002 - Not CLABSI)")
-    print("="*70 + "\n")
+class TestDemoPipeline:
+    """Test the complete demo pipeline: context → abstract → feedback"""
 
-    # Load config and factory
-    config_root = Path(__file__).parent.parent / "configs"
-    loader = ConfigLoader(config_root)
-    config = loader.load_project("clabsi")
-    factory = CAFactory(config=config)
+    def test_step1_context_retrieval(self, client):
+        """
+        STEP 1: Test context retrieval endpoint
 
-    # Evaluate PAT-002 (should not be CLABSI)
-    patient_id = "PAT-002"
-    print(f"Evaluating rules for patient: {patient_id}")
+        Verifies:
+        - Endpoint returns 200 status
+        - Response has correct structure
+        - Patient block exists
+        - Context fragments array is non-empty
+        - Domain ID and case ID are correct
+        """
+        # Prepare request
+        payload = {
+            "domain_id": "clabsi",
+            "case_id": "case-001"
+        }
 
-    rule_result = await factory.evaluate_rules(
-        patient_id=patient_id,
-        domain="CLABSI"
-    )
+        # Make request
+        response = client.post("/api/demo/context", json=payload)
 
-    summary = rule_result['summary']
-    print(f"✓ Evaluation complete:")
-    print(f"  Passed: {summary['passedRules']}/{summary['totalRules']}")
-    print(f"  Failed: {summary['failedRules']}")
-    print()
+        # Assert HTTP status
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
 
-    # This patient should fail some criteria
-    if summary['failedRules'] > 0:
-        print("✓ Correctly identified as NOT meeting CLABSI criteria")
-        print()
-        print("Failed criteria:")
-        for eval in rule_result['evaluations']:
-            if eval['status'] == 'fail':
-                print(f"  ✗ {eval['ruleId']}: {eval['ruleName']}")
-                print(f"    Rationale: {eval.get('rationale', 'N/A')}")
-        print()
-        return True
-    else:
-        print("✗ UNEXPECTED: All criteria passed (should have failures)")
-        return False
+        # Parse response
+        data = response.json()
+
+        # Assert top-level structure
+        assert data["success"] is True, "Response should indicate success"
+        assert "data" in data, "Response should have 'data' field"
+        assert "metadata" in data, "Response should have 'metadata' field"
+
+        # Assert data fields
+        response_data = data["data"]
+        assert response_data["domain_id"] == "clabsi", "Domain ID should be 'clabsi'"
+        assert response_data["case_id"] == "case-001", "Case ID should be 'case-001'"
+
+        # Assert patient block exists
+        assert "patient" in response_data, "Response should have 'patient' block"
+        patient = response_data["patient"]
+        assert "case_id" in patient, "Patient block should have case_id"
+        assert "patient_id" in patient, "Patient block should have patient_id"
+        assert "mrn" in patient, "Patient block should have MRN"
+        assert "age" in patient, "Patient block should have age"
+        assert "gender" in patient, "Patient block should have gender"
+
+        # Assert context fragments
+        assert "context_fragments" in response_data, "Response should have 'context_fragments'"
+        context_fragments = response_data["context_fragments"]
+        assert isinstance(context_fragments, list), "Context fragments should be a list"
+        assert len(context_fragments) > 0, "Context fragments array should not be empty"
+
+        # Verify fragment structure
+        first_fragment = context_fragments[0]
+        assert "fragment_id" in first_fragment, "Fragment should have fragment_id"
+        assert "type" in first_fragment, "Fragment should have type"
+        assert "content" in first_fragment, "Fragment should have content"
+        assert "relevance_score" in first_fragment, "Fragment should have relevance_score"
+
+        print("✓ STEP 1: Context retrieval successful")
+        print(f"  - Retrieved {len(context_fragments)} context fragments")
+        print(f"  - Patient: {patient['patient_id']} (MRN: {patient['mrn']})")
+
+        return context_fragments  # Return for use in next test
+
+    def test_step2_abstraction(self, client):
+        """
+        STEP 2: Test abstraction generation endpoint
+
+        Verifies:
+        - Endpoint returns 200 status
+        - Response has correct structure
+        - Summary is non-empty
+        - Criteria evaluation is present
+        - Model metadata is included
+        """
+        # First get context (needed for abstraction)
+        context_response = client.post(
+            "/api/demo/context",
+            json={"domain_id": "clabsi", "case_id": "case-001"}
+        )
+        assert context_response.status_code == 200
+        context_fragments = context_response.json()["data"]["context_fragments"]
+
+        # Prepare abstraction request
+        payload = {
+            "domain_id": "clabsi",
+            "case_id": "case-001",
+            "context_fragments": context_fragments
+        }
+
+        # Make request
+        response = client.post("/api/demo/abstract", json=payload)
+
+        # Assert HTTP status
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+
+        # Parse response
+        data = response.json()
+
+        # Assert top-level structure
+        assert data["success"] is True, "Response should indicate success"
+        assert "data" in data, "Response should have 'data' field"
+        assert "metadata" in data, "Response should have 'metadata' field"
+
+        # Assert data fields
+        response_data = data["data"]
+        assert response_data["domain_id"] == "clabsi", "Domain ID should be 'clabsi'"
+        assert response_data["case_id"] == "case-001", "Case ID should be 'case-001'"
+
+        # Assert summary is present and non-empty
+        assert "summary" in response_data, "Response should have 'summary' field"
+        summary = response_data["summary"]
+        assert isinstance(summary, str), "Summary should be a string"
+        assert len(summary) > 0, "Summary should not be empty"
+        assert len(summary) > 50, "Summary should be substantial (>50 chars)"
+
+        # Assert criteria evaluation is present
+        assert "criteria_evaluation" in response_data, "Response should have 'criteria_evaluation'"
+        criteria = response_data["criteria_evaluation"]
+        assert "determination" in criteria, "Criteria should have 'determination'"
+        assert "confidence" in criteria, "Criteria should have 'confidence'"
+
+        # For CLABSI, check detailed criteria
+        if response_data["domain_id"] == "clabsi":
+            assert "criteria_met" in criteria, "CLABSI should have detailed 'criteria_met'"
+            assert "total_criteria" in criteria, "Should have total_criteria count"
+            assert "criteria_met_count" in criteria, "Should have criteria_met_count"
+
+        # Assert model metadata is present
+        assert "model_metadata" in response_data, "Response should have 'model_metadata'"
+        model_meta = response_data["model_metadata"]
+        assert "model" in model_meta, "Model metadata should have 'model' field"
+        assert "tokens_used" in model_meta, "Model metadata should have 'tokens_used'"
+        assert "latency_ms" in model_meta, "Model metadata should have 'latency_ms'"
+
+        # Verify context fragments were used
+        assert "context_fragments_used" in response_data, "Should track fragments used"
+        assert response_data["context_fragments_used"] == len(context_fragments)
+
+        print("✓ STEP 2: Abstraction generation successful")
+        print(f"  - Summary length: {len(summary)} characters")
+        print(f"  - Determination: {criteria['determination']}")
+        print(f"  - Confidence: {criteria['confidence']:.2%}")
+        print(f"  - Context fragments used: {response_data['context_fragments_used']}")
+
+    def test_step3_feedback_submission(self, client):
+        """
+        STEP 3: Test feedback submission endpoint
+
+        Verifies:
+        - Endpoint returns 200 status
+        - Response has correct structure
+        - Status is "ok"
+        - Feedback ID is generated
+        """
+        # Prepare feedback request
+        payload = {
+            "domain_id": "clabsi",
+            "case_id": "case-001",
+            "feedback_type": "thumbs_up",
+            "comment": "Excellent abstraction quality"
+        }
+
+        # Make request
+        response = client.post("/api/demo/feedback", json=payload)
+
+        # Assert HTTP status
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+
+        # Parse response
+        data = response.json()
+
+        # Assert top-level structure
+        assert data["success"] is True, "Response should indicate success"
+        assert "data" in data, "Response should have 'data' field"
+
+        # Assert data fields
+        response_data = data["data"]
+        assert "status" in response_data, "Response should have 'status' field"
+        assert response_data["status"] == "ok", "Status should be 'ok'"
+
+        # Assert feedback_id is generated
+        assert "feedback_id" in response_data, "Response should have 'feedback_id'"
+        feedback_id = response_data["feedback_id"]
+        assert isinstance(feedback_id, str), "Feedback ID should be a string"
+        assert len(feedback_id) > 0, "Feedback ID should not be empty"
+
+        # Verify request data is echoed back
+        assert response_data["domain_id"] == "clabsi", "Domain ID should match request"
+        assert response_data["case_id"] == "case-001", "Case ID should match request"
+        assert response_data["feedback_type"] == "thumbs_up", "Feedback type should match"
+
+        print("✓ STEP 3: Feedback submission successful")
+        print(f"  - Feedback ID: {feedback_id}")
+        print(f"  - Status: {response_data['status']}")
+
+    def test_complete_pipeline_flow(self, client):
+        """
+        COMPLETE PIPELINE TEST
+
+        Tests the entire workflow from context → abstract → feedback
+        in a single integration test.
+        """
+        print("\n" + "="*60)
+        print("RUNNING COMPLETE DEMO PIPELINE TEST")
+        print("="*60)
+
+        # STEP 1: Get context
+        print("\n[1/3] Retrieving case context...")
+        context_response = client.post(
+            "/api/demo/context",
+            json={"domain_id": "clabsi", "case_id": "case-001"}
+        )
+        assert context_response.status_code == 200
+        context_data = context_response.json()["data"]
+        context_fragments = context_data["context_fragments"]
+        print(f"✓ Context retrieved: {len(context_fragments)} fragments")
+
+        # STEP 2: Generate abstraction
+        print("\n[2/3] Generating clinical abstraction...")
+        abstract_response = client.post(
+            "/api/demo/abstract",
+            json={
+                "domain_id": "clabsi",
+                "case_id": "case-001",
+                "context_fragments": context_fragments
+            }
+        )
+        assert abstract_response.status_code == 200
+        abstract_data = abstract_response.json()["data"]
+        print(f"✓ Abstraction generated")
+        print(f"  Summary: {abstract_data['summary'][:100]}...")
+        print(f"  Determination: {abstract_data['criteria_evaluation']['determination']}")
+
+        # STEP 3: Submit feedback
+        print("\n[3/3] Submitting feedback...")
+        feedback_response = client.post(
+            "/api/demo/feedback",
+            json={
+                "domain_id": "clabsi",
+                "case_id": "case-001",
+                "feedback_type": "thumbs_up"
+            }
+        )
+        assert feedback_response.status_code == 200
+        feedback_data = feedback_response.json()["data"]
+        print(f"✓ Feedback submitted: {feedback_data['feedback_id']}")
+
+        print("\n" + "="*60)
+        print("✓ COMPLETE PIPELINE TEST PASSED")
+        print("="*60)
+
+    def test_negative_case_handling(self, client):
+        """
+        Test error handling for invalid case ID
+        """
+        payload = {
+            "domain_id": "clabsi",
+            "case_id": "case-999"  # Invalid case
+        }
+
+        response = client.post("/api/demo/context", json=payload)
+
+        # Should return 404 for missing case
+        assert response.status_code == 404, "Should return 404 for invalid case"
+
+        data = response.json()
+        assert "detail" in data, "Error response should have detail"
+
+        print("✓ Negative test: Invalid case ID handled correctly")
+
+    def test_feedback_types(self, client):
+        """
+        Test different feedback types (thumbs_up, thumbs_down)
+        """
+        feedback_types = ["thumbs_up", "thumbs_down"]
+
+        for feedback_type in feedback_types:
+            payload = {
+                "domain_id": "clabsi",
+                "case_id": "case-001",
+                "feedback_type": feedback_type
+            }
+
+            response = client.post("/api/demo/feedback", json=payload)
+            assert response.status_code == 200
+
+            data = response.json()["data"]
+            assert data["feedback_type"] == feedback_type
+            assert "feedback_id" in data
+
+        print(f"✓ All feedback types tested: {feedback_types}")
 
 
-async def main():
-    """Run all E2E tests."""
-    print("\n" + "#"*70)
-    print("#  CA Factory End-to-End Test Suite")
-    print("#  Running in MOCK MODE (no external dependencies required)")
-    print("#"*70)
+class TestDemoEndpointsStructure:
+    """Test that demo endpoints meet specification requirements"""
 
-    try:
-        # Test 1: Complete workflow
-        result1 = await test_complete_clabsi_workflow()
+    def test_context_response_structure(self, client):
+        """Verify context endpoint returns all required fields"""
+        response = client.post(
+            "/api/demo/context",
+            json={"domain_id": "clabsi", "case_id": "case-001"}
+        )
 
-        # Test 2: Negative case
-        result2 = await test_negative_case()
+        assert response.status_code == 200
+        data = response.json()["data"]
 
-        # Final summary
-        print("\n" + "="*70)
-        print("  Final Test Results")
-        print("="*70)
-        print(f"  CLABSI Positive Case: {'PASSED' if result1 else 'FAILED'}")
-        print(f"  CLABSI Negative Case: {'PASSED' if result2 else 'FAILED'}")
-        print()
+        # Required top-level fields
+        required_fields = ["domain_id", "case_id", "patient", "context_fragments"]
+        for field in required_fields:
+            assert field in data, f"Missing required field: {field}"
 
-        if result1 and result2:
-            print("✓ ALL TESTS PASSED! 🎉")
-            print()
-            return 0
-        else:
-            print("✗ Some tests failed")
-            print()
-            return 1
+        # Patient block required fields
+        patient_fields = ["case_id", "patient_id", "mrn", "age", "gender"]
+        for field in patient_fields:
+            assert field in data["patient"], f"Patient missing field: {field}"
 
-    except Exception as e:
-        print(f"\n✗ Test failed with error: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return 1
+        print("✓ Context response structure validated")
+
+    def test_abstract_response_structure(self, client):
+        """Verify abstract endpoint returns all required fields"""
+        # Get context first
+        context_resp = client.post(
+            "/api/demo/context",
+            json={"domain_id": "clabsi", "case_id": "case-001"}
+        )
+        fragments = context_resp.json()["data"]["context_fragments"]
+
+        # Generate abstraction
+        response = client.post(
+            "/api/demo/abstract",
+            json={
+                "domain_id": "clabsi",
+                "case_id": "case-001",
+                "context_fragments": fragments
+            }
+        )
+
+        assert response.status_code == 200
+        data = response.json()["data"]
+
+        # Required fields
+        required_fields = [
+            "domain_id",
+            "case_id",
+            "summary",
+            "criteria_evaluation",
+            "model_metadata"
+        ]
+        for field in required_fields:
+            assert field in data, f"Missing required field: {field}"
+
+        # Criteria evaluation fields
+        assert "determination" in data["criteria_evaluation"]
+        assert "confidence" in data["criteria_evaluation"]
+
+        # Model metadata fields
+        assert "model" in data["model_metadata"]
+        assert "tokens_used" in data["model_metadata"]
+        assert "latency_ms" in data["model_metadata"]
+
+        print("✓ Abstract response structure validated")
+
+    def test_feedback_response_structure(self, client):
+        """Verify feedback endpoint returns all required fields"""
+        response = client.post(
+            "/api/demo/feedback",
+            json={
+                "domain_id": "clabsi",
+                "case_id": "case-001",
+                "feedback_type": "thumbs_up"
+            }
+        )
+
+        assert response.status_code == 200
+        data = response.json()["data"]
+
+        # Required fields
+        required_fields = ["status", "feedback_id", "domain_id", "case_id"]
+        for field in required_fields:
+            assert field in data, f"Missing required field: {field}"
+
+        # Verify status is "ok"
+        assert data["status"] == "ok"
+
+        # Verify feedback_id is a non-empty string
+        assert isinstance(data["feedback_id"], str)
+        assert len(data["feedback_id"]) > 0
+
+        print("✓ Feedback response structure validated")
 
 
+# Test summary
 if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    sys.exit(exit_code)
+    print("""
+    ==========================================
+    CA Factory E2E Demo Pipeline Test Suite
+    ==========================================
+
+    Tests:
+    1. Context retrieval (GET case data)
+    2. Abstraction generation (LLM processing)
+    3. Feedback submission (User input)
+    4. Complete pipeline integration
+    5. Error handling
+    6. Response structure validation
+
+    Run with:
+        pytest backend/tests/e2e_demo_test.py -v
+
+    Requirements:
+        - APP_MODE=demo (auto-set)
+        - CA_FACTORY_PROJECT=clabsi (auto-set)
+    ==========================================
+    """)

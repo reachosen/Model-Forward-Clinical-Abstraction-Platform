@@ -400,6 +400,286 @@ async def get_quality_metrics(
         )
 
 
+# ========================================
+# DEMO PIPELINE ENDPOINTS
+# ========================================
+
+class DemoContextRequest(BaseModel):
+    """Request for demo context retrieval."""
+    domain_id: str = Field(..., description="Domain ID (e.g., 'clabsi', 'cauti')")
+    case_id: str = Field(..., description="Case ID (e.g., 'case-001')")
+
+
+class DemoAbstractRequest(BaseModel):
+    """Request for demo abstraction."""
+    domain_id: str = Field(..., description="Domain ID")
+    case_id: str = Field(..., description="Case ID")
+    context_fragments: list = Field(..., description="Context fragments from context endpoint")
+
+
+class DemoFeedbackRequest(BaseModel):
+    """Request for demo feedback submission."""
+    domain_id: str = Field(..., description="Domain ID")
+    case_id: str = Field(..., description="Case ID")
+    feedback_type: str = Field(..., description="Feedback type: 'thumbs_up' or 'thumbs_down'")
+    comment: Optional[str] = Field(None, description="Optional feedback comment")
+
+
+@app.post("/api/demo/context")
+async def demo_context(request: DemoContextRequest):
+    """
+    DEMO PIPELINE STEP 1: Retrieve context for a case.
+
+    This endpoint loads the patient case data and returns relevant context fragments.
+
+    Args:
+        request: Context request with domain_id and case_id
+
+    Returns:
+        Context fragments and patient data
+    """
+    import os
+    from pathlib import Path
+
+    try:
+        logger.info(f"Demo context request: domain={request.domain_id}, case={request.case_id}")
+
+        # Load case data from mock data directory
+        data_dir = Path(__file__).parent.parent / "data" / "mock" / "cases"
+
+        # Map case-001 to actual file
+        case_file_map = {
+            "case-001": "PAT-001-clabsi-positive.json",
+            "case-002": "PAT-002-clabsi-negative.json"
+        }
+
+        case_filename = case_file_map.get(request.case_id)
+        if not case_filename:
+            raise HTTPException(status_code=404, detail=f"Case {request.case_id} not found")
+
+        case_file = data_dir / case_filename
+
+        if not case_file.exists():
+            raise HTTPException(status_code=404, detail=f"Case file not found: {case_file}")
+
+        # Load case data
+        with open(case_file, 'r') as f:
+            case_data = json.load(f)
+
+        # Extract patient info
+        patient_info = {
+            "case_id": request.case_id,
+            "patient_id": case_data.get("case_metadata", {}).get("patient_id", "PAT-001"),
+            "mrn": "MRN-" + case_data.get("case_metadata", {}).get("patient_id", "001")[-3:],
+            "age": 58,
+            "gender": "M"
+        }
+
+        # Create context fragments from clinical notes and lab results
+        context_fragments = []
+
+        # Add clinical notes as context
+        for note in case_data.get("clinical_notes", [])[:3]:
+            context_fragments.append({
+                "fragment_id": note.get("note_id", "note-unknown"),
+                "type": "clinical_note",
+                "content": note.get("content", ""),
+                "timestamp": note.get("timestamp", ""),
+                "author": note.get("author", "Unknown"),
+                "relevance_score": 0.92
+            })
+
+        # Add lab results as context
+        for lab in case_data.get("lab_results", [])[:2]:
+            context_fragments.append({
+                "fragment_id": lab.get("test_id", "lab-unknown"),
+                "type": "lab_result",
+                "content": f"{lab.get('test_type', 'Unknown test')}: {lab.get('organism', 'N/A')}",
+                "timestamp": lab.get("collection_date", ""),
+                "relevance_score": 0.88
+            })
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "data": {
+                    "domain_id": request.domain_id,
+                    "case_id": request.case_id,
+                    "patient": patient_info,
+                    "context_fragments": context_fragments
+                },
+                "metadata": {
+                    "request_id": f"context_{request.case_id}_{int(datetime.utcnow().timestamp())}",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "version": "1.0.0"
+                }
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Demo context request failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "code": "CONTEXT_ERROR",
+                "message": str(e)
+            }
+        )
+
+
+@app.post("/api/demo/abstract")
+async def demo_abstract(request: DemoAbstractRequest):
+    """
+    DEMO PIPELINE STEP 2: Generate clinical abstraction.
+
+    This endpoint processes the context and generates a clinical abstraction
+    with NHSN criteria evaluation.
+
+    Args:
+        request: Abstraction request with context fragments
+
+    Returns:
+        Clinical abstraction with criteria evaluation
+    """
+    try:
+        logger.info(f"Demo abstract request: domain={request.domain_id}, case={request.case_id}")
+
+        # Generate mock abstraction based on domain
+        if request.domain_id.lower() == "clabsi":
+            summary = (
+                "Patient is a 58-year-old male with a PICC line in place since hospital day 1. "
+                "On hospital day 5, the patient developed fever (39.2°C) and positive blood culture "
+                "for Staphylococcus aureus. Central line was in place for >2 days before the event. "
+                "No alternate infection source identified. Meets NHSN criteria for CLABSI."
+            )
+
+            criteria_evaluation = {
+                "determination": "CLABSI_CONFIRMED",
+                "confidence": 0.95,
+                "criteria_met": {
+                    "central_line_present_gt_2_days": {
+                        "met": True,
+                        "evidence": "PICC line inserted Day 1, event Day 5 (4 device days)"
+                    },
+                    "positive_blood_culture": {
+                        "met": True,
+                        "evidence": "Blood culture positive for S. aureus (recognized pathogen)"
+                    },
+                    "clinical_signs": {
+                        "met": True,
+                        "evidence": "Fever 39.2°C, tachycardia, leukocytosis"
+                    },
+                    "no_alternate_source": {
+                        "met": True,
+                        "evidence": "No other infection sources identified"
+                    }
+                },
+                "total_criteria": 6,
+                "criteria_met_count": 5
+            }
+        else:
+            summary = f"Clinical abstraction for {request.domain_id} case {request.case_id}"
+            criteria_evaluation = {
+                "determination": "UNDER_REVIEW",
+                "confidence": 0.80
+            }
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "data": {
+                    "domain_id": request.domain_id,
+                    "case_id": request.case_id,
+                    "summary": summary,
+                    "criteria_evaluation": criteria_evaluation,
+                    "context_fragments_used": len(request.context_fragments),
+                    "model_metadata": {
+                        "model": "mock-claude-3-sonnet",
+                        "tokens_used": 1250,
+                        "latency_ms": 450
+                    }
+                },
+                "metadata": {
+                    "request_id": f"abstract_{request.case_id}_{int(datetime.utcnow().timestamp())}",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "version": "1.0.0"
+                }
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Demo abstract request failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "code": "ABSTRACT_ERROR",
+                "message": str(e)
+            }
+        )
+
+
+@app.post("/api/demo/feedback")
+async def demo_feedback(request: DemoFeedbackRequest):
+    """
+    DEMO PIPELINE STEP 3: Submit user feedback.
+
+    This endpoint records user feedback on the abstraction quality.
+
+    Args:
+        request: Feedback request
+
+    Returns:
+        Feedback confirmation
+    """
+    import uuid
+
+    try:
+        logger.info(
+            f"Demo feedback: domain={request.domain_id}, case={request.case_id}, "
+            f"type={request.feedback_type}"
+        )
+
+        # Generate feedback ID
+        feedback_id = str(uuid.uuid4())
+
+        # In demo mode, we just log and return success
+        # In production, this would save to database
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "data": {
+                    "status": "ok",
+                    "feedback_id": feedback_id,
+                    "domain_id": request.domain_id,
+                    "case_id": request.case_id,
+                    "feedback_type": request.feedback_type,
+                    "message": "Feedback recorded successfully"
+                },
+                "metadata": {
+                    "request_id": f"feedback_{feedback_id}",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "version": "1.0.0"
+                }
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Demo feedback request failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "code": "FEEDBACK_ERROR",
+                "message": str(e)
+            }
+        )
+
+
 # Error handlers
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
