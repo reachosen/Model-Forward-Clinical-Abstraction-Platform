@@ -1,0 +1,132 @@
+{
+  "rule_library": {
+    "rules": [
+      {
+        "rule_id": "CLABSI-001",
+        "rule_name": "Central line present for >2 calendar days",
+        "category": "device",
+        "priority": "required",
+        "nhsn_reference": "NHSN CLABSI Criteria Section 1",
+        "evaluation_logic": {
+          "type": "temporal_calculation",
+          "formula": "device_days = event_date - insertion_date + 1",
+          "condition": "device_days > 2"
+        },
+        "required_evidence": [
+          {"type": "SIGNAL", "field": "central_line_insertion_date"},
+          {"type": "EVENT", "field": "event_date"}
+        ],
+        "prompt_template": "Check if a central line was in place for more than 2 calendar days before {event_date}. Day of device placement is Day 1.\n\nLine insertion: {insertion_date}\nEvent date: {event_date}\n\nCalculate device days and determine pass/fail.",
+        "examples": [
+          {
+            "scenario": "Line inserted Day 1, BSI symptoms Day 4",
+            "insertion_date": "2024-01-15",
+            "event_date": "2024-01-18",
+            "expected_status": "pass",
+            "rationale": "Device days = 4 (>2)"
+          }
+        ]
+      },
+      {
+        "rule_id": "CLABSI-002",
+        "rule_name": "Positive blood culture",
+        "category": "lab",
+        "priority": "required",
+        "nhsn_reference": "NHSN CLABSI Criteria Section 2",
+        "evaluation_logic": {
+          "type": "lab_result_check",
+          "conditions": {
+            "or": [
+              {"organism_count": ">=1", "recognized_pathogen": true},
+              {"organism_count": ">=1", "common_commensal": true, "additional_criteria": "met"}
+            ]
+          }
+        },
+        "required_evidence": [
+          {"type": "LAB", "field": "blood_culture_result"},
+          {"type": "LAB", "field": "organism_identification"}
+        ],
+        "prompt_template": "Evaluate blood culture results against NHSN CLABSI criteria:\n\nCulture Results: {culture_results}\n\nCriteria:\n- Recognized pathogen from one or more blood cultures OR\n- Common commensal from two or more blood cultures drawn on separate occasions\n\nDetermine if criteria are met.",
+        "examples": []
+      },
+      {
+        "rule_id": "CLABSI-003",
+        "rule_name": "Clinical symptoms present",
+        "category": "clinical",
+        "priority": "required",
+        "nhsn_reference": "NHSN CLABSI Criteria Section 3",
+        "evaluation_logic": {
+          "type": "symptom_check",
+          "conditions": {
+            "or": ["fever", "chills", "hypotension"]
+          }
+        },
+        "required_evidence": [
+          {"type": "SIGNAL", "field": "temperature"},
+          {"type": "SIGNAL", "field": "blood_pressure"},
+          {"type": "NOTE", "field": "clinical_symptoms"}
+        ],
+        "prompt_template": "Check for clinical signs/symptoms of bloodstream infection:\n\nPatient Data: {patient_data}\n\nRequired: At least one of:\n- Fever (>38°C)\n- Chills/rigors\n- Hypotension\n\nDetermine if criteria are met.",
+        "examples": []
+      },
+      {
+        "rule_id": "CLABSI-004",
+        "rule_name": "No alternate infection source",
+        "category": "exclusion",
+        "priority": "required",
+        "nhsn_reference": "NHSN CLABSI Criteria Exclusions",
+        "evaluation_logic": {
+          "type": "exclusion_check",
+          "conditions": {
+            "not": ["other_infection_source"]
+          }
+        },
+        "required_evidence": [
+          {"type": "NOTE", "field": "clinical_assessment"},
+          {"type": "LAB", "field": "other_cultures"}
+        ],
+        "prompt_template": "Verify no alternate source of infection:\n\nClinical Assessment: {assessment}\nOther Cultures: {other_cultures}\n\nEnsure organism in blood is not related to infection at another site.",
+        "examples": []
+      },
+      {
+        "rule_id": "CLABSI-005",
+        "rule_name": "Temporal relationship",
+        "category": "temporal",
+        "priority": "required",
+        "nhsn_reference": "NHSN CLABSI Infection Window",
+        "evaluation_logic": {
+          "type": "temporal_window",
+          "window_start": "line_insertion_day + 2",
+          "window_end": "line_removal_day + 1"
+        },
+        "required_evidence": [
+          {"type": "EVENT", "field": "line_insertion_date"},
+          {"type": "LAB", "field": "culture_date"}
+        ],
+        "prompt_template": "Verify positive culture falls within infection window:\n\nLine insertion: {insertion_date}\nCulture date: {culture_date}\nLine removal: {removal_date}\n\nInfection window: Day 3 onwards (until day after removal)\n\nDetermine if timing is appropriate.",
+        "examples": []
+      },
+      {
+        "rule_id": "CLABSI-006",
+        "rule_name": "Appropriate organism",
+        "category": "lab",
+        "priority": "optional",
+        "nhsn_reference": "NHSN Pathogen List",
+        "evaluation_logic": {
+          "type": "organism_check",
+          "pathogen_list": ["staphylococcus_aureus", "coagulase_negative_staph", "enterococcus", "candida", "gram_negative_rods"]
+        },
+        "required_evidence": [
+          {"type": "LAB", "field": "organism_identification"}
+        ],
+        "prompt_template": "Verify organism is commonly associated with CLABSI:\n\nOrganism: {organism}\n\nCommon CLABSI organisms:\n- Staphylococcus aureus\n- Coagulase-negative Staphylococci\n- Enterococcus species\n- Candida species\n- Gram-negative rods (E. coli, Klebsiella, Pseudomonas, etc.)\n\nDetermine if organism is typical for CLABSI.",
+        "examples": []
+      }
+    ],
+    "rule_dependencies": {
+      "CLABSI-002": ["CLABSI-001"],
+      "CLABSI-005": ["CLABSI-001"]
+    },
+    "evaluation_order": ["CLABSI-001", "CLABSI-002", "CLABSI-003", "CLABSI-004", "CLABSI-005", "CLABSI-006"]
+  }
+}

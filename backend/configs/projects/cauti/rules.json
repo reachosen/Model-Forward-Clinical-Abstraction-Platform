@@ -1,0 +1,78 @@
+{
+  "rule_library": {
+    "rules": [
+      {
+        "rule_id": "CAUTI-001",
+        "rule_name": "Indwelling urinary catheter >2 calendar days",
+        "category": "device",
+        "priority": "required",
+        "nhsn_reference": "NHSN CAUTI Criteria Section 7.1",
+        "evaluation_logic": {
+          "type": "temporal_calculation",
+          "formula": "catheter_days = event_date - insertion_date + 1",
+          "condition": "catheter_days > 2"
+        },
+        "required_evidence": [
+          {"type": "SIGNAL", "field": "catheter_insertion_date"},
+          {"type": "EVENT", "field": "event_date"}
+        ],
+        "prompt_template": "Check if an indwelling urinary catheter was in place for more than 2 calendar days before {event_date}. Day of device placement is Day 1.\n\nCatheter insertion: {insertion_date}\nEvent date: {event_date}\n\nCalculate device days and determine pass/fail."
+      },
+      {
+        "rule_id": "CAUTI-002",
+        "rule_name": "Positive urine culture ≥10^5 CFU/mL",
+        "category": "lab",
+        "priority": "required",
+        "nhsn_reference": "NHSN CAUTI Criteria Section 7.2.1",
+        "evaluation_logic": {
+          "type": "lab_result_check",
+          "conditions": {
+            "or": [
+              {"organisms": ">=1", "cfu": ">=100000"},
+              {"organisms": ">=2", "cfu": ">=100000", "note": "with specific criteria for suprapubic aspiration"}
+            ]
+          }
+        },
+        "required_evidence": [
+          {"type": "LAB", "field": "urine_culture_result"},
+          {"type": "LAB", "field": "organism_count"},
+          {"type": "LAB", "field": "cfu_count"}
+        ],
+        "prompt_template": "Evaluate urine culture results against NHSN CAUTI criteria:\n\nCulture Results: {culture_results}\n\nCriteria:\n- ≥10^5 CFU/mL of ≥1 bacterial species in a patient with indwelling catheter\n\nDetermine if criteria are met."
+      },
+      {
+        "rule_id": "CAUTI-003",
+        "rule_name": "No alternate infection source",
+        "category": "exclusion",
+        "priority": "required",
+        "nhsn_reference": "NHSN CAUTI Exclusions",
+        "evaluation_logic": {
+          "type": "exclusion_check"
+        },
+        "required_evidence": [
+          {"type": "NOTE", "field": "clinical_assessment"}
+        ],
+        "prompt_template": "Verify no alternate source of infection:\n\nClinical Assessment: {assessment}\n\nEnsure organism in urine is not clearly related to another infection."
+      },
+      {
+        "rule_id": "CAUTI-004",
+        "rule_name": "Clinical symptoms (optional for SUTI)",
+        "category": "clinical",
+        "priority": "optional",
+        "nhsn_reference": "NHSN SUTI Criteria",
+        "evaluation_logic": {
+          "type": "symptom_check",
+          "conditions": {
+            "or": ["fever", "suprapubic_tenderness", "costovertebral_angle_pain", "dysuria", "urgency"]
+          }
+        },
+        "required_evidence": [
+          {"type": "SIGNAL", "field": "temperature"},
+          {"type": "NOTE", "field": "symptoms"}
+        ],
+        "prompt_template": "Check for symptoms of symptomatic urinary tract infection (SUTI):\n\nRequired for SUTI: At least one of:\n- Fever (>38°C)\n- Suprapubic tenderness\n- Costovertebral angle pain/tenderness\n- Dysuria\n- Urgency\n\nDetermine if symptoms are present."
+      }
+    ],
+    "evaluation_order": ["CAUTI-001", "CAUTI-002", "CAUTI-003", "CAUTI-004"]
+  }
+}

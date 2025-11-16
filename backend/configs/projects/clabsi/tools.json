@@ -1,0 +1,59 @@
+{
+  "tool_catalog": {
+    "tools": [
+      {
+        "tool_id": "vector_search",
+        "tool_name": "search_patient_data",
+        "description": "Search patient clinical data using semantic similarity",
+        "parameters": [
+          {"name": "query", "type": "string", "required": true},
+          {"name": "top_k", "type": "number", "required": false, "default": 10}
+        ],
+        "returns": {"type": "array", "items": "SearchResult"},
+        "max_execution_time_ms": 5000,
+        "max_output_tokens": 5000,
+        "load_when": "always"
+      },
+      {
+        "tool_id": "temporal_filter",
+        "tool_name": "filter_by_date_range",
+        "description": "Filter results by temporal criteria",
+        "parameters": [
+          {"name": "results", "type": "array", "required": true},
+          {"name": "start_date", "type": "string", "required": false},
+          {"name": "end_date", "type": "string", "required": false}
+        ],
+        "returns": {"type": "array", "items": "SearchResult"},
+        "max_execution_time_ms": 1000,
+        "max_output_tokens": 5000,
+        "load_when": "on_demand"
+      },
+      {
+        "tool_id": "rule_matcher",
+        "tool_name": "match_evidence_to_rule",
+        "description": "Match clinical evidence against NHSN rule criteria",
+        "parameters": [
+          {"name": "rule_id", "type": "string", "required": true},
+          {"name": "evidence", "type": "array", "required": true}
+        ],
+        "returns": {"type": "object", "items": "RuleMatch"},
+        "max_execution_time_ms": 3000,
+        "max_output_tokens": 3000,
+        "load_when": "always"
+      },
+      {
+        "tool_id": "temporal_calculator",
+        "tool_name": "calculate_device_days",
+        "description": "Calculate device days and infection windows",
+        "parameters": [
+          {"name": "insertion_date", "type": "string", "required": true},
+          {"name": "event_date", "type": "string", "required": true}
+        ],
+        "returns": {"type": "object", "items": "TemporalCalculation"},
+        "max_execution_time_ms": 500,
+        "max_output_tokens": 500,
+        "load_when": "always"
+      }
+    ]
+  }
+}

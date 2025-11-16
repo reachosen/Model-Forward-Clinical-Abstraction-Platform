@@ -1,0 +1,42 @@
+{
+  "golden_corpus": {
+    "corpus_id": "cauti_nhsn_2024_v1",
+    "version": "1.0.0",
+    "created_date": "2024-11-16",
+    "test_cases": [
+      {
+        "case_id": "CAUTI_TC_001",
+        "description": "Clear CAUTI case with all criteria met",
+        "patient_data": {
+          "patient_id": "TEST-CAUTI-001",
+          "encounter_id": "ENC-CAUTI-001",
+          "catheter_insertion_date": "2024-01-15",
+          "catheter_type": "foley",
+          "urine_culture_date": "2024-01-20",
+          "organism": "E. coli",
+          "cfu_count": 150000,
+          "symptoms": {
+            "fever": true,
+            "temperature_celsius": 38.5,
+            "dysuria": false
+          }
+        },
+        "expected_outputs": {
+          "rule_evaluation": {
+            "overall_result": "CAUTI_PRESENT",
+            "rules": {
+              "CAUTI-001": {"status": "pass", "min_confidence": 0.9},
+              "CAUTI-002": {"status": "pass", "min_confidence": 0.9},
+              "CAUTI-003": {"status": "pass", "min_confidence": 0.8}
+            }
+          }
+        }
+      }
+    ],
+    "statistics": {
+      "total_cases": 1,
+      "positive_cases": 1,
+      "negative_cases": 0
+    }
+  }
+}

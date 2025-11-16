@@ -1,0 +1,80 @@
+{
+  "knowledge_base": {
+    "chunks": [
+      {
+        "chunk_id": "nhsn_clabsi_criteria",
+        "category": "definitions",
+        "title": "NHSN CLABSI Definition",
+        "content": "A Central Line-Associated Bloodstream Infection (CLABSI) is a laboratory-confirmed bloodstream infection (LCBI) where a central line or umbilical catheter was in place for >2 calendar days on the date of event, with day of device placement being Day 1, AND the central line or umbilical catheter was in place on the date of event or the day before. If a central line or umbilical catheter was in place for >2 calendar days and then removed, the LCBI criteria must be fully met on the day of discontinuation or the next day.",
+        "tokens": 150,
+        "tags": ["CLABSI", "NHSN", "definition", "criteria"],
+        "priority": "high",
+        "auto_prime": true
+      },
+      {
+        "chunk_id": "device_definitions",
+        "category": "device_knowledge",
+        "title": "Central Line Devices",
+        "content": "Central lines include: Central venous catheters (CVCs), peripherally inserted central catheters (PICCs), hemodialysis reliable outflow catheters, tunneled catheters (e.g., Hickman, Broviac), and implanted vascular access devices (e.g., Port-a-Cath). Excludes: Peripheral IV catheters, arterial catheters, arteriovenous fistulas/grafts.",
+        "tokens": 120,
+        "tags": ["devices", "central_line", "types", "definitions"],
+        "priority": "high",
+        "auto_prime": true
+      },
+      {
+        "chunk_id": "organism_rules",
+        "category": "lab_knowledge",
+        "title": "Pathogen Classification Rules",
+        "content": "Recognized Pathogens (single positive culture sufficient): Staphylococcus aureus, Enterococcus spp., Candida spp., Gram-negative bacilli, Streptococcus pneumoniae, beta-hemolytic Streptococcus.\n\nCommon Commensals (require two or more positive cultures from separate occasions): Coagulase-negative staphylococci, Micrococci, Diphtheroids (Corynebacterium spp. not C. diphtheriae), Bacillus spp. not B. anthracis, Propionibacterium spp., Viridans group streptococci.",
+        "tokens": 180,
+        "tags": ["organisms", "pathogens", "commensals", "lab"],
+        "priority": "high",
+        "auto_prime": true
+      },
+      {
+        "chunk_id": "infection_window",
+        "category": "temporal_knowledge",
+        "title": "Infection Window Periods",
+        "content": "The Infection Window Period (IWP) is the 7-day period that includes the day of the first positive diagnostic test (Day 0), the 3 days before, and the 3 days after. The Date of Event (DOE) is the date of the first positive diagnostic specimen collected during the IWP. For CLABSI, the central line must have been in place for >2 days by the DOE.",
+        "tokens": 130,
+        "tags": ["temporal", "infection_window", "DOE", "IWP"],
+        "priority": "medium",
+        "auto_prime": true
+      },
+      {
+        "chunk_id": "device_day_calculation",
+        "category": "calculation_rules",
+        "title": "Device Days Calculation",
+        "content": "Device days are calculated with the day of device placement being Day 1. For example, if a central line is inserted on January 15 (Day 1), January 16 is Day 2, and January 17 is Day 3. Therefore, the line has been in place for >2 days on January 17. The date of event must occur when the device has been in place for >2 calendar days.",
+        "tokens": 140,
+        "tags": ["calculation", "device_days", "temporal"],
+        "priority": "high",
+        "auto_prime": false
+      },
+      {
+        "chunk_id": "exclusion_criteria",
+        "category": "exclusions",
+        "title": "CLABSI Exclusion Criteria",
+        "content": "A CLABSI is excluded if: 1) The organism identified in blood is clearly related to an infection at another site (e.g., same organism in urine with UTI symptoms), 2) The positive culture is obtained from an infant ≤1 year old with NEC or other GI pathology, 3) The patient has chronic bloodstream infection (e.g., Brucellosis) with intermittent positive cultures.",
+        "tokens": 140,
+        "tags": ["exclusions", "criteria"],
+        "priority": "medium",
+        "auto_prime": false
+      }
+    ],
+    "priming_strategies": {
+      "by_query": {
+        "enabled": true,
+        "max_chunks": 5,
+        "min_relevance": 0.7
+      },
+      "by_task_type": {
+        "rule_evaluation": ["nhsn_clabsi_criteria", "device_definitions", "organism_rules", "infection_window"],
+        "qa_response": ["nhsn_clabsi_criteria", "device_definitions", "organism_rules"],
+        "timeline_analysis": ["infection_window", "device_day_calculation"],
+        "evidence_retrieval": [],
+        "summary": ["nhsn_clabsi_criteria"]
+      }
+    }
+  }
+}

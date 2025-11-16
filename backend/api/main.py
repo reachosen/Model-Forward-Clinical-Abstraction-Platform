@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 import uvicorn
 
 from ca_factory.core.factory import CAFactory
+from ca_factory.config.loader import ConfigLoader
 
 # Configure logging
 logging.basicConfig(
@@ -80,18 +81,22 @@ async def startup_event():
     global factory
 
     try:
-        # Load CLABSI configuration
-        config_path = Path(__file__).parent.parent / "configs" / "clabsi.json"
+        # Determine project to load (from environment variable or default to CLABSI)
+        import os
+        project_id = os.getenv("CA_FACTORY_PROJECT", "clabsi")
 
-        logger.info(f"Loading configuration from: {config_path}")
+        # Load project configuration using ConfigLoader
+        config_root = Path(__file__).parent.parent / "configs"
+        loader = ConfigLoader(config_root)
 
-        with open(config_path, "r") as f:
-            config = json.load(f)
+        logger.info(f"Loading project configuration: {project_id}")
+
+        config = loader.load_project(project_id, validate=True)
 
         # Initialize CA Factory
         factory = CAFactory(config=config)
 
-        logger.info("CA Factory initialized successfully")
+        logger.info(f"CA Factory initialized successfully for project: {project_id}")
 
     except Exception as e:
         logger.error(f"Failed to initialize CA Factory: {str(e)}")

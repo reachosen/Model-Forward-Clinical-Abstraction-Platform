@@ -1,0 +1,54 @@
+{
+  "task_definitions": {
+    "evidence_retrieval": {
+      "task_id": "retrieve_clabsi_evidence",
+      "description": "Retrieve evidence related to central line placement and bloodstream infection",
+      "inputs": {
+        "patient_id": {"type": "string", "required": true},
+        "query": {"type": "string", "required": true},
+        "date_range": {"type": "object", "required": false}
+      },
+      "outputs": {
+        "evidence_list": {"type": "array", "items": "Evidence"},
+        "relevance_scores": {"type": "array", "items": "number"}
+      },
+      "success_criteria": {
+        "min_relevance_score": 0.7,
+        "max_execution_time_ms": 5000
+      }
+    },
+    "rule_evaluation": {
+      "task_id": "evaluate_clabsi_rules",
+      "description": "Evaluate all NHSN CLABSI criteria against patient data",
+      "inputs": {
+        "patient_id": {"type": "string", "required": true},
+        "encounter_id": {"type": "string", "required": false}
+      },
+      "outputs": {
+        "summary": {"type": "object"},
+        "evaluations": {"type": "array", "items": "RuleEvaluation"}
+      },
+      "success_criteria": {
+        "all_required_rules_evaluated": true,
+        "min_confidence": 0.75
+      }
+    },
+    "qa_response": {
+      "task_id": "answer_clabsi_question",
+      "description": "Answer natural language questions about CLABSI cases",
+      "inputs": {
+        "patient_id": {"type": "string", "required": true},
+        "question": {"type": "string", "required": true}
+      },
+      "outputs": {
+        "answer": {"type": "string"},
+        "evidence_citations": {"type": "array"},
+        "confidence": {"type": "number"}
+      },
+      "success_criteria": {
+        "min_confidence": 0.7,
+        "min_citations": 1
+      }
+    }
+  }
+}

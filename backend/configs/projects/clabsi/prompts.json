@@ -1,0 +1,49 @@
+{
+  "prompt_library": {
+    "system_prompts": {
+      "clinical_expert": {
+        "template": "You are a clinical expert specializing in {domain}. Your role is to {role_description}. Always {constraints}.",
+        "variables": ["domain", "role_description", "constraints"]
+      },
+      "evidence_analyst": {
+        "template": "You are an evidence analyst for {condition_type}. Focus on {evidence_types}. Apply {standards} criteria.",
+        "variables": ["condition_type", "evidence_types", "standards"]
+      }
+    },
+    "task_prompts": {
+      "rule_evaluation": {
+        "template": "Evaluate the following rule against patient data:\n\nRule: {rule_name}\nCriteria: {rule_criteria}\nPatient Data: {patient_data}\n\nProvide:\n1. Status (pass/fail/not_evaluated)\n2. Supporting evidence\n3. Confidence score\n4. Rationale",
+        "variables": ["rule_name", "rule_criteria", "patient_data"]
+      },
+      "question_answering": {
+        "template": "Question: {question}\n\nRelevant Evidence:\n{evidence}\n\nProvide a comprehensive answer that:\n1. Directly addresses the question\n2. Cites specific evidence\n3. Explains temporal relationships\n4. Acknowledges uncertainty if present",
+        "variables": ["question", "evidence"]
+      },
+      "evidence_retrieval": {
+        "template": "Retrieve relevant clinical evidence for: {query}\n\nFocus on:\n- {focus_areas}\n\nApply filters:\n{filters}\n\nRank by relevance and return top {top_k} results.",
+        "variables": ["query", "focus_areas", "filters", "top_k"]
+      }
+    },
+    "output_formats": {
+      "structured_answer": {
+        "template": "Answer: {answer}\n\nEvidence:\n{evidence_list}\n\nConfidence: {confidence}\n\nRationale: {rationale}",
+        "schema": {
+          "answer": "string",
+          "evidence_list": "array",
+          "confidence": "number",
+          "rationale": "string"
+        }
+      },
+      "rule_evaluation_result": {
+        "template": "Rule: {rule_name}\nStatus: {status}\nConfidence: {confidence}\n\nEvidence:\n{evidence}\n\nRationale: {rationale}",
+        "schema": {
+          "rule_name": "string",
+          "status": "string",
+          "confidence": "number",
+          "evidence": "array",
+          "rationale": "string"
+        }
+      }
+    }
+  }
+}
