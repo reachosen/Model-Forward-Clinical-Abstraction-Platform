@@ -301,11 +301,24 @@ class TestDemoPipeline:
 
         response = client.post("/api/demo/context", json=payload)
 
-        # Should return 404 for missing case
+        data = response.json()
+
         assert response.status_code == 404, "Should return 404 for invalid case"
 
-        data = response.json()
-        assert "detail" in data, "Error response should have detail"
+        # New structure expectations
+        assert data.get("success") is False, "Error response should set success=False"
+        assert "error" in data, "Error object should exist"
+        assert "code" in data["error"], "Error.code must exist"
+        assert "message" in data["error"], "Error.message must exist"
+
+        # Optional stronger checks
+        assert data["error"]["code"] == "HTTP_ERROR"
+        assert "not found" in data["error"]["message"].lower()
+
+        # Metadata checks
+        assert "metadata" in data
+        assert "request_id" in data["metadata"]
+        assert "timestamp" in data["metadata"]
 
         print("✓ Negative test: Invalid case ID handled correctly")
 
