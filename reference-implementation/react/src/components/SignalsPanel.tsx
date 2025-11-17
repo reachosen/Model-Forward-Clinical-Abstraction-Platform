@@ -1,21 +1,23 @@
 /**
  * Signals Panel Component
  * Displays clinical signals grouped by type with collapsible sections
+ * Updated to support enrichment signal_groups from structured cases
  */
 
 import React, { useState } from 'react';
-import { Signal } from '../types';
+import { Signal, SignalGroup as SignalGroupType } from '../types';
 import EvidenceDrawer from './EvidenceDrawer';
 import './SignalsPanel.css';
 
 interface SignalsPanelProps {
-  signals: Signal[];
+  signals?: Signal[];
+  signalGroups?: SignalGroupType[]; // Optional: from enrichment section
 }
 
-const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
+const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals, signalGroups }) => {
   // Track which groups are expanded
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
-    new Set(['DEVICE', 'LAB', 'VITAL', 'MEDICATION', 'PROCEDURE'])
+    new Set(['DEVICE', 'LAB', 'VITAL', 'MEDICATION', 'PROCEDURE', 'device', 'lab', 'vital_sign', 'medication', 'procedure'])
   );
 
   // Track selected signal for evidence drawer
@@ -39,8 +41,8 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
     return `${(confidence * 100).toFixed(0)}%`;
   };
 
-  // Signal groups configuration
-  const signalGroups = [
+  // Signal groups configuration for legacy format
+  const signalGroupsConfig = [
     { id: 'DEVICE', label: 'Device Exposure Signals', icon: '🔌' },
     { id: 'LAB', label: 'Laboratory Findings', icon: '🧪' },
     { id: 'VITAL', label: 'Clinical Symptoms', icon: '❤️' },
@@ -48,11 +50,46 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
     { id: 'PROCEDURE', label: 'Procedural Signals', icon: '🏥' },
   ];
 
-  // Group signals by type
-  const groupedSignals = signalGroups.map(group => ({
-    ...group,
-    signals: signals.filter(s => s.signal_type === group.id),
-  })).filter(group => group.signals.length > 0);
+  // Map signal type to display config
+  const getSignalGroupConfig = (signalType: string) => {
+    const typeMap: Record<string, { label: string; icon: string }> = {
+      device: { label: 'Device Exposure Signals', icon: '🔌' },
+      lab: { label: 'Laboratory Findings', icon: '🧪' },
+      vital_sign: { label: 'Clinical Symptoms', icon: '❤️' },
+      medication: { label: 'Medication Signals', icon: '💊' },
+      procedure: { label: 'Procedural Signals', icon: '🏥' },
+    };
+    return typeMap[signalType.toLowerCase()] || { label: signalType, icon: '📊' };
+  };
+
+  // Group signals by type - either use structured signal_groups or legacy signals
+  const groupedSignals = signalGroups
+    ? signalGroups.map(group => {
+        const config = getSignalGroupConfig(group.signal_type);
+        return {
+          id: group.signal_type,
+          label: config.label,
+          icon: config.icon,
+          signals: group.signals.map(s => ({
+            signal_id: s.signal_id,
+            signal_name: s.signal_name,
+            signal_type: s.signal_type.toUpperCase() as Signal['signal_type'],
+            value: s.value,
+            severity: (s.severity as any) || 'INFO',
+            rationale: `${group.signal_type} signal`,
+            timestamp: s.timestamp,
+            confidence: group.group_confidence, // Use group confidence
+          })),
+          groupConfidence: group.group_confidence,
+        };
+      })
+    : signals
+    ? signalGroupsConfig.map(group => ({
+        ...group,
+        signals: signals.filter(s => s.signal_type === group.id),
+        groupConfidence: undefined,
+      })).filter(group => group.signals.length > 0)
+    : [];
 
   // Count critical signals per group
   const getCriticalCount = (groupSignals: Signal[]) => {
@@ -94,7 +131,7 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
   };
 
   const SignalGroup: React.FC<{
-    group: typeof signalGroups[0] & { signals: Signal[] }
+    group: typeof groupedSignals[0]
   }> = ({ group }) => {
     const isExpanded = expandedGroups.has(group.id);
     const criticalCount = getCriticalCount(group.signals);
@@ -109,6 +146,11 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
             <span className="group-icon">{group.icon}</span>
             <span className="group-label">{group.label}</span>
             <span className="group-count">({group.signals.length})</span>
+            {group.groupConfidence !== undefined && (
+              <span className="group-confidence" title="Group confidence from enrichment">
+                {formatConfidence(group.groupConfidence)}
+              </span>
+            )}
             {criticalCount > 0 && (
               <span className="critical-count-badge">{criticalCount} critical</span>
             )}
@@ -157,7 +199,7 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
         ))}
       </div>
 
-      {signals.length === 0 && (
+      {groupedSignals.length === 0 && (
         <div className="no-data">No signals detected</div>
       )}
 
