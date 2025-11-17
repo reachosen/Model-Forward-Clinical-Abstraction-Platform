@@ -51,12 +51,12 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     // ====================================
     console.log('\n[2/6] Ensuring CLABSI domain is selected...');
 
-    // Click the domain switcher toggle
-    const domainToggle = page.getByTestId('domain-switcher-toggle');
+    // Click the domain switcher toggle (use .first() to handle mobile + desktop versions)
+    const domainToggle = page.getByTestId('domain-switcher-toggle').first();
     await domainToggle.waitFor({ state: 'visible', timeout: 5000 });
 
     // Check if dropdown exists (might already be open)
-    const domainOption = page.getByTestId('domain-option-clabsi');
+    const domainOption = page.getByTestId('domain-option-clabsi').first();
     const isDropdownVisible = await domainOption.isVisible().catch(() => false);
 
     if (!isDropdownVisible) {
