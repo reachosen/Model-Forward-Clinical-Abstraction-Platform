@@ -61,12 +61,27 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'cd react && npm start',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  /* Run your local dev servers before starting the tests */
+  webServer: [
+    {
+      // Backend API server (FastAPI)
+      command: process.platform === 'win32'
+        ? 'cd ../backend && venv\\Scripts\\python -m uvicorn api.main:app --reload --port 8000'
+        : 'cd ../backend && venv/bin/python -m uvicorn api.main:app --reload --port 8000',
+      url: 'http://localhost:8000/docs',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+    {
+      // Frontend React app
+      command: 'cd react && npm start',
+      url: 'http://localhost:3000',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+  ],
 });
