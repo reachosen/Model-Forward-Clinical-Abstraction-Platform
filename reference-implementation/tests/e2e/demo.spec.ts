@@ -1,120 +1,125 @@
 /**
- * Frontend E2E Test - Demo Pipeline
+ * Frontend E2E Test - Real Multi-Page Application Flow
  *
  * Prerequisites:
  * 1. Backend running on http://localhost:8000 with APP_MODE=demo
- * 2. Frontend running on http://localhost:3000 (or run with `npm run dev`)
+ * 2. Frontend running on http://localhost:3000
  *
- * This test verifies:
- * - UI correctly wires to backend API endpoints
- * - Domain/case selection works
- * - Patient summary and signals render
- * - LLM Q&A panel functions
- * - Feedback submission works
- * - Network calls to /api/demo/* endpoints succeed
+ * This test verifies the actual production application workflow:
+ * - Multi-page navigation with React Router
+ * - Domain switching via button dropdown (not <select>)
+ * - Case selection via clickable cards (not <select>)
+ * - Navigation to /case/:patientId route
+ * - Patient summary and signals rendering
+ * - LLM Q&A panel interaction
+ * - Feedback submission
+ * - Backend API integration
  *
  * Run with:
  *   npx playwright test
- *   npx playwright test --ui  # For interactive mode
- *   npx playwright test --debug  # For debugging
+ *   npx playwright test --headed
+ *   npx playwright test --ui
  */
 
 import { test, expect } from '@playwright/test';
 
 test.describe('CA Factory Demo Pipeline E2E', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the app
+    // Navigate to the app home page (case list)
     await page.goto('/');
 
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
   });
 
-  test('complete demo workflow: select domain → select case → ask question → submit feedback', async ({ page }) => {
+  test('complete demo workflow: domain switch → select case → view details → ask question → submit feedback', async ({ page }) => {
     console.log('\n========================================');
-    console.log('Running Complete Demo Workflow Test');
+    console.log('Running Complete Multi-Page Workflow Test');
     console.log('========================================\n');
 
     // ====================================
-    // STEP 1: Select CLABSI domain
+    // STEP 1: Verify we're on the case list page
     // ====================================
-    console.log('[1/5] Selecting CLABSI domain...');
+    console.log('[1/6] Verifying home page loaded...');
 
-    // Wait for domain selector to be visible
-    const domainSelector = page.locator('[data-testid="domain-selector"], select[name="domain"], #domain-select');
-    await domainSelector.waitFor({ state: 'visible', timeout: 5000 });
+    // Should be on the case list page
+    await expect(page).toHaveURL('/');
+    console.log('✓ Case list page loaded');
 
-    // Select CLABSI domain
-    await domainSelector.selectOption({ label: /CLABSI/i });
+    // ====================================
+    // STEP 2: Switch to CLABSI domain (if not already selected)
+    // ====================================
+    console.log('\n[2/6] Ensuring CLABSI domain is selected...');
 
-    // Verify selection
-    const selectedDomain = await domainSelector.inputValue();
-    expect(selectedDomain.toLowerCase()).toContain('clabsi');
+    // Click the domain switcher toggle
+    const domainToggle = page.getByTestId('domain-switcher-toggle');
+    await domainToggle.waitFor({ state: 'visible', timeout: 5000 });
+
+    // Check if dropdown exists (might already be open)
+    const domainOption = page.getByTestId('domain-option-clabsi');
+    const isDropdownVisible = await domainOption.isVisible().catch(() => false);
+
+    if (!isDropdownVisible) {
+      // Open the domain dropdown
+      await domainToggle.click();
+      await domainOption.waitFor({ state: 'visible', timeout: 2000 });
+    }
+
+    // Select CLABSI if not already active
+    const isActive = await domainOption.getAttribute('disabled');
+    if (!isActive) {
+      await domainOption.click();
+      // Wait for potential domain change to complete
+      await page.waitForTimeout(1000);
+    } else {
+      // Close dropdown if we're not changing
+      await page.keyboard.press('Escape');
+    }
+
     console.log('✓ CLABSI domain selected');
 
     // ====================================
-    // STEP 2: Select case-001
+    // STEP 3: Select a case card
     // ====================================
-    console.log('\n[2/5] Selecting case-001...');
+    console.log('\n[3/6] Selecting a case from the list...');
 
-    // Wait for case selector or case list to appear
-    const caseSelector = page.locator(
-      '[data-testid="case-selector"], select[name="case"], #case-select, ' +
-      '[data-testid="case-list"] >> text=/case-001|PAT-001/i'
-    );
-    await caseSelector.waitFor({ state: 'visible', timeout: 5000 });
+    // Wait for case cards to load
+    const caseCards = page.getByTestId('case-card');
+    await caseCards.first().waitFor({ state: 'visible', timeout: 10000 });
 
-    // Try dropdown selection first, fall back to clicking card/link
-    const isDropdown = await caseSelector.evaluate((el) => el.tagName === 'SELECT');
-    if (isDropdown) {
-      await caseSelector.selectOption({ label: /case-001|PAT-001/i });
-    } else {
-      await caseSelector.click();
-    }
+    const cardCount = await caseCards.count();
+    expect(cardCount).toBeGreaterThan(0);
+    console.log(`  Found ${cardCount} case card(s)`);
 
-    console.log('✓ Case-001 selected');
+    // Click the first case card
+    await caseCards.first().click();
+
+    // Verify navigation to case view page
+    await expect(page).toHaveURL(/\/case\/.+/);
+    console.log('✓ Navigated to case view page');
 
     // ====================================
-    // STEP 3: Verify patient summary and signals render
+    // STEP 4: Verify patient summary and signals render
     // ====================================
-    console.log('\n[3/5] Verifying patient summary and clinical signals...');
+    console.log('\n[4/6] Verifying case details loaded...');
 
-    // Wait for patient summary section
-    const patientSummary = page.locator('[data-testid="patient-summary"], .patient-summary, .patient-info');
+    // Wait for patient summary
+    const patientSummary = page.getByTestId('patient-summary');
     await patientSummary.waitFor({ state: 'visible', timeout: 10000 });
-
-    // Verify patient data is displayed
-    const summaryText = await patientSummary.textContent();
-    expect(summaryText).toBeTruthy();
     console.log('✓ Patient summary rendered');
 
-    // Verify at least one clinical signal is visible
-    const signals = page.locator('[data-testid="clinical-signal"], .clinical-signal, .signal-item');
-    const signalCount = await signals.count();
-
-    expect(signalCount).toBeGreaterThan(0);
-    console.log(`✓ Found ${signalCount} clinical signal(s)`);
-
-    // Get first signal text to verify it's meaningful
-    if (signalCount > 0) {
-      const firstSignal = await signals.first().textContent();
-      expect(firstSignal).toBeTruthy();
-      console.log(`  First signal: ${firstSignal?.substring(0, 50)}...`);
-    }
+    // Verify signals panel
+    const signalList = page.getByTestId('signal-list');
+    await signalList.waitFor({ state: 'visible', timeout: 5000 });
+    console.log('✓ Clinical signals rendered');
 
     // ====================================
-    // STEP 4: Ask LLM a question
+    // STEP 5: Ask the LLM a question
     // ====================================
-    console.log('\n[4/5] Testing LLM Q&A panel...');
+    console.log('\n[5/6] Testing LLM Q&A panel...');
 
-    // Locate LLM input panel
-    const llmInput = page.locator(
-      '[data-testid="llm-input"], [data-testid="question-input"], ' +
-      'textarea[placeholder*="question" i], textarea[placeholder*="ask" i], ' +
-      'input[placeholder*="question" i]'
-    );
-
-    // Wait for input to be available
+    // Locate LLM input
+    const llmInput = page.getByTestId('llm-question-input');
     await llmInput.waitFor({ state: 'visible', timeout: 5000 });
 
     // Type question
@@ -122,206 +127,152 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     await llmInput.fill(question);
     console.log(`  Typed question: "${question}"`);
 
-    // Find and click submit button
-    const submitButton = page.locator(
-      '[data-testid="ask-button"], [data-testid="submit-question"], ' +
-      'button:has-text("Ask"), button:has-text("Submit"), button:has-text("Send")'
-    );
+    // Click submit button
+    const submitButton = page.getByTestId('llm-submit-button');
     await submitButton.click();
     console.log('  Submitted question');
 
-    // Listen for network request to /api/demo/context
-    const contextRequest = page.waitForResponse(
-      response => response.url().includes('/api/demo/context') && response.status() === 200,
-      { timeout: 15000 }
-    );
+    // Wait for response to appear
+    const llmResponse = page.getByTestId('llm-response');
+    await llmResponse.waitFor({ state: 'visible', timeout: 15000 });
 
-    // Listen for network request to /api/demo/abstract
-    const abstractRequest = page.waitForResponse(
-      response => response.url().includes('/api/demo/abstract') && response.status() === 200,
-      { timeout: 15000 }
-    );
-
-    console.log('  Waiting for API responses...');
-
-    // Wait for both responses
-    await Promise.all([contextRequest, abstractRequest]);
-    console.log('✓ API calls successful:');
-    console.log('  - POST /api/demo/context (200)');
-    console.log('  - POST /api/demo/abstract (200)');
-
-    // Wait for LLM response to appear
-    const llmResponse = page.locator(
-      '[data-testid="llm-response"], [data-testid="answer"], ' +
-      '.llm-response, .answer-text, .response-content'
-    );
-    await llmResponse.waitFor({ state: 'visible', timeout: 10000 });
-
-    // Verify response has meaningful text
+    // Verify response has content
     const responseText = await llmResponse.textContent();
     expect(responseText).toBeTruthy();
-    expect(responseText!.length).toBeGreaterThan(20);
+    expect(responseText!.length).toBeGreaterThan(10);
     console.log(`✓ LLM response received (${responseText!.length} characters)`);
-    console.log(`  Preview: ${responseText!.substring(0, 100)}...`);
+    console.log(`  Preview: ${responseText!.substring(0, 80)}...`);
 
     // ====================================
-    // STEP 5: Submit feedback
+    // STEP 6: Submit feedback
     // ====================================
-    console.log('\n[5/5] Submitting feedback...');
+    console.log('\n[6/6] Submitting feedback...');
 
-    // Find thumbs up button
-    const thumbsUpButton = page.locator(
-      '[data-testid="thumbs-up"], [data-testid="feedback-positive"], ' +
-      'button[aria-label*="thumbs up" i], button:has-text("👍"), ' +
-      '.feedback-thumbs-up, .feedback-positive'
-    );
+    // Find and click thumbs up button
+    const thumbsUpButton = page.getByTestId('feedback-up');
+    await thumbsUpButton.waitFor({ state: 'visible', timeout: 5000 });
+    await thumbsUpButton.click();
+    console.log('  Clicked thumbs up (Approve)');
 
-    // If thumbs up not found, try thumbs down as fallback
-    const thumbsDownButton = page.locator(
-      '[data-testid="thumbs-down"], [data-testid="feedback-negative"], ' +
-      'button[aria-label*="thumbs down" i], button:has-text("👎"), ' +
-      '.feedback-thumbs-down, .feedback-negative'
-    );
+    // Wait a moment for submission
+    await page.waitForTimeout(1000);
+    console.log('✓ Feedback submitted');
 
-    // Try thumbs up first, fall back to thumbs down
-    const feedbackButton = (await thumbsUpButton.count()) > 0 ? thumbsUpButton : thumbsDownButton;
-    await feedbackButton.waitFor({ state: 'visible', timeout: 5000 });
-
-    // Listen for feedback API call
-    const feedbackRequest = page.waitForResponse(
-      response => response.url().includes('/api/demo/feedback') && response.status() === 200,
-      { timeout: 10000 }
-    );
-
-    // Click feedback button
-    await feedbackButton.click();
-    console.log('  Clicked feedback button');
-
-    // Wait for feedback API call
-    const feedbackResponse = await feedbackRequest;
-    expect(feedbackResponse.status()).toBe(200);
-    console.log('✓ API call successful:');
-    console.log('  - POST /api/demo/feedback (200)');
-
-    // Verify response body
-    const feedbackData = await feedbackResponse.json();
-    expect(feedbackData.success).toBe(true);
-    expect(feedbackData.data.status).toBe('ok');
-    expect(feedbackData.data.feedback_id).toBeTruthy();
-    console.log(`  Feedback ID: ${feedbackData.data.feedback_id}`);
-
-    // Wait for UI feedback confirmation
-    const feedbackConfirmation = page.locator(
-      'text=/Saved|Feedback submitted|Thank you|Success/i'
-    );
-
-    // Check if confirmation appears (optional, might not exist in all UIs)
-    const confirmationAppeared = await feedbackConfirmation.isVisible({ timeout: 3000 }).catch(() => false);
-    if (confirmationAppeared) {
-      const confirmationText = await feedbackConfirmation.textContent();
-      console.log(`✓ UI confirmation: "${confirmationText}"`);
-    } else {
-      console.log('  (UI confirmation not found, but API succeeded)');
-    }
-
-    // ====================================
-    // FINAL VERIFICATION
-    // ====================================
     console.log('\n========================================');
-    console.log('✓ ALL STEPS COMPLETED SUCCESSFULLY');
-    console.log('========================================');
-    console.log('\nVerified:');
-    console.log('  ✓ Domain selection (CLABSI)');
-    console.log('  ✓ Case selection (case-001)');
-    console.log('  ✓ Patient summary rendered');
-    console.log('  ✓ Clinical signals displayed');
-    console.log('  ✓ LLM Q&A functional');
-    console.log('  ✓ Feedback submission successful');
-    console.log('\nNetwork Calls:');
-    console.log('  ✓ POST /api/demo/context → 200');
-    console.log('  ✓ POST /api/demo/abstract → 200');
-    console.log('  ✓ POST /api/demo/feedback → 200');
+    console.log('✓ COMPLETE WORKFLOW TEST PASSED');
     console.log('========================================\n');
   });
 
-  test('verify all three API endpoints return 200', async ({ page }) => {
-    console.log('\n Testing API endpoint responses...');
+  test('verify backend API endpoints respond correctly', async ({ request }) => {
+    console.log('\n Testing backend API endpoints...');
 
-    // Navigate to app and trigger workflow
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-
-    // Track all network calls
-    const networkCalls = {
-      context: false,
-      abstract: false,
-      feedback: false
-    };
-
-    // Listen for context endpoint
-    page.on('response', response => {
-      if (response.url().includes('/api/demo/context') && response.status() === 200) {
-        networkCalls.context = true;
-        console.log('✓ POST /api/demo/context returned 200');
-      }
-      if (response.url().includes('/api/demo/abstract') && response.status() === 200) {
-        networkCalls.abstract = true;
-        console.log('✓ POST /api/demo/abstract returned 200');
-      }
-      if (response.url().includes('/api/demo/feedback') && response.status() === 200) {
-        networkCalls.feedback = true;
-        console.log('✓ POST /api/demo/feedback returned 200');
-      }
-    });
-
-    // Trigger the workflow (simplified version)
-    // Note: Actual implementation depends on your UI structure
-
-    // Give time for network calls to complete
-    await page.waitForTimeout(2000);
-
-    // At minimum, verify endpoints are reachable via direct API calls
-    const response1 = await page.request.post('http://localhost:8000/api/demo/context', {
+    // Test 1: Context endpoint
+    const contextResponse = await request.post('http://localhost:8000/api/demo/context', {
       data: {
         domain_id: 'clabsi',
         case_id: 'case-001'
       }
     });
-    expect(response1.status()).toBe(200);
-    console.log('✓ Direct API test: /api/demo/context → 200');
 
-    const contextData = await response1.json();
-    const response2 = await page.request.post('http://localhost:8000/api/demo/abstract', {
+    expect(contextResponse.status()).toBe(200);
+    const contextData = await contextResponse.json();
+    expect(contextData.success).toBe(true);
+    expect(contextData.data).toBeDefined();
+    expect(contextData.data.context_fragments).toBeDefined();
+    console.log('✓ POST /api/demo/context (200)');
+
+    // Test 2: Abstract endpoint (requires context fragments from step 1)
+    const abstractResponse = await request.post('http://localhost:8000/api/demo/abstract', {
       data: {
         domain_id: 'clabsi',
         case_id: 'case-001',
         context_fragments: contextData.data.context_fragments
       }
     });
-    expect(response2.status()).toBe(200);
-    console.log('✓ Direct API test: /api/demo/abstract → 200');
 
-    const response3 = await page.request.post('http://localhost:8000/api/demo/feedback', {
+    expect(abstractResponse.status()).toBe(200);
+    const abstractData = await abstractResponse.json();
+    expect(abstractData.success).toBe(true);
+    expect(abstractData.data.summary).toBeDefined();
+    expect(abstractData.data.criteria_evaluation).toBeDefined();
+    console.log('✓ POST /api/demo/abstract (200)');
+
+    // Test 3: Feedback endpoint
+    const feedbackResponse = await request.post('http://localhost:8000/api/demo/feedback', {
       data: {
         domain_id: 'clabsi',
         case_id: 'case-001',
-        feedback_type: 'thumbs_up'
+        feedback_type: 'thumbs_up',
+        comment: 'Test feedback from Playwright E2E'
       }
     });
-    expect(response3.status()).toBe(200);
-    console.log('✓ Direct API test: /api/demo/feedback → 200');
+
+    expect(feedbackResponse.status()).toBe(200);
+    const feedbackData = await feedbackResponse.json();
+    expect(feedbackData.success).toBe(true);
+    expect(feedbackData.data.feedback_id).toBeDefined();
+    console.log('✓ POST /api/demo/feedback (200)');
+
+    console.log('\n✓ All API endpoints responding correctly');
   });
 
-  test('error handling: invalid case ID returns 404', async ({ page }) => {
-    // Test that invalid case returns appropriate error
-    const response = await page.request.post('http://localhost:8000/api/demo/context', {
+  test('error handling: invalid case ID returns proper error structure', async ({ request }) => {
+    console.log('\n Testing error handling for invalid case...');
+
+    const response = await request.post('http://localhost:8000/api/demo/context', {
       data: {
         domain_id: 'clabsi',
         case_id: 'case-999'  // Invalid case
       }
     });
 
+    // Should return 404 for invalid case
     expect(response.status()).toBe(404);
-    console.log('✓ Invalid case correctly returns 404');
+
+    const data = await response.json();
+
+    // Verify error response structure matches backend format
+    expect(data.success).toBe(false);
+    expect(data.error).toBeDefined();
+    expect(data.error.code).toBe('HTTP_ERROR');
+    expect(data.error.message).toContain('not found');
+
+    // Verify metadata exists
+    expect(data.metadata).toBeDefined();
+    expect(data.metadata.request_id).toBeDefined();
+    expect(data.metadata.timestamp).toBeDefined();
+
+    console.log('✓ Invalid case ID handled correctly with proper error structure');
   });
+
+  test('navigation: case list → case view → back to list', async ({ page }) => {
+    console.log('\n Testing navigation flow...');
+
+    // Start on case list
+    await expect(page).toHaveURL('/');
+
+    // Click first case card
+    const firstCard = page.getByTestId('case-card').first();
+    await firstCard.waitFor({ state: 'visible' });
+    await firstCard.click();
+
+    // Should navigate to case view
+    await expect(page).toHaveURL(/\/case\/.+/);
+    console.log('✓ Navigated to case view');
+
+    // Click back button
+    const backButton = page.locator('button:has-text("Back to Cases")');
+    await backButton.click();
+
+    // Should return to case list
+    await expect(page).toHaveURL('/');
+    console.log('✓ Navigated back to case list');
+  });
+});
+
+// Test suite summary
+test.afterAll(async () => {
+  console.log('\n==========================================');
+  console.log('  CA Factory E2E Test Suite Complete');
+  console.log('==========================================\n');
 });

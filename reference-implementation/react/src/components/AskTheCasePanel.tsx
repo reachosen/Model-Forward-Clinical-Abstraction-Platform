@@ -178,6 +178,7 @@ const AskTheCasePanel: React.FC<AskTheCasePanelProps> = ({
               onKeyPress={handleKeyPress}
               placeholder="Type your question here..."
               className="question-input"
+              data-testid="llm-question-input"
               maxLength={500}
               disabled={isLoading}
             />
@@ -185,6 +186,7 @@ const AskTheCasePanel: React.FC<AskTheCasePanelProps> = ({
               onClick={handleSendQuestion}
               disabled={!question.trim() || isLoading}
               className="send-button"
+              data-testid="llm-submit-button"
             >
               {isLoading ? (
                 <Loader2 className="icon spinning" />
@@ -246,7 +248,7 @@ const AskTheCasePanel: React.FC<AskTheCasePanelProps> = ({
                     </div>
 
                     {/* Answer */}
-                    <div className="answer-box">
+                    <div className="answer-box" data-testid="llm-response">
                       <div className="answer-text">{entry.response.answer}</div>
 
                       {/* Evidence Citations */}

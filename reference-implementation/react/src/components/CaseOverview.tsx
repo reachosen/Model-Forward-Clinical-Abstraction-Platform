@@ -30,7 +30,7 @@ const CaseOverview: React.FC<CaseOverviewProps> = ({ summary, caseInfo }) => {
   };
 
   return (
-    <div className="case-overview panel">
+    <div className="case-overview panel" data-testid="patient-summary">
       <h2>Case Overview</h2>
 
       <div className="demographics">

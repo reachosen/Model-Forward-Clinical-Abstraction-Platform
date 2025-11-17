@@ -132,7 +132,7 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals }) => {
   };
 
   return (
-    <div className="signals-panel panel">
+    <div className="signals-panel panel" data-testid="signal-list">
       <div className="panel-header">
         <h2>Clinical Signals</h2>
         <div className="panel-actions">

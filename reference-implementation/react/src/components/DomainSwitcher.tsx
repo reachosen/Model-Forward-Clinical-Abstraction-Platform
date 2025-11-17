@@ -46,6 +46,7 @@ const DomainSwitcher: React.FC = () => {
     <div className="domain-switcher">
       <button
         className="domain-switcher-toggle"
+        data-testid="domain-switcher-toggle"
         onClick={() => setIsOpen(!isOpen)}
         disabled={loading || switching}
       >
@@ -63,6 +64,7 @@ const DomainSwitcher: React.FC = () => {
               <button
                 key={domain.id}
                 className={`domain-option ${domain.id === config.domain_name ? 'active' : ''}`}
+                data-testid={`domain-option-${domain.id.toLowerCase()}`}
                 onClick={() => handleDomainChange(domain.id)}
                 disabled={domain.id === config.domain_name || switching}
               >

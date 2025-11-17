@@ -101,6 +101,7 @@ const FeedbackPanel: React.FC<FeedbackPanelProps> = ({ patientId, encounterId })
       <div className="action-buttons">
         <button
           className="btn btn-approve"
+          data-testid="feedback-up"
           onClick={() => handleSubmit('APPROVAL')}
           disabled={submitting}
         >
@@ -108,6 +109,7 @@ const FeedbackPanel: React.FC<FeedbackPanelProps> = ({ patientId, encounterId })
         </button>
         <button
           className="btn btn-correct"
+          data-testid="feedback-down"
           onClick={() => handleSubmit('CORRECTION')}
           disabled={submitting}
         >

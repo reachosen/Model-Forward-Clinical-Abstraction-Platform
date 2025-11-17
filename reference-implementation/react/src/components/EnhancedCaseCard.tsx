@@ -131,6 +131,8 @@ const EnhancedCaseCard: React.FC<EnhancedCaseCardProps> = ({
       aria-label={`Case card for ${caseInfo.name}, risk level ${riskConfig.label}, status ${statusConfig[caseInfo.status].label}`}
       className={`enhanced-case-card ${isSelected ? 'selected' : ''}`}
       style={{ borderLeft: `4px solid ${riskConfig.color}` }}
+      data-testid="case-card"
+      data-case-id={caseInfo.patient_id}
     >
       {/* Top Badges Row */}
       <div className="badges-row">
