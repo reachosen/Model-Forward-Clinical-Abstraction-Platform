@@ -152,3 +152,216 @@ export interface FeedbackSubmission {
   final_decision?: string;
   clinician_id?: string;
 }
+
+// ============================================================================
+// STRUCTURED CASE FORMAT (4-Section Model)
+// ============================================================================
+
+/**
+ * Task metadata tracking who executed what and when
+ */
+export interface TaskMetadata {
+  task_id: string;
+  task_type: string; // 'enrichment' | 'abstraction' | 'interrogation'
+  prompt_version: string;
+  mode: 'batch' | 'interactive';
+  executed_at: string; // ISO timestamp
+  executed_by: string; // 'system' | user_id
+  status: 'completed' | 'in_progress' | 'failed';
+  duration_ms?: number;
+  token_count?: number;
+}
+
+/**
+ * Interrogation context for Ask Panel support
+ */
+export interface InterrogationContext {
+  mode: 'explain' | 'summarize' | 'validate';
+  target_type: 'criterion' | 'signal' | 'event' | 'overall';
+  target_id: string;
+  target_label?: string;
+  program_type?: string; // HAC, CLABSI, CAUTI, etc.
+  metric_id?: string;
+  signal_type?: string;
+}
+
+/**
+ * QA history entry for tracking interrogations
+ */
+export interface QAHistoryEntry {
+  qa_id: string;
+  question: string;
+  answer: string;
+  interrogation_context: InterrogationContext;
+  task_metadata: TaskMetadata;
+  citations?: string[];
+  confidence?: number;
+}
+
+/**
+ * Patient section - raw context (precomputed)
+ */
+export interface PatientSection {
+  case_metadata: {
+    case_id: string;
+    patient_id: string;
+    encounter_id: string;
+    created_date: string;
+    infection_type: string;
+    facility_id: string;
+    unit: string;
+  };
+  demographics: {
+    age: number;
+    gender: string;
+    mrn: string;
+  };
+  devices?: {
+    [deviceType: string]: {
+      insertion_date: string;
+      insertion_time?: string;
+      line_type?: string;
+      insertion_site?: string;
+      removal_date?: string | null;
+      removal_time?: string;
+      removal_reason?: string;
+      device_days_at_event?: number;
+    };
+  };
+  lab_results: Array<{
+    test_id: string;
+    test_type: string;
+    collection_date: string;
+    collection_time?: string;
+    result_date?: string;
+    result_time?: string;
+    sample_type?: string;
+    organism?: string;
+    organism_type?: string;
+    susceptibilities?: Record<string, string>;
+    growth?: string;
+    cfu_count?: number | null;
+    wbc?: number;
+    wbc_unit?: string;
+    neutrophils_percent?: number;
+    source_id: string;
+    note?: string;
+  }>;
+  clinical_signals: Array<{
+    signal_id: string;
+    signal_type: string;
+    signal_name: string;
+    timestamp: string;
+    value: string | number | boolean;
+    unit?: string;
+    source: string;
+    abnormal?: boolean;
+    severity?: string;
+  }>;
+  clinical_notes: Array<{
+    note_id: string;
+    note_type: string;
+    timestamp: string;
+    author: string;
+    content: string;
+    extracted_concepts?: string[];
+  }>;
+  clinical_events: Array<{
+    event_id: string;
+    event_type: string;
+    event_name: string;
+    timestamp: string;
+    performed_by?: string;
+    location?: string;
+    details?: Record<string, any>;
+  }>;
+}
+
+/**
+ * Signal group for enrichment section
+ */
+export interface SignalGroup {
+  signal_type: string;
+  signals: Array<{
+    signal_id: string;
+    signal_name: string;
+    timestamp: string;
+    value: string | number | boolean;
+    unit?: string;
+    abnormal?: boolean;
+    severity?: string;
+  }>;
+  group_confidence: number;
+}
+
+/**
+ * Enrichment section - computed signal groups and timeline
+ */
+export interface EnrichmentSection {
+  task_metadata: TaskMetadata;
+  signal_groups: SignalGroup[];
+  timeline_phases: Array<{
+    phase_name: string;
+    start_date: string;
+    end_date: string;
+    day_number: number;
+    events?: string[];
+    description?: string;
+  }>;
+  summary: {
+    signals_identified: number;
+    key_findings: string[];
+    confidence: number;
+  };
+}
+
+/**
+ * Criteria evaluation for abstraction section
+ */
+export interface CriteriaEvaluation {
+  [criterionKey: string]: {
+    met: boolean;
+    evidence: string;
+  };
+}
+
+/**
+ * Abstraction section - narrative and criteria evaluation
+ */
+export interface AbstractionSection {
+  task_metadata: TaskMetadata;
+  narrative: string;
+  criteria_evaluation: {
+    determination: string;
+    confidence: number;
+    criteria_met: CriteriaEvaluation;
+    total_criteria?: number;
+    criteria_met_count?: number;
+  };
+  exclusion_analysis: Array<{
+    criterion: string;
+    met: boolean;
+    rationale: string;
+  }>;
+}
+
+/**
+ * QA section - interrogation history and validation
+ */
+export interface QASection {
+  qa_history: QAHistoryEntry[];
+  validation_status?: 'pending' | 'passed' | 'failed';
+  validation_errors?: string[];
+}
+
+/**
+ * Complete structured case (4-section model)
+ */
+export interface StructuredCase {
+  case_id: string;
+  concern_id: string; // 'clabsi' | 'cauti' | 'ssi' | etc.
+  patient: PatientSection;
+  enrichment: EnrichmentSection;
+  abstraction: AbstractionSection;
+  qa: QASection | null;
+}
