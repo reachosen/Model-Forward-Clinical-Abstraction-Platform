@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ChevronUp, Activity, Sparkles, FileText, MessageSquare } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { ChevronDown, ChevronUp, Activity, Sparkles, FileText } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -10,77 +10,42 @@ import { TaskMetadataBadge } from "@/components/task-metadata-badge";
 import { EnrichmentSummaryPanel } from "@/components/enrichment-summary-panel";
 import type { StructuredCase, PipelineStage } from "@/types/case";
 
-// Mock data for demonstration - replace with actual data fetching
-const mockCase: StructuredCase = {
-  case_id: "case_123",
-  concern_id: "clabsi",
-  patient: {
-    case_metadata: {},
-    demographics: {
-      age: 68,
-      gender: "M"
-    },
-    devices: [],
-    lab_results: [],
-    clinical_notes: [],
-    clinical_events: []
-  },
-  enrichment: {
-    task_metadata: {
-      task_id: "clabsi.enrichment",
-      task_type: "enrichment",
-      prompt_version: "v1.0",
-      mode: "batch",
-      executed_at: "2024-01-20T10:00:00Z",
-      executed_by: "system",
-      status: "completed",
-      confidence: 0.89
-    },
-    summary: {
-      signals_identified: 12,
-      signal_groups_count: 4,
-      timeline_phases_identified: 3,
-      key_findings: [
-        "Central line placed on Day 0 in ICU setting",
-        "S. aureus bacteremia identified on Day 5 post-insertion",
-        "No alternative source of infection documented",
-        "Patient developed fever and leukocytosis on Day 4"
-      ],
-      confidence: 0.89
-    },
-    signal_groups: [],
-    timeline_phases: []
-  },
-  abstraction: {
-    task_metadata: {
-      task_id: "clabsi.abstraction",
-      task_type: "abstraction",
-      prompt_version: "v1.0",
-      mode: "interactive",
-      executed_at: "2024-01-20T14:30:00Z",
-      executed_by: "nurse.jane",
-      status: "completed",
-      confidence: 0.92
-    },
-    narrative: "68-year-old male patient with central line placement on admission to ICU. Developed S. aureus bacteremia on Day 5 post-insertion. Clinical presentation consistent with CLABSI criteria with no alternative infection source identified.",
-    criteria_evaluation: {
-      determination: "CLABSI_CONFIRMED",
-      confidence: 0.92,
-      criteria_met: {},
-      criteria_total: 5,
-      criteria_met_count: 5
-    },
-    qa_history: [],
-    exclusion_analysis: []
+async function fetchCaseData(caseId: string): Promise<StructuredCase> {
+  // TODO: Replace with actual API endpoint
+  const response = await fetch(`/api/cases/${caseId}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch case data');
   }
-};
+  return response.json();
+}
 
 export default function CaseWorkbenchPage({ params }: { params: { caseId: string } }) {
+  const [caseData, setCaseData] = useState<StructuredCase | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     context: true,
     enrichment: true,
     abstraction: true
   });
+
+  useEffect(() => {
+    const loadCase = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchCaseData(params.caseId);
+        setCaseData(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
+        console.error('[v0] Error loading case:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCase();
+  }, [params.caseId]);
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -90,6 +55,24 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
     toggleSection(sectionId);
     // Scroll logic would go here
   };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="text-center">Loading case data...</div>
+      </div>
+    );
+  }
+
+  if (error || !caseData) {
+    return (
+      <div className="container mx-auto py-6">
+        <div className="text-center text-destructive">
+          Error loading case: {error || 'Case not found'}
+        </div>
+      </div>
+    );
+  }
 
   // Build pipeline stages from case data
   const pipelineStages: PipelineStage[] = [
@@ -101,14 +84,14 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
     {
       id: 'enrichment',
       label: 'Enrichment',
-      status: mockCase.enrichment?.task_metadata.status || 'pending',
-      taskMetadata: mockCase.enrichment?.task_metadata
+      status: caseData.enrichment?.task_metadata.status || 'pending',
+      taskMetadata: caseData.enrichment?.task_metadata
     },
     {
       id: 'abstraction',
       label: 'Abstraction',
-      status: mockCase.abstraction?.task_metadata.status || 'pending',
-      taskMetadata: mockCase.abstraction?.task_metadata
+      status: caseData.abstraction?.task_metadata.status || 'pending',
+      taskMetadata: caseData.abstraction?.task_metadata
     },
     {
       id: 'feedback',
@@ -154,7 +137,7 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
               <div className="rounded-lg border bg-muted/50 p-4">
                 <h3 className="font-medium mb-2">Patient Summary</h3>
                 <p className="text-sm text-muted-foreground">
-                  {mockCase.patient.demographics.age}{mockCase.patient.demographics.gender} with central line, Day 5 S. aureus bacteremia
+                  {caseData.patient.demographics.age}{caseData.patient.demographics.gender} with central line, Day 5 S. aureus bacteremia
                 </p>
               </div>
               
@@ -168,7 +151,7 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
       </Card>
 
       {/* Section B: Enrichment */}
-      {mockCase.enrichment && (
+      {caseData.enrichment && (
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -192,12 +175,12 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
           {expandedSections.enrichment && (
             <CardContent className="space-y-4">
               {/* Task Metadata Badge */}
-              <TaskMetadataBadge taskMetadata={mockCase.enrichment.task_metadata} />
+              <TaskMetadataBadge taskMetadata={caseData.enrichment.task_metadata} />
               
               <Separator />
               
               {/* Enrichment Summary */}
-              <EnrichmentSummaryPanel summary={mockCase.enrichment.summary} />
+              <EnrichmentSummaryPanel summary={caseData.enrichment.summary} />
               
               {/* Placeholder for SignalsPanel and TimelinePanel */}
               <div className="text-sm text-muted-foreground">
@@ -218,7 +201,7 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
       )}
 
       {/* Section C: Abstraction & Feedback */}
-      {mockCase.abstraction && (
+      {caseData.abstraction && (
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -242,18 +225,15 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
           {expandedSections.abstraction && (
             <CardContent className="space-y-4">
               {/* Task Metadata Badge */}
-              <TaskMetadataBadge taskMetadata={mockCase.abstraction.task_metadata} />
+              <TaskMetadataBadge taskMetadata={caseData.abstraction.task_metadata} />
               
               <Separator />
               
               {/* Clinical Narrative */}
               <div className="space-y-2">
-                <h3 className="font-medium flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4" />
-                  Clinical Narrative
-                </h3>
+                <h3 className="font-medium">Clinical Narrative</h3>
                 <div className="rounded-lg border bg-muted/50 p-4">
-                  <p className="text-sm leading-relaxed">{mockCase.abstraction.narrative}</p>
+                  <p className="text-sm leading-relaxed">{caseData.abstraction.narrative}</p>
                 </div>
               </div>
               
@@ -266,13 +246,13 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Determination:</span>
                     <span className="text-sm font-bold text-green-600">
-                      {mockCase.abstraction.criteria_evaluation.determination}
+                      {caseData.abstraction.criteria_evaluation.determination}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Criteria Met:</span>
                     <span className="text-sm">
-                      {mockCase.abstraction.criteria_evaluation.criteria_met_count} of {mockCase.abstraction.criteria_evaluation.criteria_total}
+                      {caseData.abstraction.criteria_evaluation.criteria_met_count} of {caseData.abstraction.criteria_evaluation.criteria_total}
                     </span>
                   </div>
                 </div>
@@ -288,7 +268,7 @@ export default function CaseWorkbenchPage({ params }: { params: { caseId: string
                   View Detailed Criteria
                 </Button>
                 <Button variant="outline" size="sm">
-                  View Q&A History: {mockCase.abstraction.qa_history.length} interactions
+                  View Q&A History: {caseData.abstraction.qa_history.length} interactions
                 </Button>
               </div>
             </CardContent>

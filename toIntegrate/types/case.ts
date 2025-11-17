@@ -115,3 +115,24 @@ export interface PipelineStage {
   status: TaskStatus;
   taskMetadata?: TaskMetadata;
 }
+
+export interface CaseSummary {
+  case_id: string;
+  concern_id: string;
+  patient_summary: string;
+  latest_task_state: {
+    stage: 'context' | 'enrichment' | 'abstraction' | 'feedback';
+    status: TaskStatus;
+    version: string;
+    timestamp: string;
+  };
+  risk_level?: 'high' | 'medium' | 'low';
+  flags?: string[];
+}
+
+export interface ConcernInfo {
+  concern_id: string;
+  concern_name: string;
+  description: string;
+  demo_case_id?: string;
+}
