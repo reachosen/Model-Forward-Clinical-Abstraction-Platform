@@ -426,6 +426,15 @@ class DemoFeedbackRequest(BaseModel):
     comment: Optional[str] = Field(None, description="Optional feedback comment")
 
 
+class InterrogationRequest(BaseModel):
+    """Request for task interrogation (Ask Panel support)."""
+    question: str = Field(..., description="User's question", min_length=1, max_length=500)
+    interrogation_context: Dict[str, Any] = Field(
+        ...,
+        description="Context for interrogation: mode, target_type, target_id, etc."
+    )
+
+
 @app.post("/api/demo/context")
 async def demo_context(request: DemoContextRequest):
     """
@@ -711,6 +720,148 @@ async def demo_feedback(request: DemoFeedbackRequest):
                 "message": str(e)
             }
         )
+
+
+# ========================================
+# TASK INTERROGATION ENDPOINTS
+# ========================================
+
+@app.post("/v1/task/{task_id}/interrogate")
+async def interrogate_task(
+    task_id: str,
+    request: InterrogationRequest
+):
+    """
+    Interrogate a task (Ask Panel support).
+
+    This endpoint allows users to ask questions about specific aspects of a case
+    with full interrogation context (explain, summarize, validate).
+
+    Args:
+        task_id: Task identifier (e.g., 'clabsi.abstraction', 'CASE-CLABSI-001')
+        request: Interrogation request with question and context
+
+    Returns:
+        QA history entry with answer, citations, and metadata
+    """
+    import uuid
+
+    try:
+        logger.info(
+            f"Interrogation request: task={task_id}, "
+            f"mode={request.interrogation_context.get('mode')}, "
+            f"target={request.interrogation_context.get('target_type')}"
+        )
+
+        # Extract interrogation context
+        context = request.interrogation_context
+        mode = context.get("mode", "explain")
+        target_type = context.get("target_type", "overall")
+        target_id = context.get("target_id", "")
+
+        # Load the case to get context for answering
+        # In demo mode, we'll use mock data
+        # In production, this would query the actual task/case
+
+        # Generate mock answer based on interrogation mode
+        if mode == "explain":
+            answer = _generate_explanation(task_id, target_type, target_id, request.question)
+        elif mode == "summarize":
+            answer = _generate_summary(task_id, target_type, target_id, request.question)
+        elif mode == "validate":
+            answer = _generate_validation(task_id, target_type, target_id, request.question)
+        else:
+            answer = "I can help explain, summarize, or validate aspects of this case. Please specify your interrogation mode."
+
+        # Create QA history entry
+        qa_id = str(uuid.uuid4())
+        qa_entry = {
+            "qa_id": qa_id,
+            "question": request.question,
+            "answer": answer,
+            "interrogation_context": request.interrogation_context,
+            "task_metadata": {
+                "task_id": f"interrogation.{qa_id}",
+                "task_type": "interrogation",
+                "prompt_version": "v1.0",
+                "mode": "interactive",
+                "executed_at": datetime.utcnow().isoformat(),
+                "executed_by": "user",
+                "status": "completed"
+            },
+            "citations": _get_relevant_citations(task_id, target_type, target_id),
+            "confidence": 0.85
+        }
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "data": qa_entry,
+                "metadata": {
+                    "request_id": f"interrogate_{qa_id}",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "version": "1.0.0"
+                }
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Interrogation request failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "code": "INTERROGATION_ERROR",
+                "message": str(e)
+            }
+        )
+
+
+def _generate_explanation(task_id: str, target_type: str, target_id: str, question: str) -> str:
+    """Generate explanation for interrogation."""
+    if target_type == "criterion":
+        return (
+            f"This criterion evaluates whether the patient meets the specific NHSN requirement "
+            f"for {target_id}. The evidence shows that this criterion is met based on "
+            f"clinical documentation including vital signs, lab results, and device placement timeline."
+        )
+    elif target_type == "signal":
+        return (
+            f"This signal ({target_id}) represents a clinically significant finding that "
+            f"contributes to the overall case determination. It was detected through automated "
+            f"analysis of clinical data and validated against established criteria."
+        )
+    else:
+        return (
+            f"This case involves comprehensive analysis of patient data including demographics, "
+            f"device information, lab results, and clinical notes. The determination is based on "
+            f"NHSN criteria evaluation with supporting evidence from multiple data sources."
+        )
+
+
+def _generate_summary(task_id: str, target_type: str, target_id: str, question: str) -> str:
+    """Generate summary for interrogation."""
+    return (
+        f"Summary: The {target_type} shows key clinical findings including positive cultures, "
+        f"device presence >2 days, and compatible clinical signs. Overall confidence: 95%."
+    )
+
+
+def _generate_validation(task_id: str, target_type: str, target_id: str, question: str) -> str:
+    """Generate validation for interrogation."""
+    return (
+        f"Validation: This {target_type} has been validated against NHSN criteria. "
+        f"All required evidence is present and documented. No contradictions or missing data detected."
+    )
+
+
+def _get_relevant_citations(task_id: str, target_type: str, target_id: str) -> list:
+    """Get relevant citations for interrogation response."""
+    return [
+        "NOTE-001: Patient reports feeling unwell with chills...",
+        "LAB-001: Blood culture positive for S. aureus",
+        "EVT-001: PICC line insertion on Day 1"
+    ]
 
 
 # Error handlers
