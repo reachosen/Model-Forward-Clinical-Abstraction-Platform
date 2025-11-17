@@ -454,9 +454,6 @@ async def demo_context(request: DemoContextRequest):
     try:
         logger.info(f"Demo context request: domain={request.domain_id}, case={request.case_id}")
 
-        # Check feature flag for structured cases
-        use_structured = os.getenv("USE_STRUCTURED_CASES", "false").lower() == "true"
-
         # Load case data from mock data directory
         data_dir = Path(__file__).parent.parent / "data" / "mock" / "cases"
 
@@ -475,29 +472,16 @@ async def demo_context(request: DemoContextRequest):
         if not case_file.exists():
             raise HTTPException(status_code=404, detail=f"Case file not found: {case_file}")
 
-        # Load case data
+        # Load structured case data (files are now in structured format)
         with open(case_file, 'r') as f:
             case_data = json.load(f)
 
-        # Transform to structured format if feature flag is enabled
-        if use_structured:
-            case_data = CaseAdapter.to_new_structure(case_data)
-            logger.info(f"Transformed case to structured format (4-section model)")
-
-        # Extract patient info (works for both structured and flat formats)
-        if use_structured:
-            # Structured format: patient section contains all patient data
-            patient_section = case_data.get("patient", {})
-            case_metadata = patient_section.get("case_metadata", {})
-            demographics = patient_section.get("demographics", {})
-            clinical_notes = patient_section.get("clinical_notes", [])
-            lab_results = patient_section.get("lab_results", [])
-        else:
-            # Flat format: all at root level
-            case_metadata = case_data.get("case_metadata", {})
-            demographics = case_data.get("patient_demographics", {})
-            clinical_notes = case_data.get("clinical_notes", [])
-            lab_results = case_data.get("lab_results", [])
+        # Extract patient info from structured format
+        patient_section = case_data.get("patient", {})
+        case_metadata = patient_section.get("case_metadata", {})
+        demographics = patient_section.get("demographics", {})
+        clinical_notes = patient_section.get("clinical_notes", [])
+        lab_results = patient_section.get("lab_results", [])
 
         patient_info = {
             "case_id": request.case_id,
@@ -531,20 +515,15 @@ async def demo_context(request: DemoContextRequest):
                 "relevance_score": 0.88
             })
 
-        # Build response data
+        # Build response data with full structured case
         response_data = {
             "domain_id": request.domain_id,
             "case_id": request.case_id,
             "patient": patient_info,
-            "context_fragments": context_fragments
+            "context_fragments": context_fragments,
+            "case_data": case_data,  # Full structured case (4-section model)
+            "format": "structured"
         }
-
-        # If using structured format, include full case data
-        if use_structured:
-            response_data["case_data"] = case_data
-            response_data["format"] = "structured"
-        else:
-            response_data["format"] = "flat"
 
         return JSONResponse(
             status_code=200,
@@ -577,57 +556,43 @@ async def demo_abstract(request: DemoAbstractRequest):
     """
     DEMO PIPELINE STEP 2: Generate clinical abstraction.
 
-    This endpoint processes the context and generates a clinical abstraction
-    with NHSN criteria evaluation.
+    This endpoint returns the clinical abstraction from the structured case,
+    including narrative, criteria evaluation, and NHSN determination.
 
     Args:
         request: Abstraction request with context fragments
 
     Returns:
-        Clinical abstraction with criteria evaluation
+        Clinical abstraction with criteria evaluation from structured case
     """
+    from pathlib import Path
+
     try:
         logger.info(f"Demo abstract request: domain={request.domain_id}, case={request.case_id}")
 
-        # Generate mock abstraction based on domain
-        if request.domain_id.lower() == "clabsi":
-            summary = (
-                "Patient is a 58-year-old male with a PICC line in place since hospital day 1. "
-                "On hospital day 5, the patient developed fever (39.2°C) and positive blood culture "
-                "for Staphylococcus aureus. Central line was in place for >2 days before the event. "
-                "No alternate infection source identified. Meets NHSN criteria for CLABSI."
-            )
+        # Load structured case data
+        data_dir = Path(__file__).parent.parent / "data" / "mock" / "cases"
 
-            criteria_evaluation = {
-                "determination": "CLABSI_CONFIRMED",
-                "confidence": 0.95,
-                "criteria_met": {
-                    "central_line_present_gt_2_days": {
-                        "met": True,
-                        "evidence": "PICC line inserted Day 1, event Day 5 (4 device days)"
-                    },
-                    "positive_blood_culture": {
-                        "met": True,
-                        "evidence": "Blood culture positive for S. aureus (recognized pathogen)"
-                    },
-                    "clinical_signs": {
-                        "met": True,
-                        "evidence": "Fever 39.2°C, tachycardia, leukocytosis"
-                    },
-                    "no_alternate_source": {
-                        "met": True,
-                        "evidence": "No other infection sources identified"
-                    }
-                },
-                "total_criteria": 6,
-                "criteria_met_count": 5
-            }
-        else:
-            summary = f"Clinical abstraction for {request.domain_id} case {request.case_id}"
-            criteria_evaluation = {
-                "determination": "UNDER_REVIEW",
-                "confidence": 0.80
-            }
+        case_file_map = {
+            "case-001": "PAT-001-clabsi-positive.json",
+            "case-002": "PAT-002-clabsi-negative.json"
+        }
+
+        case_filename = case_file_map.get(request.case_id)
+        if not case_filename:
+            raise HTTPException(status_code=404, detail=f"Case {request.case_id} not found")
+
+        case_file = data_dir / case_filename
+
+        if not case_file.exists():
+            raise HTTPException(status_code=404, detail=f"Case file not found: {case_file}")
+
+        # Load structured case
+        with open(case_file, 'r') as f:
+            case_data = json.load(f)
+
+        # Extract abstraction data from structured case
+        abstraction = case_data.get("abstraction", {})
 
         return JSONResponse(
             status_code=200,
@@ -636,13 +601,15 @@ async def demo_abstract(request: DemoAbstractRequest):
                 "data": {
                     "domain_id": request.domain_id,
                     "case_id": request.case_id,
-                    "summary": summary,
-                    "criteria_evaluation": criteria_evaluation,
+                    "summary": abstraction.get("narrative", ""),
+                    "criteria_evaluation": abstraction.get("criteria_evaluation", {}),
+                    "exclusion_analysis": abstraction.get("exclusion_analysis", []),
+                    "task_metadata": abstraction.get("task_metadata", {}),
                     "context_fragments_used": len(request.context_fragments),
                     "model_metadata": {
-                        "model": "mock-claude-3-sonnet",
-                        "tokens_used": 1250,
-                        "latency_ms": 450
+                        "model": "structured-case-precomputed",
+                        "prompt_version": abstraction.get("task_metadata", {}).get("prompt_version", "v1.0"),
+                        "executed_at": abstraction.get("task_metadata", {}).get("executed_at")
                     }
                 },
                 "metadata": {
@@ -717,6 +684,220 @@ async def demo_feedback(request: DemoFeedbackRequest):
             status_code=500,
             detail={
                 "code": "FEEDBACK_ERROR",
+                "message": str(e)
+            }
+        )
+
+
+# ========================================
+# TASK TRACKING ENDPOINTS
+# ========================================
+
+@app.get("/v1/case/{case_id}/tasks")
+async def get_case_tasks(case_id: str):
+    """
+    Get all tasks for a specific case.
+
+    This endpoint returns task metadata for all enrichment, abstraction,
+    and interrogation tasks associated with a case.
+
+    Args:
+        case_id: Case identifier (e.g., 'CASE-CLABSI-001')
+
+    Returns:
+        List of tasks with metadata
+    """
+    from pathlib import Path
+
+    try:
+        logger.info(f"Fetching tasks for case: {case_id}")
+
+        # Load case data
+        data_dir = Path(__file__).parent.parent / "data" / "mock" / "cases"
+
+        # Map case IDs to files
+        case_file_map = {
+            "CASE-CLABSI-001": "PAT-001-clabsi-positive.json",
+            "CASE-CLABSI-002": "PAT-002-clabsi-negative.json"
+        }
+
+        case_filename = case_file_map.get(case_id)
+        if not case_filename:
+            raise HTTPException(status_code=404, detail=f"Case {case_id} not found")
+
+        case_file = data_dir / case_filename
+
+        if not case_file.exists():
+            raise HTTPException(status_code=404, detail=f"Case file not found: {case_file}")
+
+        # Load structured case
+        with open(case_file, 'r') as f:
+            case_data = json.load(f)
+
+        # Extract tasks from enrichment, abstraction, and qa sections
+        tasks = []
+
+        # Enrichment task
+        if "enrichment" in case_data and "task_metadata" in case_data["enrichment"]:
+            enrichment_task = case_data["enrichment"]["task_metadata"].copy()
+            enrichment_task["section"] = "enrichment"
+            enrichment_task["summary"] = case_data["enrichment"].get("summary", {})
+            tasks.append(enrichment_task)
+
+        # Abstraction task
+        if "abstraction" in case_data and "task_metadata" in case_data["abstraction"]:
+            abstraction_task = case_data["abstraction"]["task_metadata"].copy()
+            abstraction_task["section"] = "abstraction"
+            abstraction_task["determination"] = case_data["abstraction"]["criteria_evaluation"].get("determination")
+            abstraction_task["confidence"] = case_data["abstraction"]["criteria_evaluation"].get("confidence")
+            tasks.append(abstraction_task)
+
+        # QA tasks (interrogations)
+        if case_data.get("qa") and case_data["qa"].get("qa_history"):
+            for qa_entry in case_data["qa"]["qa_history"]:
+                qa_task = qa_entry["task_metadata"].copy()
+                qa_task["section"] = "qa"
+                qa_task["question"] = qa_entry["question"]
+                qa_task["interrogation_mode"] = qa_entry["interrogation_context"]["mode"]
+                tasks.append(qa_task)
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "success": True,
+                "data": {
+                    "case_id": case_id,
+                    "task_count": len(tasks),
+                    "tasks": tasks
+                },
+                "metadata": {
+                    "request_id": f"tasks_{case_id}_{int(datetime.utcnow().timestamp())}",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "version": "1.0.0"
+                }
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to fetch tasks for case {case_id}: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "code": "TASK_FETCH_ERROR",
+                "message": str(e)
+            }
+        )
+
+
+@app.get("/v1/task/{task_id}")
+async def get_task(task_id: str):
+    """
+    Get details for a specific task.
+
+    Args:
+        task_id: Task identifier (e.g., 'clabsi.enrichment', 'clabsi.abstraction')
+
+    Returns:
+        Task metadata and related data
+    """
+    from pathlib import Path
+
+    try:
+        logger.info(f"Fetching task: {task_id}")
+
+        # Parse task_id to extract case and section
+        # Format: {concern}.{section} or interrogation.{qa_id}
+        parts = task_id.split(".")
+
+        if parts[0] == "interrogation":
+            # This is a QA task - would need to search through cases
+            # For demo, return mock data
+            return JSONResponse(
+                status_code=200,
+                content={
+                    "success": True,
+                    "data": {
+                        "task_id": task_id,
+                        "task_type": "interrogation",
+                        "status": "completed",
+                        "message": "Interrogation task details would be retrieved from QA history"
+                    },
+                    "metadata": {
+                        "request_id": f"task_{task_id}_{int(datetime.utcnow().timestamp())}",
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "version": "1.0.0"
+                    }
+                }
+            )
+
+        # Load all cases and search for task
+        data_dir = Path(__file__).parent.parent / "data" / "mock" / "cases"
+
+        for case_file in data_dir.glob("*.json"):
+            with open(case_file, 'r') as f:
+                case_data = json.load(f)
+
+            # Check enrichment task
+            if "enrichment" in case_data:
+                enrich_meta = case_data["enrichment"].get("task_metadata", {})
+                if enrich_meta.get("task_id") == task_id:
+                    return JSONResponse(
+                        status_code=200,
+                        content={
+                            "success": True,
+                            "data": {
+                                "task_metadata": enrich_meta,
+                                "section": "enrichment",
+                                "case_id": case_data.get("case_id"),
+                                "summary": case_data["enrichment"].get("summary"),
+                                "signal_groups": case_data["enrichment"].get("signal_groups"),
+                                "timeline_phases": case_data["enrichment"].get("timeline_phases")
+                            },
+                            "metadata": {
+                                "request_id": f"task_{task_id}_{int(datetime.utcnow().timestamp())}",
+                                "timestamp": datetime.utcnow().isoformat(),
+                                "version": "1.0.0"
+                            }
+                        }
+                    )
+
+            # Check abstraction task
+            if "abstraction" in case_data:
+                abstract_meta = case_data["abstraction"].get("task_metadata", {})
+                if abstract_meta.get("task_id") == task_id:
+                    return JSONResponse(
+                        status_code=200,
+                        content={
+                            "success": True,
+                            "data": {
+                                "task_metadata": abstract_meta,
+                                "section": "abstraction",
+                                "case_id": case_data.get("case_id"),
+                                "narrative": case_data["abstraction"].get("narrative"),
+                                "criteria_evaluation": case_data["abstraction"].get("criteria_evaluation"),
+                                "exclusion_analysis": case_data["abstraction"].get("exclusion_analysis")
+                            },
+                            "metadata": {
+                                "request_id": f"task_{task_id}_{int(datetime.utcnow().timestamp())}",
+                                "timestamp": datetime.utcnow().isoformat(),
+                                "version": "1.0.0"
+                            }
+                        }
+                    )
+
+        # Task not found
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to fetch task {task_id}: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "code": "TASK_FETCH_ERROR",
                 "message": str(e)
             }
         )
