@@ -33,23 +33,10 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
   });
 
   test('complete demo workflow: domain switch → select case → view details → ask question → submit feedback', async ({ page }) => {
-    console.log('\n========================================');
-    console.log('Running Complete Multi-Page Workflow Test');
-    console.log('========================================\n');
-
-    // ====================================
     // STEP 1: Verify we're on the case list page
-    // ====================================
-    console.log('[1/6] Verifying home page loaded...');
-
-    // Should be on the case list page
     await expect(page).toHaveURL('/');
-    console.log('✓ Case list page loaded');
 
-    // ====================================
     // STEP 2: Switch to CLABSI domain (if not already selected)
-    // ====================================
-    console.log('\n[2/6] Ensuring CLABSI domain is selected...');
 
     // Click the domain switcher toggle (use .first() to handle mobile + desktop versions)
     const domainToggle = page.getByTestId('domain-switcher-toggle').first();
@@ -76,12 +63,7 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
       await page.keyboard.press('Escape');
     }
 
-    console.log('✓ CLABSI domain selected');
-
-    // ====================================
     // STEP 3: Select a case card
-    // ====================================
-    console.log('\n[3/6] Selecting a case from the list...');
 
     // Wait for case cards to load
     const caseCards = page.getByTestId('case-card');
@@ -89,34 +71,24 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
 
     const cardCount = await caseCards.count();
     expect(cardCount).toBeGreaterThan(0);
-    console.log(`  Found ${cardCount} case card(s)`);
 
     // Click the first case card
     await caseCards.first().click();
 
     // Verify navigation to case view page
     await expect(page).toHaveURL(/\/case\/.+/);
-    console.log('✓ Navigated to case view page');
 
-    // ====================================
     // STEP 4: Verify patient summary and signals render
-    // ====================================
-    console.log('\n[4/6] Verifying case details loaded...');
 
     // Wait for patient summary
     const patientSummary = page.getByTestId('patient-summary');
     await patientSummary.waitFor({ state: 'visible', timeout: 10000 });
-    console.log('✓ Patient summary rendered');
 
     // Verify signals panel
     const signalList = page.getByTestId('signal-list');
     await signalList.waitFor({ state: 'visible', timeout: 5000 });
-    console.log('✓ Clinical signals rendered');
 
-    // ====================================
     // STEP 5: Ask the LLM a question
-    // ====================================
-    console.log('\n[5/6] Testing LLM Q&A panel...');
 
     // Locate LLM input
     const llmInput = page.getByTestId('llm-question-input');
@@ -125,12 +97,10 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     // Type question
     const question = 'What is the infection status?';
     await llmInput.fill(question);
-    console.log(`  Typed question: "${question}"`);
 
     // Click submit button
     const submitButton = page.getByTestId('llm-submit-button');
     await submitButton.click();
-    console.log('  Submitted question');
 
     // Wait for response to appear
     const llmResponse = page.getByTestId('llm-response');
@@ -140,31 +110,19 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     const responseText = await llmResponse.textContent();
     expect(responseText).toBeTruthy();
     expect(responseText!.length).toBeGreaterThan(10);
-    console.log(`✓ LLM response received (${responseText!.length} characters)`);
-    console.log(`  Preview: ${responseText!.substring(0, 80)}...`);
 
-    // ====================================
     // STEP 6: Submit feedback
-    // ====================================
-    console.log('\n[6/6] Submitting feedback...');
 
     // Find and click thumbs up button
     const thumbsUpButton = page.getByTestId('feedback-up');
     await thumbsUpButton.waitFor({ state: 'visible', timeout: 5000 });
     await thumbsUpButton.click();
-    console.log('  Clicked thumbs up (Approve)');
 
     // Wait a moment for submission
     await page.waitForTimeout(1000);
-    console.log('✓ Feedback submitted');
-
-    console.log('\n========================================');
-    console.log('✓ COMPLETE WORKFLOW TEST PASSED');
-    console.log('========================================\n');
   });
 
   test('verify backend API endpoints respond correctly', async ({ request }) => {
-    console.log('\n Testing backend API endpoints...');
 
     // Test 1: Context endpoint
     const contextResponse = await request.post('http://localhost:8000/api/demo/context', {
@@ -179,7 +137,6 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     expect(contextData.success).toBe(true);
     expect(contextData.data).toBeDefined();
     expect(contextData.data.context_fragments).toBeDefined();
-    console.log('✓ POST /api/demo/context (200)');
 
     // Test 2: Abstract endpoint (requires context fragments from step 1)
     const abstractResponse = await request.post('http://localhost:8000/api/demo/abstract', {
@@ -195,7 +152,6 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     expect(abstractData.success).toBe(true);
     expect(abstractData.data.summary).toBeDefined();
     expect(abstractData.data.criteria_evaluation).toBeDefined();
-    console.log('✓ POST /api/demo/abstract (200)');
 
     // Test 3: Feedback endpoint
     const feedbackResponse = await request.post('http://localhost:8000/api/demo/feedback', {
@@ -211,13 +167,9 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     const feedbackData = await feedbackResponse.json();
     expect(feedbackData.success).toBe(true);
     expect(feedbackData.data.feedback_id).toBeDefined();
-    console.log('✓ POST /api/demo/feedback (200)');
-
-    console.log('\n✓ All API endpoints responding correctly');
   });
 
   test('error handling: invalid case ID returns proper error structure', async ({ request }) => {
-    console.log('\n Testing error handling for invalid case...');
 
     const response = await request.post('http://localhost:8000/api/demo/context', {
       data: {
@@ -241,12 +193,9 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     expect(data.metadata).toBeDefined();
     expect(data.metadata.request_id).toBeDefined();
     expect(data.metadata.timestamp).toBeDefined();
-
-    console.log('✓ Invalid case ID handled correctly with proper error structure');
   });
 
   test('navigation: case list → case view → back to list', async ({ page }) => {
-    console.log('\n Testing navigation flow...');
 
     // Start on case list
     await expect(page).toHaveURL('/');
@@ -258,7 +207,6 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
 
     // Should navigate to case view
     await expect(page).toHaveURL(/\/case\/.+/);
-    console.log('✓ Navigated to case view');
 
     // Click back button
     const backButton = page.locator('button:has-text("Back to Cases")');
@@ -266,13 +214,5 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
 
     // Should return to case list
     await expect(page).toHaveURL('/');
-    console.log('✓ Navigated back to case list');
   });
-});
-
-// Test suite summary
-test.afterAll(async () => {
-  console.log('\n==========================================');
-  console.log('  CA Factory E2E Test Suite Complete');
-  console.log('==========================================\n');
 });
