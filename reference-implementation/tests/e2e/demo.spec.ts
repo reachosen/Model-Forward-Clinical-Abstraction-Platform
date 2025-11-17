@@ -65,14 +65,14 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
       await domainOption.waitFor({ state: 'visible', timeout: 2000 });
     }
 
-    // Select CLABSI if not already active
-    const isActive = await domainOption.getAttribute('disabled');
-    if (!isActive) {
+    // Select CLABSI if not already active (disabled means it's already selected)
+    const isDisabled = await domainOption.isDisabled();
+    if (!isDisabled) {
       await domainOption.click();
       // Wait for potential domain change to complete
       await page.waitForTimeout(1000);
     } else {
-      // Close dropdown if we're not changing
+      // Already selected, just close the dropdown
       await page.keyboard.press('Escape');
     }
 
