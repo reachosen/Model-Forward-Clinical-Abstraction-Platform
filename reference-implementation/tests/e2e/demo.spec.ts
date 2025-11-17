@@ -65,7 +65,7 @@ test.describe('CA Factory Demo Pipeline E2E', () => {
     await caseSelector.waitFor({ state: 'visible', timeout: 5000 });
 
     // Try dropdown selection first, fall back to clicking card/link
-    const isDrop down = await caseSelector.evaluate((el) => el.tagName === 'SELECT');
+    const isDropdown = await caseSelector.evaluate((el) => el.tagName === 'SELECT');
     if (isDropdown) {
       await caseSelector.selectOption({ label: /case-001|PAT-001/i });
     } else {
