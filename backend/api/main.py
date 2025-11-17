@@ -18,6 +18,7 @@ import uvicorn
 
 from ca_factory.core.factory import CAFactory
 from ca_factory.config.loader import ConfigLoader
+from ca_factory.adapters import CaseAdapter
 
 # Configure logging
 logging.basicConfig(
@@ -444,6 +445,9 @@ async def demo_context(request: DemoContextRequest):
     try:
         logger.info(f"Demo context request: domain={request.domain_id}, case={request.case_id}")
 
+        # Check feature flag for structured cases
+        use_structured = os.getenv("USE_STRUCTURED_CASES", "false").lower() == "true"
+
         # Load case data from mock data directory
         data_dir = Path(__file__).parent.parent / "data" / "mock" / "cases"
 
@@ -466,20 +470,39 @@ async def demo_context(request: DemoContextRequest):
         with open(case_file, 'r') as f:
             case_data = json.load(f)
 
-        # Extract patient info
+        # Transform to structured format if feature flag is enabled
+        if use_structured:
+            case_data = CaseAdapter.to_new_structure(case_data)
+            logger.info(f"Transformed case to structured format (4-section model)")
+
+        # Extract patient info (works for both structured and flat formats)
+        if use_structured:
+            # Structured format: patient section contains all patient data
+            patient_section = case_data.get("patient", {})
+            case_metadata = patient_section.get("case_metadata", {})
+            demographics = patient_section.get("demographics", {})
+            clinical_notes = patient_section.get("clinical_notes", [])
+            lab_results = patient_section.get("lab_results", [])
+        else:
+            # Flat format: all at root level
+            case_metadata = case_data.get("case_metadata", {})
+            demographics = case_data.get("patient_demographics", {})
+            clinical_notes = case_data.get("clinical_notes", [])
+            lab_results = case_data.get("lab_results", [])
+
         patient_info = {
             "case_id": request.case_id,
-            "patient_id": case_data.get("case_metadata", {}).get("patient_id", "PAT-001"),
-            "mrn": "MRN-" + case_data.get("case_metadata", {}).get("patient_id", "001")[-3:],
-            "age": 58,
-            "gender": "M"
+            "patient_id": case_metadata.get("patient_id", "PAT-001"),
+            "mrn": "MRN-" + case_metadata.get("patient_id", "001")[-3:],
+            "age": demographics.get("age", 58),
+            "gender": demographics.get("gender", "M")
         }
 
         # Create context fragments from clinical notes and lab results
         context_fragments = []
 
         # Add clinical notes as context
-        for note in case_data.get("clinical_notes", [])[:3]:
+        for note in clinical_notes[:3]:
             context_fragments.append({
                 "fragment_id": note.get("note_id", "note-unknown"),
                 "type": "clinical_note",
@@ -490,7 +513,7 @@ async def demo_context(request: DemoContextRequest):
             })
 
         # Add lab results as context
-        for lab in case_data.get("lab_results", [])[:2]:
+        for lab in lab_results[:2]:
             context_fragments.append({
                 "fragment_id": lab.get("test_id", "lab-unknown"),
                 "type": "lab_result",
@@ -499,16 +522,26 @@ async def demo_context(request: DemoContextRequest):
                 "relevance_score": 0.88
             })
 
+        # Build response data
+        response_data = {
+            "domain_id": request.domain_id,
+            "case_id": request.case_id,
+            "patient": patient_info,
+            "context_fragments": context_fragments
+        }
+
+        # If using structured format, include full case data
+        if use_structured:
+            response_data["case_data"] = case_data
+            response_data["format"] = "structured"
+        else:
+            response_data["format"] = "flat"
+
         return JSONResponse(
             status_code=200,
             content={
                 "success": True,
-                "data": {
-                    "domain_id": request.domain_id,
-                    "case_id": request.case_id,
-                    "patient": patient_info,
-                    "context_fragments": context_fragments
-                },
+                "data": response_data,
                 "metadata": {
                     "request_id": f"context_{request.case_id}_{int(datetime.utcnow().timestamp())}",
                     "timestamp": datetime.utcnow().isoformat(),
