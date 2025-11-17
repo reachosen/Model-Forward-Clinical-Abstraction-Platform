@@ -1,0 +1,37 @@
+/**
+ * Badge component styles
+ */
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ui-badge-default {
+  background-color: #111827;
+  color: white;
+}
+
+.ui-badge-secondary {
+  background-color: #f3f4f6;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+}
+
+.ui-badge-outline {
+  background-color: transparent;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+}
+
+.ui-badge-destructive {
+  background-color: #ef4444;
+  color: white;
+}

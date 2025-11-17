@@ -1,0 +1,63 @@
+/**
+ * Task Metadata Badge styles
+ */
+
+.task-metadata-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background-color: rgba(243, 244, 246, 0.5);
+  transition: background-color 0.2s;
+}
+
+.task-metadata-badge.clickable {
+  cursor: pointer;
+}
+
+.task-metadata-badge.clickable:hover {
+  background-color: rgba(243, 244, 246, 0.7);
+}
+
+.task-metadata-badge .icon-info {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.task-metadata-badge .metadata-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.task-metadata-badge .task-label {
+  color: #111827;
+  font-weight: 500;
+}
+
+.task-metadata-badge .separator {
+  color: #6b7280;
+}
+
+.task-metadata-badge .metadata-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #6b7280;
+}
+
+.task-metadata-badge .version-badge,
+.task-metadata-badge .mode-badge,
+.task-metadata-badge .confidence-badge,
+.task-metadata-badge .demo-badge {
+  font-size: 11px;
+}
+
+.task-metadata-badge .mode-badge {
+  display: flex;
+  align-items: center;
+}

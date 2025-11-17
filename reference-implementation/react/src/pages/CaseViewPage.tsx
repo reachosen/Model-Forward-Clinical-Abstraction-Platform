@@ -17,6 +17,10 @@ import QAPanel from '../components/QAPanel';
 import AskTheCasePanel from '../components/AskTheCasePanel';
 import FeedbackPanel from '../components/FeedbackPanel';
 import InterrogationPanel from '../components/InterrogationPanel';
+import { PipelineStepper } from '../components/PipelineStepper';
+import { TaskMetadataBadge } from '../components/TaskMetadataBadge';
+import { EnrichmentSummaryPanel } from '../components/EnrichmentSummaryPanel';
+import { PipelineStage, EnrichmentSummary } from '../types';
 
 import './CaseViewPage.css';
 
@@ -57,6 +61,51 @@ const CaseViewPage: React.FC = () => {
     }
   };
 
+  // Build pipeline stages from structured case data
+  const buildPipelineStages = (): PipelineStage[] => {
+    if (!structuredCase) return [];
+
+    const stages: PipelineStage[] = [
+      {
+        id: 'context',
+        label: 'Context',
+        status: 'completed', // Patient data always loaded
+      },
+      {
+        id: 'enrichment',
+        label: 'Enrichment',
+        status: structuredCase.enrichment ? structuredCase.enrichment.task_metadata.status : 'pending',
+        taskMetadata: structuredCase.enrichment?.task_metadata,
+      },
+      {
+        id: 'abstraction',
+        label: 'Abstraction',
+        status: structuredCase.abstraction ? structuredCase.abstraction.task_metadata.status : 'pending',
+        taskMetadata: structuredCase.abstraction?.task_metadata,
+      },
+      {
+        id: 'feedback',
+        label: 'Feedback',
+        status: structuredCase.qa && structuredCase.qa.qa_history.length > 0 ? 'completed' : 'pending',
+      },
+    ];
+
+    return stages;
+  };
+
+  // Build enrichment summary for EnrichmentSummaryPanel
+  const buildEnrichmentSummary = (): EnrichmentSummary | null => {
+    if (!structuredCase?.enrichment) return null;
+
+    return {
+      signals_identified: structuredCase.enrichment.summary.signals_identified,
+      signal_groups_count: structuredCase.enrichment.signal_groups.length,
+      timeline_phases_identified: structuredCase.enrichment.timeline_phases.length,
+      key_findings: structuredCase.enrichment.summary.key_findings,
+      confidence: structuredCase.enrichment.summary.confidence,
+    };
+  };
+
   if (loading) {
     return (
       <div className="case-view-page">
@@ -76,6 +125,9 @@ const CaseViewPage: React.FC = () => {
     );
   }
 
+  const pipelineStages = buildPipelineStages();
+  const enrichmentSummary = buildEnrichmentSummary();
+
   return (
     <div className="case-view-page">
       <div className="page-header">
@@ -85,6 +137,22 @@ const CaseViewPage: React.FC = () => {
         <h1>{config.episode_label} - {caseData.case_info.name}</h1>
         <div className="mode-badge">{caseData.mode} Mode</div>
       </div>
+
+      {/* Pipeline Stepper */}
+      {pipelineStages.length > 0 && (
+        <PipelineStepper
+          stages={pipelineStages}
+          currentStage={
+            structuredCase?.abstraction ? 'abstraction' :
+            structuredCase?.enrichment ? 'enrichment' : 'context'
+          }
+          onStageClick={(stageId) => {
+            // Scroll to the corresponding section
+            const element = document.getElementById(stageId);
+            element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}
+        />
+      )}
 
       {/* 80/20 Summary Strip */}
       <CaseSummaryStrip
@@ -97,7 +165,7 @@ const CaseViewPage: React.FC = () => {
       <div className="case-grid">
         {/* Left column */}
         <div className="left-column">
-          <div id="overview">
+          <div id="context">
             <CaseOverview summary={caseData.summary} caseInfo={caseData.case_info} />
           </div>
           <div id="timeline">
@@ -110,7 +178,19 @@ const CaseViewPage: React.FC = () => {
 
         {/* Middle column */}
         <div className="middle-column">
-          <div id="signals">
+          <div id="enrichment">
+            {/* Task metadata badge for enrichment */}
+            {structuredCase?.enrichment && (
+              <TaskMetadataBadge
+                taskMetadata={structuredCase.enrichment.task_metadata}
+              />
+            )}
+
+            {/* Enrichment summary panel */}
+            {enrichmentSummary && (
+              <EnrichmentSummaryPanel summary={enrichmentSummary} />
+            )}
+
             <SignalsPanel
               signals={caseData.signals}
               signalGroups={structuredCase?.enrichment?.signal_groups}
@@ -162,7 +242,14 @@ const CaseViewPage: React.FC = () => {
 
         {/* Right column */}
         <div className="right-column">
-          <div id="qa">
+          <div id="abstraction">
+            {/* Task metadata badge for abstraction */}
+            {structuredCase?.abstraction && (
+              <TaskMetadataBadge
+                taskMetadata={structuredCase.abstraction.task_metadata}
+              />
+            )}
+
             <QAPanel qaResult={caseData.qa_result} />
             <InterrogationPanel qaSection={structuredCase?.qa} />
             <AskTheCasePanel

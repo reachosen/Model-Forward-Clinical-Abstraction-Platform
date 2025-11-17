@@ -203,8 +203,8 @@ export const api = {
       group.signals.map((signal) => ({
         signal_id: signal.signal_id,
         signal_name: signal.signal_name,
-        signal_type: this.mapSignalType(signal.signal_type as string),
-        value: signal.value,
+        signal_type: this.mapSignalType(group.signal_type),
+        value: typeof signal.value === 'boolean' ? String(signal.value) : signal.value,
         severity: (signal.severity as any) || 'INFO',
         rationale: `${group.signal_type} signal`,
         timestamp: signal.timestamp,

@@ -164,12 +164,14 @@ export interface TaskMetadata {
   task_id: string;
   task_type: string; // 'enrichment' | 'abstraction' | 'interrogation'
   prompt_version: string;
-  mode: 'batch' | 'interactive';
+  mode: 'batch' | 'interactive' | 'on_demand';
   executed_at: string; // ISO timestamp
   executed_by: string; // 'system' | user_id
   status: 'completed' | 'in_progress' | 'failed';
   duration_ms?: number;
   token_count?: number;
+  confidence?: number;
+  demo_mode?: boolean;
 }
 
 /**
@@ -295,6 +297,17 @@ export interface SignalGroup {
 }
 
 /**
+ * Enrichment summary statistics
+ */
+export interface EnrichmentSummary {
+  signals_identified: number;
+  signal_groups_count: number;
+  timeline_phases_identified: number;
+  key_findings: string[];
+  confidence: number;
+}
+
+/**
  * Enrichment section - computed signal groups and timeline
  */
 export interface EnrichmentSection {
@@ -364,4 +377,14 @@ export interface StructuredCase {
   enrichment: EnrichmentSection;
   abstraction: AbstractionSection;
   qa: QASection | null;
+}
+
+/**
+ * Pipeline stage for tracking progress through abstraction pipeline
+ */
+export interface PipelineStage {
+  id: 'context' | 'enrichment' | 'abstraction' | 'feedback';
+  label: string;
+  status: 'completed' | 'in_progress' | 'failed' | 'pending';
+  taskMetadata?: TaskMetadata;
 }
