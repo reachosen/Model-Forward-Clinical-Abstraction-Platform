@@ -26,7 +26,7 @@ function getTaskStateDisplay(stage: string, status: string, version: string) {
   const labels = {
     context: "Context Ready",
     enrichment: `Enriched ${version}`,
-    abstraction: `Abstracted ${version}`,
+    abstraction: `Reviewed ${version}`,
     feedback: "Feedback Complete"
   };
 

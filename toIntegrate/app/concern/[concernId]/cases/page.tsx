@@ -157,7 +157,7 @@ export default function CaseListPage({ params }: { params: { concernId: string }
             <SelectItem value="all">All States</SelectItem>
             <SelectItem value="context">Context Ready</SelectItem>
             <SelectItem value="enrichment">Enriched</SelectItem>
-            <SelectItem value="abstraction">Abstracted</SelectItem>
+            <SelectItem value="abstraction">Reviewed</SelectItem>
             <SelectItem value="feedback">Complete</SelectItem>
           </SelectContent>
         </Select>

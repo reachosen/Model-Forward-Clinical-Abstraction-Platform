@@ -136,3 +136,24 @@ export interface ConcernInfo {
   description: string;
   demo_case_id?: string;
 }
+
+export interface TaskHistoryEntry {
+  task_metadata: TaskMetadata;
+  result_summary: string;
+  changes_from_previous?: string;
+  performance_metrics: {
+    duration_ms: number;
+    token_count: number;
+    confidence: number;
+  };
+}
+
+export interface CriterionDetail {
+  criterion_id: string;
+  criterion_text: string;
+  met: boolean;
+  evidence: string;
+  confidence: number;
+  source_signals: string[];
+  task_attribution: TaskMetadata;
+}

@@ -33,7 +33,7 @@ export default function HomePage() {
       <div className="space-y-2">
         <h1 className="text-4xl font-bold tracking-tight">CA Factory</h1>
         <p className="text-lg text-muted-foreground">
-          Clinical Abstraction Pipeline for Healthcare-Associated Infections
+          Clinical Review Pipeline for Healthcare-Associated Infections
         </p>
       </div>
 
@@ -60,7 +60,7 @@ export default function HomePage() {
 
       {/* Concern Selection */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-semibold">Select a Concern</h2>
+        <h2 className="text-2xl font-semibold">Select a HAC</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {concerns.map((concern) => (
             <ConcernCard key={concern.concern_id} concern={concern} />

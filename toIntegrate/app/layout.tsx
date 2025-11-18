@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'CA Factory - Clinical Review Pipeline',
+  description: 'Clinical review pipeline for healthcare-associated infections',
   generator: 'v0.app',
   icons: {
     icon: [
