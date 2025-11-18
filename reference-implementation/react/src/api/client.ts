@@ -24,6 +24,263 @@ const apiClient = axios.create({
   },
 });
 
+// Mock data for demo cases (fallback when backend is unavailable)
+const mockDemoCases: Record<string, StructuredCase> = {
+  clabsi_demo_001: {
+    case_id: "clabsi_demo_001",
+    concern_id: "clabsi",
+    patient: {
+      case_metadata: {
+        case_id: "clabsi_demo_001",
+        patient_id: "clabsi_demo_001",
+        encounter_id: "enc_demo_001",
+        created_date: "2024-01-15T00:00:00Z",
+        infection_type: "CLABSI",
+        facility_id: "DEMO_FACILITY",
+        unit: "ICU"
+      },
+      demographics: {
+        age: 68,
+        gender: "M",
+        mrn: "DEMO-001"
+      },
+      devices: {
+        "central_line": {
+          insertion_date: "2024-01-15",
+          insertion_time: "08:00",
+          line_type: "Central Line",
+          insertion_site: "Right subclavian",
+          removal_date: null,
+          device_days_at_event: 5
+        }
+      },
+      lab_results: [
+        {
+          test_id: "lab_001",
+          test_type: "Blood Culture",
+          collection_date: "2024-01-20",
+          collection_time: "06:00",
+          sample_type: "Blood",
+          organism: "S. aureus",
+          organism_type: "Bacteria",
+          source_id: "BC-20240120-001"
+        }
+      ],
+      clinical_signals: [],
+      clinical_notes: [],
+      clinical_events: []
+    },
+    enrichment: {
+      task_metadata: {
+        task_id: "enrich_20240120_100000",
+        task_type: "enrichment",
+        prompt_version: "v1.0",
+        mode: "batch",
+        executed_at: "2024-01-20T10:00:00Z",
+        executed_by: "system",
+        status: "completed",
+        confidence: 0.89,
+        duration_ms: 4200,
+        token_count: 3500,
+        demo_mode: true
+      },
+      summary: {
+        signals_identified: 12,
+        key_findings: [
+          "Central line placed on Day 0 in ICU setting",
+          "S. aureus bacteremia identified on Day 5 post-insertion",
+          "No alternative source of infection documented",
+          "Patient developed fever and leukocytosis on Day 4"
+        ],
+        confidence: 0.89
+      },
+      signal_groups: [
+        {
+          signal_type: "Device Events",
+          group_confidence: 0.92,
+          signals: [
+            {
+              signal_id: "sig_001",
+              signal_name: "Central Line Insertion",
+              value: "Right subclavian central line placed",
+              timestamp: "2024-01-15T08:00:00Z",
+              confidence: 0.95
+            },
+            {
+              signal_id: "sig_002",
+              signal_name: "Line Site Assessment",
+              value: "Site clean, no drainage noted",
+              timestamp: "2024-01-16T08:00:00Z",
+              confidence: 0.88
+            }
+          ]
+        },
+        {
+          signal_type: "Laboratory Results",
+          group_confidence: 0.94,
+          signals: [
+            {
+              signal_id: "sig_003",
+              signal_name: "Blood Culture - Positive",
+              value: "S. aureus identified in central and peripheral cultures",
+              timestamp: "2024-01-20T06:00:00Z",
+              confidence: 0.98
+            },
+            {
+              signal_id: "sig_004",
+              signal_name: "WBC Elevation",
+              value: "15.2 K/uL",
+              timestamp: "2024-01-19T07:00:00Z",
+              confidence: 0.91
+            }
+          ]
+        },
+        {
+          signal_type: "Clinical Signs",
+          group_confidence: 0.87,
+          signals: [
+            {
+              signal_id: "sig_005",
+              signal_name: "Fever Spike",
+              value: "Temperature 39.1°C",
+              timestamp: "2024-01-19T14:30:00Z",
+              confidence: 0.92
+            },
+            {
+              signal_id: "sig_006",
+              signal_name: "Tachycardia",
+              value: "Heart rate 118 bpm",
+              timestamp: "2024-01-19T14:30:00Z",
+              confidence: 0.84
+            }
+          ]
+        }
+      ],
+      timeline_phases: [
+        {
+          phase_id: "phase_001",
+          phase_name: "Pre-Infection Period",
+          start_date: "2024-01-15T00:00:00Z",
+          end_date: "2024-01-18T23:59:59Z",
+          events_in_phase: 8,
+          significance: "low"
+        },
+        {
+          phase_id: "phase_002",
+          phase_name: "Clinical Deterioration",
+          start_date: "2024-01-19T00:00:00Z",
+          end_date: "2024-01-19T23:59:59Z",
+          events_in_phase: 12,
+          significance: "high"
+        },
+        {
+          phase_id: "phase_003",
+          phase_name: "Infection Confirmation",
+          start_date: "2024-01-20T00:00:00Z",
+          end_date: "2024-01-20T23:59:59Z",
+          events_in_phase: 6,
+          significance: "high"
+        }
+      ]
+    },
+    abstraction: {
+      task_metadata: {
+        task_id: "abstract_20240120_143000",
+        task_type: "abstraction",
+        prompt_version: "v1.0",
+        mode: "interactive",
+        executed_at: "2024-01-20T14:30:00Z",
+        executed_by: "nurse.jane",
+        status: "completed",
+        confidence: 0.92,
+        duration_ms: 6800,
+        token_count: 5200,
+        demo_mode: true
+      },
+      narrative: "68-year-old male patient with central line placement on admission to ICU. Developed S. aureus bacteremia on Day 5 post-insertion. Clinical presentation consistent with CLABSI criteria with no alternative infection source identified. Patient exhibited fever (39.1°C), leukocytosis (WBC 15.2), and positive blood cultures from both central and peripheral draws with matching organisms.",
+      criteria_evaluation: {
+        determination: "CLABSI_CONFIRMED",
+        confidence: 0.92,
+        criteria_met: {
+          "criterion_1": {
+            met: true,
+            evidence: "Central line in place for >2 calendar days before positive culture"
+          },
+          "criterion_2": {
+            met: true,
+            evidence: "Recognized pathogen (S. aureus) identified in blood culture"
+          },
+          "criterion_3": {
+            met: true,
+            evidence: "Matching organisms in central and peripheral blood cultures"
+          },
+          "criterion_4": {
+            met: true,
+            evidence: "Clinical signs of infection present (fever, elevated WBC)"
+          },
+          "criterion_5": {
+            met: true,
+            evidence: "No alternative source of bloodstream infection documented"
+          }
+        },
+        total_criteria: 5,
+        criteria_met_count: 5
+      },
+      exclusion_analysis: []
+    },
+    qa: {
+      validation_status: "passed",
+      validation_errors: [],
+      qa_history: [
+        {
+          qa_id: "qa_001",
+          question: "Why was the patient determined to meet CLABSI criteria?",
+          answer: "The patient met all five NHSN CLABSI criteria: (1) Central line was in place for >2 days before the positive culture (Day 0 to Day 5), (2) S. aureus, a recognized pathogen, was identified, (3) Matching organisms were found in both central and peripheral cultures, (4) Clinical signs of infection were present including fever of 39.1°C and elevated WBC of 15.2, and (5) No alternative source of bloodstream infection was documented in the clinical record.",
+          interrogation_context: {
+            mode: "explain",
+            target_type: "overall",
+            target_id: "clabsi_demo_001"
+          },
+          task_metadata: {
+            task_id: "qa_20240120_150000",
+            task_type: "interrogation",
+            prompt_version: "v1.0",
+            mode: "interactive",
+            executed_at: "2024-01-20T15:00:00Z",
+            executed_by: "nurse.jane",
+            status: "completed",
+            demo_mode: true
+          },
+          citations: [],
+          confidence: 0.94
+        },
+        {
+          qa_id: "qa_002",
+          question: "What evidence supports that there was no alternative source?",
+          answer: "The clinical documentation was reviewed for alternative infection sources. No urinary tract infection, pneumonia, surgical site infection, or skin/soft tissue infection was documented. The chest X-ray showed no infiltrates, urinalysis was negative, and there were no surgical wounds or skin lesions noted in the nursing assessments.",
+          interrogation_context: {
+            mode: "validate",
+            target_type: "criterion",
+            target_id: "criterion_5"
+          },
+          task_metadata: {
+            task_id: "qa_20240120_151500",
+            task_type: "interrogation",
+            prompt_version: "v1.0",
+            mode: "interactive",
+            executed_at: "2024-01-20T15:15:00Z",
+            executed_by: "nurse.jane",
+            status: "completed",
+            demo_mode: true
+          },
+          citations: [],
+          confidence: 0.88
+        }
+      ]
+    }
+  }
+};
+
 export const api = {
   /**
    * Get list of all available cases
@@ -53,16 +310,28 @@ export const api = {
    * Get structured case (4-section model) via demo/context endpoint
    */
   async getStructuredCase(domainId: string, caseId: string): Promise<StructuredCase> {
-    const response = await apiClient.post('/api/demo/context', {
-      domain_id: domainId,
-      case_id: caseId,
-    });
+    try {
+      const response = await apiClient.post('/api/demo/context', {
+        domain_id: domainId,
+        case_id: caseId,
+      });
 
-    if (response.data.success && response.data.data.case_data) {
-      return response.data.data.case_data;
+      if (response.data.success && response.data.data.case_data) {
+        return response.data.data.case_data;
+      }
+
+      throw new Error('Invalid response format');
+    } catch (error) {
+      // Fallback to mock data for demo cases when backend is unavailable
+      console.log(`Backend unavailable, using mock data for ${caseId}`);
+      const mockCase = mockDemoCases[caseId];
+
+      if (mockCase) {
+        return mockCase;
+      }
+
+      throw new Error('Failed to load structured case - backend unavailable and no mock data found');
     }
-
-    throw new Error('Failed to load structured case');
   },
 
   /**
