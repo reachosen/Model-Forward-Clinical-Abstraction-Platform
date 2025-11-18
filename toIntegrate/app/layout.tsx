@@ -1,15 +1,14 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { Navigation } from '@/components/navigation'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'CA Factory - Clinical Review Pipeline',
-  description: 'Clinical review pipeline for healthcare-associated infections',
+  title: 'v0 App',
+  description: 'Created with v0',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -38,10 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        <Navigation />
-        <main className="min-h-[calc(100vh-4rem)]">
-          {children}
-        </main>
+        {children}
         <Analytics />
       </body>
     </html>
