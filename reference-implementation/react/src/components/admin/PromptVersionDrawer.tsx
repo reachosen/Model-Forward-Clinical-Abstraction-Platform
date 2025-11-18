@@ -1,28 +1,61 @@
 /**
  * Prompt Version Drawer Component
- * Shows read-only details of a specific prompt version
- * Phase 1: Read-only with disabled Edit/Promote button
+ * Shows prompt version details with view and edit modes
+ * Phase 2: Full edit and version management capabilities
  */
 
-import React from 'react';
-import { X, Info, Calendar, Activity, TrendingUp, AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Info, Calendar, Activity, TrendingUp, Edit2, CheckCircle2 } from 'lucide-react';
 import { PromptVersion, TaskDefinition } from '../../types';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { formatDate } from '../../lib/utils';
+import { PromptEditor } from './PromptEditor';
+import { promptStoreAPI } from '../../api/promptStore';
 import './PromptVersionDrawer.css';
 
 interface PromptVersionDrawerProps {
   version: PromptVersion | null;
   task: TaskDefinition | null;
   onClose: () => void;
+  onUpdate?: () => void;
 }
 
-export function PromptVersionDrawer({ version, task, onClose }: PromptVersionDrawerProps) {
+export function PromptVersionDrawer({ version, task, onClose, onUpdate }: PromptVersionDrawerProps) {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isPromoting, setIsPromoting] = useState(false);
+
   if (!version || !task) {
     return null;
   }
+
+  const handleSave = async (updates: {
+    system_prompt: string;
+    task_specific_additions?: string;
+    changelog: string;
+    status: 'stable' | 'experimental' | 'deprecated';
+  }) => {
+    await promptStoreAPI.updatePromptVersion(task.task_id, version.version_id, updates);
+    setIsEditMode(false);
+    if (onUpdate) onUpdate();
+  };
+
+  const handlePromote = async () => {
+    setIsPromoting(true);
+    try {
+      await promptStoreAPI.promoteVersion(task.task_id, version.version_id);
+      if (onUpdate) onUpdate();
+    } catch (error) {
+      console.error('Failed to promote version:', error);
+    } finally {
+      setIsPromoting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditMode(false);
+  };
 
   const getStatusColor = (status: PromptVersion['status']) => {
     switch (status) {
@@ -34,6 +67,23 @@ export function PromptVersionDrawer({ version, task, onClose }: PromptVersionDra
         return 'destructive';
     }
   };
+
+  // If in edit mode, show the editor
+  if (isEditMode) {
+    return (
+      <>
+        <div className="drawer-overlay" onClick={handleCancel} />
+        <div className="prompt-version-drawer">
+          <PromptEditor
+            version={version}
+            task={task}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -194,13 +244,6 @@ export function PromptVersionDrawer({ version, task, onClose }: PromptVersionDra
             </Card>
           )}
 
-          {/* Phase 2 Notice */}
-          <div className="phase2-notice">
-            <AlertCircle size={16} />
-            <span>
-              Editing and version management will be available in Phase 2
-            </span>
-          </div>
         </div>
 
         {/* Footer Actions */}
@@ -208,13 +251,30 @@ export function PromptVersionDrawer({ version, task, onClose }: PromptVersionDra
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
-          <Button
-            variant="default"
-            disabled
-            title="Phase 2: Prompt management and version control"
-          >
-            Edit / Promote Version
-          </Button>
+          <div className="footer-actions-right">
+            <Button
+              variant="outline"
+              onClick={() => setIsEditMode(true)}
+              title="Edit this prompt version"
+            >
+              <Edit2 size={16} />
+              Edit Version
+            </Button>
+            {!version.is_active && (
+              <Button
+                variant="default"
+                onClick={handlePromote}
+                disabled={isPromoting}
+                title="Promote this version to active"
+              >
+                <CheckCircle2 size={16} />
+                {isPromoting ? 'Promoting...' : 'Promote to Active'}
+              </Button>
+            )}
+            {version.is_active && (
+              <Badge variant="default">Currently Active</Badge>
+            )}
+          </div>
         </div>
       </div>
     </>

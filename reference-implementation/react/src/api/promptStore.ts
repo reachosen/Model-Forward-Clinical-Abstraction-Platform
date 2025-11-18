@@ -722,5 +722,110 @@ export const promptStoreAPI = {
     const task = await this.getTask(taskId);
     if (!task) return null;
     return task.prompt_versions.find(v => v.version_id === versionId) || null;
+  },
+
+  /**
+   * Create a new prompt version for a task
+   */
+  async createPromptVersion(
+    taskId: string,
+    versionData: {
+      system_prompt: string;
+      task_specific_additions?: string;
+      changelog: string;
+      status: 'stable' | 'experimental' | 'deprecated';
+    }
+  ): Promise<PromptVersion> {
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const task = await this.getTask(taskId);
+    if (!task) throw new Error('Task not found');
+
+    // Generate new version ID
+    const existingVersions = task.prompt_versions.map(v => v.version_id);
+    const versionNumbers = existingVersions
+      .map(v => parseFloat(v.replace('v', '')))
+      .filter(n => !isNaN(n));
+    const nextVersion = Math.max(...versionNumbers) + 0.1;
+    const newVersionId = `v${nextVersion.toFixed(1)}`;
+
+    const newVersion: PromptVersion = {
+      version_id: newVersionId,
+      status: versionData.status,
+      created_at: new Date().toISOString(),
+      is_active: false,
+      system_prompt: versionData.system_prompt,
+      task_specific_additions: versionData.task_specific_additions,
+      changelog: versionData.changelog,
+      cases_run: 0,
+      last_used_at: undefined,
+      performance_metrics: undefined
+    };
+
+    // Add to task's prompt versions
+    task.prompt_versions.unshift(newVersion);
+
+    return newVersion;
+  },
+
+  /**
+   * Update an existing prompt version
+   */
+  async updatePromptVersion(
+    taskId: string,
+    versionId: string,
+    updates: {
+      system_prompt?: string;
+      task_specific_additions?: string;
+      changelog?: string;
+      status?: 'stable' | 'experimental' | 'deprecated';
+    }
+  ): Promise<PromptVersion> {
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const version = await this.getPromptVersion(taskId, versionId);
+    if (!version) throw new Error('Version not found');
+
+    // Apply updates
+    if (updates.system_prompt !== undefined) version.system_prompt = updates.system_prompt;
+    if (updates.task_specific_additions !== undefined) version.task_specific_additions = updates.task_specific_additions;
+    if (updates.changelog !== undefined) version.changelog = updates.changelog;
+    if (updates.status !== undefined) version.status = updates.status;
+
+    return version;
+  },
+
+  /**
+   * Promote a version to active status
+   */
+  async promoteVersion(taskId: string, versionId: string): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const task = await this.getTask(taskId);
+    if (!task) throw new Error('Task not found');
+
+    // Deactivate all versions
+    task.prompt_versions.forEach(v => {
+      v.is_active = false;
+    });
+
+    // Activate the target version
+    const targetVersion = task.prompt_versions.find(v => v.version_id === versionId);
+    if (!targetVersion) throw new Error('Version not found');
+
+    targetVersion.is_active = true;
+    task.active_version = versionId;
+  },
+
+  /**
+   * Deactivate a version
+   */
+  async deactivateVersion(taskId: string, versionId: string): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const version = await this.getPromptVersion(taskId, versionId);
+    if (!version) throw new Error('Version not found');
+
+    version.is_active = false;
   }
 };

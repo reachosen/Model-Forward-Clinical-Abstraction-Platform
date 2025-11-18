@@ -1,0 +1,114 @@
+/* Prompt Editor Styles */
+
+.prompt-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-surface);
+}
+
+.prompt-editor-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.prompt-editor-header h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.prompt-editor-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.prompt-editor-form {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.field-error {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--color-destructive);
+}
+
+.field-hint {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.error-message {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--color-destructive-bg);
+  border: 1px solid var(--color-destructive);
+  border-radius: var(--radius-md);
+  color: var(--color-destructive);
+  font-size: 0.875rem;
+}
+
+.status-select {
+  width: 100%;
+  max-width: 200px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.status-select:focus {
+  border-color: var(--color-primary);
+}
+
+.status-select:hover {
+  border-color: var(--color-border-hover);
+}
+
+textarea.error {
+  border-color: var(--color-destructive);
+}
+
+textarea.error:focus {
+  border-color: var(--color-destructive);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.prompt-editor-footer {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .status-select {
+    background: var(--color-surface-dark);
+    color: var(--color-text-primary-dark);
+  }
+}

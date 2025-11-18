@@ -209,13 +209,20 @@
 
 .drawer-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   gap: 12px;
   padding: 20px 24px;
   border-top: 1px solid #e5e7eb;
   background: white;
   position: sticky;
   bottom: 0;
+}
+
+.footer-actions-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 /* Dark mode support */

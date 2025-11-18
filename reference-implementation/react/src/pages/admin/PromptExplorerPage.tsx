@@ -50,6 +50,24 @@ const PromptExplorerPage: React.FC = () => {
     setSelectedTask(null);
   };
 
+  const handleUpdate = async () => {
+    // Reload concerns to reflect changes
+    await loadConcerns();
+    // Keep the drawer open but refresh the version data
+    if (selectedTask && selectedVersion) {
+      const updatedTask = await promptStoreAPI.getTask(selectedTask.task_id);
+      if (updatedTask) {
+        const updatedVersion = updatedTask.prompt_versions.find(
+          v => v.version_id === selectedVersion.version_id
+        );
+        if (updatedVersion) {
+          setSelectedVersion(updatedVersion);
+          setSelectedTask(updatedTask);
+        }
+      }
+    }
+  };
+
   const selectedConcern = concerns.find(c => c.concern_id === selectedConcernId);
 
   if (loading) {
@@ -132,6 +150,7 @@ const PromptExplorerPage: React.FC = () => {
           version={selectedVersion}
           task={selectedTask}
           onClose={handleCloseDrawer}
+          onUpdate={handleUpdate}
         />
       )}
     </div>
