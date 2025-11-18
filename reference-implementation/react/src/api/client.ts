@@ -87,7 +87,7 @@ const mockDemoCases: Record<string, StructuredCase> = {
       summary: {
         signals_identified: 12,
         signal_groups_count: 3,
-        timeline_phases_identified: 2,
+        timeline_phases_identified: 3,
         key_findings: [
           "Central line placed on Day 0 in ICU setting",
           "S. aureus bacteremia identified on Day 5 post-insertion",
