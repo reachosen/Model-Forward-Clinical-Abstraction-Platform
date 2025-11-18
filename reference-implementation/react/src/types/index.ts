@@ -388,3 +388,16 @@ export interface PipelineStage {
   status: 'completed' | 'in_progress' | 'failed' | 'pending';
   taskMetadata?: TaskMetadata;
 }
+
+/**
+ * Criterion detail for abstraction checklist
+ */
+export interface CriterionDetail {
+  criterion_id: string;
+  criterion_text: string;
+  met: boolean;
+  evidence: string;
+  confidence: number;
+  source_signals: string[];
+  task_attribution: TaskMetadata;
+}

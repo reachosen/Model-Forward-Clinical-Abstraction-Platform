@@ -1,104 +1,114 @@
 /**
  * Timeline Panel Component
- * Displays clinical timeline with key events
- * Updated to support timeline_phases from enrichment section
+ * Displays timeline phases with date ranges and significance
+ * Adapted from Vercel UI for Create React App
  */
 
 import React from 'react';
-import { TimelineEvent, EnrichmentSection } from '../types';
+import { Calendar, Clock } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
+import { Badge } from './ui/Badge';
+import { Separator } from './ui/Separator';
+import { cn } from '../lib/utils';
 import './TimelinePanel.css';
 
-interface TimelinePanelProps {
-  timeline?: TimelineEvent[];
-  timelinePhases?: EnrichmentSection['timeline_phases']; // Optional: from enrichment section
+export interface TimelinePhase {
+  phase_id?: string;
+  phase_name: string;
+  start_date: string;
+  end_date: string;
+  day_number?: number;
+  events?: string[];
+  events_in_phase?: number;
+  description?: string;
+  significance?: 'high' | 'medium' | 'low';
 }
 
-const TimelinePanel: React.FC<TimelinePanelProps> = ({ timeline, timelinePhases }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
+interface TimelinePanelProps {
+  timelinePhases: TimelinePhase[];
+}
+
+export function TimelinePanel({ timelinePhases }: TimelinePanelProps) {
+  const formatDateRange = (start: string, end: string) => {
+    const startDate = new Date(start).toLocaleDateString('en-US', {
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+      day: 'numeric'
     });
+    const endDate = new Date(end).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
+    return `${startDate} - ${endDate}`;
   };
 
-  const getSeverityIcon = (severity: string) => {
-    switch (severity) {
-      case 'CRITICAL':
-        return '🔴';
-      case 'WARNING':
-        return '🟠';
+  const getPhaseColorClass = (significance?: string) => {
+    switch (significance?.toLowerCase()) {
+      case 'high':
+        return 'phase-high';
+      case 'medium':
+        return 'phase-medium';
+      case 'low':
+        return 'phase-low';
       default:
-        return '🔵';
+        return 'phase-default';
     }
   };
 
-  const getPhaseColor = (phase: string) => {
-    const colors: { [key: string]: string } = {
-      'PRE_LINE': '#e3f2fd',
-      'LINE_PLACEMENT': '#fff3e0',
-      'MONITORING': '#f3e5f5',
-      'CULTURE': '#ffebee',
-      'POST_CULTURE': '#e8f5e9',
-      'Device Placement': '#fff3e0',
-      'Infection Window': '#f3e5f5',
-      'Symptom Onset': '#f3e5f5',
-      'Diagnostic Workup': '#ffebee',
-      'Post-Culture': '#e8f5e9',
-    };
-    return colors[phase] || '#f5f5f5';
+  const getBadgeVariant = (significance?: string): 'default' | 'destructive' | 'secondary' => {
+    switch (significance?.toLowerCase()) {
+      case 'high':
+        return 'destructive';
+      case 'medium':
+        return 'default';
+      default:
+        return 'secondary';
+    }
   };
 
-  // Convert timeline_phases to timeline events for display if provided
-  const displayTimeline: TimelineEvent[] = timelinePhases
-    ? timelinePhases.map((phase) => ({
-        event_id: `phase-${phase.phase_name}`,
-        event_datetime: phase.start_date,
-        event_type: phase.phase_name,
-        description: phase.description || phase.events?.join(', ') || '',
-        phase: phase.phase_name as any,
-        severity: 'INFO' as const,
-      }))
-    : timeline || [];
-
   return (
-    <div className="timeline-panel panel">
-      <div className="panel-header">
-        <h2>Clinical Timeline</h2>
-        {timelinePhases && (
-          <div className="timeline-meta">
-            <span className="phases-count">{timelinePhases.length} phases</span>
-          </div>
-        )}
-      </div>
+    <Card className="timeline-panel">
+      <CardHeader>
+        <div className="timeline-panel-header">
+          <Calendar size={20} className="timeline-icon" />
+          <CardTitle>Timeline Phases</CardTitle>
+        </div>
+      </CardHeader>
 
-      <div className="timeline-container">
-        {displayTimeline.map((event, idx) => (
-          <div
-            key={event.event_id}
-            className="timeline-event"
-            style={{ borderLeftColor: getPhaseColor(event.phase) }}
-          >
-            <div className="event-header">
-              <span className="event-icon">{getSeverityIcon(event.severity)}</span>
-              <span className="event-time">{formatDate(event.event_datetime)}</span>
-              <span className="event-phase">{event.phase}</span>
-            </div>
-            <div className="event-body">
-              <div className="event-type">{event.event_type}</div>
-              <div className="event-description">{event.description}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <CardContent>
+        <div className="timeline-phases">
+          {timelinePhases.map((phase, index) => (
+            <div key={phase.phase_id || index}>
+              <div className={cn('timeline-phase', getPhaseColorClass(phase.significance))}>
+                <div className="timeline-phase-header">
+                  <div className="timeline-phase-info">
+                    <h4 className="timeline-phase-name">{phase.phase_name}</h4>
+                    <div className="timeline-phase-date">
+                      <Clock size={12} />
+                      <span>{formatDateRange(phase.start_date, phase.end_date)}</span>
+                    </div>
+                  </div>
+                  <div className="timeline-phase-badges">
+                    {phase.events_in_phase !== undefined && (
+                      <Badge variant="outline">
+                        {phase.events_in_phase} events
+                      </Badge>
+                    )}
+                    {phase.significance && (
+                      <Badge variant={getBadgeVariant(phase.significance)}>
+                        {phase.significance}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
 
-      {displayTimeline.length === 0 && (
-        <div className="no-data">No timeline events available</div>
-      )}
-    </div>
+              {index < timelinePhases.length - 1 && (
+                <Separator className="timeline-separator" />
+              )}
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
-};
-
-export default TimelinePanel;
+}

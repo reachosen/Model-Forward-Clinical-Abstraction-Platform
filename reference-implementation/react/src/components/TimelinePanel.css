@@ -1,47 +1,86 @@
+/**
+ * Timeline Panel styles
+ */
+
 .timeline-panel {
-  background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
 }
 
-.timeline-panel h3 {
-  margin-top: 0;
-  color: #2c3e50;
-  margin-bottom: 1rem;
+.timeline-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.timeline-event {
-  border-left: 3px solid #3498db;
-  padding-left: 1rem;
-  margin-bottom: 1rem;
-  position: relative;
+.timeline-icon {
+  color: #111827;
 }
 
-.timeline-event::before {
-  content: '';
-  position: absolute;
-  left: -6px;
-  top: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #3498db;
+.timeline-phases {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.event-date {
-  font-size: 0.875rem;
-  color: #7f8c8d;
-  margin-bottom: 0.25rem;
+.timeline-phase {
+  border-left: 4px solid;
+  border-radius: 0 8px 8px 0;
+  padding: 16px;
 }
 
-.event-description {
-  color: #2c3e50;
-  margin-bottom: 0.25rem;
+.timeline-phase.phase-high {
+  border-left-color: #ef4444;
+  background-color: rgba(254, 242, 242, 0.5);
 }
 
-.event-phase {
-  font-size: 0.75rem;
-  color: #95a5a6;
+.timeline-phase.phase-medium {
+  border-left-color: #eab308;
+  background-color: rgba(254, 252, 232, 0.5);
+}
+
+.timeline-phase.phase-low {
+  border-left-color: #3b82f6;
+  background-color: rgba(239, 246, 255, 0.5);
+}
+
+.timeline-phase.phase-default {
+  border-left-color: #e5e7eb;
+  background-color: #fafafa;
+}
+
+.timeline-phase-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.timeline-phase-info {
+  flex: 1;
+}
+
+.timeline-phase-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #111827;
+}
+
+.timeline-phase-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.timeline-phase-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.timeline-separator {
+  margin: 16px 0;
 }
