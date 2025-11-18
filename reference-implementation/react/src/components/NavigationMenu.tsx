@@ -22,6 +22,7 @@ import {
   LogOut,
   ChevronRight,
   Home,
+  Beaker,
   type LucideIcon,
 } from 'lucide-react';
 import DomainSwitcher from './DomainSwitcher';
@@ -75,6 +76,12 @@ const primaryNavigation: NavigationItem[] = [
     path: '/',
     icon: 'FolderOpen',
     badge: 12,
+  },
+  {
+    id: 'demo',
+    label: 'Demo',
+    path: '/case/clabsi_demo_001',
+    icon: 'Beaker',
   },
   {
     id: 'analytics',
@@ -165,6 +172,7 @@ const iconMap: Record<string, LucideIcon> = {
   Plus,
   Search,
   Home,
+  Beaker,
 };
 
 const NavigationMenu: React.FC<NavigationMenuProps> = ({
