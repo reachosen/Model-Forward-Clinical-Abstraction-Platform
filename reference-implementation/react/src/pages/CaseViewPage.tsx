@@ -27,7 +27,7 @@ const CaseViewPage: React.FC = () => {
   const [structuredCase, setStructuredCase] = useState<StructuredCase | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("enrichment");
+  const [activeTab, setActiveTab] = useState<string>("context");
 
   const loadCase = async () => {
     if (!patientId) return;
@@ -38,15 +38,6 @@ const CaseViewPage: React.FC = () => {
     try {
       const data = await api.getStructuredCase('clabsi', patientId);
       setStructuredCase(data);
-
-      // Set initial tab based on what data is available
-      if (data.abstraction) {
-        setActiveTab("abstraction");
-      } else if (data.enrichment) {
-        setActiveTab("enrichment");
-      } else {
-        setActiveTab("context");
-      }
     } catch (err) {
       setError('Failed to load case. Please try again.');
       console.error('Error loading case:', err);
