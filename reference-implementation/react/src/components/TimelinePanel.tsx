@@ -9,23 +9,12 @@ import { Calendar, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
 import { Badge } from './ui/Badge';
 import { Separator } from './ui/Separator';
+import { EnrichmentTimelinePhase } from '../types';
 import { cn } from '../lib/utils';
 import './TimelinePanel.css';
 
-export interface TimelinePhase {
-  phase_id?: string;
-  phase_name: string;
-  start_date: string;
-  end_date: string;
-  day_number?: number;
-  events?: string[];
-  events_in_phase?: number;
-  description?: string;
-  significance?: 'high' | 'medium' | 'low';
-}
-
 interface TimelinePanelProps {
-  timelinePhases: TimelinePhase[];
+  timelinePhases: EnrichmentTimelinePhase[];
 }
 
 export function TimelinePanel({ timelinePhases }: TimelinePanelProps) {

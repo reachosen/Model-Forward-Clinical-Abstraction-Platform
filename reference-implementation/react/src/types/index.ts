@@ -292,6 +292,7 @@ export interface SignalGroup {
     unit?: string;
     abnormal?: boolean;
     severity?: string;
+    confidence?: number;
   }>;
   group_confidence: number;
 }
@@ -308,19 +309,27 @@ export interface EnrichmentSummary {
 }
 
 /**
+ * Timeline phase from enrichment
+ */
+export interface EnrichmentTimelinePhase {
+  phase_id?: string;
+  phase_name: string;
+  start_date: string;
+  end_date: string;
+  day_number?: number;
+  events?: string[];
+  events_in_phase?: number;
+  description?: string;
+  significance?: 'high' | 'medium' | 'low';
+}
+
+/**
  * Enrichment section - computed signal groups and timeline
  */
 export interface EnrichmentSection {
   task_metadata: TaskMetadata;
   signal_groups: SignalGroup[];
-  timeline_phases: Array<{
-    phase_name: string;
-    start_date: string;
-    end_date: string;
-    day_number: number;
-    events?: string[];
-    description?: string;
-  }>;
+  timeline_phases: EnrichmentTimelinePhase[];
   summary: {
     signals_identified: number;
     key_findings: string[];

@@ -1,0 +1,249 @@
+/**
+ * Criteria Detail Modal styles
+ */
+
+.criteria-modal-content {
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.criteria-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Summary section */
+.criteria-summary-title {
+  font-size: 18px;
+}
+
+.criteria-summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.criteria-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.criteria-summary-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.criteria-summary-label-muted {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.criteria-summary-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.criteria-determination-badge {
+  font-size: 14px;
+  padding: 4px 16px;
+}
+
+.criteria-progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.criteria-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.criteria-progress-label {
+  color: #6b7280;
+}
+
+.criteria-progress-value {
+  font-weight: 500;
+  color: #111827;
+}
+
+.criteria-progress-bar {
+  height: 8px;
+}
+
+/* Checklist */
+.criteria-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.criteria-checklist-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
+}
+
+.criterion-card {
+  margin-bottom: 0;
+}
+
+.criterion-card-content {
+  padding: 16px;
+}
+
+.criterion-button {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.criterion-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.criterion-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.criterion-icon-met {
+  color: #22c55e;
+}
+
+.criterion-icon-unmet {
+  color: #6b7280;
+}
+
+.criterion-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.criterion-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.criterion-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  flex: 1;
+}
+
+.criterion-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Expanded criterion details */
+.criterion-details {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.criterion-evidence {
+  border-radius: 6px;
+  background-color: rgba(243, 244, 246, 0.5);
+  padding: 12px;
+}
+
+.criterion-evidence-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.evidence-icon {
+  color: #6b7280;
+}
+
+.evidence-label {
+  font-weight: 500;
+  color: #111827;
+}
+
+.evidence-text {
+  color: #111827;
+  line-height: 1.6;
+  margin: 0 0 0 24px;
+}
+
+.criterion-signals {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.signals-label {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.signals-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.signal-badge {
+  font-size: 11px;
+}
+
+.criterion-attribution {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attribution-label {
+  font-weight: 500;
+  color: #6b7280;
+  display: block;
+}
+
+.criterion-confidence-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.confidence-label {
+  min-width: 80px;
+}
+
+.confidence-bar {
+  flex: 1;
+  max-width: 120px;
+  height: 4px;
+}
+
+.confidence-value {
+  min-width: 40px;
+}
