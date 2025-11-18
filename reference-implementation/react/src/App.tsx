@@ -6,6 +6,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { DomainConfigProvider, useDomainConfig } from './contexts/DomainConfigContext';
 import { Navigation } from './components/Navigation';
+import HomePage from './pages/HomePage';
 import CaseListPage from './pages/CaseListPage';
 import CaseViewPage from './pages/CaseViewPage';
 import RuleEvaluationPage from './pages/RuleEvaluationPage';
@@ -28,7 +29,8 @@ const AppContent: React.FC = () => {
 
       <main className="app-main">
         <Routes>
-          <Route path="/" element={<CaseListPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/cases" element={<CaseListPage />} />
           <Route path="/case/:patientId" element={<CaseViewPage />} />
           <Route path="/rules/:patientId" element={<RuleEvaluationPage />} />
         </Routes>
