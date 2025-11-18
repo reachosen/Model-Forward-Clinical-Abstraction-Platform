@@ -330,11 +330,7 @@ export interface EnrichmentSection {
   task_metadata: TaskMetadata;
   signal_groups: SignalGroup[];
   timeline_phases: EnrichmentTimelinePhase[];
-  summary: {
-    signals_identified: number;
-    key_findings: string[];
-    confidence: number;
-  };
+  summary: EnrichmentSummary;
 }
 
 /**
