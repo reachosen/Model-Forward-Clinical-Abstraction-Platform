@@ -406,3 +406,53 @@ export interface CriterionDetail {
   source_signals: string[];
   task_attribution: TaskMetadata;
 }
+
+/**
+ * Prompt version entity for admin/prompt management
+ */
+export interface PromptVersion {
+  version_id: string;
+  status: 'stable' | 'experimental' | 'deprecated';
+  created_at: string;
+  is_active: boolean;
+  system_prompt: string;
+  task_specific_additions?: string;
+  changelog: string;
+  cases_run?: number;
+  last_used_at?: string;
+  performance_metrics?: {
+    avg_confidence: number;
+    avg_latency_ms: number;
+    avg_tokens: number;
+    success_rate: number;
+  };
+}
+
+/**
+ * Task definition entity (Concern → Task → PromptVersion)
+ */
+export interface TaskDefinition {
+  task_id: string;
+  task_type: 'enrichment' | 'abstraction' | 'qa';
+  concern_id: string;
+  description: string;
+  execution_modes: Array<'batch' | 'interactive' | 'on_demand'>;
+  default_mode: 'batch' | 'interactive' | 'on_demand';
+  prompt_versions: PromptVersion[];
+  active_version: string;
+  expected_inputs: string[];
+  expected_outputs: string[];
+}
+
+/**
+ * Concern definition with tasks
+ */
+export interface ConcernDefinition {
+  concern_id: string;
+  display_name: string;
+  description: string;
+  system_prompt: string;
+  tasks: TaskDefinition[];
+  total_versions: number;
+  total_cases_run: number;
+}

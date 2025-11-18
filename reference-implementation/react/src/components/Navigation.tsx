@@ -44,10 +44,10 @@ const navItems: NavItem[] = [
   },
   {
     label: "Admin",
-    href: "#",
+    href: "/admin/prompts",
     icon: Settings,
-    description: "Coming soon",
-    disabled: true
+    description: "Prompt Explorer - View concerns, tasks, and prompt versions",
+    disabled: false
   }
 ];
 

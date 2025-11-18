@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import CaseListPage from './pages/CaseListPage';
 import CaseViewPage from './pages/CaseViewPage';
 import RuleEvaluationPage from './pages/RuleEvaluationPage';
+import PromptExplorerPage from './pages/admin/PromptExplorerPage';
 import './App.css';
 
 const AppContent: React.FC = () => {
@@ -33,6 +34,7 @@ const AppContent: React.FC = () => {
           <Route path="/cases" element={<CaseListPage />} />
           <Route path="/case/:patientId" element={<CaseViewPage />} />
           <Route path="/rules/:patientId" element={<RuleEvaluationPage />} />
+          <Route path="/admin/prompts" element={<PromptExplorerPage />} />
         </Routes>
       </main>
 

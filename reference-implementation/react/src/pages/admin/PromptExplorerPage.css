@@ -1,0 +1,189 @@
+/* Prompt Explorer Page Styles */
+
+.prompt-explorer-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f9fafb;
+}
+
+.page-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 24px 32px;
+}
+
+.page-header-content {
+  max-width: 100%;
+}
+
+.page-title-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-icon {
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.phase1-notice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background-color: #fef3c7;
+  border-bottom: 1px solid #fbbf24;
+  font-size: 14px;
+  color: #92400e;
+}
+
+.phase1-notice strong {
+  font-weight: 600;
+}
+
+.explorer-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.explorer-sidebar {
+  width: 380px;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.explorer-main {
+  flex: 1;
+  overflow-y: auto;
+  background-color: white;
+}
+
+.tasks-container {
+  padding: 32px;
+}
+
+.tasks-header {
+  margin-bottom: 24px;
+}
+
+.tasks-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 6px 0;
+}
+
+.tasks-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 32px;
+}
+
+.empty-state p {
+  font-size: 15px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .explorer-sidebar {
+    width: 320px;
+  }
+}
+
+@media (max-width: 900px) {
+  .explorer-content {
+    flex-direction: column;
+  }
+
+  .explorer-sidebar {
+    width: 100%;
+    max-height: 300px;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .explorer-main {
+    flex: 1;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .prompt-explorer-page {
+    background-color: #111827;
+  }
+
+  .page-header {
+    background: #1f2937;
+    border-bottom-color: #374151;
+  }
+
+  .page-title {
+    color: #f9fafb;
+  }
+
+  .page-subtitle {
+    color: #9ca3af;
+  }
+
+  .explorer-main {
+    background-color: #1f2937;
+  }
+
+  .tasks-title {
+    color: #f9fafb;
+  }
+
+  .tasks-subtitle {
+    color: #9ca3af;
+  }
+
+  .empty-state p {
+    color: #6b7280;
+  }
+
+  .loading-state {
+    color: #9ca3af;
+  }
+}
