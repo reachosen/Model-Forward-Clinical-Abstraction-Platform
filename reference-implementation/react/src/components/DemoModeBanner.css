@@ -1,0 +1,53 @@
+.demo-mode-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+  background-color: #eff6ff;
+  margin-bottom: 24px;
+}
+
+.demo-banner-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  color: #2563eb;
+}
+
+.demo-banner-content {
+  flex: 1;
+}
+
+.demo-banner-title {
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.demo-banner-description {
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .demo-mode-banner {
+    background-color: rgba(30, 58, 138, 0.2);
+    border-color: #1e3a8a;
+  }
+
+  .demo-banner-icon {
+    color: #93c5fd;
+  }
+
+  .demo-banner-title {
+    color: #dbeafe;
+  }
+
+  .demo-banner-description {
+    color: #bfdbfe;
+  }
+}
