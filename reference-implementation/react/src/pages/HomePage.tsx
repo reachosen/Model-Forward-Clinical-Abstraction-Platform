@@ -28,7 +28,7 @@ const concerns: ConcernCard[] = [
     description: 'Central Line-Associated Bloodstream Infection surveillance and abstraction',
     icon: Activity,
     status: 'active',
-    caseCount: 3,
+    caseCount: 1,
     demo_case_id: 'clabsi_demo_001'
   },
   {
@@ -36,14 +36,18 @@ const concerns: ConcernCard[] = [
     name: 'CAUTI',
     description: 'Catheter-Associated Urinary Tract Infection surveillance',
     icon: Droplet,
-    status: 'coming_soon'
+    status: 'active',
+    caseCount: 1,
+    demo_case_id: 'cauti_demo_001'
   },
   {
     id: 'ssi',
     name: 'SSI',
     description: 'Surgical Site Infection surveillance and tracking',
     icon: Scissors,
-    status: 'coming_soon'
+    status: 'active',
+    caseCount: 1,
+    demo_case_id: 'ssi_demo_001'
   }
 ];
 
@@ -125,10 +129,10 @@ const HomePage: React.FC = () => {
         <div className="info-banner">
           <AlertCircle className="info-icon" />
           <div className="info-content">
-            <h3 className="info-title">Phase 1 Implementation</h3>
+            <h3 className="info-title">Demo Mode</h3>
             <p className="info-text">
-              Currently showing CLABSI concern with demo data. Additional concerns (CAUTI, SSI) and
-              advanced features (Task History, Admin) will be available in future releases.
+              Showing demo cases for CLABSI, CAUTI, and SSI concerns. Each concern includes a sample case
+              demonstrating the full abstraction workflow. Advanced features (Task History, Admin) will be available in future releases.
             </p>
           </div>
         </div>

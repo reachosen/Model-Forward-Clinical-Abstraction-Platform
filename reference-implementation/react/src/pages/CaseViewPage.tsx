@@ -20,6 +20,7 @@ import { TimelinePanel } from '../components/TimelinePanel';
 import { AskTheCasePanel } from '../components/AskTheCasePanel';
 import { InterrogationPanel } from '../components/InterrogationPanel';
 import { DemoModeBanner } from '../components/DemoModeBanner';
+import FeedbackPanel from '../components/FeedbackPanel';
 import './CaseViewPage.css';
 
 const CaseViewPage: React.FC = () => {
@@ -36,7 +37,9 @@ const CaseViewPage: React.FC = () => {
     setError(null);
 
     try {
-      const data = await api.getStructuredCase('clabsi', patientId);
+      // Determine concern from patientId (e.g., "clabsi_demo_001" -> "clabsi")
+      const concernId = patientId.split('_')[0] || 'clabsi';
+      const data = await api.getStructuredCase(concernId, patientId);
       setStructuredCase(data);
     } catch (err) {
       setError('Failed to load case. Please try again.');
@@ -292,6 +295,14 @@ const CaseViewPage: React.FC = () => {
                   <Separator />
 
                   <InterrogationPanel qaHistory={structuredCase.qa?.qa_history || []} />
+
+                  <Separator />
+
+                  {/* Feedback Panel */}
+                  <FeedbackPanel
+                    patientId={structuredCase.patient.case_metadata.patient_id}
+                    encounterId={structuredCase.patient.case_metadata.encounter_id}
+                  />
 
                   <Separator />
 

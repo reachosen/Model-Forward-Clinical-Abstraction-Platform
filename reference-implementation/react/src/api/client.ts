@@ -26,6 +26,367 @@ const apiClient = axios.create({
 
 // Mock data for demo cases (fallback when backend is unavailable)
 const mockDemoCases: Record<string, StructuredCase> = {
+  cauti_demo_001: {
+    case_id: "cauti_demo_001",
+    concern_id: "cauti",
+    patient: {
+      case_metadata: {
+        case_id: "cauti_demo_001",
+        patient_id: "cauti_demo_001",
+        encounter_id: "enc_cauti_001",
+        created_date: "2024-02-10T00:00:00Z",
+        infection_type: "CAUTI",
+        facility_id: "DEMO_FACILITY",
+        unit: "Medical Ward"
+      },
+      demographics: {
+        age: 72,
+        gender: "F",
+        mrn: "DEMO-CAUTI-001"
+      },
+      devices: {
+        "urinary_catheter": {
+          insertion_date: "2024-02-10",
+          insertion_time: "10:00",
+          line_type: "Foley Catheter",
+          insertion_site: "Urethra",
+          removal_date: null,
+          device_days_at_event: 4
+        }
+      },
+      lab_results: [
+        {
+          test_id: "lab_uti_001",
+          test_type: "Urine Culture",
+          collection_date: "2024-02-14",
+          collection_time: "08:00",
+          sample_type: "Urine",
+          organism: "E. coli",
+          organism_type: "Bacteria",
+          source_id: "UC-20240214-001"
+        }
+      ],
+      clinical_signals: [],
+      clinical_notes: [],
+      clinical_events: []
+    },
+    enrichment: {
+      task_metadata: {
+        task_id: "enrich_cauti_20240214_100000",
+        task_type: "enrichment",
+        prompt_version: "v1.0",
+        mode: "batch",
+        executed_at: "2024-02-14T10:00:00Z",
+        executed_by: "system",
+        status: "completed",
+        confidence: 0.87,
+        duration_ms: 3800,
+        token_count: 3200,
+        demo_mode: true
+      },
+      summary: {
+        signals_identified: 10,
+        signal_groups_count: 3,
+        timeline_phases_identified: 3,
+        key_findings: [
+          "Foley catheter placed on Day 0 in medical ward",
+          "E. coli bacteriuria identified on Day 4 post-insertion",
+          "Patient developed fever and dysuria on Day 3",
+          "Urine culture shows >100,000 CFU/mL"
+        ],
+        confidence: 0.87
+      },
+      signal_groups: [
+        {
+          signal_type: "Device Events",
+          group_confidence: 0.90,
+          signals: [
+            {
+              signal_id: "cauti_sig_001",
+              signal_name: "Catheter Insertion",
+              value: "Foley catheter inserted",
+              timestamp: "2024-02-10T10:00:00Z",
+              confidence: 0.92
+            }
+          ]
+        },
+        {
+          signal_type: "Laboratory Results",
+          group_confidence: 0.92,
+          signals: [
+            {
+              signal_id: "cauti_sig_002",
+              signal_name: "Urine Culture - Positive",
+              value: "E. coli >100,000 CFU/mL",
+              timestamp: "2024-02-14T08:00:00Z",
+              confidence: 0.96
+            }
+          ]
+        },
+        {
+          signal_type: "Clinical Signs",
+          group_confidence: 0.84,
+          signals: [
+            {
+              signal_id: "cauti_sig_003",
+              signal_name: "Fever",
+              value: "Temperature 38.5°C",
+              timestamp: "2024-02-13T16:00:00Z",
+              confidence: 0.88
+            }
+          ]
+        }
+      ],
+      timeline_phases: [
+        {
+          phase_id: "cauti_phase_001",
+          phase_name: "Pre-Infection Period",
+          start_date: "2024-02-10T00:00:00Z",
+          end_date: "2024-02-12T23:59:59Z",
+          events_in_phase: 6,
+          significance: "low"
+        },
+        {
+          phase_id: "cauti_phase_002",
+          phase_name: "Symptom Onset",
+          start_date: "2024-02-13T00:00:00Z",
+          end_date: "2024-02-13T23:59:59Z",
+          events_in_phase: 8,
+          significance: "high"
+        },
+        {
+          phase_id: "cauti_phase_003",
+          phase_name: "Infection Confirmation",
+          start_date: "2024-02-14T00:00:00Z",
+          end_date: "2024-02-14T23:59:59Z",
+          events_in_phase: 5,
+          significance: "high"
+        }
+      ]
+    },
+    abstraction: {
+      task_metadata: {
+        task_id: "abstract_cauti_20240214_143000",
+        task_type: "abstraction",
+        prompt_version: "v1.0",
+        mode: "interactive",
+        executed_at: "2024-02-14T14:30:00Z",
+        executed_by: "nurse.sarah",
+        status: "completed",
+        confidence: 0.87,
+        duration_ms: 5900,
+        token_count: 4800,
+        demo_mode: true
+      },
+      narrative: "72-year-old female patient with Foley catheter placement on admission. Developed E. coli bacteriuria on Day 4 post-insertion with clinical signs including fever (38.5°C) and dysuria. Urine culture shows >100,000 CFU/mL confirming CAUTI criteria.",
+      criteria_evaluation: {
+        determination: "CAUTI_CONFIRMED",
+        confidence: 0.87,
+        criteria_met: {
+          "criterion_1": {
+            met: true,
+            evidence: "Catheter in place for >2 calendar days before positive culture"
+          },
+          "criterion_2": {
+            met: true,
+            evidence: "E. coli (uropathogen) with >100,000 CFU/mL"
+          },
+          "criterion_3": {
+            met: true,
+            evidence: "Clinical signs present (fever, dysuria)"
+          },
+          "criterion_4": {
+            met: true,
+            evidence: "No alternative source of UTI documented"
+          }
+        },
+        total_criteria: 4,
+        criteria_met_count: 4
+      },
+      exclusion_analysis: []
+    },
+    qa: {
+      validation_status: "passed",
+      validation_errors: [],
+      qa_history: []
+    }
+  },
+  ssi_demo_001: {
+    case_id: "ssi_demo_001",
+    concern_id: "ssi",
+    patient: {
+      case_metadata: {
+        case_id: "ssi_demo_001",
+        patient_id: "ssi_demo_001",
+        encounter_id: "enc_ssi_001",
+        created_date: "2024-03-05T00:00:00Z",
+        infection_type: "SSI",
+        facility_id: "DEMO_FACILITY",
+        unit: "Surgical"
+      },
+      demographics: {
+        age: 58,
+        gender: "M",
+        mrn: "DEMO-SSI-001"
+      },
+      devices: {},
+      lab_results: [
+        {
+          test_id: "lab_ssi_001",
+          test_type: "Wound Culture",
+          collection_date: "2024-03-12",
+          collection_time: "09:00",
+          sample_type: "Wound",
+          organism: "S. aureus",
+          organism_type: "Bacteria",
+          source_id: "WC-20240312-001"
+        }
+      ],
+      clinical_signals: [],
+      clinical_notes: [],
+      clinical_events: []
+    },
+    enrichment: {
+      task_metadata: {
+        task_id: "enrich_ssi_20240312_100000",
+        task_type: "enrichment",
+        prompt_version: "v1.0",
+        mode: "batch",
+        executed_at: "2024-03-12T10:00:00Z",
+        executed_by: "system",
+        status: "completed",
+        confidence: 0.85,
+        duration_ms: 4100,
+        token_count: 3400,
+        demo_mode: true
+      },
+      summary: {
+        signals_identified: 11,
+        signal_groups_count: 3,
+        timeline_phases_identified: 3,
+        key_findings: [
+          "Abdominal surgery performed on Day 0",
+          "Wound showing purulent drainage on Day 7 post-op",
+          "S. aureus identified in wound culture",
+          "Patient developed fever and increased pain at surgical site"
+        ],
+        confidence: 0.85
+      },
+      signal_groups: [
+        {
+          signal_type: "Procedure",
+          group_confidence: 0.93,
+          signals: [
+            {
+              signal_id: "ssi_sig_001",
+              signal_name: "Surgical Procedure",
+              value: "Laparoscopic cholecystectomy performed",
+              timestamp: "2024-03-05T08:00:00Z",
+              confidence: 0.95
+            }
+          ]
+        },
+        {
+          signal_type: "Laboratory Results",
+          group_confidence: 0.89,
+          signals: [
+            {
+              signal_id: "ssi_sig_002",
+              signal_name: "Wound Culture - Positive",
+              value: "S. aureus identified",
+              timestamp: "2024-03-12T09:00:00Z",
+              confidence: 0.94
+            }
+          ]
+        },
+        {
+          signal_type: "Clinical Signs",
+          group_confidence: 0.82,
+          signals: [
+            {
+              signal_id: "ssi_sig_003",
+              signal_name: "Wound Assessment",
+              value: "Purulent drainage, erythema, increased pain",
+              timestamp: "2024-03-12T07:00:00Z",
+              confidence: 0.86
+            }
+          ]
+        }
+      ],
+      timeline_phases: [
+        {
+          phase_id: "ssi_phase_001",
+          phase_name: "Post-Operative Recovery",
+          start_date: "2024-03-05T00:00:00Z",
+          end_date: "2024-03-10T23:59:59Z",
+          events_in_phase: 7,
+          significance: "low"
+        },
+        {
+          phase_id: "ssi_phase_002",
+          phase_name: "Clinical Deterioration",
+          start_date: "2024-03-11T00:00:00Z",
+          end_date: "2024-03-11T23:59:59Z",
+          events_in_phase: 9,
+          significance: "high"
+        },
+        {
+          phase_id: "ssi_phase_003",
+          phase_name: "Infection Confirmation",
+          start_date: "2024-03-12T00:00:00Z",
+          end_date: "2024-03-12T23:59:59Z",
+          events_in_phase: 6,
+          significance: "high"
+        }
+      ]
+    },
+    abstraction: {
+      task_metadata: {
+        task_id: "abstract_ssi_20240312_143000",
+        task_type: "abstraction",
+        prompt_version: "v1.0",
+        mode: "interactive",
+        executed_at: "2024-03-12T14:30:00Z",
+        executed_by: "nurse.michael",
+        status: "completed",
+        confidence: 0.85,
+        duration_ms: 6200,
+        token_count: 5100,
+        demo_mode: true
+      },
+      narrative: "58-year-old male underwent laparoscopic cholecystectomy. On Day 7 post-op, developed signs of surgical site infection including purulent drainage, erythema, and increased pain. Wound culture confirmed S. aureus infection meeting SSI criteria.",
+      criteria_evaluation: {
+        determination: "SSI_CONFIRMED",
+        confidence: 0.85,
+        criteria_met: {
+          "criterion_1": {
+            met: true,
+            evidence: "Infection within 30 days of surgical procedure"
+          },
+          "criterion_2": {
+            met: true,
+            evidence: "Purulent drainage from incision site"
+          },
+          "criterion_3": {
+            met: true,
+            evidence: "S. aureus identified in wound culture"
+          },
+          "criterion_4": {
+            met: true,
+            evidence: "Clinical signs: pain, erythema, fever"
+          }
+        },
+        total_criteria: 4,
+        criteria_met_count: 4
+      },
+      exclusion_analysis: []
+    },
+    qa: {
+      validation_status: "passed",
+      validation_errors: [],
+      qa_history: []
+    }
+  },
   clabsi_demo_001: {
     case_id: "clabsi_demo_001",
     concern_id: "clabsi",
