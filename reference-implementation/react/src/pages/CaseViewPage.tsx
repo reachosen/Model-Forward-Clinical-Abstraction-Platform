@@ -12,11 +12,11 @@ import { useDomainConfig } from '../contexts/DomainConfigContext';
 import CaseOverview from '../components/CaseOverview';
 import CaseSummaryStrip from '../components/CaseSummaryStrip';
 import EnhancedTimeline from '../components/EnhancedTimeline';
-import SignalsPanel from '../components/SignalsPanel';
+import { SignalsPanel } from '../components/SignalsPanel';
 import QAPanel from '../components/QAPanel';
-import AskTheCasePanel from '../components/AskTheCasePanel';
+import { AskTheCasePanel } from '../components/AskTheCasePanel';
 import FeedbackPanel from '../components/FeedbackPanel';
-import InterrogationPanel from '../components/InterrogationPanel';
+import { InterrogationPanel } from '../components/InterrogationPanel';
 import { PipelineStepper } from '../components/PipelineStepper';
 import { TaskMetadataBadge } from '../components/TaskMetadataBadge';
 import { EnrichmentSummaryPanel } from '../components/EnrichmentSummaryPanel';
@@ -199,10 +199,10 @@ const CaseViewPage: React.FC = () => {
               <EnrichmentSummaryPanel summary={enrichmentSummary} />
             )}
 
-            {/* Signals Panel - using legacy version for now */}
+            {/* Signals Panel - using latest version from Nov 18 */}
             <SignalsPanel
-              signals={caseData.signals}
-              signalGroups={structuredCase?.enrichment?.signal_groups}
+              signalGroups={structuredCase?.enrichment?.signal_groups || []}
+              timelinePhases={structuredCase?.enrichment?.timeline_phases}
             />
           </div>
           <div className="summary-panel panel">
@@ -260,51 +260,30 @@ const CaseViewPage: React.FC = () => {
             )}
 
             <QAPanel qaResult={caseData.qa_result} />
-            <InterrogationPanel qaSection={structuredCase?.qa} />
+            <InterrogationPanel qaHistory={structuredCase?.qa?.qa_history || []} />
             <AskTheCasePanel
-              patientId={caseData.summary.patient_id}
-              encounterId={caseData.summary.encounter_id}
-              suggestedQuestions={[
-                'What evidence supports the CLABSI diagnosis?',
-                'Are there any exclusion criteria present?',
-                'When was the central line inserted?',
-                'What organism was identified in blood culture?',
-              ]}
-              onAskQuestion={async (question) => {
+              caseId={caseData.summary.patient_id}
+              qaHistoryCount={structuredCase?.qa?.qa_history?.length || 0}
+              onQuestionSubmit={async (question: string, mode: string, targetType: string) => {
                 // Call the real interrogation API
                 try {
                   const taskId = structuredCase?.abstraction?.task_metadata?.task_id || 'clabsi.abstraction';
-                  const qaEntry = await api.interrogateTask(
+                  await api.interrogateTask(
                     taskId,
                     question,
                     {
-                      mode: 'explain',
-                      target_type: 'overall',
+                      mode: mode as "explain" | "summarize" | "validate",
+                      target_type: targetType as "criterion" | "signal" | "event" | "overall",
                       target_id: 'case',
                       program_type: 'CLABSI',
                       metric_id: 'CLABSI',
                     }
                   );
-
-                  // Convert QAHistoryEntry to AskResponse format
-                  return {
-                    question: qaEntry.question,
-                    answer: qaEntry.answer,
-                    evidence_citations: (qaEntry.citations || []).map((citation, idx) => ({
-                      citation_id: `C${idx + 1}`,
-                      source_type: 'NOTE' as const,
-                      source_id: `${idx}`,
-                      excerpt: citation,
-                      timestamp: new Date().toISOString(),
-                      relevance_score: 0.9,
-                    })),
-                    confidence: qaEntry.confidence || 0.85,
-                    follow_up_suggestions: [],
-                    timestamp: qaEntry.task_metadata?.executed_at || new Date().toISOString(),
-                  };
-                } catch (err) {
-                  console.error('Error asking question:', err);
-                  throw err;
+                  // Reload the case to get updated QA history
+                  loadCase();
+                } catch (error) {
+                  console.error('Error submitting question:', error);
+                  throw error;
                 }
               }}
             />

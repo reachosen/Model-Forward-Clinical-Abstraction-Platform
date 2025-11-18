@@ -1,11 +1,13 @@
-/**
- * Criteria Detail Modal styles
- */
-
 .criteria-modal-content {
   max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
+}
+
+.button-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
 }
 
 .criteria-modal-body {
@@ -14,43 +16,47 @@
   gap: 24px;
 }
 
-/* Summary section */
-.criteria-summary-title {
-  font-size: 18px;
+.evaluation-summary-card {
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
 }
 
-.criteria-summary-content {
+.summary-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.summary-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.summary-content {
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.criteria-summary-row {
+.summary-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-between;
+  font-size: 14px;
 }
 
-.criteria-summary-label {
-  font-size: 14px;
+.summary-label {
   font-weight: 500;
-  color: #111827;
 }
 
-.criteria-summary-label-muted {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.criteria-summary-value {
-  font-size: 14px;
-  font-weight: 500;
-  color: #111827;
-}
-
-.criteria-determination-badge {
-  font-size: 14px;
+.determination-badge {
+  font-size: 16px;
   padding: 4px 16px;
+}
+
+.summary-value {
+  font-weight: 500;
 }
 
 .criteria-progress-section {
@@ -59,49 +65,52 @@
   gap: 8px;
 }
 
-.criteria-progress-header {
+.progress-label-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-between;
   font-size: 14px;
 }
 
-.criteria-progress-label {
-  color: #6b7280;
+.progress-label {
+  color: var(--muted-foreground, #6b7280);
 }
 
-.criteria-progress-value {
+.progress-value {
   font-weight: 500;
-  color: #111827;
 }
 
 .criteria-progress-bar {
   height: 8px;
 }
 
-/* Checklist */
+.modal-separator {
+  height: 1px;
+  background: var(--border-color, #e5e7eb);
+}
+
 .criteria-checklist {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.criteria-checklist-title {
+.checklist-title {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
-  color: #111827;
 }
 
 .criterion-card {
-  margin-bottom: 0;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
 }
 
 .criterion-card-content {
   padding: 16px;
 }
 
-.criterion-button {
+.criterion-toggle-button {
   width: 100%;
   background: none;
   border: none;
@@ -117,35 +126,34 @@
 }
 
 .criterion-icon {
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .criterion-icon-met {
-  color: #22c55e;
+  color: #16a34a;
 }
 
-.criterion-icon-unmet {
-  color: #6b7280;
+.criterion-icon-not-met {
+  color: var(--muted-foreground, #6b7280);
 }
 
-.criterion-info {
+.criterion-main {
   flex: 1;
-  min-width: 0;
 }
 
 .criterion-title-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-between;
   margin-bottom: 8px;
 }
 
 .criterion-text {
-  font-size: 14px;
   font-weight: 500;
-  color: #111827;
+  font-size: 14px;
   flex: 1;
 }
 
@@ -153,10 +161,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
 }
 
-/* Expanded criterion details */
+.chevron-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .criterion-details {
   margin-top: 12px;
   display: flex;
@@ -165,85 +176,114 @@
   font-size: 14px;
 }
 
-.criterion-evidence {
+.evidence-section {
   border-radius: 6px;
-  background-color: rgba(243, 244, 246, 0.5);
+  background: rgba(0, 0, 0, 0.03);
   padding: 12px;
 }
 
-.criterion-evidence-header {
+.evidence-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .evidence-icon {
-  color: #6b7280;
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground, #6b7280);
+  margin-top: 2px;
 }
 
 .evidence-label {
   font-weight: 500;
-  color: #111827;
 }
 
 .evidence-text {
-  color: #111827;
+  margin: 0;
+  margin-left: 24px;
   line-height: 1.6;
-  margin: 0 0 0 24px;
+  color: var(--foreground, #111827);
 }
 
-.criterion-signals {
+.source-signals-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
-.signals-label {
+.source-signals-label {
+  color: var(--muted-foreground, #6b7280);
   font-weight: 500;
-  color: #6b7280;
 }
 
-.signals-badges {
+.source-signals-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
 .signal-badge {
-  font-size: 11px;
+  font-size: 12px;
 }
 
-.criterion-attribution {
+.task-attribution-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.attribution-label {
+.task-attribution-label {
+  color: var(--muted-foreground, #6b7280);
   font-weight: 500;
-  color: #6b7280;
-  display: block;
 }
 
-.criterion-confidence-row {
+.confidence-row {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground, #6b7280);
 }
 
-.confidence-label {
-  min-width: 80px;
-}
-
-.confidence-bar {
+.criterion-confidence-bar {
+  height: 4px;
   flex: 1;
   max-width: 120px;
-  height: 4px;
 }
 
-.confidence-value {
-  min-width: 40px;
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .evaluation-summary-card,
+  .criterion-card {
+    --border-color: #374151;
+  }
+
+  .summary-title,
+  .checklist-title,
+  .criterion-text,
+  .evidence-text {
+    color: #f3f4f6;
+  }
+
+  .summary-label,
+  .progress-label,
+  .source-signals-label,
+  .task-attribution-label,
+  .confidence-row {
+    --muted-foreground: #9ca3af;
+  }
+
+  .evidence-section {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .criterion-icon-met {
+    color: #22c55e;
+  }
+
+  .criterion-icon-not-met {
+    --muted-foreground: #9ca3af;
+  }
 }

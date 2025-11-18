@@ -1,86 +1,139 @@
-/**
- * Timeline Panel styles
- */
-
-.timeline-panel {
-  margin-bottom: 24px;
+.timeline-panel-card {
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  background: var(--card-bg, white);
 }
 
-.timeline-panel-header {
+.timeline-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.timeline-title-row {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .timeline-icon {
-  color: #111827;
+  width: 20px;
+  height: 20px;
+  color: var(--primary-color, #3b82f6);
 }
 
-.timeline-phases {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.timeline-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
 }
 
-.timeline-phase {
-  border-left: 4px solid;
-  border-radius: 0 8px 8px 0;
+.timeline-content {
   padding: 16px;
 }
 
+.timeline-phases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timeline-phase {
+  border-left: 4px solid var(--phase-border, #e5e7eb);
+  border-radius: 0 8px 8px 0;
+  padding: 16px;
+  background: var(--phase-bg, transparent);
+}
+
 .timeline-phase.phase-high {
-  border-left-color: #ef4444;
-  background-color: rgba(254, 242, 242, 0.5);
+  --phase-border: #ef4444;
+  --phase-bg: rgba(254, 226, 226, 0.5);
 }
 
 .timeline-phase.phase-medium {
-  border-left-color: #eab308;
-  background-color: rgba(254, 252, 232, 0.5);
+  --phase-border: #eab308;
+  --phase-bg: rgba(254, 249, 195, 0.5);
 }
 
 .timeline-phase.phase-low {
-  border-left-color: #3b82f6;
-  background-color: rgba(239, 246, 255, 0.5);
+  --phase-border: #3b82f6;
+  --phase-bg: rgba(219, 234, 254, 0.5);
 }
 
 .timeline-phase.phase-default {
-  border-left-color: #e5e7eb;
-  background-color: #fafafa;
+  --phase-border: #e5e7eb;
+  --phase-bg: transparent;
 }
 
-.timeline-phase-header {
+.phase-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
 
-.timeline-phase-info {
+.phase-info {
   flex: 1;
 }
 
-.timeline-phase-name {
+.phase-name {
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 8px 0;
-  color: #111827;
 }
 
-.timeline-phase-date {
+.phase-date-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--muted-foreground, #6b7280);
 }
 
-.timeline-phase-badges {
+.clock-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.phase-badges {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
 }
 
-.timeline-separator {
-  margin: 16px 0;
+.phase-separator {
+  height: 16px;
+  margin: 0;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .timeline-panel-card {
+    --card-bg: #1f2937;
+    --border-color: #374151;
+  }
+
+  .timeline-title {
+    color: #f9fafb;
+  }
+
+  .phase-name {
+    color: #f3f4f6;
+  }
+
+  .phase-date-row {
+    --muted-foreground: #9ca3af;
+  }
+
+  .timeline-phase.phase-high {
+    --phase-bg: rgba(127, 29, 29, 0.2);
+  }
+
+  .timeline-phase.phase-medium {
+    --phase-bg: rgba(113, 63, 18, 0.2);
+  }
+
+  .timeline-phase.phase-low {
+    --phase-bg: rgba(30, 58, 138, 0.2);
+  }
 }

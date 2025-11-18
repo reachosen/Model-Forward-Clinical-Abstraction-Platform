@@ -1,326 +1,120 @@
 /**
- * Ask the Case Panel Component
- * Interactive Q&A with AI reasoning transparency
- * Adapted from Vercel v0.dev generation
+ * AskTheCasePanel - Latest from Vercel (Nov 18 00:07)
+ * Interactive panel for asking questions about the case
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Loader2, Send, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
-import ConfidenceIndicator from './ConfidenceIndicator';
-import CitationCard from './CitationCard';
+import React, { useState } from 'react';
+import { MessageSquare, Send, Loader2 } from 'lucide-react';
+import { Card } from './ui/Card';
+import { Button } from './ui/Button';
+import { Textarea } from './ui/Textarea';
+import { Badge } from './ui/Badge';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/Select';
 import './AskTheCasePanel.css';
 
-// TypeScript interfaces
-export interface AskTheCasePanelProps {
-  patientId: string;
-  encounterId: string;
-  suggestedQuestions: string[];
-  onAskQuestion: (question: string) => Promise<QuestionResponse>;
+interface AskTheCasePanelProps {
+  caseId: string;
+  qaHistoryCount: number;
+  onQuestionSubmit: (question: string, mode: string, targetType: string) => Promise<void>;
 }
 
-export interface QuestionResponse {
-  question: string;
-  answer: string;
-  evidence_citations: EvidenceCitation[];
-  confidence: number; // 0-1
-  follow_up_suggestions: string[];
-  timestamp: string; // ISO format
-}
+export function AskTheCasePanel({ caseId, qaHistoryCount, onQuestionSubmit }: AskTheCasePanelProps) {
+  const [question, setQuestion] = useState("");
+  const [mode, setMode] = useState<"explain" | "summarize" | "validate">("explain");
+  const [targetType, setTargetType] = useState<"criterion" | "signal" | "event" | "overall">("overall");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-export interface EvidenceCitation {
-  citation_id: string;
-  source_type: 'SIGNAL' | 'EVENT' | 'LAB' | 'NOTE' | 'RULE';
-  source_id: string;
-  excerpt: string;
-  relevance_score: number; // 0-1
-  timestamp?: string;
-}
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!question.trim() || isSubmitting) return;
 
-export interface ConversationEntry {
-  id: string;
-  question: string;
-  response: QuestionResponse;
-  timestamp: string;
-}
-
-const AskTheCasePanel: React.FC<AskTheCasePanelProps> = ({
-  patientId,
-  encounterId,
-  suggestedQuestions,
-  onAskQuestion,
-}) => {
-  const [question, setQuestion] = useState('');
-  const [conversation, setConversation] = useState<ConversationEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [expandedCitations, setExpandedCitations] = useState<Set<string>>(
-    new Set()
-  );
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const conversationEndRef = useRef<HTMLDivElement>(null);
-
-  // Load conversation from localStorage
-  useEffect(() => {
-    const storageKey = `conversation_${patientId}_${encounterId}`;
-    const saved = localStorage.getItem(storageKey);
-    if (saved) {
-      try {
-        setConversation(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse saved conversation:', e);
-      }
-    }
-  }, [patientId, encounterId]);
-
-  // Save conversation to localStorage
-  useEffect(() => {
-    if (conversation.length > 0) {
-      const storageKey = `conversation_${patientId}_${encounterId}`;
-      localStorage.setItem(storageKey, JSON.stringify(conversation));
-    }
-  }, [conversation, patientId, encounterId]);
-
-  // Scroll to bottom when new message added
-  useEffect(() => {
-    conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversation]);
-
-  const handleSendQuestion = async () => {
-    if (!question.trim() || isLoading) return;
-
-    const trimmedQuestion = question.trim();
-    setIsLoading(true);
-
+    setIsSubmitting(true);
     try {
-      const response = await onAskQuestion(trimmedQuestion);
-
-      const newEntry: ConversationEntry = {
-        id: `conv_${Date.now()}`,
-        question: trimmedQuestion,
-        response,
-        timestamp: new Date().toISOString(),
-      };
-
-      setConversation((prev) => [...prev, newEntry]);
-      setQuestion('');
-    } catch (error) {
-      console.error('Failed to get response:', error);
-      // You could add error handling UI here
+      await onQuestionSubmit(question, mode, targetType);
+      setQuestion("");
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendQuestion();
-    }
-  };
-
-  const handleSuggestedQuestion = (suggestedQ: string) => {
-    setQuestion(suggestedQ);
-  };
-
-  const handleFollowUpQuestion = (followUp: string) => {
-    setQuestion(followUp);
-  };
-
-  const handleClearAll = () => {
-    if (window.confirm('Are you sure? This will clear all Q&A history.')) {
-      setConversation([]);
-      const storageKey = `conversation_${patientId}_${encounterId}`;
-      localStorage.removeItem(storageKey);
-    }
-  };
-
-  const toggleCitations = (entryId: string) => {
-    setExpandedCitations((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(entryId)) {
-        newSet.delete(entryId);
-      } else {
-        newSet.add(entryId);
-      }
-      return newSet;
-    });
-  };
-
-  const handleViewSource = (citationId: string) => {
-    console.log('View source:', citationId);
-    // In a real app, this would navigate or highlight the source
   };
 
   return (
-    <div className="ask-case-panel">
-      {/* Header */}
-      <div className="panel-header">
-        <h2 className="panel-title">Ask the Case</h2>
-        {conversation.length > 0 && (
-          <button className="clear-button" onClick={handleClearAll}>
-            <Trash2 className="icon" />
-            Clear All
-          </button>
-        )}
+    <Card className="ask-panel-card">
+      <div className="ask-panel-header">
+        <div className="ask-header-row">
+          <div className="ask-header-left">
+            <MessageSquare className="ask-icon" />
+            <h3 className="ask-title">Ask the Case</h3>
+          </div>
+          {qaHistoryCount > 0 && (
+            <Badge variant="secondary">
+              {qaHistoryCount} previous Q&A
+            </Badge>
+          )}
+        </div>
+        <p className="ask-description">
+          Ask questions about criteria, signals, timeline, or overall case assessment
+        </p>
       </div>
 
-      <div className="panel-content" ref={scrollAreaRef}>
-        {/* Input Area */}
-        <div className="input-section">
-          <div className="input-header">
-            <span className="emoji">💬</span>
-            <span className="input-label">What would you like to know?</span>
+      <div className="ask-panel-body">
+        <form onSubmit={handleSubmit} className="ask-form">
+          <div className="ask-controls-grid">
+            <div className="ask-control">
+              <label className="ask-label">Question Mode</label>
+              <Select value={mode} onValueChange={(v: any) => setMode(v)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="explain">Explain</SelectItem>
+                  <SelectItem value="summarize">Summarize</SelectItem>
+                  <SelectItem value="validate">Validate</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="ask-control">
+              <label className="ask-label">Target</label>
+              <Select value={targetType} onValueChange={(v: any) => setTargetType(v)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="overall">Overall Case</SelectItem>
+                  <SelectItem value="criterion">Specific Criterion</SelectItem>
+                  <SelectItem value="signal">Specific Signal</SelectItem>
+                  <SelectItem value="event">Specific Event</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="input-container">
-            <input
-              type="text"
+
+          <div className="ask-question-section">
+            <label className="ask-label">Your Question</label>
+            <Textarea
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your question here..."
-              className="question-input"
-              maxLength={500}
-              disabled={isLoading}
+              placeholder="e.g., Why was the patient determined to meet CLABSI criteria?"
+              className="ask-textarea"
+              disabled={isSubmitting}
             />
-            <button
-              onClick={handleSendQuestion}
-              disabled={!question.trim() || isLoading}
-              className="send-button"
-            >
-              {isLoading ? (
-                <Loader2 className="icon spinning" />
-              ) : (
-                <>
-                  <Send className="icon" />
-                  Send
-                </>
-              )}
-            </button>
           </div>
-          <div className="char-counter">
-            {question.length}/500
-          </div>
-        </div>
 
-        {/* Suggested Questions */}
-        {conversation.length === 0 && suggestedQuestions.length > 0 && (
-          <div className="suggested-section">
-            <div className="section-header">
-              <span className="emoji">📌</span>
-              <span className="section-label">Suggested Questions</span>
-            </div>
-            <div className="suggested-questions">
-              {suggestedQuestions.map((sq, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSuggestedQuestion(sq)}
-                  className="suggested-question-pill"
-                >
-                  {sq}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Conversation History */}
-        {conversation.length > 0 && (
-          <div className="conversation-section">
-            <div className="section-header">
-              <span className="emoji">💬</span>
-              <span className="section-label">Conversation History</span>
-            </div>
-
-            <div className="conversation-list">
-              {conversation.map((entry) => {
-                const citationsExpanded = expandedCitations.has(entry.id);
-                const citationCount = entry.response.evidence_citations.length;
-
-                return (
-                  <div key={entry.id} className="conversation-entry">
-                    {/* Question */}
-                    <div className="question-box">
-                      <div className="question-text">Q: {entry.question}</div>
-                      <div className="question-time">
-                        {new Date(entry.timestamp).toLocaleTimeString()}
-                      </div>
-                    </div>
-
-                    {/* Answer */}
-                    <div className="answer-box">
-                      <div className="answer-text">{entry.response.answer}</div>
-
-                      {/* Evidence Citations */}
-                      {citationCount > 0 && (
-                        <div className="citations-section">
-                          <button
-                            onClick={() => toggleCitations(entry.id)}
-                            className="citations-toggle"
-                          >
-                            <span>📎</span>
-                            <span>Evidence ({citationCount})</span>
-                            {citationsExpanded ? (
-                              <ChevronUp className="chevron-icon" />
-                            ) : (
-                              <ChevronDown className="chevron-icon" />
-                            )}
-                          </button>
-
-                          {citationsExpanded && (
-                            <div className="citations-list">
-                              {entry.response.evidence_citations.map(
-                                (citation) => (
-                                  <CitationCard
-                                    key={citation.citation_id}
-                                    citation={citation}
-                                    onViewSource={handleViewSource}
-                                  />
-                                )
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Confidence Indicator */}
-                      <div className="confidence-section">
-                        <ConfidenceIndicator
-                          confidence={entry.response.confidence}
-                        />
-                      </div>
-
-                      {/* Follow-up Suggestions */}
-                      {entry.response.follow_up_suggestions.length > 0 && (
-                        <div className="followup-section">
-                          <div className="followup-header">
-                            <span className="followup-label">🔍 Follow-up:</span>
-                          </div>
-                          <div className="followup-pills">
-                            {entry.response.follow_up_suggestions.map(
-                              (followUp, idx) => (
-                                <button
-                                  key={idx}
-                                  onClick={() => handleFollowUpQuestion(followUp)}
-                                  className="followup-pill"
-                                >
-                                  {followUp}
-                                </button>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        <div ref={conversationEndRef} />
+          <Button type="submit" className="ask-submit-button" disabled={!question.trim() || isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="submit-icon submit-icon-spin" />
+                Submitting...
+              </>
+            ) : (
+              <>
+                <Send className="submit-icon" />
+                Submit Question
+              </>
+            )}
+          </Button>
+        </form>
       </div>
-    </div>
+    </Card>
   );
-};
-
-export default AskTheCasePanel;
+}

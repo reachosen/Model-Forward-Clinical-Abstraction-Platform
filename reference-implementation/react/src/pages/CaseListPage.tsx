@@ -4,16 +4,14 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { CaseInfo } from '../types';
 import { useDomainConfig } from '../contexts/DomainConfigContext';
 import SearchFilterPanel from '../components/SearchFilterPanel';
-import EnhancedCaseCard from '../components/EnhancedCaseCard';
+import { CaseCard } from '../components/CaseCard';
 import './CaseListPage.css';
 
 const CaseListPage: React.FC = () => {
-  const navigate = useNavigate();
   const { config } = useDomainConfig();
   const [cases, setCases] = useState<CaseInfo[]>([]);
   const [filteredCases, setFilteredCases] = useState<CaseInfo[]>([]);
@@ -37,10 +35,6 @@ const CaseListPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleCaseClick = (patientId: string) => {
-    navigate(`/case/${patientId}`);
   };
 
   if (loading) {
@@ -80,15 +74,21 @@ const CaseListPage: React.FC = () => {
         <div className="cases-content">
           <div className="cases-grid">
             {filteredCases.map((caseInfo) => (
-              <EnhancedCaseCard
+              <CaseCard
                 key={caseInfo.patient_id}
-                caseInfo={{
-                  ...caseInfo,
-                  risk_level: caseInfo.risk_level || 'MODERATE',
-                  risk_score: caseInfo.risk_score || 50,
-                  status: caseInfo.status || 'PENDING'
+                caseSummary={{
+                  case_id: caseInfo.patient_id,
+                  concern_id: caseInfo.domain || 'CLABSI',
+                  patient_summary: `${caseInfo.name} (${caseInfo.mrn}) - ${caseInfo.scenario}`,
+                  latest_task_state: {
+                    stage: 'abstraction',
+                    status: caseInfo.status?.toLowerCase() || 'pending',
+                    version: 'v1',
+                    timestamp: caseInfo.abstraction_datetime || new Date().toISOString()
+                  },
+                  risk_level: caseInfo.risk_level,
+                  flags: []
                 }}
-                onClick={handleCaseClick}
               />
             ))}
           </div>

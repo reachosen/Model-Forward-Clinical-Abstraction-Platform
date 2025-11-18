@@ -11,7 +11,7 @@ import { Button } from './ui/Button';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
 import { TaskMetadataBadge } from './TaskMetadataBadge';
-import './TaskHistoryDrawer_New.css';
+import './TaskHistoryDrawer.css';
 
 interface TaskHistoryEntry {
   task_metadata: TaskMetadata;
@@ -29,7 +29,7 @@ interface TaskHistoryDrawerProps {
   taskType: string;
 }
 
-export function TaskHistoryDrawerNew({ taskHistory, taskType }: TaskHistoryDrawerProps) {
+export function TaskHistoryDrawer({ taskHistory, taskType }: TaskHistoryDrawerProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const formatDuration = (ms: number) => {

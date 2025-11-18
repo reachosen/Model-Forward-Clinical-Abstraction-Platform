@@ -1,0 +1,142 @@
+.app-navigation {
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.nav-content {
+  display: flex;
+  height: 64px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand/Logo */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 8px;
+  background-color: var(--primary-color, #3b82f6);
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.brand-text {
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--text-color, #111827);
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--text-color, #374151);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.nav-link:hover:not(.disabled) {
+  background-color: var(--accent-bg, #f3f4f6);
+  color: var(--accent-fg, #111827);
+}
+
+.nav-link.active {
+  background-color: var(--accent-bg, #f3f4f6);
+  color: var(--accent-fg, #111827);
+}
+
+.nav-link.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nav-link.disabled:hover {
+  background-color: transparent;
+}
+
+.nav-link-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.nav-link-text {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .nav-link-text {
+    display: inline;
+  }
+}
+
+.nav-link-badge {
+  display: none;
+  font-size: 12px;
+  color: var(--muted-foreground, #6b7280);
+  margin-left: 4px;
+}
+
+@media (min-width: 768px) {
+  .nav-link-badge {
+    display: inline;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .app-navigation {
+    --border-color: #374151;
+    background-color: rgba(31, 41, 55, 0.95);
+  }
+
+  .brand-text {
+    --text-color: #f9fafb;
+  }
+
+  .nav-link {
+    --text-color: #d1d5db;
+  }
+
+  .nav-link:hover:not(.disabled),
+  .nav-link.active {
+    --accent-bg: #374151;
+    --accent-fg: #f9fafb;
+  }
+
+  .nav-link-badge {
+    --muted-foreground: #9ca3af;
+  }
+}

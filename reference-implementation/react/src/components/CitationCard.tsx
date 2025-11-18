@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { EvidenceCitation } from './AskTheCasePanel';
+import { EvidenceCitation } from '../api/cafactory';
 import './CitationCard.css';
 
 interface CitationCardProps {

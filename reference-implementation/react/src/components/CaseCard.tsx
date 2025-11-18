@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { CheckCircle, Clock, XCircle, Circle } from 'lucide-react';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
-import './CaseCard_New.css';
+import './CaseCard.css';
 
 interface CaseSummary {
   case_id: string;
@@ -74,7 +74,7 @@ function getRiskBadge(risk?: string) {
   );
 }
 
-export function CaseCardNew({ caseSummary }: CaseCardProps) {
+export function CaseCard({ caseSummary }: CaseCardProps) {
   return (
     <Link to={`/case/${caseSummary.case_id}`} className="case-card-link">
       <Card className="case-card-container">
