@@ -146,6 +146,8 @@ export interface CaseView {
 export interface FeedbackSubmission {
   patient_id: string;
   encounter_id: string;
+  case_id?: string;
+  concern_id?: string;
   feedback_type: 'APPROVAL' | 'CORRECTION' | 'QUESTION' | 'COMMENT';
   rating?: number;
   comments?: string;

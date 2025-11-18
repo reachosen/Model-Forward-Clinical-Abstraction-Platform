@@ -20,6 +20,7 @@ import { TimelinePanel } from '../components/TimelinePanel';
 import { AskTheCasePanel } from '../components/AskTheCasePanel';
 import { InterrogationPanel } from '../components/InterrogationPanel';
 import { DemoModeBanner } from '../components/DemoModeBanner';
+import { FeedbackForm } from '../components/FeedbackForm';
 import './CaseViewPage.css';
 
 const CaseViewPage: React.FC = () => {
@@ -294,6 +295,17 @@ const CaseViewPage: React.FC = () => {
                   <Separator />
 
                   <InterrogationPanel qaHistory={structuredCase.qa?.qa_history || []} />
+
+                  <Separator />
+
+                  {/* Feedback Form */}
+                  <FeedbackForm
+                    caseId={structuredCase.case_id}
+                    concernId={structuredCase.concern_id}
+                    patientId={structuredCase.patient.case_metadata.patient_id}
+                    encounterId={structuredCase.patient.case_metadata.encounter_id}
+                    isDemoMode={structuredCase.abstraction.task_metadata.demo_mode}
+                  />
 
                   <Separator />
 

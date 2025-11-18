@@ -1,0 +1,55 @@
+/* Feedback Form Styles */
+
+.feedback-form-card {
+  margin-top: 24px;
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sentiment-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.sentiment-button {
+  flex: 1;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.button-icon {
+  flex-shrink: 0;
+}
+
+.comments-textarea {
+  resize: none;
+  min-height: 200px;
+}
+
+.submit-button {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .sentiment-buttons {
+    flex-direction: column;
+  }
+
+  .sentiment-button {
+    width: 100%;
+  }
+}

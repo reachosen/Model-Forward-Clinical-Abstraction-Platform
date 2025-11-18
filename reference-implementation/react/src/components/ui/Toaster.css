@@ -1,0 +1,135 @@
+/* Toaster Styles */
+
+.toaster-viewport {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  max-width: 420px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-default {
+  border-left: 4px solid #3b82f6;
+}
+
+.toast-destructive {
+  border-left: 4px solid #ef4444;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.toast-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.toast-description {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.toast-destructive .toast-title {
+  color: #991b1b;
+}
+
+.toast-destructive .toast-description {
+  color: #7f1d1d;
+}
+
+.toast-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #9ca3af;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.toast-close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.toast-destructive .toast-close {
+  color: #b91c1c;
+}
+
+.toast-destructive .toast-close:hover {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .toast {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .toast-default {
+    border-left-color: #60a5fa;
+  }
+
+  .toast-destructive {
+    background: #7f1d1d;
+    border-color: #991b1b;
+  }
+
+  .toast-title {
+    color: #f9fafb;
+  }
+
+  .toast-description {
+    color: #d1d5db;
+  }
+
+  .toast-close {
+    color: #9ca3af;
+  }
+
+  .toast-close:hover {
+    background: #374151;
+    color: #f9fafb;
+  }
+}
