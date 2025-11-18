@@ -21,7 +21,6 @@ import { PipelineStepper } from '../components/PipelineStepper';
 import { TaskMetadataBadge } from '../components/TaskMetadataBadge';
 import { EnrichmentSummaryPanel } from '../components/EnrichmentSummaryPanel';
 import { TimelinePanel } from '../components/TimelinePanel';
-import { ImprovedSignalsPanel } from '../components/ImprovedSignalsPanel';
 import { PipelineStage, EnrichmentSummary } from '../types';
 
 import './CaseViewPage.css';
@@ -200,18 +199,11 @@ const CaseViewPage: React.FC = () => {
               <EnrichmentSummaryPanel summary={enrichmentSummary} />
             )}
 
-            {/* Use ImprovedSignalsPanel if signal_groups available */}
-            {structuredCase?.enrichment?.signal_groups ? (
-              <ImprovedSignalsPanel
-                signalGroups={structuredCase.enrichment.signal_groups}
-                timelinePhases={structuredCase.enrichment.timeline_phases}
-              />
-            ) : (
-              <SignalsPanel
-                signals={caseData.signals}
-                signalGroups={structuredCase?.enrichment?.signal_groups}
-              />
-            )}
+            {/* Signals Panel - using legacy version for now */}
+            <SignalsPanel
+              signals={caseData.signals}
+              signalGroups={structuredCase?.enrichment?.signal_groups}
+            />
           </div>
           <div className="summary-panel panel">
             <h2>Generated Summary</h2>
