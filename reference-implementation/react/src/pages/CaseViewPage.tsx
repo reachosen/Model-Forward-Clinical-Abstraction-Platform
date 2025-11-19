@@ -5,10 +5,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Activity, Sparkles, FileText, MessageSquare } from 'lucide-react';
 import api from '../api/client';
 import { StructuredCase, PipelineStage } from '../types';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
+import { Tabs, TabsContent } from '../components/ui/tabs';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
@@ -141,25 +140,6 @@ const CaseViewPage: React.FC = () => {
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="case-tabs">
-          <TabsList className="grid grid-cols-4">
-            <TabsTrigger value="context" className="flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              <span>Context</span>
-            </TabsTrigger>
-            <TabsTrigger value="enrichment" className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              <span>Enrichment</span>
-            </TabsTrigger>
-            <TabsTrigger value="abstraction" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              <span>Clinical Review</span>
-            </TabsTrigger>
-            <TabsTrigger value="feedback" className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              <span>Feedback</span>
-            </TabsTrigger>
-          </TabsList>
-
           {/* Tab Content: Patient Context */}
           <TabsContent value="context" className="mt-6">
             <Card>
