@@ -6,12 +6,12 @@
 
 import React, { useState } from 'react';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
-import { Button } from './ui/Button';
-import { Textarea } from './ui/Textarea';
-import { Label } from './ui/Label';
-import { Card } from './ui/Card';
+import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
+import { Label } from './ui/label';
+import { Card } from './ui/card';
 import { useToast } from '../hooks/useToast';
-import { Toaster } from './ui/Toaster';
+import { Toaster } from './ui/toaster';
 import api from '../api/client';
 import './FeedbackForm.css';
 

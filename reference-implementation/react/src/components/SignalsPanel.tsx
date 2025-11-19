@@ -6,9 +6,9 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { SignalGroup, EnrichmentTimelinePhase } from '../types';
-import { Card } from './ui/Card';
-import { Badge } from './ui/Badge';
-import { Progress } from './ui/Progress';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
+import { Progress } from './ui/progress';
 import './SignalsPanel.css';
 
 interface SignalsPanelProps {

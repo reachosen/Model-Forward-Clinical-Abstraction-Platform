@@ -6,9 +6,9 @@
 
 import React from 'react';
 import { Sparkles, TrendingUp } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/Card';
-import { Badge } from './ui/Badge';
-import { Progress } from './ui/Progress';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Progress } from './ui/progress';
 import { EnrichmentSummary } from '../types';
 import './EnrichmentSummaryPanel.css';
 

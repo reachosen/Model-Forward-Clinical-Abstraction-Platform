@@ -5,11 +5,11 @@
 
 import React, { useState } from 'react';
 import { MessageSquare, Send, Loader2 } from 'lucide-react';
-import { Card } from './ui/Card';
-import { Button } from './ui/Button';
-import { Textarea } from './ui/Textarea';
-import { Badge } from './ui/Badge';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/Select';
+import { Card } from './ui/card';
+import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
+import { Badge } from './ui/badge';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select';
 import './AskTheCasePanel.css';
 
 interface AskTheCasePanelProps {

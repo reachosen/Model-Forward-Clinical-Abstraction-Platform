@@ -6,11 +6,11 @@
 import React, { useState } from 'react';
 import { FileCheck, CheckCircle2, XCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { CriterionDetail } from '../types';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/Dialog';
-import { Button } from './ui/Button';
-import { Card } from './ui/Card';
-import { Badge } from './ui/Badge';
-import { Progress } from './ui/Progress';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { Button } from './ui/button';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
+import { Progress } from './ui/progress';
 import { TaskMetadataBadge } from './TaskMetadataBadge';
 import './CriteriaDetailModal.css';
 

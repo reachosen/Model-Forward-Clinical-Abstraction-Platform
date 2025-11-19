@@ -829,3 +829,230 @@ export const promptStoreAPI = {
     version.is_active = false;
   }
 };
+
+// ============================================================================
+// New Prompt Management UI Data Types (Phase 2)
+// ============================================================================
+
+export interface PromptVersionMetadata {
+  concern_id: string;
+  version: string;
+  status: 'DRAFT' | 'ACTIVE' | 'EXPERIMENTAL' | 'DEPRECATED';
+  created_at: string;
+  created_by: string;
+  published_at: string | null;
+  active_in_environments: string[];
+  comparison_hash: string;
+}
+
+export interface SystemPrompt {
+  template: string;
+  variables: string[];
+}
+
+export interface TaskPrompt {
+  template: string;
+  variables: string[];
+}
+
+export interface OutputFormat {
+  template: string;
+  schema: Record<string, any>;
+}
+
+export interface PromptLibrary {
+  system_prompts: Record<string, SystemPrompt>;
+  task_prompts: Record<string, TaskPrompt>;
+  output_formats: Record<string, OutputFormat>;
+}
+
+// ============================================================================
+// Mock Data for New Prompt Management UI
+// ============================================================================
+
+export const mockPromptVersions: PromptVersionMetadata[] = [
+  {
+    concern_id: 'clabsi',
+    version: 'v1.0',
+    status: 'DEPRECATED',
+    created_at: '2024-01-15T10:00:00Z',
+    created_by: 'system',
+    published_at: '2024-01-16T08:00:00Z',
+    active_in_environments: [],
+    comparison_hash: 'abc123',
+  },
+  {
+    concern_id: 'clabsi',
+    version: 'v1.1',
+    status: 'ACTIVE',
+    created_at: '2024-02-20T14:30:00Z',
+    created_by: 'dr.smith@hospital.com',
+    published_at: '2024-02-22T09:00:00Z',
+    active_in_environments: ['dev', 'staging', 'production'],
+    comparison_hash: 'def456',
+  },
+  {
+    concern_id: 'clabsi',
+    version: 'v1.2',
+    status: 'DRAFT',
+    created_at: '2024-03-10T11:15:00Z',
+    created_by: 'eng.jones@hospital.com',
+    published_at: null,
+    active_in_environments: [],
+    comparison_hash: 'ghi789',
+  },
+];
+
+export const mockPromptLibrary: PromptLibrary = {
+  system_prompts: {
+    clinical_expert: {
+      template: `You are a clinical expert specializing in infection prevention and control. Your role is to analyze patient data and determine whether specific criteria are met for {{concern_type}} surveillance.
+
+You have access to:
+- Patient demographics
+- Clinical documentation
+- Lab results
+- Procedure notes
+
+Analyze the information critically and systematically. When assessing criteria:
+1. Consider all available evidence
+2. Note any missing or contradictory information
+3. Apply clinical judgment based on CDC/NHSN definitions
+4. Provide clear reasoning for your determinations`,
+      variables: ['concern_type'],
+    },
+    data_enrichment_expert: {
+      template: `You are a data enrichment specialist. Your task is to extract and structure relevant clinical information from unstructured medical records.
+
+Focus on:
+- Temporal relationships (dates, sequence of events)
+- Clinical signs and symptoms
+- Procedures and interventions
+- Laboratory findings
+- Medications and treatments
+
+Extract information for {{concern_type}} abstraction and format it according to the provided schema.`,
+      variables: ['concern_type'],
+    },
+  },
+  task_prompts: {
+    enrichment_prompt: {
+      template: `Review the following patient record excerpt and extract all information relevant to {{concern_type}} determination:
+
+{{patient_data}}
+
+Specific extraction requirements:
+- Central line insertion date and location
+- Signs of infection (fever, chills, hypotension)
+- Positive blood culture results and dates
+- Other potential infection sources
+- Timeline of events
+
+Structure your response according to the enrichment schema.`,
+      variables: ['concern_type', 'patient_data'],
+    },
+    rule_evaluation_prompt: {
+      template: `Evaluate the following rule for {{concern_type}} surveillance:
+
+Rule: {{rule_definition}}
+
+Patient Data:
+{{enriched_data}}
+
+Determine if the rule criteria are met. Provide:
+1. Boolean result (true/false)
+2. Confidence level (0-1)
+3. Supporting evidence
+4. Missing information (if any)
+5. Clinical reasoning
+
+Format your response according to the rule_evaluation_result schema.`,
+      variables: ['concern_type', 'rule_definition', 'enriched_data'],
+    },
+  },
+  output_formats: {
+    rule_evaluation_result: {
+      template: 'Structured output for rule evaluation results',
+      schema: {
+        type: 'object',
+        required: ['rule_met', 'confidence', 'reasoning'],
+        properties: {
+          rule_met: {
+            type: 'boolean',
+            description: 'Whether the rule criteria are satisfied',
+          },
+          confidence: {
+            type: 'number',
+            minimum: 0,
+            maximum: 1,
+            description: 'Confidence level in the determination',
+          },
+          reasoning: {
+            type: 'string',
+            description: 'Clinical reasoning for the determination',
+          },
+          supporting_evidence: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                criterion: { type: 'string' },
+                evidence: { type: 'string' },
+                source: { type: 'string' },
+              },
+            },
+          },
+          missing_information: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+        },
+      },
+    },
+    enrichment_result: {
+      template: 'Structured output for data enrichment',
+      schema: {
+        type: 'object',
+        required: ['extracted_data', 'confidence'],
+        properties: {
+          extracted_data: {
+            type: 'object',
+            properties: {
+              temporal_events: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    event: { type: 'string' },
+                    date: { type: 'string', format: 'date-time' },
+                    source: { type: 'string' },
+                  },
+                },
+              },
+              clinical_findings: {
+                type: 'array',
+                items: { type: 'string' },
+              },
+              lab_results: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    test: { type: 'string' },
+                    result: { type: 'string' },
+                    date: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+          confidence: {
+            type: 'number',
+            minimum: 0,
+            maximum: 1,
+          },
+        },
+      },
+    },
+  },
+};

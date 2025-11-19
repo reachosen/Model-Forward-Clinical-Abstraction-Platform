@@ -1,48 +1,35 @@
-/**
- * Toaster Component
- * Displays toast notifications
- */
+'use client'
 
-import React, { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
-import { useToast, Toast } from '../../hooks/useToast';
-import './Toaster.css';
+import { useToast } from '../../hooks/use-toast'
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from './toast'
 
 export function Toaster() {
-  const { toasts, dismiss } = useToast();
-  const [visibleToasts, setVisibleToasts] = useState<Toast[]>([]);
-
-  useEffect(() => {
-    setVisibleToasts(toasts);
-  }, [toasts]);
-
-  if (visibleToasts.length === 0) {
-    return null;
-  }
+  const { toasts } = useToast()
 
   return (
-    <div className="toaster-viewport">
-      {visibleToasts.map((toast) => (
-        <div
-          key={toast.id}
-          className={`toast toast-${toast.variant || 'default'}`}
-          role="alert"
-        >
-          <div className="toast-content">
-            {toast.title && <div className="toast-title">{toast.title}</div>}
-            {toast.description && (
-              <div className="toast-description">{toast.description}</div>
-            )}
-          </div>
-          <button
-            className="toast-close"
-            onClick={() => dismiss(toast.id)}
-            aria-label="Close"
-          >
-            <X size={16} />
-          </button>
-        </div>
-      ))}
-    </div>
-  );
+    <ToastProvider>
+      {toasts.map(function ({ id, title, description, action, ...props }) {
+        return (
+          <Toast key={id} {...props}>
+            <div className="grid gap-1">
+              {title && <ToastTitle>{title}</ToastTitle>}
+              {description && (
+                <ToastDescription>{description}</ToastDescription>
+              )}
+            </div>
+            {action}
+            <ToastClose />
+          </Toast>
+        )
+      })}
+      <ToastViewport />
+    </ToastProvider>
+  )
 }

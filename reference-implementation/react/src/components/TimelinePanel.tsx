@@ -6,8 +6,8 @@
 import React from 'react';
 import { Calendar, Clock } from 'lucide-react';
 import { EnrichmentTimelinePhase } from '../types';
-import { Card } from './ui/Card';
-import { Badge } from './ui/Badge';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
 import './TimelinePanel.css';
 
 interface TimelinePanelProps {
