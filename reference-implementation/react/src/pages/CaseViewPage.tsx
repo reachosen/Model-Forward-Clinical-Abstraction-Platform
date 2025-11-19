@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Activity, Sparkles, FileText } from 'lucide-react';
+import { Activity, Sparkles, FileText, MessageSquare } from 'lucide-react';
 import api from '../api/client';
 import { StructuredCase, PipelineStage } from '../types';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
@@ -141,7 +141,7 @@ const CaseViewPage: React.FC = () => {
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="case-tabs">
-          <TabsList className="grid grid-cols-3">
+          <TabsList className="grid grid-cols-4">
             <TabsTrigger value="context" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               <span>Context</span>
@@ -154,17 +154,15 @@ const CaseViewPage: React.FC = () => {
               <FileText className="h-4 w-4" />
               <span>Clinical Review</span>
             </TabsTrigger>
+            <TabsTrigger value="feedback" className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              <span>Feedback</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Tab Content: Patient Context */}
           <TabsContent value="context" className="mt-6">
             <Card>
-              <div className="card-header">
-                <h2 className="card-title">Section A: Patient Context</h2>
-                <p className="card-description">
-                  Patient demographics and clinical overview
-                </p>
-              </div>
               <div className="card-content">
                 <div className="space-y-4">
                   <div className="context-summary">
@@ -186,12 +184,6 @@ const CaseViewPage: React.FC = () => {
           <TabsContent value="enrichment" className="mt-6">
             {structuredCase.enrichment ? (
               <Card>
-                <div className="card-header">
-                  <h2 className="card-title">Section B: Enrichment</h2>
-                  <p className="card-description">
-                    AI-identified clinical signals and timeline analysis
-                  </p>
-                </div>
                 <div className="card-content enrichment-content">
                   {/* Task Metadata Badge */}
                   <TaskMetadataBadge taskMetadata={structuredCase.enrichment.task_metadata} />
@@ -243,12 +235,6 @@ const CaseViewPage: React.FC = () => {
           <TabsContent value="abstraction" className="mt-6">
             {structuredCase.abstraction ? (
               <Card>
-                <div className="card-header">
-                  <h2 className="card-title">Section C: Clinical Review & Feedback</h2>
-                  <p className="card-description">
-                    Clinical narrative, criteria evaluation, and interactive Q&A
-                  </p>
-                </div>
                 <div className="card-content abstraction-content">
                   {/* Task Metadata Badge */}
                   <TaskMetadataBadge taskMetadata={structuredCase.abstraction.task_metadata} />
@@ -298,17 +284,6 @@ const CaseViewPage: React.FC = () => {
 
                   <Separator />
 
-                  {/* Feedback Form */}
-                  <FeedbackForm
-                    caseId={structuredCase.case_id}
-                    concernId={structuredCase.concern_id}
-                    patientId={structuredCase.patient.case_metadata.patient_id}
-                    encounterId={structuredCase.patient.case_metadata.encounter_id}
-                    isDemoMode={structuredCase.abstraction.task_metadata.demo_mode}
-                  />
-
-                  <Separator />
-
                   {/* Action Buttons */}
                   <div className="action-buttons">
                     <Button variant="outline" size="sm" disabled>
@@ -327,6 +302,21 @@ const CaseViewPage: React.FC = () => {
                 </div>
               </Card>
             )}
+          </TabsContent>
+
+          {/* Tab Content: Feedback */}
+          <TabsContent value="feedback" className="mt-6">
+            <Card>
+              <div className="card-content">
+                <FeedbackForm
+                  caseId={structuredCase.case_id}
+                  concernId={structuredCase.concern_id}
+                  patientId={structuredCase.patient.case_metadata.patient_id}
+                  encounterId={structuredCase.patient.case_metadata.encounter_id}
+                  isDemoMode={structuredCase.abstraction?.task_metadata.demo_mode || false}
+                />
+              </div>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
