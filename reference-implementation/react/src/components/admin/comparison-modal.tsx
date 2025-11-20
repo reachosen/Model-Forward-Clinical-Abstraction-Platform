@@ -5,11 +5,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '../ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { Label } from '../ui/label'
-import { Badge } from '../ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+} from '../ui/Dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select'
+import { Label } from '../ui/Label'
+import { Badge } from '../ui/Badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/Tabs'
 import { GitCompare, Plus, Minus, Equal } from 'lucide-react'
 import type { PromptVersionMetadata } from '../../api/promptStore'
 

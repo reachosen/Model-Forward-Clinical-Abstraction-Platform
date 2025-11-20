@@ -7,7 +7,7 @@
 import React from 'react';
 import { Activity, Droplet, Scissors, ChevronRight } from 'lucide-react';
 import { ConcernDefinition } from '../../types';
-import { Badge } from '../ui/badge';
+import { Badge } from '../ui/Badge';
 import './ConcernList.css';
 
 interface ConcernListProps {

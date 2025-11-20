@@ -6,8 +6,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Clock, XCircle, Circle } from 'lucide-react';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
+import { Card } from './ui/Card';
+import { Badge } from './ui/Badge';
 import './CaseCard.css';
 
 interface CaseSummary {

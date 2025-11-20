@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
-import { Label } from '../ui/label'
-import { Textarea } from '../ui/textarea'
-import { Badge } from '../ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/Card'
+import { Label } from '../ui/Label'
+import { Textarea } from '../ui/Textarea'
+import { Badge } from '../ui/Badge'
 import { ChevronDown, ChevronRight, CheckCircle2, XCircle } from 'lucide-react'
 import type { OutputFormat } from '../../api/promptStore'
 

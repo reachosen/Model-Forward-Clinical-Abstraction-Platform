@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Info, Clock, User, Zap } from 'lucide-react';
-import { Badge } from './ui/badge';
+import { Badge } from './ui/Badge';
 import { cn, formatDate } from '../lib/utils';
 import { TaskMetadata } from '../types';
 import './TaskMetadataBadge.css';

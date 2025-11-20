@@ -7,7 +7,7 @@
 import React from 'react';
 import { CheckCircle2, Circle, Clock, TrendingUp } from 'lucide-react';
 import { TaskDefinition, PromptVersion } from '../../types';
-import { Badge } from '../ui/badge';
+import { Badge } from '../ui/Badge';
 import { formatDate } from '../../lib/utils';
 import './TaskVersionTable.css';
 

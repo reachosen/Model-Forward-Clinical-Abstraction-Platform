@@ -71,14 +71,11 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals, signalGroups }) =>
           label: config.label,
           icon: config.icon,
           signals: group.signals.map(s => ({
-            signal_id: s.signal_id,
-            signal_name: s.signal_name,
-            signal_type: s.signal_type.toUpperCase() as Signal['signal_type'],
-            value: s.value,
+            ...s,
+            signal_type: group.signal_type.toUpperCase() as Signal['signal_type'],
             severity: (s.severity as any) || 'INFO',
             rationale: `${group.signal_type} signal`,
-            timestamp: s.timestamp,
-            confidence: group.group_confidence, // Use group confidence
+            confidence: s.confidence !== undefined ? s.confidence : group.group_confidence,
           })),
           groupConfidence: group.group_confidence,
         };
@@ -213,4 +210,4 @@ const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals, signalGroups }) =>
   );
 };
 
-export default SignalsPanel;
+export { SignalsPanel };

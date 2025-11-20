@@ -6,10 +6,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../ui/dialog'
-import { Button } from '../ui/button'
+} from '../ui/Dialog'
+import { Button } from '../ui/Button'
 import { Checkbox } from '../ui/checkbox'
-import { Label } from '../ui/label'
+import { Label } from '../ui/Label'
 import { Alert, AlertDescription } from '../ui/alert'
 import { Rocket, AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { useToast } from '../../hooks/use-toast'

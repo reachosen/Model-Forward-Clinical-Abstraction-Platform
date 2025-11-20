@@ -7,8 +7,8 @@
 import React, { useState } from 'react';
 import { X, Info, Calendar, Activity, TrendingUp, Edit2, CheckCircle2 } from 'lucide-react';
 import { PromptVersion, TaskDefinition } from '../../types';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
+import { Badge } from '../ui/Badge';
+import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { formatDate } from '../../lib/utils';
 import { PromptEditor } from './PromptEditor';

@@ -4,9 +4,9 @@
 
 import React, { useState } from 'react';
 import { PromptVersion, TaskDefinition } from '../../types';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
-import { Label } from '../ui/label';
+import { Button } from '../ui/Button';
+import { Textarea } from '../ui/Textarea';
+import { Label } from '../ui/Label';
 import './PromptEditor.css';
 
 interface PromptEditorProps {

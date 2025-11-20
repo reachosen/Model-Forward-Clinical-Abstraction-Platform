@@ -325,4 +325,4 @@ const AskTheCasePanel: React.FC<AskTheCasePanelProps> = ({
   );
 };
 
-export default AskTheCasePanel;
+export { AskTheCasePanel };
