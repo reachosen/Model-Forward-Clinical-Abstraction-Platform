@@ -146,6 +146,8 @@ export interface CaseView {
 export interface FeedbackSubmission {
   patient_id: string;
   encounter_id: string;
+  case_id?: string;
+  concern_id?: string;
   feedback_type: 'APPROVAL' | 'CORRECTION' | 'QUESTION' | 'COMMENT';
   rating?: number;
   comments?: string;
@@ -164,12 +166,14 @@ export interface TaskMetadata {
   task_id: string;
   task_type: string; // 'enrichment' | 'abstraction' | 'interrogation'
   prompt_version: string;
-  mode: 'batch' | 'interactive';
+  mode: 'batch' | 'interactive' | 'on_demand';
   executed_at: string; // ISO timestamp
   executed_by: string; // 'system' | user_id
   status: 'completed' | 'in_progress' | 'failed';
   duration_ms?: number;
   token_count?: number;
+  confidence?: number;
+  demo_mode?: boolean;
 }
 
 /**
@@ -290,8 +294,35 @@ export interface SignalGroup {
     unit?: string;
     abnormal?: boolean;
     severity?: string;
+    confidence?: number;
   }>;
   group_confidence: number;
+}
+
+/**
+ * Enrichment summary statistics
+ */
+export interface EnrichmentSummary {
+  signals_identified: number;
+  signal_groups_count: number;
+  timeline_phases_identified: number;
+  key_findings: string[];
+  confidence: number;
+}
+
+/**
+ * Timeline phase from enrichment
+ */
+export interface EnrichmentTimelinePhase {
+  phase_id?: string;
+  phase_name: string;
+  start_date: string;
+  end_date: string;
+  day_number?: number;
+  events?: string[];
+  events_in_phase?: number;
+  description?: string;
+  significance?: 'high' | 'medium' | 'low';
 }
 
 /**
@@ -300,19 +331,8 @@ export interface SignalGroup {
 export interface EnrichmentSection {
   task_metadata: TaskMetadata;
   signal_groups: SignalGroup[];
-  timeline_phases: Array<{
-    phase_name: string;
-    start_date: string;
-    end_date: string;
-    day_number: number;
-    events?: string[];
-    description?: string;
-  }>;
-  summary: {
-    signals_identified: number;
-    key_findings: string[];
-    confidence: number;
-  };
+  timeline_phases: EnrichmentTimelinePhase[];
+  summary: EnrichmentSummary;
 }
 
 /**
@@ -364,4 +384,77 @@ export interface StructuredCase {
   enrichment: EnrichmentSection;
   abstraction: AbstractionSection;
   qa: QASection | null;
+}
+
+/**
+ * Pipeline stage for tracking progress through abstraction pipeline
+ */
+export interface PipelineStage {
+  id: 'context' | 'enrichment' | 'abstraction' | 'feedback';
+  label: string;
+  status: 'completed' | 'in_progress' | 'failed' | 'pending';
+  taskMetadata?: TaskMetadata;
+}
+
+/**
+ * Criterion detail for abstraction checklist
+ */
+export interface CriterionDetail {
+  criterion_id: string;
+  criterion_text: string;
+  met: boolean;
+  evidence: string;
+  confidence: number;
+  source_signals: string[];
+  task_attribution: TaskMetadata;
+}
+
+/**
+ * Prompt version entity for admin/prompt management
+ */
+export interface PromptVersion {
+  version_id: string;
+  status: 'stable' | 'experimental' | 'deprecated';
+  created_at: string;
+  is_active: boolean;
+  system_prompt: string;
+  task_specific_additions?: string;
+  changelog: string;
+  cases_run?: number;
+  last_used_at?: string;
+  performance_metrics?: {
+    avg_confidence: number;
+    avg_latency_ms: number;
+    avg_tokens: number;
+    success_rate: number;
+  };
+}
+
+/**
+ * Task definition entity (Concern → Task → PromptVersion)
+ */
+export interface TaskDefinition {
+  task_id: string;
+  task_type: 'enrichment' | 'abstraction' | 'qa';
+  concern_id: string;
+  description: string;
+  execution_modes: Array<'batch' | 'interactive' | 'on_demand'>;
+  default_mode: 'batch' | 'interactive' | 'on_demand';
+  prompt_versions: PromptVersion[];
+  active_version: string;
+  expected_inputs: string[];
+  expected_outputs: string[];
+}
+
+/**
+ * Concern definition with tasks
+ */
+export interface ConcernDefinition {
+  concern_id: string;
+  display_name: string;
+  description: string;
+  system_prompt: string;
+  tasks: TaskDefinition[];
+  total_versions: number;
+  total_cases_run: number;
 }

@@ -1,0 +1,211 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e9]: Clinical Abstraction
+          - generic [ref=e10]:
+            - button "💉 CLABSI ▼" [active] [ref=e11] [cursor=pointer]:
+              - generic [ref=e12]: 💉
+              - generic [ref=e13]: CLABSI
+              - generic [ref=e14]: ▼
+            - generic [ref=e16]:
+              - generic [ref=e17]: Switch Domain
+              - button "💉 CLABSI ✓" [disabled] [ref=e18]:
+                - generic [ref=e19]: 💉
+                - generic [ref=e20]: CLABSI
+                - generic [ref=e21]: ✓
+              - button "🩺 CAUTI" [ref=e22] [cursor=pointer]:
+                - generic [ref=e23]: 🩺
+                - generic [ref=e24]: CAUTI
+              - button "🏥 SSI" [ref=e25] [cursor=pointer]:
+                - generic [ref=e26]: 🏥
+                - generic [ref=e27]: SSI
+        - generic [ref=e28]:
+          - button "Cases 12" [ref=e29] [cursor=pointer]:
+            - img [ref=e30]
+            - generic [ref=e32]: Cases
+            - generic [ref=e33]: "12"
+          - button "Analytics Soon" [disabled] [ref=e34]:
+            - img [ref=e35]
+            - generic [ref=e37]: Analytics
+            - generic [ref=e38]: Soon
+          - button "Settings" [ref=e39] [cursor=pointer]:
+            - img [ref=e40]
+            - generic [ref=e43]: Settings
+      - button "Dr. Sarah Johnson Clinical Abstractor" [ref=e45] [cursor=pointer]:
+        - img [ref=e47]
+        - generic [ref=e50]:
+          - generic [ref=e51]: Dr. Sarah Johnson
+          - generic [ref=e52]: Clinical Abstractor
+  - main [ref=e53]:
+    - generic [ref=e54]:
+      - generic [ref=e55]:
+        - heading "CLABSI Cases for Review" [level=1] [ref=e56]
+        - paragraph [ref=e57]: Surveillance and abstraction for central line-associated bloodstream infections - Select a case to view detailed abstraction and provide feedback
+      - generic [ref=e58]:
+        - complementary [ref=e59]:
+          - generic [ref=e60]:
+            - heading "Search & Filter" [level=2] [ref=e61]:
+              - img [ref=e62]
+              - text: Search & Filter
+            - generic [ref=e65]:
+              - img
+              - textbox "Search patients, MRN, ID..." [ref=e66]
+            - generic [ref=e67]:
+              - heading "Filters" [level=3] [ref=e68]
+              - generic [ref=e69]:
+                - generic [ref=e70]: Risk Level
+                - button "All Levels" [ref=e72] [cursor=pointer]:
+                  - generic [ref=e73]: All Levels
+                  - img [ref=e74]
+              - generic [ref=e76]:
+                - generic [ref=e77]: Determination
+                - button "All" [ref=e79] [cursor=pointer]:
+                  - generic [ref=e80]: All
+                  - img [ref=e81]
+              - generic [ref=e83]:
+                - generic [ref=e84]: Domain
+                - button "All Domains" [ref=e86] [cursor=pointer]:
+                  - generic [ref=e87]: All Domains
+                  - img [ref=e88]
+            - generic [ref=e90]:
+              - heading "Sort By" [level=3] [ref=e91]
+              - generic [ref=e92]:
+                - generic [ref=e93] [cursor=pointer]:
+                  - radio "Date - Newest First" [checked] [ref=e94]
+                  - generic [ref=e95]: Date - Newest First
+                - generic [ref=e96] [cursor=pointer]:
+                  - radio "Risk Score - High to Low" [ref=e97]
+                  - generic [ref=e98]: Risk Score - High to Low
+                - generic [ref=e99] [cursor=pointer]:
+                  - radio "Patient Name - A to Z" [ref=e100]
+                  - generic [ref=e101]: Patient Name - A to Z
+            - status [ref=e102]: Showing 6 of 6 cases
+        - generic [ref=e104]:
+          - button "Case card for John Doe, risk level Moderate, status Pending" [ref=e105] [cursor=pointer]:
+            - generic [ref=e106]:
+              - generic [ref=e107]: 🟡Moderate
+              - generic [ref=e108]:
+                - img [ref=e109]
+                - generic [ref=e112]: Pending
+            - generic [ref=e113]:
+              - heading "John Doe" [level=3] [ref=e114]
+              - generic [ref=e115]: MRN100001
+            - generic [ref=e116]:
+              - paragraph [ref=e117]: "Encounter: ENC001"
+              - paragraph [ref=e118]: "Scenario: Clear Positive CLABSI"
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - generic [ref=e122]: Risk Score
+                - generic [ref=e123]: 50/100
+              - 'progressbar "Risk score: 50 out of 100" [ref=e125]'
+            - generic [ref=e126]:
+              - generic [ref=e127]: "Abstracted: N/A"
+              - button "Review case for John Doe" [ref=e128]: Review Case →
+          - button "Case card for Jane Smith, risk level Moderate, status Pending" [ref=e129] [cursor=pointer]:
+            - generic [ref=e130]:
+              - generic [ref=e131]: 🟡Moderate
+              - generic [ref=e132]:
+                - img [ref=e133]
+                - generic [ref=e136]: Pending
+            - generic [ref=e137]:
+              - heading "Jane Smith" [level=3] [ref=e138]
+              - generic [ref=e139]: MRN100002
+            - generic [ref=e140]:
+              - paragraph [ref=e141]: "Encounter: ENC002"
+              - paragraph [ref=e142]: "Scenario: Clear Negative"
+            - generic [ref=e144]:
+              - generic [ref=e145]:
+                - generic [ref=e146]: Risk Score
+                - generic [ref=e147]: 50/100
+              - 'progressbar "Risk score: 50 out of 100" [ref=e149]'
+            - generic [ref=e150]:
+              - generic [ref=e151]: "Abstracted: N/A"
+              - button "Review case for Jane Smith" [ref=e152]: Review Case →
+          - button "Case card for Robert Johnson, risk level Moderate, status Pending" [ref=e153] [cursor=pointer]:
+            - generic [ref=e154]:
+              - generic [ref=e155]: 🟡Moderate
+              - generic [ref=e156]:
+                - img [ref=e157]
+                - generic [ref=e160]: Pending
+            - generic [ref=e161]:
+              - heading "Robert Johnson" [level=3] [ref=e162]
+              - generic [ref=e163]: MRN100003
+            - generic [ref=e164]:
+              - paragraph [ref=e165]: "Encounter: ENC003"
+              - paragraph [ref=e166]: "Scenario: Borderline Case"
+            - generic [ref=e168]:
+              - generic [ref=e169]:
+                - generic [ref=e170]: Risk Score
+                - generic [ref=e171]: 50/100
+              - 'progressbar "Risk score: 50 out of 100" [ref=e173]'
+            - generic [ref=e174]:
+              - generic [ref=e175]: "Abstracted: N/A"
+              - button "Review case for Robert Johnson" [ref=e176]: Review Case →
+          - button "Case card for Maria Garcia, risk level Moderate, status Pending" [ref=e177] [cursor=pointer]:
+            - generic [ref=e178]:
+              - generic [ref=e179]: 🟡Moderate
+              - generic [ref=e180]:
+                - img [ref=e181]
+                - generic [ref=e184]: Pending
+            - generic [ref=e185]:
+              - heading "Maria Garcia" [level=3] [ref=e186]
+              - generic [ref=e187]: MRN100004
+            - generic [ref=e188]:
+              - paragraph [ref=e189]: "Encounter: ENC004"
+              - paragraph [ref=e190]: "Scenario: Missing Data"
+            - generic [ref=e192]:
+              - generic [ref=e193]:
+                - generic [ref=e194]: Risk Score
+                - generic [ref=e195]: 50/100
+              - 'progressbar "Risk score: 50 out of 100" [ref=e197]'
+            - generic [ref=e198]:
+              - generic [ref=e199]: "Abstracted: N/A"
+              - button "Review case for Maria Garcia" [ref=e200]: Review Case →
+          - button "Case card for David Wilson, risk level Moderate, status Pending" [ref=e201] [cursor=pointer]:
+            - generic [ref=e202]:
+              - generic [ref=e203]: 🟡Moderate
+              - generic [ref=e204]:
+                - img [ref=e205]
+                - generic [ref=e208]: Pending
+            - generic [ref=e209]:
+              - heading "David Wilson" [level=3] [ref=e210]
+              - generic [ref=e211]: MRN100005
+            - generic [ref=e212]:
+              - paragraph [ref=e213]: "Encounter: ENC005"
+              - paragraph [ref=e214]: "Scenario: Contamination vs Infection"
+            - generic [ref=e216]:
+              - generic [ref=e217]:
+                - generic [ref=e218]: Risk Score
+                - generic [ref=e219]: 50/100
+              - 'progressbar "Risk score: 50 out of 100" [ref=e221]'
+            - generic [ref=e222]:
+              - generic [ref=e223]: "Abstracted: N/A"
+              - button "Review case for David Wilson" [ref=e224]: Review Case →
+          - button "Case card for Sarah Martinez, risk level Moderate, status Pending" [ref=e225] [cursor=pointer]:
+            - generic [ref=e226]:
+              - generic [ref=e227]: 🟡Moderate
+              - generic [ref=e228]:
+                - img [ref=e229]
+                - generic [ref=e232]: Pending
+            - generic [ref=e233]:
+              - heading "Sarah Martinez" [level=3] [ref=e234]
+              - generic [ref=e235]: MRN100006
+            - generic [ref=e236]:
+              - paragraph [ref=e237]: "Encounter: ENC006"
+              - paragraph [ref=e238]: "Scenario: Complex Multi-Organism"
+            - generic [ref=e240]:
+              - generic [ref=e241]:
+                - generic [ref=e242]: Risk Score
+                - generic [ref=e243]: 50/100
+              - 'progressbar "Risk score: 50 out of 100" [ref=e245]'
+            - generic [ref=e246]:
+              - generic [ref=e247]: "Abstracted: N/A"
+              - button "Review case for Sarah Martinez" [ref=e248]: Review Case →
+  - contentinfo [ref=e249]:
+    - paragraph [ref=e250]: Reference Implementation - Model-Forward Clinical Abstraction Platform
+```

@@ -1,0 +1,231 @@
+/**
+ * Home Page Styles - Concern Selection
+ */
+
+.home-page {
+  min-height: calc(100vh - 64px);
+  background-color: var(--page-bg, #f9fafb);
+  padding: 48px 0;
+}
+
+.home-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--foreground, #111827);
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--muted-foreground, #6b7280);
+  margin: 0 0 16px 0;
+}
+
+.hero-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--muted-foreground, #6b7280);
+  margin: 0;
+}
+
+/* Concerns Grid */
+.concerns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.concern-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.concern-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.concern-card-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 280px;
+}
+
+/* Concern Header */
+.concern-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.concern-icon-wrapper {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: var(--primary-color, #3b82f6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.concern-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.concern-title-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.concern-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--foreground, #111827);
+}
+
+.case-count-badge {
+  width: fit-content;
+}
+
+/* Concern Description */
+.concern-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted-foreground, #6b7280);
+  margin: 0;
+  flex: 1;
+}
+
+/* Concern Actions */
+.concern-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.action-link-primary,
+.action-link-secondary {
+  text-decoration: none;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Info Banner */
+.info-banner {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.info-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--primary-color, #3b82f6);
+  margin-top: 2px;
+}
+
+.info-content {
+  flex: 1;
+}
+
+.info-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--foreground, #111827);
+}
+
+.info-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted-foreground, #6b7280);
+  margin: 0;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .home-page {
+    --page-bg: #111827;
+    --foreground: #f9fafb;
+    --muted-foreground: #9ca3af;
+    --primary-color: #60a5fa;
+  }
+
+  .hero-title {
+    color: #f9fafb;
+  }
+
+  .concern-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .info-banner {
+    background-color: rgba(96, 165, 250, 0.15);
+    border-color: rgba(96, 165, 250, 0.3);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .home-page {
+    padding: 32px 0;
+  }
+
+  .home-container {
+    gap: 32px;
+  }
+
+  .hero-title {
+    font-size: 36px;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+  }
+
+  .concerns-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .concern-card-content {
+    min-height: auto;
+  }
+}

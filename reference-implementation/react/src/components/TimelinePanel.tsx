@@ -1,104 +1,96 @@
 /**
- * Timeline Panel Component
- * Displays clinical timeline with key events
- * Updated to support timeline_phases from enrichment section
+ * TimelinePanel - Latest from Vercel (Nov 18 00:07)
+ * Timeline phases with significance levels and date ranges
  */
 
 import React from 'react';
-import { TimelineEvent, EnrichmentSection } from '../types';
+import { Calendar, Clock } from 'lucide-react';
+import { EnrichmentTimelinePhase } from '../types';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
 import './TimelinePanel.css';
 
 interface TimelinePanelProps {
-  timeline?: TimelineEvent[];
-  timelinePhases?: EnrichmentSection['timeline_phases']; // Optional: from enrichment section
+  timelinePhases: EnrichmentTimelinePhase[];
 }
 
-const TimelinePanel: React.FC<TimelinePanelProps> = ({ timeline, timelinePhases }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
+export function TimelinePanel({ timelinePhases }: TimelinePanelProps) {
+  const formatDateRange = (start: string, end: string) => {
+    const startDate = new Date(start).toLocaleDateString('en-US', {
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+      day: 'numeric'
     });
+    const endDate = new Date(end).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
+    return `${startDate} - ${endDate}`;
   };
 
-  const getSeverityIcon = (severity: string) => {
-    switch (severity) {
-      case 'CRITICAL':
-        return '🔴';
-      case 'WARNING':
-        return '🟠';
+  const getPhaseColorClass = (significance: string) => {
+    switch (significance.toLowerCase()) {
+      case 'high':
+        return 'phase-high';
+      case 'medium':
+        return 'phase-medium';
+      case 'low':
+        return 'phase-low';
       default:
-        return '🔵';
+        return 'phase-default';
     }
   };
 
-  const getPhaseColor = (phase: string) => {
-    const colors: { [key: string]: string } = {
-      'PRE_LINE': '#e3f2fd',
-      'LINE_PLACEMENT': '#fff3e0',
-      'MONITORING': '#f3e5f5',
-      'CULTURE': '#ffebee',
-      'POST_CULTURE': '#e8f5e9',
-      'Device Placement': '#fff3e0',
-      'Infection Window': '#f3e5f5',
-      'Symptom Onset': '#f3e5f5',
-      'Diagnostic Workup': '#ffebee',
-      'Post-Culture': '#e8f5e9',
-    };
-    return colors[phase] || '#f5f5f5';
+  const getSignificanceBadgeVariant = (significance: string): 'destructive' | 'default' | 'secondary' => {
+    switch (significance.toLowerCase()) {
+      case 'high':
+        return 'destructive';
+      case 'medium':
+        return 'default';
+      default:
+        return 'secondary';
+    }
   };
 
-  // Convert timeline_phases to timeline events for display if provided
-  const displayTimeline: TimelineEvent[] = timelinePhases
-    ? timelinePhases.map((phase) => ({
-        event_id: `phase-${phase.phase_name}`,
-        event_datetime: phase.start_date,
-        event_type: phase.phase_name,
-        description: phase.description || phase.events?.join(', ') || '',
-        phase: phase.phase_name as any,
-        severity: 'INFO' as const,
-      }))
-    : timeline || [];
-
   return (
-    <div className="timeline-panel panel">
-      <div className="panel-header">
-        <h2>Clinical Timeline</h2>
-        {timelinePhases && (
-          <div className="timeline-meta">
-            <span className="phases-count">{timelinePhases.length} phases</span>
-          </div>
-        )}
+    <Card className="timeline-panel-card">
+      <div className="timeline-header">
+        <div className="timeline-title-row">
+          <Calendar className="timeline-icon" />
+          <h3 className="timeline-title">Timeline Phases</h3>
+        </div>
       </div>
 
-      <div className="timeline-container">
-        {displayTimeline.map((event, idx) => (
-          <div
-            key={event.event_id}
-            className="timeline-event"
-            style={{ borderLeftColor: getPhaseColor(event.phase) }}
-          >
-            <div className="event-header">
-              <span className="event-icon">{getSeverityIcon(event.severity)}</span>
-              <span className="event-time">{formatDate(event.event_datetime)}</span>
-              <span className="event-phase">{event.phase}</span>
-            </div>
-            <div className="event-body">
-              <div className="event-type">{event.event_type}</div>
-              <div className="event-description">{event.description}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <div className="timeline-content">
+        <div className="timeline-phases-list">
+          {timelinePhases.map((phase, index) => (
+            <div key={phase.phase_id || index}>
+              <div className={`timeline-phase ${getPhaseColorClass(phase.significance || 'low')}`}>
+                <div className="phase-header">
+                  <div className="phase-info">
+                    <h4 className="phase-name">{phase.phase_name}</h4>
+                    <div className="phase-date-row">
+                      <Clock className="clock-icon" />
+                      <span>{formatDateRange(phase.start_date, phase.end_date)}</span>
+                    </div>
+                  </div>
+                  <div className="phase-badges">
+                    <Badge variant="outline">
+                      {phase.events_in_phase} events
+                    </Badge>
+                    <Badge variant={getSignificanceBadgeVariant(phase.significance || 'low')}>
+                      {phase.significance || 'low'}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
 
-      {displayTimeline.length === 0 && (
-        <div className="no-data">No timeline events available</div>
-      )}
-    </div>
+              {index < timelinePhases.length - 1 && (
+                <div className="phase-separator" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Card>
   );
-};
-
-export default TimelinePanel;
+}

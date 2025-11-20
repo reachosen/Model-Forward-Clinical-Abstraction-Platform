@@ -1,0 +1,132 @@
+/**
+ * Pipeline Stepper styles
+ */
+
+.pipeline-stepper {
+  width: 100%;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.pipeline-stepper .stages-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pipeline-stepper .stage-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.pipeline-stepper .stage-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+.pipeline-stepper .stage-button.clickable {
+  cursor: pointer;
+}
+
+.pipeline-stepper .stage-button.clickable:hover {
+  opacity: 0.8;
+}
+
+.pipeline-stepper .stage-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+/* Status colors */
+.pipeline-stepper .status-completed {
+  background-color: #22c55e;
+  border-color: #22c55e;
+  color: white;
+}
+
+.pipeline-stepper .status-in-progress {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.pipeline-stepper .status-failed {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white;
+}
+
+.pipeline-stepper .status-pending {
+  background-color: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.pipeline-stepper .current-stage {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.pipeline-stepper .stage-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.pipeline-stepper .stage-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.pipeline-stepper .label-muted {
+  color: #6b7280;
+}
+
+.pipeline-stepper .stage-metadata {
+  font-size: 11px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+/* Connector line */
+.pipeline-stepper .connector {
+  flex: 1;
+  margin: 0 16px;
+  height: 2px;
+  background-color: #e5e7eb;
+  position: relative;
+}
+
+.pipeline-stepper .connector-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #e5e7eb;
+  transition: all 0.3s;
+}
+
+.pipeline-stepper .connector-fill.connector-active {
+  background-color: #22c55e;
+}

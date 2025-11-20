@@ -1,39 +1,33 @@
 /**
- * Case View Page
- * Main page for viewing and abstracting a CLABSI case
+ * Case View Page - Tabbed Layout
+ * Main page for viewing and abstracting a case with Context/Enrichment/Clinical Review tabs
  */
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import api from '../api/client';
-import { CaseView, StructuredCase } from '../types';
-import { useDomainConfig } from '../contexts/DomainConfigContext';
-
-import CaseOverview from '../components/CaseOverview';
-import CaseSummaryStrip from '../components/CaseSummaryStrip';
-import EnhancedTimeline from '../components/EnhancedTimeline';
-import SignalsPanel from '../components/SignalsPanel';
-import QAPanel from '../components/QAPanel';
-import AskTheCasePanel from '../components/AskTheCasePanel';
-import FeedbackPanel from '../components/FeedbackPanel';
-import InterrogationPanel from '../components/InterrogationPanel';
-
+import { StructuredCase, PipelineStage } from '../types';
+import { Tabs, TabsContent } from '../components/ui/tabs';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Separator } from '../components/ui/separator';
+import { PipelineStepper } from '../components/PipelineStepper';
+import { TaskMetadataBadge } from '../components/TaskMetadataBadge';
+import { EnrichmentSummaryPanel } from '../components/EnrichmentSummaryPanel';
+import { SignalsPanel } from '../components/SignalsPanel';
+import { TimelinePanel } from '../components/TimelinePanel';
+import { AskTheCasePanel } from '../components/AskTheCasePanel';
+import { InterrogationPanel } from '../components/InterrogationPanel';
+import { DemoModeBanner } from '../components/DemoModeBanner';
+import { FeedbackForm } from '../components/FeedbackForm';
 import './CaseViewPage.css';
 
 const CaseViewPage: React.FC = () => {
   const { patientId } = useParams<{ patientId: string }>();
-  const navigate = useNavigate();
-  const { config } = useDomainConfig();
-
-  const [caseData, setCaseData] = useState<CaseView | null>(null);
   const [structuredCase, setStructuredCase] = useState<StructuredCase | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadCase();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patientId]);
+  const [activeTab, setActiveTab] = useState<string>("context");
 
   const loadCase = async () => {
     if (!patientId) return;
@@ -42,13 +36,10 @@ const CaseViewPage: React.FC = () => {
     setError(null);
 
     try {
-      // Load structured case first
-      const structured = await api.getStructuredCase('clabsi', patientId);
-      setStructuredCase(structured);
-
-      // Convert to CaseView for backward compatibility with existing components
-      const data = api.convertStructuredToCaseView(structured);
-      setCaseData(data);
+      // Determine concern from patientId (e.g., "clabsi_demo_001" -> "clabsi")
+      const concernId = patientId.split('_')[0] || 'clabsi';
+      const data = await api.getStructuredCase(concernId, patientId);
+      setStructuredCase(data);
     } catch (err) {
       setError('Failed to load case. Please try again.');
       console.error('Error loading case:', err);
@@ -57,169 +48,257 @@ const CaseViewPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    loadCase();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patientId]);
+
+  const scrollToSection = (sectionId: string) => {
+    setActiveTab(sectionId);
+  };
+
+  const handleQuestionSubmit = async (question: string, mode: string, targetType: string) => {
+    try {
+      const taskId = structuredCase?.abstraction?.task_metadata?.task_id || 'clabsi.abstraction';
+      await api.interrogateTask(
+        taskId,
+        question,
+        {
+          mode: mode as "explain" | "summarize" | "validate",
+          target_type: targetType as "criterion" | "signal" | "event" | "overall",
+          target_id: 'case',
+          program_type: 'CLABSI',
+          metric_id: 'CLABSI',
+        }
+      );
+      // Reload the case to get updated QA history
+      loadCase();
+    } catch (error) {
+      console.error('Error submitting question:', error);
+      throw error;
+    }
+  };
+
   if (loading) {
     return (
       <div className="case-view-page">
-        <div className="loading">Loading case...</div>
+        <div className="page-loading">Loading case data...</div>
       </div>
     );
   }
 
-  if (error || !caseData) {
+  if (error || !structuredCase) {
     return (
       <div className="case-view-page">
-        <div className="error">
-          {error || 'Case not found'}
-          <button onClick={() => navigate('/')}>Back to Cases</button>
+        <div className="page-error">
+          Error loading case: {error || 'Case not found'}
         </div>
       </div>
     );
   }
+
+  const isDemoMode = structuredCase.enrichment?.task_metadata.demo_mode ||
+                     structuredCase.abstraction?.task_metadata.demo_mode ||
+                     false;
+
+  // Build pipeline stages from case data
+  const pipelineStages: PipelineStage[] = [
+    {
+      id: 'context',
+      label: 'Context',
+      status: 'completed'
+    },
+    {
+      id: 'enrichment',
+      label: 'Enrichment',
+      status: structuredCase.enrichment?.task_metadata.status || 'pending',
+      taskMetadata: structuredCase.enrichment?.task_metadata
+    },
+    {
+      id: 'abstraction',
+      label: 'Clinical Review',
+      status: structuredCase.abstraction?.task_metadata.status || 'pending',
+      taskMetadata: structuredCase.abstraction?.task_metadata
+    },
+    {
+      id: 'feedback',
+      label: 'Feedback',
+      status: 'pending'
+    }
+  ];
 
   return (
     <div className="case-view-page">
-      <div className="page-header">
-        <button className="back-button" onClick={() => navigate('/')}>
-          ← Back to Cases
-        </button>
-        <h1>{config.episode_label} - {caseData.case_info.name}</h1>
-        <div className="mode-badge">{caseData.mode} Mode</div>
-      </div>
+      <div className="page-container">
+        {isDemoMode && <DemoModeBanner />}
 
-      {/* 80/20 Summary Strip */}
-      <CaseSummaryStrip
-        summary={caseData.summary}
-        signals={caseData.signals}
-        qaAnswered={caseData.summary.unresolved_questions.filter(q => q.type === 'ANSWERED').length}
-        qaTotal={caseData.summary.unresolved_questions.length}
-      />
+        {/* Pipeline Stepper */}
+        <PipelineStepper
+          stages={pipelineStages}
+          currentStage={activeTab}
+          onStageClick={scrollToSection}
+        />
 
-      <div className="case-grid">
-        {/* Left column */}
-        <div className="left-column">
-          <div id="overview">
-            <CaseOverview summary={caseData.summary} caseInfo={caseData.case_info} />
-          </div>
-          <div id="timeline">
-            <EnhancedTimeline
-              timeline={caseData.timeline}
-              phaseConfig={config.timeline_phases}
-            />
-          </div>
-        </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="case-tabs">
+          {/* Tab Content: Patient Context */}
+          <TabsContent value="context" className="mt-6">
+            <Card>
+              <div className="card-content">
+                <div className="space-y-4">
+                  <div className="context-summary">
+                    <h3 className="context-summary-title">Patient Summary</h3>
+                    <p className="context-summary-text">
+                      {structuredCase.patient.demographics.age}yo {structuredCase.patient.demographics.gender} - {structuredCase.case_id}
+                    </p>
+                  </div>
 
-        {/* Middle column */}
-        <div className="middle-column">
-          <div id="signals">
-            <SignalsPanel
-              signals={caseData.signals}
-              signalGroups={structuredCase?.enrichment?.signal_groups}
-            />
-          </div>
-          <div className="summary-panel panel">
-            <h2>Generated Summary</h2>
-            <div className="summary-sections">
-              {caseData.summary.positive_findings.length > 0 && (
-                <div className="summary-section">
-                  <h3>Positive Findings</h3>
-                  <ul>
-                    {caseData.summary.positive_findings.map((finding, idx) => (
-                      <li key={idx}>{finding}</li>
-                    ))}
-                  </ul>
+                  <div className="context-placeholder">
+                    Demographics, timeline, and raw clinical data would be displayed here.
+                  </div>
                 </div>
-              )}
+              </div>
+            </Card>
+          </TabsContent>
 
-              {caseData.summary.recommended_actions.length > 0 && (
-                <div className="summary-section">
-                  <h3>Recommended Actions</h3>
-                  <ul>
-                    {caseData.summary.recommended_actions.map((action, idx) => (
-                      <li key={idx}>→ {action}</li>
-                    ))}
-                  </ul>
+          {/* Tab Content: Enrichment */}
+          <TabsContent value="enrichment" className="mt-6">
+            {structuredCase.enrichment ? (
+              <Card>
+                <div className="card-content enrichment-content">
+                  {/* Task Metadata Badge */}
+                  <TaskMetadataBadge taskMetadata={structuredCase.enrichment.task_metadata} />
+
+                  <Separator />
+
+                  {/* Enrichment Summary */}
+                  <EnrichmentSummaryPanel summary={structuredCase.enrichment.summary} />
+
+                  <Separator />
+
+                  {structuredCase.enrichment.signal_groups.length > 0 && (
+                    <>
+                      <SignalsPanel
+                        signalGroups={structuredCase.enrichment.signal_groups}
+                        timelinePhases={structuredCase.enrichment.timeline_phases}
+                      />
+                      <Separator />
+                    </>
+                  )}
+
+                  {structuredCase.enrichment.timeline_phases.length > 0 && (
+                    <>
+                      <TimelinePanel timelinePhases={structuredCase.enrichment.timeline_phases} />
+                      <Separator />
+                    </>
+                  )}
+
+                  <div className="action-buttons">
+                    <Button variant="outline" size="sm">
+                      Re-run with v1.1
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      View Task Details
+                    </Button>
+                  </div>
                 </div>
-              )}
-
-              {caseData.summary.unresolved_questions.length > 0 && (
-                <div className="summary-section">
-                  <h3>Unresolved Questions</h3>
-                  <ul>
-                    {caseData.summary.unresolved_questions.map((q, idx) => (
-                      <li key={idx}>
-                        <span className={`priority-${q.priority.toLowerCase()}`}>
-                          [{q.priority}]
-                        </span>{' '}
-                        {q.question}
-                      </li>
-                    ))}
-                  </ul>
+              </Card>
+            ) : (
+              <Card>
+                <div className="card-content empty-state">
+                  No enrichment data available
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
+              </Card>
+            )}
+          </TabsContent>
 
-        {/* Right column */}
-        <div className="right-column">
-          <div id="qa">
-            <QAPanel qaResult={caseData.qa_result} />
-            <InterrogationPanel qaSection={structuredCase?.qa} />
-            <AskTheCasePanel
-              patientId={caseData.summary.patient_id}
-              encounterId={caseData.summary.encounter_id}
-              suggestedQuestions={[
-                'What evidence supports the CLABSI diagnosis?',
-                'Are there any exclusion criteria present?',
-                'When was the central line inserted?',
-                'What organism was identified in blood culture?',
-              ]}
-              onAskQuestion={async (question) => {
-                // Call the real interrogation API
-                try {
-                  const taskId = structuredCase?.abstraction?.task_metadata?.task_id || 'clabsi.abstraction';
-                  const qaEntry = await api.interrogateTask(
-                    taskId,
-                    question,
-                    {
-                      mode: 'explain',
-                      target_type: 'overall',
-                      target_id: 'case',
-                      program_type: 'CLABSI',
-                      metric_id: 'CLABSI',
-                    }
-                  );
+          {/* Tab Content: Clinical Review */}
+          <TabsContent value="abstraction" className="mt-6">
+            {structuredCase.abstraction ? (
+              <Card>
+                <div className="card-content abstraction-content">
+                  {/* Task Metadata Badge */}
+                  <TaskMetadataBadge taskMetadata={structuredCase.abstraction.task_metadata} />
 
-                  // Convert QAHistoryEntry to AskResponse format
-                  return {
-                    question: qaEntry.question,
-                    answer: qaEntry.answer,
-                    evidence_citations: (qaEntry.citations || []).map((citation, idx) => ({
-                      citation_id: `C${idx + 1}`,
-                      source_type: 'NOTE' as const,
-                      source_id: `${idx}`,
-                      excerpt: citation,
-                      timestamp: new Date().toISOString(),
-                      relevance_score: 0.9,
-                    })),
-                    confidence: qaEntry.confidence || 0.85,
-                    follow_up_suggestions: [],
-                    timestamp: qaEntry.task_metadata?.executed_at || new Date().toISOString(),
-                  };
-                } catch (err) {
-                  console.error('Error asking question:', err);
-                  throw err;
-                }
-              }}
-            />
-          </div>
-          <div id="feedback">
-            <FeedbackPanel
-              patientId={caseData.summary.patient_id}
-              encounterId={caseData.summary.encounter_id}
-            />
-          </div>
-        </div>
+                  <Separator />
+
+                  {/* Clinical Narrative */}
+                  <div className="narrative-section">
+                    <h3 className="section-subtitle">Clinical Narrative</h3>
+                    <div className="narrative-box">
+                      <p className="narrative-text">{structuredCase.abstraction.narrative}</p>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* Criteria Evaluation Summary */}
+                  <div className="criteria-summary-section">
+                    <h3 className="section-subtitle">NHSN Criteria Evaluation</h3>
+                    <div className="criteria-summary-box">
+                      <div className="criteria-row">
+                        <span className="criteria-label">Determination:</span>
+                        <span className="criteria-value determination">
+                          {structuredCase.abstraction.criteria_evaluation.determination}
+                        </span>
+                      </div>
+                      <div className="criteria-row">
+                        <span className="criteria-label-muted">Criteria Met:</span>
+                        <span className="criteria-count">
+                          {structuredCase.abstraction.criteria_evaluation.criteria_met_count || 0} of {structuredCase.abstraction.criteria_evaluation.total_criteria || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <AskTheCasePanel
+                    caseId={structuredCase.case_id}
+                    qaHistoryCount={structuredCase.qa?.qa_history?.length || 0}
+                    onQuestionSubmit={handleQuestionSubmit}
+                  />
+
+                  <Separator />
+
+                  <InterrogationPanel qaHistory={structuredCase.qa?.qa_history || []} />
+
+                  <Separator />
+
+                  {/* Action Buttons */}
+                  <div className="action-buttons">
+                    <Button variant="outline" size="sm" disabled>
+                      View Detailed Criteria (Coming Soon)
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      View Q&A History: {structuredCase.qa?.qa_history?.length || 0} interactions
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ) : (
+              <Card>
+                <div className="card-content empty-state">
+                  No clinical review data available
+                </div>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Tab Content: Feedback */}
+          <TabsContent value="feedback" className="mt-6">
+            <Card>
+              <div className="card-content">
+                <FeedbackForm
+                  caseId={structuredCase.case_id}
+                  concernId={structuredCase.concern_id}
+                  patientId={structuredCase.patient.case_metadata.patient_id}
+                  encounterId={structuredCase.patient.case_metadata.encounter_id}
+                  isDemoMode={structuredCase.abstraction?.task_metadata.demo_mode || false}
+                />
+              </div>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
