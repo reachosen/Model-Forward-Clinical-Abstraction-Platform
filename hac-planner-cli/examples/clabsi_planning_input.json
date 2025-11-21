@@ -1,0 +1,106 @@
+{
+  "planning_id": "planning-clabsi-001",
+  "concern_id": "CLABSI",
+  "archetype": "device_associated_infection",
+  "domain": {
+    "name": "Hospital-Acquired Conditions",
+    "facility": {
+      "type": "Children's Hospital",
+      "location": "United States",
+      "context": "Pediatric tertiary care facility with NICU, PICU, and general pediatric wards"
+    }
+  },
+  "data_profile": {
+    "sources": [
+      {
+        "source_id": "epic_ehr",
+        "type": "EHR",
+        "available_data": [
+          "demographics",
+          "admissions",
+          "clinical_notes",
+          "vital_signs",
+          "medications",
+          "procedures",
+          "diagnoses"
+        ],
+        "update_frequency": "real-time",
+        "integration": "HL7"
+      },
+      {
+        "source_id": "lab_system",
+        "type": "Laboratory",
+        "available_data": [
+          "blood_cultures",
+          "microbiology_results",
+          "chemistry_panels",
+          "complete_blood_counts",
+          "inflammatory_markers"
+        ],
+        "update_frequency": "hourly",
+        "integration": "API"
+      },
+      {
+        "source_id": "device_registry",
+        "type": "Device",
+        "available_data": [
+          "central_line_insertions",
+          "central_line_maintenance",
+          "central_line_removals",
+          "line_type",
+          "insertion_site"
+        ],
+        "update_frequency": "daily",
+        "integration": "Database"
+      },
+      {
+        "source_id": "pharmacy_system",
+        "type": "Pharmacy",
+        "available_data": [
+          "antibiotic_orders",
+          "antimicrobial_administration",
+          "tpn_orders"
+        ],
+        "update_frequency": "real-time",
+        "integration": "API"
+      }
+    ],
+    "volumes": {
+      "daily_admissions": 50,
+      "monthly_cases": 15
+    },
+    "quality": {
+      "completeness": 0.92,
+      "timeliness": "real-time"
+    }
+  },
+  "clinical_context": {
+    "objective": "Detect and prevent Central Line-Associated Bloodstream Infections in pediatric patients according to NHSN surveillance definitions",
+    "population": "Pediatric patients (age 0-18 years) with central venous catheters including PICC lines, umbilical catheters, and tunneled CVCs",
+    "surveillance_requirements": [
+      "NHSN monthly reporting for CLABSI rates",
+      "Real-time alerting for potential CLABSI cases",
+      "Bundle compliance tracking",
+      "Root cause analysis support"
+    ],
+    "regulatory_frameworks": [
+      "NHSN",
+      "CMS"
+    ]
+  },
+  "preferences": {
+    "min_confidence": 0.75,
+    "max_findings_per_category": 8,
+    "include_experimental": false,
+    "custom": {
+      "prioritize_nicu_picu": true,
+      "include_family_observations": true,
+      "age_stratified_thresholds": true
+    }
+  },
+  "metadata": {
+    "requested_by": "infection_prevention_team@childrenshospital.org",
+    "requested_at": "2025-01-15T10:00:00Z",
+    "notes": "Configuration for pediatric CLABSI surveillance with focus on NICU and PICU populations. Need age-appropriate vital sign and lab value thresholds. Include consideration of immunocompromised patients and those with congenital conditions."
+  }
+}

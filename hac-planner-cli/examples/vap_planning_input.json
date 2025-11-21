@@ -1,0 +1,123 @@
+{
+  "planning_id": "planning-vap-001",
+  "concern_id": "VAP",
+  "archetype": "device_associated_infection",
+  "domain": {
+    "name": "Hospital-Acquired Conditions",
+    "facility": {
+      "type": "Children's Hospital",
+      "location": "United States",
+      "context": "Pediatric tertiary care facility with specialized respiratory care units including PICU, cardiac ICU, and neonatal ICU"
+    }
+  },
+  "data_profile": {
+    "sources": [
+      {
+        "source_id": "epic_ehr",
+        "type": "EHR",
+        "available_data": [
+          "demographics",
+          "admissions",
+          "clinical_notes",
+          "vital_signs",
+          "respiratory_assessments",
+          "ventilator_settings",
+          "medications",
+          "procedures",
+          "diagnoses"
+        ],
+        "update_frequency": "real-time",
+        "integration": "HL7"
+      },
+      {
+        "source_id": "lab_system",
+        "type": "Laboratory",
+        "available_data": [
+          "respiratory_cultures",
+          "blood_cultures",
+          "complete_blood_counts",
+          "inflammatory_markers",
+          "arterial_blood_gases"
+        ],
+        "update_frequency": "hourly",
+        "integration": "API"
+      },
+      {
+        "source_id": "respiratory_therapy",
+        "type": "Device",
+        "available_data": [
+          "intubation_events",
+          "extubation_events",
+          "ventilator_parameters",
+          "suction_events",
+          "oxygen_requirements"
+        ],
+        "update_frequency": "real-time",
+        "integration": "API"
+      },
+      {
+        "source_id": "radiology_pacs",
+        "type": "Radiology",
+        "available_data": [
+          "chest_xrays",
+          "chest_ct_scans",
+          "radiology_reports",
+          "imaging_impressions"
+        ],
+        "update_frequency": "daily",
+        "integration": "FHIR"
+      },
+      {
+        "source_id": "pharmacy_system",
+        "type": "Pharmacy",
+        "available_data": [
+          "antibiotic_orders",
+          "antimicrobial_administration",
+          "sedation_medications"
+        ],
+        "update_frequency": "real-time",
+        "integration": "API"
+      }
+    ],
+    "volumes": {
+      "daily_admissions": 8,
+      "monthly_cases": 5
+    },
+    "quality": {
+      "completeness": 0.88,
+      "timeliness": "hourly"
+    }
+  },
+  "clinical_context": {
+    "objective": "Detect and prevent Ventilator-Associated Pneumonia in mechanically ventilated pediatric patients according to NHSN surveillance definitions, with focus on Ventilator-Associated Events (VAE) surveillance",
+    "population": "Mechanically ventilated pediatric patients (age 0-18 years) in intensive care units, including neonates on conventional and high-frequency ventilation",
+    "surveillance_requirements": [
+      "NHSN monthly VAP/VAE reporting",
+      "Real-time alerting for potential VAP cases",
+      "Ventilator bundle compliance tracking",
+      "Weaning protocol adherence monitoring",
+      "Prevention bundle documentation"
+    ],
+    "regulatory_frameworks": [
+      "NHSN",
+      "CMS",
+      "Joint Commission"
+    ]
+  },
+  "preferences": {
+    "min_confidence": 0.70,
+    "max_findings_per_category": 10,
+    "include_experimental": false,
+    "custom": {
+      "prioritize_picu_cardiac_icu": true,
+      "neonatal_ventilation_modes": true,
+      "age_stratified_thresholds": true,
+      "include_imaging_analysis": true
+    }
+  },
+  "metadata": {
+    "requested_by": "respiratory_care@childrenshospital.org",
+    "requested_at": "2025-01-15T14:30:00Z",
+    "notes": "Configuration for pediatric VAP surveillance across multiple ICU types. Need to account for different ventilation modes used in pediatrics (conventional, high-frequency, oscillator). Consider age-specific respiratory rate and oxygen requirement norms. Include radiology findings as key signals. Account for immunocompromised patients and those with underlying lung disease."
+  }
+}
