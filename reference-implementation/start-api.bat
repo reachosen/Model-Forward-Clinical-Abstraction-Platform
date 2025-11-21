@@ -1,4 +1,5 @@
 @echo off
-cd python\api
-call ..\venv\Scripts\activate.bat
-python simple_api.py
+echo Starting FastAPI Backend Server...
+cd ..\backend
+call venv\Scripts\activate.bat
+python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
