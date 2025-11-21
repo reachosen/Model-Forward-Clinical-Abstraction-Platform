@@ -7,16 +7,16 @@ import { PanelLeftIcon } from 'lucide-react'
 
 import { useIsMobile } from '../../hooks/use-mobile'
 import { cn } from '../../lib/utils'
-import { Button } from './button'
+import { Button } from './Button'
 import { Input } from './input'
-import { Separator } from './separator'
+import { Separator } from './Separator'
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from './sheet'
+} from './Sheet'
 import { Skeleton } from './skeleton'
 import {
   Tooltip,

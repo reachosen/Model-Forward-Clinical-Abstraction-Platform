@@ -10,7 +10,7 @@ import { StructuredCase, PipelineStage } from '../types';
 import { Tabs, TabsContent } from '../components/ui/Tabs';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Separator } from '../components/ui/separator';
+import { Separator } from '../components/ui/Separator';
 import { PipelineStepper } from '../components/PipelineStepper';
 import { TaskMetadataBadge } from '../components/TaskMetadataBadge';
 import { EnrichmentSummaryPanel } from '../components/EnrichmentSummaryPanel';
@@ -253,9 +253,20 @@ const CaseViewPage: React.FC = () => {
                   <Separator />
 
                   <AskTheCasePanel
-                    caseId={structuredCase.case_id}
-                    qaHistoryCount={structuredCase.qa?.qa_history?.length || 0}
-                    onQuestionSubmit={handleQuestionSubmit}
+                    patientId={structuredCase.patient.case_metadata.patient_id}
+                    encounterId={structuredCase.patient.case_metadata.encounter_id}
+                    suggestedQuestions={[]}
+                    onAskQuestion={async (question: string) => {
+                      // Placeholder - implement question handling
+                      return {
+                        question,
+                        answer: 'Not implemented',
+                        evidence_citations: [],
+                        confidence: 0,
+                        follow_up_suggestions: [],
+                        timestamp: new Date().toISOString()
+                      };
+                    }}
                   />
 
                   <Separator />

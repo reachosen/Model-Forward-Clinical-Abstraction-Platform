@@ -33,7 +33,7 @@ export interface Signal {
   signal_id: string;
   signal_name: string;
   signal_type: 'DEVICE' | 'LAB' | 'VITAL' | 'MEDICATION' | 'PROCEDURE';
-  value: string | number;
+  value: string | number | boolean;
   severity: 'INFO' | 'WARNING' | 'CRITICAL';
   rationale: string;
   timestamp: string;

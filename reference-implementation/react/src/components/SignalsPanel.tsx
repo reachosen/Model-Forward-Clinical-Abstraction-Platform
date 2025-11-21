@@ -12,6 +12,7 @@ import './SignalsPanel.css';
 interface SignalsPanelProps {
   signals?: Signal[];
   signalGroups?: SignalGroupType[]; // Optional: from enrichment section
+  timelinePhases?: any[]; // Optional: timeline phases for context
 }
 
 const SignalsPanel: React.FC<SignalsPanelProps> = ({ signals, signalGroups }) => {

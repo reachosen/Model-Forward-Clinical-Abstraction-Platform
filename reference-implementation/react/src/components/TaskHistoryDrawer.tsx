@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { History, Clock, TrendingUp, ChevronRight } from 'lucide-react';
 import { TaskMetadata } from '../types';
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from './ui/sheet';
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from './ui/Sheet';
 import { Button } from './ui/Button';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
