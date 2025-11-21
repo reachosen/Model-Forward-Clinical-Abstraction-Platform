@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/planner-plan.schema.json",
+  "title": "PlannerPlan",
+  "description": "Output structure from the HAC Planner, wrapping HACConfig with metadata",
+  "type": "object",
+  "required": [
+    "plan_metadata",
+    "rationale",
+    "hac_config",
+    "validation"
+  ],
+  "properties": {
+    "plan_metadata": {
+      "type": "object",
+      "required": [
+        "plan_id",
+        "planning_input_id",
+        "generated_at",
+        "planner_version",
+        "confidence",
+        "requires_review",
+        "status"
+      ],
+      "properties": {
+        "plan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "planning_input_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "planner_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "model_used": {
+          "type": "string",
+          "description": "LLM model used for planning"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Overall confidence in the generated plan"
+        },
+        "requires_review": {
+          "type": "boolean",
+          "description": "Whether this plan requires human review"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "reviewed", "approved", "deployed"]
+        }
+      }
+    },
+    "rationale": {
+      "type": "object",
+      "required": ["summary", "key_decisions"],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "description": "High-level reasoning summary"
+        },
+        "key_decisions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/KeyDecision"
+          }
+        },
+        "concerns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Potential concerns or limitations"
+        },
+        "recommendations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Recommendations for improvement"
+        }
+      }
+    },
+    "hac_config": {
+      "$ref": "hac-config.schema.json",
+      "description": "The generated HAC configuration"
+    },
+    "validation": {
+      "type": "object",
+      "required": [
+        "is_valid",
+        "errors",
+        "warnings",
+        "schema_valid",
+        "business_rules_valid"
+      ],
+      "properties": {
+        "is_valid": {
+          "type": "boolean",
+          "description": "Whether the configuration is valid"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Validation errors (if any)"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Validation warnings (non-blocking)"
+        },
+        "schema_valid": {
+          "type": "boolean",
+          "description": "Schema validation passed"
+        },
+        "business_rules_valid": {
+          "type": "boolean",
+          "description": "Business rules validation passed"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "KeyDecision": {
+      "type": "object",
+      "required": ["aspect", "decision", "reasoning"],
+      "properties": {
+        "aspect": {
+          "type": "string",
+          "description": "Aspect of configuration this decision relates to",
+          "examples": ["signal_grouping", "timeline_phases", "prompt_structure"]
+        },
+        "decision": {
+          "type": "string",
+          "description": "The decision made"
+        },
+        "reasoning": {
+          "type": "string",
+          "description": "Reasoning behind the decision"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence in this decision"
+        }
+      }
+    }
+  }
+}

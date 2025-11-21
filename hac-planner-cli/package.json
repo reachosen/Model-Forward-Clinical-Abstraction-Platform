@@ -1,0 +1,45 @@
+{
+  "name": "hac-planner-cli",
+  "version": "1.0.0",
+  "description": "Hospital-Acquired Condition Configuration Planner CLI",
+  "main": "cli/plan.ts",
+  "scripts": {
+    "plan": "ts-node cli/plan.ts",
+    "plan:clabsi": "ts-node cli/plan.ts examples/clabsi_planning_input.json",
+    "plan:vap": "ts-node cli/plan.ts examples/vap_planning_input.json",
+    "validate:clabsi": "ts-node cli/plan.ts examples/clabsi_planning_input.json --validate-only",
+    "validate:vap": "ts-node cli/plan.ts examples/vap_planning_input.json --validate-only",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "clean": "rm -rf dist *.json validation_report.txt"
+  },
+  "keywords": [
+    "healthcare",
+    "hospital-acquired-conditions",
+    "HAC",
+    "CLABSI",
+    "VAP",
+    "clinical-informatics",
+    "surveillance",
+    "NHSN",
+    "pediatrics"
+  ],
+  "author": "Clinical Informatics Team",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1"
+  },
+  "optionalDependencies": {
+    "openai": "^4.24.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
