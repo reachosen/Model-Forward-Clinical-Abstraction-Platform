@@ -1,0 +1,78 @@
+{
+  "planning_id": "planning-usnwr-i25-001",
+  "concern_id": "I25",
+  "archetype": "USNWR_ORTHO_METRIC",
+  "domain": "orthopedics",
+  "data_profile": {
+    "sources": [
+      {
+        "source_id": "caboodle_dw",
+        "type": "EHR",
+        "available_data": [
+          "demographics",
+          "admissions",
+          "surgeries",
+          "complications",
+          "readmissions",
+          "clinical_notes",
+          "vital_signs",
+          "medications",
+          "procedures",
+          "diagnoses",
+          "lab_results"
+        ],
+        "update_frequency": "daily",
+        "integration": "Database"
+      },
+      {
+        "source_id": "surgical_registry",
+        "type": "Registry",
+        "available_data": [
+          "surgical_procedures",
+          "implant_data",
+          "operative_reports",
+          "post_op_complications",
+          "revision_surgeries"
+        ],
+        "update_frequency": "real-time",
+        "integration": "API"
+      }
+    ],
+    "volumes": {
+      "monthly_cases": 250
+    },
+    "quality": {
+      "completeness": 0.95,
+      "timeliness": "daily"
+    }
+  },
+  "clinical_context": {
+    "objective": "Abstract USNWR I25 quality metric for pediatric orthopedic surgical outcomes",
+    "population": "Pediatric patients (age 0-18 years) undergoing orthopedic surgical procedures",
+    "surveillance_requirements": [
+      "USNWR annual quality metric reporting",
+      "Surgical outcome tracking",
+      "Complication surveillance",
+      "Quality improvement monitoring"
+    ],
+    "regulatory_frameworks": [
+      "USNWR"
+    ]
+  },
+  "preferences": {
+    "min_confidence": 0.80,
+    "max_findings_per_category": 10,
+    "include_experimental": false,
+    "custom": {
+      "age_range": "0-18",
+      "setting": "inpatient",
+      "population": "peds_ortho",
+      "timeline_granularity": "day"
+    }
+  },
+  "metadata": {
+    "requested_by": "quality_metrics_team@childrenshospital.org",
+    "requested_at": "2025-01-20T09:00:00Z",
+    "notes": "Configuration for USNWR I25 metric abstraction in pediatric orthopedics. Focus on surgical site infections, implant complications, and process measures. Need to capture multi-question abstraction with evidence rules for each question."
+  }
+}

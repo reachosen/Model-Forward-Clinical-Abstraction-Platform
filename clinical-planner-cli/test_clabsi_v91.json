@@ -1,0 +1,38 @@
+{
+  "planning_input_id": "test_clabsi_v91_001",
+  "concern": "CLABSI",
+  "concern_id": "CLABSI",
+  "domain_hint": "HAC",
+  "domain": {
+    "name": "Hospital-Acquired Conditions",
+    "facility": {
+      "type": "Children's Hospital",
+      "location": "United States"
+    }
+  },
+  "intent": "surveillance",
+  "target_population": "Pediatric patients (age 0-18 years) with central venous catheters",
+  "specific_requirements": [
+    "NHSN surveillance definitions",
+    "Real-time alerting for potential cases",
+    "Bundle compliance tracking"
+  ],
+  "data_profile": {
+    "sources": [
+      {
+        "source_id": "epic_ehr",
+        "type": "EHR",
+        "available_data": ["demographics", "admissions", "clinical_notes", "vital_signs", "medications", "procedures"]
+      },
+      {
+        "source_id": "lab_system",
+        "type": "Laboratory",
+        "available_data": ["blood_cultures", "microbiology_results"]
+      }
+    ],
+    "volumes": {
+      "daily_admissions": 50,
+      "monthly_cases": 15
+    }
+  }
+}

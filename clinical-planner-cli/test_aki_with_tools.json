@@ -1,0 +1,17 @@
+{
+  "planning_id": "test-aki-tools-001",
+  "concern_id": "AKI",
+  "archetype": "HAC_AKI",
+  "domain": {
+    "name": "pediatric_icu",
+    "display_name": "Pediatric Intensive Care Unit",
+    "description": "PICU patients at risk for acute kidney injury"
+  },
+  "intent": "surveillance",
+  "target_population": "PICU patients receiving nephrotoxic medications",
+  "specific_requirements": [
+    "MUST calculate eGFR using Bedside Schwartz equation",
+    "MUST track nephrotoxin burden score",
+    "MUST use pediatric KDIGO staging"
+  ]
+}

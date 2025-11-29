@@ -1,0 +1,88 @@
+{
+  "planning_id": "structured-vap-respiratory-001",
+  "concern_id": "VAP",
+  "archetype": "HAC_VAP",
+  "domain": "respiratory_care",
+  "data_profile": {
+    "sources": [
+      {
+        "source_id": "epic_ehr",
+        "type": "EHR",
+        "available_data": [
+          "demographics",
+          "vitals",
+          "labs",
+          "clinical_notes",
+          "respiratory_therapy_notes",
+          "ventilator_settings",
+          "medications",
+          "procedures",
+          "diagnoses"
+        ],
+        "update_frequency": "hourly",
+        "integration": "HL7"
+      },
+      {
+        "source_id": "microbiology_lab",
+        "type": "Microbiology",
+        "available_data": [
+          "respiratory_cultures",
+          "sputum_cultures",
+          "bal_cultures",
+          "susceptibilities",
+          "gram_stains"
+        ],
+        "update_frequency": "real-time",
+        "integration": "FHIR"
+      },
+      {
+        "source_id": "radiology_pacs",
+        "type": "Radiology",
+        "available_data": [
+          "chest_xrays",
+          "ct_chest",
+          "imaging_reports"
+        ],
+        "update_frequency": "real-time",
+        "integration": "API"
+      }
+    ],
+    "volumes": {
+      "monthly_cases": 45
+    },
+    "quality": {
+      "completeness": 0.92,
+      "timeliness": "hourly"
+    }
+  },
+  "clinical_context": {
+    "objective": "Detect ventilator-associated pneumonia in mechanically ventilated patients using NHSN surveillance criteria",
+    "population": "Adult and pediatric patients on mechanical ventilation >48 hours",
+    "surveillance_requirements": [
+      "NHSN VAP surveillance definition",
+      "Daily ventilator bundle compliance monitoring",
+      "Infection prevention reporting",
+      "Quality improvement tracking"
+    ],
+    "regulatory_frameworks": [
+      "NHSN",
+      "CMS"
+    ]
+  },
+  "preferences": {
+    "min_confidence": 0.75,
+    "max_findings_per_category": 12,
+    "include_experimental": false,
+    "custom": {
+      "population": "mechanically_ventilated",
+      "minimum_vent_days": 2,
+      "include_pediatric": true,
+      "priority_focus": "prevention_and_early_detection"
+    }
+  },
+  "metadata": {
+    "requested_by": "infection_prevention@hospital.org",
+    "requested_at": "2025-01-22T14:00:00Z",
+    "notes": "Configuration for VAP surveillance in respiratory care. Need to capture ventilator settings, respiratory cultures, imaging findings, and clinical deterioration. Focus on NHSN criteria including ventilator-associated conditions (VAC), infection-related VAC (IVAC), and possible/probable VAP."
+  }
+}

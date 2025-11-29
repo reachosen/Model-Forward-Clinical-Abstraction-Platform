@@ -45,3 +45,18 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Generated plan outputs
+scripts/planoutput/
+
+# Next.js
+.next/
+out/
+node_modules/
+
+# Package locks (keep package-lock.json in version control)
+# package-lock.json is commented out to keep it tracked

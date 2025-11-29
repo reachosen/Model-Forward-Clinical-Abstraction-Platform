@@ -1,0 +1,29 @@
+{
+  "planning_input_id": "test-i60-20251129",
+  "concern_id": "I60",
+  "concern": "I60",
+  "intent": "Track subarachnoid hemorrhage management quality metrics for USNWR Neurology reporting",
+  "target_population": "Pediatric patients with subarachnoid hemorrhage",
+  "specific_requirements": [
+    "USNWR Neurology quality metric reporting",
+    "Early intervention monitoring",
+    "Complication prevention tracking"
+  ],
+  "domain": {
+    "name": "pediatric_neurology",
+    "facility": {
+      "type": "Children's Hospital",
+      "location": "United States"
+    }
+  },
+  "data_profile": {
+    "sources": [
+      {
+        "source_id": "ehr",
+        "type": "EHR",
+        "available_data": ["procedures", "diagnosis", "labs", "clinical_notes", "imaging"]
+      }
+    ]
+  },
+  "archetype": "USNWR_NEURO_METRIC"
+}

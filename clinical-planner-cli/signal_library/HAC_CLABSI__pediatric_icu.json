@@ -1,0 +1,159 @@
+{
+  "archetype": "HAC_CLABSI",
+  "domain": "pediatric_icu",
+  "phases": [
+    {
+      "id": "baseline",
+      "name": "Baseline Period",
+      "description": "Clinical status before central line insertion, including baseline labs and vitals",
+      "timing": "pre_event",
+      "typical_duration_days": 1
+    },
+    {
+      "id": "line_insertion",
+      "name": "Central Line Insertion",
+      "description": "Line placement procedure including sterile technique documentation",
+      "timing": "peri_event",
+      "typical_duration_days": 1
+    },
+    {
+      "id": "maintenance",
+      "name": "Line Maintenance Period",
+      "description": "Ongoing device days with daily care bundle compliance checks",
+      "timing": "surveillance",
+      "typical_duration_days": 7
+    },
+    {
+      "id": "infection_window",
+      "name": "Infection Detection Window",
+      "description": "Period during which CLABSI may be detected (line in place + 1 day post-removal)",
+      "timing": "surveillance",
+      "typical_duration_days": 2
+    }
+  ],
+  "signals": [
+    {
+      "id": "line_insertion_date",
+      "name": "Central Line Insertion Date/Time",
+      "category": "device",
+      "phase_id": "line_insertion",
+      "priority": "core"
+    },
+    {
+      "id": "line_type",
+      "name": "Central Line Type",
+      "category": "device",
+      "phase_id": "line_insertion",
+      "priority": "core"
+    },
+    {
+      "id": "line_insertion_site",
+      "name": "Insertion Site (IJ, subclavian, femoral, PICC)",
+      "category": "device",
+      "phase_id": "line_insertion",
+      "priority": "core"
+    },
+    {
+      "id": "line_removal_date",
+      "name": "Central Line Removal Date/Time",
+      "category": "device",
+      "phase_id": "maintenance",
+      "priority": "core"
+    },
+    {
+      "id": "device_days",
+      "name": "Central Line Device Days",
+      "category": "device",
+      "phase_id": "maintenance",
+      "priority": "core"
+    },
+    {
+      "id": "blood_culture_collection_datetime",
+      "name": "Blood Culture Collection Date/Time",
+      "category": "micro",
+      "phase_id": "infection_window",
+      "priority": "core"
+    },
+    {
+      "id": "blood_culture_organism",
+      "name": "Blood Culture Organism (standardized)",
+      "category": "micro",
+      "phase_id": "infection_window",
+      "priority": "core"
+    },
+    {
+      "id": "blood_culture_specimen_source",
+      "name": "Specimen Source (peripheral vs central line draw)",
+      "category": "micro",
+      "phase_id": "infection_window",
+      "priority": "supporting"
+    },
+    {
+      "id": "patient_age_days",
+      "name": "Patient Age in Days",
+      "category": "clinical",
+      "phase_id": "baseline",
+      "priority": "core"
+    },
+    {
+      "id": "patient_weight_kg",
+      "name": "Patient Weight (kg)",
+      "category": "vital",
+      "phase_id": "baseline",
+      "priority": "core"
+    },
+    {
+      "id": "tpn_active",
+      "name": "TPN Active (Yes/No)",
+      "category": "clinical",
+      "phase_id": "maintenance",
+      "priority": "core"
+    },
+    {
+      "id": "oncology_immunocompromised",
+      "name": "Oncology/Immunocompromised Status",
+      "category": "clinical",
+      "phase_id": "baseline",
+      "priority": "core"
+    },
+    {
+      "id": "admission_datetime",
+      "name": "Hospital Admission Date/Time",
+      "category": "clinical",
+      "phase_id": "baseline",
+      "priority": "core"
+    },
+    {
+      "id": "temperature_celsius",
+      "name": "Temperature (°C) - age-adjusted thresholds",
+      "category": "vital",
+      "phase_id": "infection_window",
+      "priority": "core"
+    },
+    {
+      "id": "wbc_count",
+      "name": "WBC Count (age-adjusted ranges)",
+      "category": "lab",
+      "phase_id": "infection_window",
+      "priority": "core"
+    },
+    {
+      "id": "antimicrobial_start_date",
+      "name": "New Antimicrobial Start Date",
+      "category": "clinical",
+      "phase_id": "infection_window",
+      "priority": "core"
+    },
+    {
+      "id": "care_bundle_compliance",
+      "name": "Central Line Bundle Compliance (daily)",
+      "category": "clinical",
+      "phase_id": "maintenance",
+      "priority": "supporting"
+    }
+  ],
+  "version": "1.0.0",
+  "curated_by": "SME Team",
+  "curated_date": "2025-01-22",
+  "notes": "Curated for pediatric ICU population including neonates. Age-specific normal ranges applied for vitals and labs. TPN and immunocompromised status flagged as high-priority due to elevated risk."
+}

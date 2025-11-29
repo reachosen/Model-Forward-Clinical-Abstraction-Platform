@@ -1,0 +1,246 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/planning-input.schema.json",
+  "title": "PlanningInput",
+  "description": "Input structure for the HAC Planner CLI. Supports STRUCTURED mode (explicit fields) and INTENT-FIRST mode (review_request with inference).",
+  "type": "object",
+  "required": [
+    "planning_id"
+  ],
+  "anyOf": [
+    {
+      "required": ["review_request"],
+      "description": "INTENT-FIRST MODE: Provide free-text review_request, other fields are inferred"
+    },
+    {
+      "required": ["concern_id", "archetype"],
+      "description": "STRUCTURED MODE: Provide explicit archetype, concern_id, domain"
+    }
+  ],
+  "properties": {
+    "planning_id": {
+      "type": "string",
+      "description": "Unique identifier for this planning request",
+      "minLength": 1
+    },
+    "review_request": {
+      "type": "string",
+      "description": "FREE-TEXT INTENT: Optional free-text review request describing the user's intent. Example: 'Create a workflow to review I25 orthopedic USNWR cases.' When present, domain/archetype/concern_id can be omitted and will be inferred.",
+      "minLength": 10
+    },
+    "concern_id": {
+      "type": "string",
+      "description": "Hospital-acquired condition or quality metric identifier. OPTIONAL if review_request is provided. REQUIRED in structured mode.",
+      "pattern": "^[A-Z0-9_]+$",
+      "examples": ["CLABSI", "VAP", "CAUTI", "SSI", "I25", "I26", "I32a", "I21", "I60"]
+    },
+    "archetype": {
+      "type": "string",
+      "description": "Archetype or template. OPTIONAL if review_request is provided. REQUIRED in structured mode.",
+      "enum": [
+        "HAC",
+        "HAC_CLABSI",
+        "HAC_CAUTI",
+        "HAC_VAP",
+        "HAC_SSI",
+        "device_associated_infection",
+        "surgical_site_infection",
+        "adverse_event",
+        "medication_safety",
+        "patient_safety",
+        "USNWR_METRIC",
+        "USNWR_ORTHO_METRIC",
+        "USNWR_CARDIO_METRIC",
+        "USNWR_NEURO_METRIC",
+        "USNWR_READMISSION_METRIC",
+        "USNWR_CARDIAC_METRIC",
+        "USNWR_SURGICAL_METRIC"
+      ]
+    },
+    "domain": {
+      "description": "Clinical domain context. OPTIONAL if review_request is provided. Can be a simple string or structured object.",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Simple domain name",
+          "examples": ["pediatric_icu", "adult_icu", "orthopedics", "cardiology", "neurology", "respiratory_care", "cardiac_surgery"]
+        },
+        {
+          "type": "object",
+          "description": "Structured domain with facility information (for backward compatibility)",
+          "required": ["name", "facility"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Domain name"
+            },
+            "facility": {
+              "type": "object",
+              "required": ["type", "location"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Facility type",
+                  "examples": ["Children's Hospital", "General Hospital", "Specialty Hospital"]
+                },
+                "location": {
+                  "type": "string",
+                  "description": "Facility location"
+                },
+                "context": {
+                  "type": "string",
+                  "description": "Additional facility context"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "data_profile": {
+      "type": "object",
+      "description": "Data profile describing available sources. Optional - will use defaults if not provided.",
+      "properties": {
+        "sources": {
+          "type": "array",
+          "description": "Available data sources",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/DataSource"
+          }
+        },
+        "volumes": {
+          "type": "object",
+          "properties": {
+            "daily_admissions": {
+              "type": "number",
+              "minimum": 0
+            },
+            "monthly_cases": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "quality": {
+          "type": "object",
+          "properties": {
+            "completeness": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "timeliness": {
+              "type": "string",
+              "enum": ["real-time", "hourly", "daily", "weekly", "monthly"]
+            }
+          }
+        }
+      }
+    },
+    "clinical_context": {
+      "type": "object",
+      "description": "Clinical context. Optional - will use defaults if not provided.",
+      "properties": {
+        "objective": {
+          "type": "string",
+          "description": "Primary clinical objective",
+          "minLength": 1
+        },
+        "population": {
+          "type": "string",
+          "description": "Target patient population"
+        },
+        "surveillance_requirements": {
+          "type": "array",
+          "description": "Surveillance or reporting requirements",
+          "items": {
+            "type": "string"
+          }
+        },
+        "regulatory_frameworks": {
+          "type": "array",
+          "description": "Regulatory or compliance frameworks",
+          "items": {
+            "type": "string",
+            "enum": ["NHSN", "CMS", "Joint Commission", "State Health Department", "USNWR"]
+          }
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "properties": {
+        "min_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Desired confidence threshold for determinations"
+        },
+        "max_findings_per_category": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Maximum number of signals to generate per category"
+        },
+        "include_experimental": {
+          "type": "boolean",
+          "description": "Include experimental features"
+        },
+        "custom": {
+          "type": "object",
+          "description": "Additional custom preferences"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "requested_by": {
+          "type": "string"
+        },
+        "requested_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DataSource": {
+      "type": "object",
+      "required": ["source_id", "type", "available_data"],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "description": "Source identifier"
+        },
+        "type": {
+          "type": "string",
+          "description": "Source type",
+          "enum": ["EHR", "Laboratory", "Device", "Pharmacy", "Radiology", "Microbiology", "Registry"]
+        },
+        "available_data": {
+          "type": "array",
+          "description": "Available data elements from this source",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "update_frequency": {
+          "type": "string",
+          "description": "Data update frequency",
+          "enum": ["real-time", "hourly", "daily", "weekly"]
+        },
+        "integration": {
+          "type": "string",
+          "description": "Integration method",
+          "enum": ["HL7", "FHIR", "API", "Database", "File"]
+        }
+      }
+    }
+  }
+}

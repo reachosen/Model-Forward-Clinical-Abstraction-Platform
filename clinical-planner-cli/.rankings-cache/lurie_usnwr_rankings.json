@@ -1,0 +1,576 @@
+{
+  "hospital": "Ann & Robert H. Lurie Children's Hospital of Chicago",
+  "last_updated": "2025-11-28T00:00:00Z",
+  "rankings": {
+    "Urology": {
+      "rank": 6,
+      "reputation_score": null,
+      "summary": "Lurie Children's Urology is the largest in the region with over 17,000 visits annually, noted for high volumes in complex reconstruction and minimally invasive robotic surgery.",
+      "mapped_concern_ids": ["K19", "K16.1a", "K16.1b", "K16.1c", "K15a", "K15b", "U05", "U06"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Boston Children's Hospital",
+          "key_strengths": [
+            "Pioneering minimally invasive techniques for complex urologic reconstruction",
+            "Hypospadias revision rate <3% with standardized surgical protocols",
+            "Advanced bladder exstrophy program with comprehensive multidisciplinary care",
+            "Robotic pyeloplasty success rate >98% with reduced hospital stays",
+            "Comprehensive testicular torsion protocols achieving <4 hour median time to OR"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Texas Children's Hospital",
+          "key_strengths": [
+            "Highest volume pediatric urology program with >5,000 surgical cases annually",
+            "Advanced robotic surgery program with da Vinci expertise",
+            "30-day readmission rates <2% for major urologic procedures",
+            "Standardized perioperative protocols reducing opioid use by 50%",
+            "Dedicated urology OR suites with specialized pediatric equipment"
+          ]
+        },
+        {
+          "rank": 4,
+          "hospital": "Children's Hospital of Philadelphia",
+          "key_strengths": [
+            "Excellence in complex urinary tract reconstruction",
+            "Integrated nephrology-urology collaborative care model",
+            "Advanced urodynamics laboratory for functional assessment",
+            "Low complication rates for major urologic procedures",
+            "Comprehensive transition care program for adolescents"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["K16.1c", "K15a", "K15b", "K19"],
+        "quality_differentiators": [
+          "Revision surgery rates for hypospadias and pyeloplasty",
+          "Time to OR for testicular torsion emergencies (<6 hours)",
+          "30-day readmission rates after major urologic procedures",
+          "Standardized perioperative pain management protocols",
+          "Robotic surgery volume and outcomes for complex reconstructions"
+        ]
+      }
+    },
+    "Nephrology": {
+      "rank": 7,
+      "reputation_score": null,
+      "summary": "The division integrates with urology to manage complex kidney disease and offers specialized programs like the Nephrogenetics Program to diagnose rare disorders.",
+      "mapped_concern_ids": ["G32.3", "G32.4", "G32.1", "G32.2", "G15"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Boston Children's Hospital",
+          "key_strengths": [
+            "Three-year kidney transplant patient survival rate 99.1%",
+            "Three-year graft survival rate 96.8% for living donor transplants",
+            "Pioneered steroid-minimization protocols reducing complications",
+            "Advanced nephrogenetics program identifying rare genetic disorders",
+            "Kidney biopsy complication rate <0.5% with real-time ultrasound guidance"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Texas Children's Hospital",
+          "key_strengths": [
+            "Largest pediatric kidney transplant volume in the US (80+ annually)",
+            "Innovative ABO-incompatible transplant protocols",
+            "One-year graft survival rates consistently >98%",
+            "Comprehensive living donor program with extensive family support",
+            "Advanced immunosuppression protocols minimizing rejection"
+          ]
+        },
+        {
+          "rank": 6,
+          "hospital": "Children's Hospital of Philadelphia",
+          "key_strengths": [
+            "Excellence in complex multi-organ transplantation",
+            "Dedicated pediatric dialysis program with home training",
+            "Advanced transition programs for adolescent transplant recipients",
+            "Low biopsy complication rates with experienced interventional team",
+            "Comprehensive pre-transplant optimization protocols"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["G32.3", "G32.4", "G32.1", "G32.2", "G15"],
+        "quality_differentiators": [
+          "One and three-year patient and graft survival rates",
+          "Living donor transplant volume and outcomes",
+          "Kidney biopsy complication rates and adequacy of specimens",
+          "Steroid-sparing immunosuppression protocols",
+          "Comprehensive transition programs for adolescent recipients"
+        ]
+      }
+    },
+    "Neurology & Neurosurgery": {
+      "rank": 7,
+      "reputation_score": null,
+      "summary": "Home to a Level 4 National Association of Epilepsy Centers (NAEC) epilepsy center and a large pediatric neurocritical care program.",
+      "mapped_concern_ids": ["H16d", "H16b", "H16c", "H16e", "H16f", "H17a", "H17b", "H17c", "H17d", "H17e", "H29", "H17.1", "H17", "H34", "H8.2", "H10b", "H31.1", "H31.2", "H31.3", "H31.4", "N24", "N25"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Children's Hospital of Philadelphia",
+          "key_strengths": [
+            "Epilepsy surgery seizure-freedom rates: 75% Engel Class I outcomes",
+            "Brain tumor surgical survival rate 98.5% with low complication rates",
+            "Craniotomy 30-day readmission rate <5% with standardized protocols",
+            "Advanced intraoperative neuromonitoring reducing neurologic deficits",
+            "Comprehensive hydrocephalus program with shunt revision rate <15%"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Boston Children's Hospital",
+          "key_strengths": [
+            "Pioneering minimally invasive neurosurgical techniques",
+            "Epilepsy monitoring unit with rapid vEEG evaluation (<24 hours)",
+            "Advanced neuroimaging integration for surgical planning",
+            "Multidisciplinary tumor board for complex oncology cases",
+            "30-day unplanned return to OR rate <3% for cranial procedures"
+          ]
+        },
+        {
+          "rank": 5,
+          "hospital": "Cincinnati Children's Hospital Medical Center",
+          "key_strengths": [
+            "Excellence in Chiari malformation decompression outcomes",
+            "Comprehensive epilepsy program with multi-stage surgical options",
+            "Advanced neurocritical care protocols reducing secondary injury",
+            "Dedicated pediatric neuro-anesthesia team",
+            "Low complication rates for complex spine procedures"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["H31.1", "H31.2", "H31.3", "H31.4", "H16d", "H17b", "H29", "H8.2"],
+        "quality_differentiators": [
+          "Seizure-freedom rates following epilepsy surgery (Engel Class I-II)",
+          "30-day readmission rates for craniotomy and neurosurgical procedures",
+          "Surgical survival rates for brain tumors and complex procedures",
+          "Unplanned return to OR rates within 30 days",
+          "Complication rates for epilepsy and hydrocephalus procedures",
+          "vEEG evaluation timeliness for surgical planning"
+        ]
+      }
+    },
+    "Gastroenterology & GI Surgery": {
+      "rank": 11,
+      "reputation_score": null,
+      "summary": "Features the state's only comprehensive Neurointestinal and Motility Program and specialized centers for colorectal conditions and inflammatory bowel disease.",
+      "mapped_concern_ids": ["D21", "D22", "D29"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Children's Hospital of Philadelphia",
+          "key_strengths": [
+            "Liver transplant three-year survival rate 95.2%",
+            "Largest pediatric intestinal transplant program with excellent outcomes",
+            "Endoscopic complication rate <0.3% for therapeutic procedures",
+            "Advanced inflammatory bowel disease program with biologic therapies",
+            "Comprehensive intestinal rehabilitation program achieving enteral autonomy"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Boston Children's Hospital",
+          "key_strengths": [
+            "Excellence in complex liver transplantation including living donor",
+            "Advanced endoscopic techniques reducing surgical interventions",
+            "Multidisciplinary intestinal failure team with nutrition expertise",
+            "Low complication rates for therapeutic ERCP and EUS",
+            "Comprehensive motility disorder diagnostics and treatment"
+          ]
+        },
+        {
+          "rank": 3,
+          "hospital": "Cincinnati Children's Hospital Medical Center",
+          "key_strengths": [
+            "Innovative surgical techniques for short bowel syndrome",
+            "High-volume liver transplant program with >50 cases annually",
+            "Advanced IBD biologics program with research trials",
+            "Comprehensive aerodigestive program for complex feeding disorders",
+            "Excellence in minimally invasive GI surgery"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["D21", "D22", "D29"],
+        "quality_differentiators": [
+          "One and three-year liver transplant survival rates",
+          "Endoscopic procedure complication rates for therapeutic interventions",
+          "Intestinal rehabilitation outcomes and enteral autonomy rates",
+          "Living donor liver transplant program volume and outcomes",
+          "Advanced endoscopic technique adoption and safety profiles"
+        ]
+      }
+    },
+    "Diabetes & Endocrinology": {
+      "rank": 11,
+      "reputation_score": null,
+      "summary": "Manages one of the largest diabetes programs in Illinois with over 2,000 patients and serves as a regional referral center for thyroid cancer.",
+      "mapped_concern_ids": ["C41.1a", "C41.1b", "C41.2a", "C41.2b", "C35.1a1", "C35.1a2", "C35.1b1", "C35.1b2", "C35.1c1", "C35.1c2", "C59", "C59.1", "C59.2"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Stanford Medicine Children's Health",
+          "key_strengths": [
+            "Optimal A1c control rates: 68% of patients ages 8-13 achieve target A1c",
+            "Advanced continuous glucose monitoring (CGM) adoption >85% of patients",
+            "Automated insulin delivery system implementation with excellent outcomes",
+            "Comprehensive lipid management achieving LDL targets in >70% of patients",
+            "Early congenital hypothyroidism referral achieving 95% TSH normalization"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "UPMC Children's Hospital of Pittsburgh",
+          "key_strengths": [
+            "Pioneering diabetes technology adoption and research",
+            "Comprehensive diabetes education with ADA-certified educators",
+            "Thyroid disorder management with specialized endocrine surgery team",
+            "Advanced lipid clinic for dyslipidemia in diabetes patients",
+            "Multidisciplinary approach to complex endocrine disorders"
+          ]
+        },
+        {
+          "rank": 6,
+          "hospital": "Children's National Hospital",
+          "key_strengths": [
+            "Excellence in diabetes technology integration and support",
+            "Comprehensive transition program for adolescents to adult care",
+            "Advanced genetic testing for monogenic diabetes",
+            "Specialized thyroid nodule and cancer management program",
+            "High rates of A1c target achievement across age groups"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["C35.1a1", "C35.1a2", "C35.1b1", "C35.1b2", "C35.1c1", "C35.1c2", "C41.1a", "C41.1b", "C59"],
+        "quality_differentiators": [
+          "Percentage achieving optimal A1c control across all age groups",
+          "CGM and insulin pump adoption rates and outcomes",
+          "LDL cholesterol and triglyceride target achievement in diabetes patients",
+          "Congenital hypothyroidism early referral and TSH normalization rates",
+          "Graves disease management with Free T4 normalization",
+          "Comprehensive diabetes education and technology support programs"
+        ]
+      }
+    },
+    "Cardiology & Heart Surgery": {
+      "rank": 17,
+      "reputation_score": null,
+      "summary": "Performed the highest number of pediatric heart transplants in the US in 2024 with a first-year survival rate exceeding 98%.",
+      "mapped_concern_ids": ["E24", "C01", "C02"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Texas Children's Hospital",
+          "key_strengths": [
+            "Heart transplant three-year survival rate 97.8%",
+            "Highest volume pediatric cardiac surgery program (1,200+ cases annually)",
+            "Advanced VAD program with 94% bridge-to-transplant success",
+            "Comprehensive heart failure program with multidisciplinary team",
+            "Early mobilization protocols reducing ICU length of stay by 25%"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Children's Hospital Colorado",
+          "key_strengths": [
+            "Excellence in complex congenital heart repair (Norwood, Fontan)",
+            "Advanced ECMO program with 88% survival for cardiac indications",
+            "Pioneering hybrid catheterization-surgical procedures",
+            "Comprehensive arrhythmia management and ablation program",
+            "Standardized VTE prophylaxis achieving 97% compliance"
+          ]
+        },
+        {
+          "rank": 3,
+          "hospital": "Boston Children's Hospital",
+          "key_strengths": [
+            "Pioneering ABO-incompatible heart transplant protocols",
+            "Advanced imaging integration with 3D modeling and VR planning",
+            "Early extubation protocols achieving median 8 hours post-op",
+            "Low surgical mortality rates for high-risk congenital repairs",
+            "Comprehensive handoff protocols reducing readmissions by 28%"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["E24", "C01", "C02"],
+        "quality_differentiators": [
+          "Three-year heart transplant survival rates (observed vs expected)",
+          "Surgical volume and complexity for congenital heart repairs",
+          "VAD program outcomes and bridge-to-transplant success rates",
+          "VTE prophylaxis bundle compliance for cardiac procedures",
+          "Early extubation protocols and ICU length of stay metrics",
+          "30-day readmission rates for cardiac surgery procedures"
+        ]
+      }
+    },
+    "Pulmonology & Lung Surgery": {
+      "rank": 17,
+      "reputation_score": null,
+      "summary": "Only regional service offering infant pulmonary function tests and designated as a Therapeutics Development Network Center for Cystic Fibrosis.",
+      "mapped_concern_ids": ["J24b", "J24c", "J24d", "J24e", "J24f", "J23", "P15", "P16"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Seattle Children's Hospital",
+          "key_strengths": [
+            "CF patients ages 6-12: median FEV1 98% predicted (top quartile nationally)",
+            "CF patients ages 13-17: median FEV1 95% predicted",
+            "97% of CF patients meeting treatment guideline recommendations",
+            "BMI targets achieved in 88% of CF patients",
+            "Advanced CF therapies including CFTR modulators with excellent adherence"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Cincinnati Children's Hospital Medical Center",
+          "key_strengths": [
+            "Largest CF care center volume in the Midwest (450+ patients)",
+            "Comprehensive multidisciplinary CF clinic model",
+            "Advanced airway reconstruction program for complex tracheal disorders",
+            "Oral glucose tolerance testing completion rate >92% in CF patients >10 years",
+            "Excellence in pediatric lung transplantation for end-stage CF"
+          ]
+        },
+        {
+          "rank": 3,
+          "hospital": "Boston Children's Hospital",
+          "key_strengths": [
+            "Pioneering aerodigestive program for complex airway disorders",
+            "Advanced bronchoscopic interventions reducing surgical needs",
+            "Comprehensive asthma management program with excellent outcomes",
+            "CF nutrition program achieving superior weight-for-length in infants",
+            "Specialized interstitial lung disease program"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["J24b", "J24c", "J24d", "J24e", "J23"],
+        "quality_differentiators": [
+          "Median FEV1 percent predicted for CF patients across age groups",
+          "BMI and weight-for-length percentiles in CF patients",
+          "Percentage of CF patients meeting treatment guidelines",
+          "Oral glucose tolerance test completion rates for CF patients >10 years",
+          "CFTR modulator therapy adoption and adherence rates",
+          "Multidisciplinary care coordination and clinic efficiency"
+        ]
+      }
+    },
+    "Cancer": {
+      "rank": 19,
+      "reputation_score": null,
+      "summary": "Treats 220 new patients annually with specialized programs in solid tumors, neuro-oncology, and stem cell transplant.",
+      "mapped_concern_ids": ["ONCO01"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "St. Jude Children's Research Hospital",
+          "key_strengths": [
+            "Five-year survival rates for ALL exceeding 94%",
+            "Pioneering Total Therapy protocols with international adoption",
+            "Comprehensive supportive care reducing treatment-related mortality",
+            "Advanced CAR T-cell therapy program with excellent remission rates",
+            "No-cost comprehensive care model improving adherence and outcomes"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Children's Hospital of Philadelphia",
+          "key_strengths": [
+            "Largest pediatric CAR T-cell therapy program in the US",
+            "Advanced Phase I/II clinical trial portfolio",
+            "Comprehensive survivorship program with late effects monitoring",
+            "Excellence in stem cell transplantation with low mortality rates",
+            "Multidisciplinary tumor boards for complex cases"
+          ]
+        },
+        {
+          "rank": 3,
+          "hospital": "Dana-Farber/Boston Children's Cancer and Blood Disorders Center",
+          "key_strengths": [
+            "Pioneering immunotherapy and targeted therapy research",
+            "Excellence in brain tumor treatment with multimodal approaches",
+            "Advanced genomic profiling guiding personalized treatment",
+            "Comprehensive psychosocial support and family services",
+            "High enrollment rates in clinical trials expanding treatment options"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["ONCO01"],
+        "quality_differentiators": [
+          "Five-year survival rates for common pediatric cancers (ALL, AML, lymphoma)",
+          "Access to Phase I/II clinical trials for relapsed/refractory disease",
+          "CAR T-cell therapy outcomes and complication management",
+          "Stem cell transplant outcomes exceeding expected survival rates",
+          "Comprehensive survivorship care and late effects monitoring",
+          "Treatment-related mortality rates and supportive care quality"
+        ]
+      }
+    },
+    "Orthopedics": {
+      "rank": 20,
+      "reputation_score": null,
+      "summary": "Offers comprehensive care including a specialized spine program and sports medicine, managing over 23,000 surgical cases annually system-wide.",
+      "mapped_concern_ids": ["I25", "I25.1", "I26", "I27", "I32a", "I32b", "I06", "I07", "I08"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Boston Children's Hospital",
+          "key_strengths": [
+            "Supracondylar fracture to OR <18 hours: 96% compliance",
+            "Femoral shaft fracture to OR <18 hours: 94% compliance",
+            "Scoliosis 30-day readmission rate <2.5%",
+            "Advanced VTE prophylaxis protocols for hip/knee arthroplasty achieving 98% compliance",
+            "Early mobilization programs reducing LOS by 1.8 days for major procedures"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Children's Hospital of Philadelphia",
+          "key_strengths": [
+            "Excellence in complex spine surgery with low revision rates (<3%)",
+            "Comprehensive orthopedic trauma program with 24/7 coverage",
+            "Advanced limb lengthening and deformity correction program",
+            "Standardized pain management reducing opioid use by 45%",
+            "Dedicated orthopedic OR suites optimizing surgical efficiency"
+          ]
+        },
+        {
+          "rank": 3,
+          "hospital": "Cincinnati Children's Hospital Medical Center",
+          "key_strengths": [
+            "High-volume scoliosis program with excellent outcomes",
+            "Advanced imaging and navigation for complex procedures",
+            "Comprehensive fracture care protocols with excellent healing rates",
+            "Specialized cerebral palsy orthopedic management program",
+            "Multidisciplinary care coordination reducing complications"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["I25", "I26", "I32a", "I32b", "I06", "I07", "I08"],
+        "quality_differentiators": [
+          "Time to OR <18 hours for supracondylar and femoral shaft fractures",
+          "30-day readmission and unplanned admission rates for scoliosis surgery",
+          "VTE prophylaxis compliance for hip/knee arthroplasty procedures",
+          "Surgical site infection rates for major orthopedic procedures",
+          "Early mobilization and rehabilitation protocol implementation",
+          "Pain management protocols and opioid-sparing strategies",
+          "Handoff documentation completeness for post-operative transitions"
+        ]
+      }
+    },
+    "Neonatology": {
+      "rank": 23,
+      "reputation_score": null,
+      "summary": "Maintains a Level IV NICU with 45 referring hospitals and is a member of the Children's Hospitals Neonatal Consortium.",
+      "mapped_concern_ids": ["F32.1", "NICU01"],
+      "top_performers": [
+        {
+          "rank": 1,
+          "hospital": "Children's National Hospital",
+          "key_strengths": [
+            "Unintended extubation rate <0.5 per 100 ventilator days",
+            "Advanced respiratory care protocols reducing chronic lung disease",
+            "Comprehensive neurodevelopmental follow-up program for NICU graduates",
+            "Excellence in therapeutic hypothermia for hypoxic-ischemic encephalopathy",
+            "Family-integrated care model improving bonding and outcomes"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "Texas Children's Hospital",
+          "key_strengths": [
+            "Largest Level IV NICU volume in the US (>2,000 admissions annually)",
+            "Advanced ECMO program with >80% survival for neonatal indications",
+            "Comprehensive fetal care center with intrauterine interventions",
+            "Low ventilator-associated event rates with standardized protocols",
+            "Excellence in neonatal surgery outcomes"
+          ]
+        },
+        {
+          "rank": 2,
+          "hospital": "UCSF Benioff Children's Hospital",
+          "key_strengths": [
+            "Pioneering quality improvement initiatives reducing complications",
+            "Advanced ventilation strategies minimizing lung injury",
+            "Comprehensive maternal-fetal medicine integration",
+            "Excellence in extremely premature infant care (<24 weeks)",
+            "Standardized care bundles reducing central line infections"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["F32.1", "NICU01"],
+        "quality_differentiators": [
+          "Unintended extubation rates per 100 ventilator days",
+          "Central line-associated bloodstream infection (CLABSI) rates",
+          "Chronic lung disease rates in very low birth weight infants",
+          "Neurodevelopmental outcomes for NICU graduates",
+          "Family-centered care practices and parental involvement",
+          "Standardized respiratory care protocols and ventilator weaning strategies"
+        ]
+      }
+    },
+    "Behavioral Health": {
+      "rank": 0,
+      "reputation_score": null,
+      "summary": "Recognized in the Top 50 nationally for Pediatric & Adolescent Behavioral Health, providing comprehensive inpatient and outpatient services.",
+      "mapped_concern_ids": ["L27", "L29", "L36"],
+      "top_performers": [
+        {
+          "rank": 0,
+          "hospital": "Children's Hospital Colorado",
+          "key_strengths": [
+            "Antipsychotic metabolic screening completion rate >92%",
+            "ADHD follow-up adherence rate 87% (2+ visits within 12 months)",
+            "Psychiatric consultation response time <90 minutes for urgent requests",
+            "Comprehensive medication monitoring protocols reducing adverse events",
+            "Integrated behavioral health into primary care settings"
+          ]
+        },
+        {
+          "rank": 0,
+          "hospital": "Cincinnati Children's Hospital Medical Center",
+          "key_strengths": [
+            "Advanced crisis intervention reducing ED revisits by 35%",
+            "Comprehensive ADHD management with multimodal treatment",
+            "Standardized metabolic monitoring for second-generation antipsychotics",
+            "Telepsychiatry program expanding access to rural areas",
+            "Evidence-based psychotherapy programs with excellent outcomes"
+          ]
+        },
+        {
+          "rank": 0,
+          "hospital": "Boston Children's Hospital",
+          "key_strengths": [
+            "Pioneering collaborative care models for mental health",
+            "Advanced psychiatric consultation-liaison services",
+            "Comprehensive eating disorders program with medical stabilization",
+            "Research-driven interventions for autism and developmental disorders",
+            "Rapid response psychiatric consultation for medical inpatients"
+          ]
+        }
+      ],
+      "benchmark_signals": {
+        "high_priority_questions": ["L27", "L29", "L36"],
+        "quality_differentiators": [
+          "Complete metabolic screening rates for patients on antipsychotics",
+          "ADHD medication follow-up adherence (2+ visits within 12 months)",
+          "Psychiatric consultation response times for urgent requests",
+          "Medication adverse event monitoring and management protocols",
+          "Integrated behavioral health care coordination with primary care",
+          "Crisis intervention effectiveness and ED revisit rates"
+        ]
+      }
+    }
+  }
+}
