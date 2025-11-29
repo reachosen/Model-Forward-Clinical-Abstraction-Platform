@@ -65,3 +65,14 @@ node_modules/
 .rankings-cache/
 .research-cache/
 *-cache/
+
+# Generated outputs
+hac_config.json
+planner_plan.json
+validation_report.txt
+test_output_*/
+
+# Note: archive/ directories will be tracked in git until scheduled deletion date
+# After deletion, uncomment the lines below:
+# archive/
+# */archive/
