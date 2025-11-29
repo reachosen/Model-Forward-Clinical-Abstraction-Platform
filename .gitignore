@@ -60,3 +60,8 @@ node_modules/
 
 # Package locks (keep package-lock.json in version control)
 # package-lock.json is commented out to keep it tracked
+
+# Cache directories
+.rankings-cache/
+.research-cache/
+*-cache/
