@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(timeout 120 npm run build:*)"
+      "Bash(timeout 120 npm run build:*)",
+      "Bash(npx ts-node:*)"
     ],
     "deny": [],
     "ask": []

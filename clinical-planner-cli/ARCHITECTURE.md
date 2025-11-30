@@ -18,13 +18,46 @@
 
 ## Architecture Overview
 
+### Planning Factory in the Larger Platform
+
+CPPO is the **Planning Factory** for the Model-Forward Clinical Abstraction Platform.
+
+Other factories (out of scope for this doc):
+
+- **Schema Factory** – takes PlannerPlanV2 → Snowflake/GOLD_AI schemas
+- **App Factory** – takes PlannerPlanV2 → UI/workbench configs
+- **Prompt Refinery Factory** – uses CPPO eval mode to improve prompts per task
+
+This keeps ARCHITECTURE.md scoped, but shows how it fits the bigger picture.
+
+---
+
 ### Design Principles
 
-**1. Progressive Execution**: 7 stages (S0-S6) with hard validation gates
-**2. Separation of Concerns**: TaskGraph (what/order) ⊥ PromptPlan (how/config) ⊥ Execution (run)
-**3. Observability First**: Every run emits run_manifest.json
-**4. Modularity**: Swap prompts/tasks without touching orchestrator
-**5. Reuse Existing Intelligence**: Import domainRouter, intentInference, validators
+**1. Progressive Execution with Quality Gates**: 7 stages (S0-S6) with 3-tier validation
+   - Each stage validates its output before proceeding (see [QUALITY_CRITERIA.md](./orchestrator/QUALITY_CRITERIA.md))
+   - Tier 1 failures HALT pipeline (structural correctness non-negotiable)
+   - Tier 2 failures WARN but continue (semantic issues logged)
+   - Tier 3 is aspirational (optional quality scoring)
+
+**2. Context-Aware Quality**: Quality criteria adapt to domain, archetype, and task
+   - HAC plans validated against HAC standards (CDC NHSN compliance)
+   - USNWR plans validated against USNWR standards (ranking awareness for top 20)
+   - Process_Auditor validated differently than Preventability_Detective
+   - See [CONTEXT_AWARE_QUALITY.md](./orchestrator/CONTEXT_AWARE_QUALITY.md)
+
+**3. Quality-Guided Generation**: Use quality criteria to GUIDE generation, not just VALIDATE
+   - Pre-populate deterministic outputs (S2 signal groups from templates)
+   - Constrain LLM with JSON schemas (S5 signals must have evidence_type)
+   - Inject requirements into prompts (S5 summaries MUST mention rank if top 20)
+   - Result: Plans "correct by construction" not "corrected by validation"
+   - See [QUALITY_GUIDED_GENERATION.md](./orchestrator/QUALITY_GUIDED_GENERATION.md)
+
+**4. Separation of Concerns**: TaskGraph (what/order) ⊥ PromptPlan (how/config) ⊥ Execution (run)
+
+**5. Observability First**: Every run emits run_manifest.json with validation results
+
+**6. Modularity & Reuse**: Swap prompts/tasks without touching orchestrator; reuse existing validators
 
 ### High-Level Flow
 
@@ -37,6 +70,143 @@ Input → S0 → S1 → S2 → S3 → S4 → S5 → S6 → Output
 **Dual Modes**:
 - **Runtime**: Full pipeline (S0→S6) → PlannerPlanV2
 - **Eval**: Partial pipeline (S0→S4, then selected S5 tasks) → EvalResult
+
+---
+
+## Quality-First Architecture ⭐
+
+CPPO embeds quality at every level through three principles:
+
+### 1. Three-Tier Quality Model
+
+**Tier 1: Structural Correctness** (CRITICAL - must pass)
+- Schema completeness (10 sections)
+- Five-group rule (exactly 5 signal groups)
+- Evidence types (all signals have L1/L2/L3)
+- Tool references (no dangling links)
+- **Policy**: Pipeline HALTS if Tier 1 fails
+
+**Tier 2: Semantic Correctness** (HIGH/MEDIUM - warnings)
+- Template match (groups align with domain)
+- Archetype compatibility (structure fits archetype)
+- Ranking awareness (USNWR top 20 mention rank)
+- Provenance sources (signals cite authorities)
+- Pediatric safety (age-appropriate language)
+- **Policy**: Warnings logged, pipeline CONTINUES
+
+**Tier 3: Clinical Quality** (ASPIRATIONAL - optional)
+- Clinical accuracy (LLM-based assessment)
+- Actionability (clear next steps)
+- Completeness (all aspects covered)
+- **Policy**: Quality scoring only
+
+### 2. Context-Aware Quality Criteria
+
+Quality standards adapt based on **Domain × Archetype × Task**:
+
+```
+Domain (HAC vs Orthopedics)
+   ×
+Archetype (Process_Auditor vs Preventability_Detective)
+   ×
+Task (signal_enrichment vs event_summary)
+   =
+Specific Quality Criteria for THIS context
+```
+
+**Example: S2 Signal Groups**
+- HAC → Must use `['rule_in', 'rule_out', 'delay_drivers', 'documentation_gaps', 'bundle_gaps']`
+- Orthopedics (ranked #20) → Must use signal_emphasis from rankings
+- Orthopedics (unranked) → Must use ORTHO_GROUP_DEFINITIONS defaults
+
+**Example: S5 Event Summary**
+- Process_Auditor → Must describe "protocol adherence timeline"
+- Preventability_Detective → Must state "preventability determination"
+- USNWR top 20 → Must mention "ranked #20 in Pediatric Orthopedics"
+
+### 3. Quality-Guided Generation (Prevention > Detection)
+
+**Traditional Approach** (Generate → Validate → Retry):
+```
+Generate → Hope it's good → Validate → Fail → Retry with context → Maybe succeed
+↑ Costs: 3-5 LLM calls, 30-60s latency, $0.01-0.05 per failure
+```
+
+**Quality-Guided Approach** (Criteria → Guide → Generate → Confirm):
+```
+Quality Criteria → Guide Generation → Generate Correctly → Validate (Confirm)
+↑ Benefits: 1 LLM call, instant, $0 waste, predictable
+```
+
+**Implementation Strategies**:
+
+| Strategy | When to Use | Example (Stage) | Benefit |
+|----------|-------------|-----------------|---------|
+| **Pre-Population** | Output is deterministic | S2: Signal groups from templates | Zero LLM calls, can't fail |
+| **JSON Schema** | Structure is known, content varies | S5: Signals must have evidence_type | Impossible to omit required fields |
+| **Prompt Injection** | Requirements guide narrative | S5: "MUST mention rank if top 20" | Tier 2 failures become rare |
+| **Templates** | Predictable structure + variable content | S5: Event summary template | Consistent structure guaranteed |
+| **Incremental Validation** | Complex multi-part generation | S5: Validate tools before order | Fail fast, no cascading errors |
+
+**Real Example from S2**:
+```typescript
+// ❌ Traditional: Ask LLM to generate groups (unpredictable)
+const groups = await llm.call("Generate 5 signal groups for HAC");
+validate(groups); // Might fail: wrong groups, wrong count, etc.
+
+// ✅ Quality-Guided: Pre-populate from known template (deterministic)
+if (domain === 'HAC') {
+  return HAC_GROUP_DEFINITIONS.map(def => ({
+    group_id: def.group_id,
+    display_name: def.display_name,
+    description: def.description,
+    signals: [] // LLM fills this later in S5
+  }));
+}
+// Validation always passes - we built it correctly by construction
+```
+
+### Quality Gates at Every Stage
+
+Each stage has a quality gate enforcing the 3-tier model:
+
+```
+S0 → Validate → 🚦 GATE → PASS ✅ → S1
+                         HALT ❌ (if Tier 1 fails)
+                         WARN ⚠️ (if Tier 2 fails)
+
+S1 → Validate → 🚦 GATE → PASS ✅ → S2
+                         HALT ❌
+                         WARN ⚠️
+
+S2 → Validate → 🚦 GATE → PASS ✅ → S3
+                         HALT ❌ (e.g., ≠ 5 groups)
+                         WARN ⚠️ (e.g., groups don't match domain template)
+
+... (S3-S5) ...
+
+S6 → Global Validate → 🚦 FINAL GATE → Output PlannerPlanV2
+                                       (Tier 1 MUST pass)
+```
+
+**Stage-Specific Quality Criteria**:
+
+| Stage | Critical Criteria (Tier 1) | Context-Aware Criteria (Tier 2) |
+|-------|---------------------------|----------------------------------|
+| S0 | concern_id extracted, valid format | concern_id in known set (USNWR/HAC) |
+| S1 | domain & archetype resolved | USNWR top 20: ranking_context present |
+| S2 | **Exactly 5 signal groups** ⭐ | Groups match domain template, rankings |
+| S3 | TaskGraph is DAG, must_run nodes exist | Graph matches archetype expectations |
+| S4 | All tasks have prompts, templates exist | Prompt versions match task requirements |
+| S5 | All signals have evidence_type ⭐ | Signals cite domain-specific sources |
+| S6 | All 10 sections, 5 groups, evidence_type, no broken refs | Ranking mentions, provenance, pediatric safety |
+
+**Documentation**:
+- **[QUALITY_CRITERIA.md](./orchestrator/QUALITY_CRITERIA.md)** - Complete quality standards (Tier 1/2/3)
+- **[CONTEXT_AWARE_QUALITY.md](./orchestrator/CONTEXT_AWARE_QUALITY.md)** - Domain/archetype/task-specific validation
+- **[QUALITY_GUIDED_GENERATION.md](./orchestrator/QUALITY_GUIDED_GENERATION.md)** - Prevention-based generation strategies
+
+**Result**: Plans that are **correct** (Tier 1), **relevant** (context-aware), and **predictable** (quality-guided).
 
 ---
 
@@ -53,10 +223,14 @@ Input → S0 → S1 → S2 → S3 → S4 → S5 → S6 → Output
  * - Enforce validation gates
  * - Handle retries with context
  * - Emit run_manifest.json
+ *
+ * Dual Planes:
+ * - `runPipeline` = Planning Factory (runtime plane)
+ * - `runEval`     = Prompt Refinery Factory (eval plane)
  */
 export interface MetaOrchestrator {
   /**
-   * Run full pipeline (Runtime mode)
+   * Run full pipeline (Runtime mode) - Planning Factory
    */
   runPipeline(
     input: PlanningInput,
@@ -64,7 +238,7 @@ export interface MetaOrchestrator {
   ): Promise<OrchestratorResult>;
 
   /**
-   * Run eval pipeline (Eval mode)
+   * Run eval pipeline (Eval mode) - Prompt Refinery Factory
    */
   runEval(
     taskId: PromptTaskId,
@@ -189,19 +363,32 @@ export interface S0_InputNormalizationStage {
 /**
  * S1: Domain & Archetype Resolution
  *
- * Purpose: Map concern_id → (domain, archetype), load ranking context
- * Reuses: ARCHETYPE_MATRIX from plannerAgent.ts, rankingsLoader
+ * Purpose: Map concern_id → (domain, archetype), load ranking context (USNWR only)
+ * Reuses: ARCHETYPE_MATRIX from plannerAgent.ts, rankingsLoader.ts
+ *
+ * CRITICAL DISTINCTION:
+ * - USNWR cases (I25, C35, etc.): Load ranking_context via rankingsLoader
+ * - HAC cases (CLABSI, CAUTI, VAP): ranking_context = null (HAC is safety, not rankings)
+ *
+ * rankingsLoader.ts provides:
+ * 1. getRankingForConcern(concernId) → { specialty, rank }
+ * 2. getRankingContext(concernId) → Prompt injection string (top 20 only)
+ * 3. getTopPerformerBenchmarks(domain) → Boston Children's, CHOP, Stanford strengths
+ * 4. getSignalEmphasis(domain) → 5 signal groups based on quality differentiators
  */
 export interface DomainContext {
-  domain: string;        // "orthopedics", "HAC", etc.
+  domain: string;        // "orthopedics", "HAC", "endocrinology", etc.
   archetype: ArchetypeType;
-  ranking_context?: RankingContext;
+  ranking_context?: RankingContext;  // Optional - only for USNWR cases
 }
 
 export interface RankingContext {
-  specialty_name: string;
-  rank?: number;       // e.g., 20 or 11
-  summary?: string;    // "Lurie is ranked #20 in Orthopedics"
+  specialty_name: string;              // "Orthopedics", "Diabetes & Endocrinology"
+  rank?: number;                       // e.g., 20, 11
+  summary?: string;                    // "Lurie is ranked #20 in Pediatric Orthopedics"
+  top_performer_benchmarks?: string;   // From getTopPerformerBenchmarks()
+  quality_differentiators?: string[];  // Extracted from benchmark_signals
+  signal_emphasis?: string[];          // From getSignalEmphasis() - 5 groups
 }
 
 export interface S1_DomainResolutionStage {
@@ -209,7 +396,21 @@ export interface S1_DomainResolutionStage {
   validate(output: DomainContext): ValidationResult;
 }
 
-// Gate: domain + archetype must resolve; if ranked, ranking_context must be present
+// Gate: domain + archetype must resolve; if USNWR ranked, ranking_context must be present
+// Example S1 logic:
+// 1. const archetype = ARCHETYPE_MATRIX[concern_id]
+// 2. if (archetype is USNWR):
+//      const rankingInfo = getRankingForConcern(concern_id)
+//      if (rankingInfo) {
+//        ranking_context = {
+//          specialty_name: rankingInfo.specialty,
+//          rank: rankingInfo.rank,
+//          summary: getRankingContext(concern_id),
+//          top_performer_benchmarks: getTopPerformerBenchmarks(domain),
+//          signal_emphasis: getSignalEmphasis(domain)
+//        }
+//      }
+// 3. else (HAC): ranking_context = null
 ```
 
 ---
@@ -222,9 +423,25 @@ export interface S1_DomainResolutionStage {
  *
  * Purpose: Build V9.1-compliant skeleton with 5 signal groups
  * Reuses: HAC_GROUP_DEFINITIONS, ORTHO_GROUP_DEFINITIONS from domainRouter.ts
+ *         getSignalEmphasis() from rankingsLoader.ts (USNWR only)
+ *
+ * CRITICAL: Exactly 5 signal groups required for V9.1 compliance
+ *
+ * Signal Group Selection Logic:
+ * 1. HAC domains: Use HAC_GROUP_DEFINITIONS
+ *    - ['rule_in', 'rule_out', 'delay_drivers', 'documentation_gaps', 'bundle_gaps']
+ *
+ * 2. USNWR domains WITH rankings (rank ≤ 20):
+ *    - Use getSignalEmphasis(domain) to get ranking-informed groups
+ *    - Example Ortho: ['bundle_compliance', 'handoff_failures', 'delay_drivers',
+ *                      'documentation_gaps', 'complication_tracking']
+ *    - These groups align with quality_differentiators from top performers
+ *
+ * 3. USNWR domains WITHOUT rankings (rank > 20 or no ranking):
+ *    - Use domain-specific defaults from domainRouter.ts
  */
 export interface SignalGroupSkeleton {
-  group_id: string;      // "rule_in", "rule_out", etc.
+  group_id: string;      // "bundle_compliance", "rule_in", "delay_drivers", etc.
   display_name: string;
   description: string;
   signals: any[];        // Empty here; filled in S5
@@ -351,13 +568,35 @@ export interface S4_PromptPlanStage {
  * S5: Task Execution
  *
  * Purpose: Execute each task node with LLM, validate locally
+ * Reuses: llmClient.ts for OpenAI calls
+ *
+ * CPPO currently supports these task families:
+ * - signal_enrichment    – populate signals inside each group
+ * - event_summary        – full narrative event story
+ * - summary_20_80        – concise, first-screen summary
+ * - followup_questions   – questions tied to signals/patient payload
+ * - clinical_review_plan – tools, review order, priorities
+ *
+ * CRITICAL INTEGRATION: Rankings → Prompt Injection
+ *
+ * For USNWR cases with ranking_context:
+ * 1. event_summary task: Inject ranking_context.summary
+ *    - "This institution is nationally ranked #20 in Pediatric Orthopedics..."
+ * 2. summary_20_80 task: Inject top_performer_benchmarks
+ *    - "TOP PERFORMER BENCHMARKS: Boston Children's achieves 96% compliance..."
+ * 3. signal_enrichment task: Use signal_emphasis to prioritize groups
+ *    - Focus on quality_differentiators from top performers
+ *
+ * For HAC cases (no ranking_context):
+ * - Use CDC/NHSN research sources instead
+ * - Focus on infection prevention protocols
  */
 export interface TaskInput {
   node: TaskNode;
   prompt_config: PromptConfig;
   context: {
     skeleton: StructuralSkeleton;
-    domainContext: DomainContext;
+    domainContext: DomainContext;          // Contains ranking_context
     previousTaskOutputs: Map<string, any>;
     researchBundle?: ResearchBundle;
   };
@@ -389,6 +628,20 @@ export interface TaskRunner {
     taskType: TaskType,
     output: any
   ): TaskValidationResult;
+
+  /**
+   * Build prompt with ranking context injected
+   *
+   * Example:
+   * - Base prompt: "Generate an event summary for {concern_id}..."
+   * - With rankings: "Generate an event summary for I25. {ranking_context.summary}
+   *                   Focus on signals that differentiate top performers..."
+   */
+  buildPromptWithContext(
+    basePrompt: string,
+    domainContext: DomainContext,
+    taskType: TaskType
+  ): string;
 }
 
 export interface S5_TaskExecutionStage {
@@ -507,10 +760,15 @@ export interface RunManifest {
 
 ---
 
-### 11. Eval Mode
+### 11. Eval Mode (Prompt Refinery Factory)
 
 ```typescript
 /**
+ * Eval Mode (Prompt Refinery Factory)
+ *
+ * This eval mode is the implementation of the Prompt Refinery Factory.
+ * It reuses S0–S4 + selected S5 task(s) to benchmark prompt versions on curated datasets.
+ *
  * Eval Mode - A/B test prompts on datasets
  */
 export interface PromptTaskId {
@@ -580,11 +838,16 @@ export interface Validator<T> {
 
 ```
 clinical-planner-cli/
+# Planning Factory (CPPO) lives here:
 ├── orchestrator/                    # NEW - CPPO core
 │   ├── MetaOrchestrator.ts         # Main orchestrator
 │   ├── StageRegistry.ts            # Stage definitions
 │   ├── StageContext.ts             # Runtime context
 │   ├── RunManifest.ts              # Manifest writer
+│   │
+│   ├── QUALITY_CRITERIA.md         # ⭐ Quality standards (Tier 1/2/3)
+│   ├── CONTEXT_AWARE_QUALITY.md    # ⭐ Domain/archetype/task-specific validation
+│   ├── QUALITY_GUIDED_GENERATION.md # ⭐ Prevention-based generation strategies
 │   │
 │   ├── stages/                     # Stage implementations
 │   │   ├── S0_InputNormalization.ts
@@ -604,6 +867,8 @@ clinical-planner-cli/
 │   │   └── ClinicalReviewPlanTask.ts
 │   │
 │   └── validators/                 # Stage & task validators
+│       ├── ValidationFramework.ts  # ⭐ Gate enforcement & 3-tier model
+│       ├── ContextAwareValidation.ts # ⭐ Domain/archetype/task-specific validators
 │       ├── StageValidators.ts
 │       ├── TaskValidators.ts
 │       └── ValidationUtils.ts
@@ -630,7 +895,7 @@ clinical-planner-cli/
 │       └── preventability_detective_metric/
 │           └── ...
 │
-├── eval/                           # NEW - Eval mode
+├── eval/                           # NEW - Eval mode (Prompt Refinery)
 │   ├── EvalRunner.ts               # Eval orchestrator
 │   ├── datasets/
 │   │   ├── ortho_summaries_v1.json
@@ -638,6 +903,8 @@ clinical-planner-cli/
 │   │   └── ...
 │   └── metrics/
 │       └── TaskMetrics.ts
+│
+# Schema/App factories are separate services/repos (not covered in this doc)
 │
 ├── cli/                            # CLI commands
 │   ├── plan.ts                     # LEGACY (Phase 1)
@@ -695,9 +962,12 @@ clinical-planner-cli/
 
 ### Runtime Mode (Full Pipeline)
 
+**Two Paths: HAC vs USNWR**
+
 ```
 ┌──────────────────┐
 │ PlanningInput    │
+│ concern_id: ?    │
 └────────┬─────────┘
          │
          ▼
@@ -711,16 +981,42 @@ clinical-planner-cli/
     ┌────────────────────────────────────────────────┐
     │ S1: Domain & Archetype & Ranking Resolution    │
     │ Reuses: ARCHETYPE_MATRIX, rankingsLoader       │
-    │ Output: DomainContext { domain, archetype, rank }│
+    │                                                │
+    │ IF HAC (CLABSI, CAUTI, VAP, PSI.09):          │
+    │   → domain = "HAC"                             │
+    │   → archetype = Preventability_Detective       │
+    │   → ranking_context = null                     │
+    │                                                │
+    │ IF USNWR (I25, C35, etc.):                    │
+    │   → domain = "Orthopedics" / "Endocrinology"  │
+    │   → archetype = Process_Auditor                │
+    │   → ranking_context = {                        │
+    │       specialty: "Orthopedics",                │
+    │       rank: 20,                                │
+    │       summary: "Lurie is ranked #20...",       │
+    │       top_performer_benchmarks: "Boston...",   │
+    │       signal_emphasis: [5 groups]              │
+    │     }                                          │
     └────────┬───────────────────────────────────────┘
              │ Gate: archetype resolved
              ▼
     ┌────────────────────────────────────────────────┐
     │ S2: Structural Skeleton (V9.1)                 │
-    │ Reuses: domainRouter (group definitions)       │
-    │ Output: StructuralSkeleton (5 signal groups)   │
+    │ Reuses: domainRouter, getSignalEmphasis()      │
+    │                                                │
+    │ IF HAC:                                        │
+    │   → 5 groups: [rule_in, rule_out,             │
+    │                delay_drivers, doc_gaps,        │
+    │                bundle_gaps]                    │
+    │                                                │
+    │ IF USNWR (ranked):                            │
+    │   → 5 groups from signal_emphasis:            │
+    │     [bundle_compliance, handoff_failures,      │
+    │      delay_drivers, doc_gaps,                  │
+    │      complication_tracking]                    │
+    │   → Informed by quality_differentiators        │
     └────────┬───────────────────────────────────────┘
-             │ Gate: 5 groups, valid IDs
+             │ Gate: Exactly 5 groups
              ▼
     ┌────────────────────────────────────────────────┐
     │ S3: Task Graph Identification                  │
@@ -738,6 +1034,17 @@ clinical-planner-cli/
     ┌────────────────────────────────────────────────┐
     │ S5: Task Execution & Local Validation          │
     │ Reuses: llmClient.ts                           │
+    │                                                │
+    │ IF HAC:                                        │
+    │   → Prompts injected with CDC/NHSN guidelines │
+    │   → Focus on infection prevention              │
+    │                                                │
+    │ IF USNWR (ranked):                            │
+    │   → event_summary: Inject ranking_context     │
+    │   → summary_20_80: Inject top_performer_      │
+    │                    benchmarks                  │
+    │   → signal_enrichment: Use signal_emphasis    │
+    │                                                │
     │ Tasks: signal_enrichment → event_summary →     │
     │        summary_20_80 → followup_questions →    │
     │        clinical_review_plan                    │
@@ -755,6 +1062,43 @@ clinical-planner-cli/
     ┌────────────────────────────────────────────────┐
     │ PlannerPlanV2 + run_manifest.json              │
     └────────────────────────────────────────────────┘
+```
+
+### Rankings Integration Flow (USNWR Only)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ lurie_usnwr_rankings.json (577 lines)                   │
+│ - 12 specialties (Ortho, Endo, Cardio, etc.)           │
+│ - Ranks, top performers, quality differentiators        │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│ rankingsLoader.ts (326 lines)                           │
+│ - getRankingForConcern(I25) → {specialty, rank}        │
+│ - getRankingContext(I25) → "Lurie is ranked #20..."    │
+│ - getTopPerformerBenchmarks(Ortho) → Boston benchmarks │
+│ - getSignalEmphasis(Ortho) → 5 signal groups           │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│ S1: Domain Resolution                                   │
+│ - Loads ranking_context into DomainContext              │
+│ - Only for USNWR concerns (I25, C35, etc.)             │
+│ - HAC gets null                                         │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ├──────────────────────────┬─────────────┐
+                  │                          │             │
+                  ▼                          ▼             ▼
+         ┌────────────────┐       ┌──────────────┐  ┌─────────────┐
+         │ S2: Skeleton   │       │ S5: Prompts  │  │ S6: Quality │
+         │ Uses signal_   │       │ Inject rank  │  │ Assessment  │
+         │ emphasis for   │       │ context and  │  │ Validate    │
+         │ 5 groups       │       │ benchmarks   │  │ mentions    │
+         └────────────────┘       └──────────────┘  └─────────────┘
 ```
 
 ### Eval Mode (Partial Pipeline)
@@ -938,16 +1282,99 @@ function buildTaskGraph(archetype: ArchetypeType): TaskGraph {
 - Tier 2/3 (semantic/clinical) require human review
 - Limit auto-retries to 2 max (avoid cost spiral)
 
+### Decision 4: Rankings Integration - HAC vs USNWR
+
+**Decision**: Rankings ONLY for USNWR cases; HAC uses CDC/NHSN guidelines
+
+**Rationale**:
+- **USNWR cases** are about national rankings and competitive improvement
+  - Use Lurie's rankings data to drive toward #1
+  - Inject top performer benchmarks (Boston Children's, CHOP, Stanford)
+  - Signal groups aligned with quality differentiators
+
+- **HAC cases** are about patient safety and regulatory compliance
+  - Not ranked (HAC is universal safety standard)
+  - Use CDC NHSN guidelines, AHRQ research
+  - Signal groups focus on infection prevention
+
+**Implementation**:
+```typescript
+// S1: Domain Resolution
+if (isUSNWRConcern(concern_id)) {
+  const rankingInfo = getRankingForConcern(concern_id);
+  if (rankingInfo && rankingInfo.rank <= 20) {
+    // Top 20 specialty - inject ranking context
+    ranking_context = {
+      specialty_name: rankingInfo.specialty,
+      rank: rankingInfo.rank,
+      summary: getRankingContext(concern_id),
+      top_performer_benchmarks: getTopPerformerBenchmarks(domain),
+      signal_emphasis: getSignalEmphasis(domain)
+    };
+  }
+} else {
+  // HAC case - no rankings
+  ranking_context = null;
+}
+```
+
+**Files Involved**:
+- `utils/rankingsLoader.ts` (326 lines) - ✅ REUSED AS-IS
+- `.rankings-cache/lurie_usnwr_rankings.json` (577 lines) - ✅ DATA SOURCE
+
+---
+
+## Summary: What CPPO Preserves from Current System
+
+**Critical Intelligence We MUST NOT Lose**:
+
+1. ✅ **Archetype Matrix** (`plannerAgent.ts:50-100`)
+   - Maps concern_id → (domain, archetype)
+   - Reused in S1
+
+2. ✅ **Signal Group Definitions** (`domainRouter.ts`)
+   - HAC_GROUP_DEFINITIONS, ORTHO_GROUP_DEFINITIONS, ENDO_GROUP_DEFINITIONS
+   - Exactly 5 groups per domain (V9.1 compliance)
+   - Reused in S2
+
+3. ✅ **Rankings Integration** (`rankingsLoader.ts` + `lurie_usnwr_rankings.json`)
+   - **CRITICAL**: This was the user's concern - now explicitly integrated
+   - 4 functions reused in S1 + S2 + S5:
+     1. `getRankingForConcern(concernId)` → S1
+     2. `getRankingContext(concernId)` → S5 (prompt injection)
+     3. `getTopPerformerBenchmarks(domain)` → S5 (prompt injection)
+     4. `getSignalEmphasis(domain)` → S2 (5 signal groups)
+
+4. ✅ **Intent Inference** (`intentInference.ts`)
+   - Pediatric-focused domain extraction
+   - Reused in S0
+
+5. ✅ **Validation Tiers** (`validatePlan.ts`, `validateV91.ts`, `qualityAssessment.ts`)
+   - Tier 1/2/3 validation
+   - Reused in S6
+
+6. ✅ **LLM Client** (`llmClient.ts`)
+   - OpenAI API wrapper
+   - Reused in S5
+
+7. ✅ **Research Bundle** (`researchAugmentedPlanner.ts`)
+   - CDC NHSN, SPS, KDIGO integration
+   - Reused in S5 task context
+
+**Flow Summary**:
+- **HAC → CPPO**: Archetype matrix + HAC group definitions + CDC research
+- **USNWR → CPPO**: Archetype matrix + Rankings (4 functions) + Signal emphasis + Top performer benchmarks
+
 ---
 
 ## Next Steps
 
-1. ✅ Architecture designed
+1. ✅ Architecture designed (including rankings integration)
 2. **Create skeleton files** (orchestrator/, prompts/, eval/)
-3. **Implement S0-S2** (reuse existing modules)
-4. **Test basic pipeline** (S0→S2 working)
-5. **Implement S3-S6** (full pipeline)
+3. **Implement S0-S2** (reuse existing modules including rankingsLoader)
+4. **Test basic pipeline** (S0→S2 working on I25 + CLABSI)
+5. **Implement S3-S6** (full pipeline with prompt injection)
 6. **Create eval mode** (A/B testing)
-7. **Feature parity testing** (compare to legacy)
+7. **Feature parity testing** (compare to legacy - verify rankings work)
 8. **Migration** (deprecate → remove legacy)
 
