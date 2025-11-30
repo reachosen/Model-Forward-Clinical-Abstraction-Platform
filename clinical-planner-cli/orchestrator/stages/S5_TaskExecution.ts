@@ -23,17 +23,34 @@ import {
   TaskGraph,
   StructuralSkeleton,
   DomainContext,
-  TaskExecutionResults,
   TaskOutput,
   ValidationResult,
-  TaskType,
-  ArchetypeType,
 } from '../types';
 import { validateTaskWithArchetypeContext } from '../validators/ContextAwareValidation';
+import OpenAI from 'openai';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load environment variables from parent directory
+dotenv.config({ path: path.join(__dirname, '../../../.env') });
+
+// Result container for S5 execution
+export interface TaskExecutionResults {
+  execution_id: string;
+  outputs: TaskOutput[];
+}
 
 // ============================================================================
-// Mock LLM Client (in production, this would be OpenAI/Anthropic client)
+// OpenAI Client Setup
 // ============================================================================
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Get model from environment (default to gpt-4o-mini if not set)
+const DEFAULT_MODEL = process.env.MODEL || 'gpt-4o-mini';
 
 interface LLMCallOptions {
   model: string;
@@ -41,80 +58,73 @@ interface LLMCallOptions {
   response_format: 'json' | 'json_schema' | 'text';
   schema?: any;
   prompt: string;
+  skeleton?: any; // For accessing signal groups
 }
 
 /**
- * Mock LLM call for testing
+ * Real OpenAI API call
  *
- * In production, this would call OpenAI/Anthropic API with:
- * - model: "gpt-4" or "claude-3-5-sonnet"
+ * Calls OpenAI API with:
+ * - model: from .env (gpt-4o-mini) or task-specific override
  * - temperature: task-specific (0.3-0.7)
- * - response_format: "json_schema" for structured outputs
+ * - response_format: "json_object" for JSON or structured outputs
  * - messages: [{ role: "user", content: prompt }]
  */
-async function callLLM(options: LLMCallOptions): Promise<any> {
+async function callLLM(options: LLMCallOptions & { task_type?: string }): Promise<any> {
   console.log(`    🤖 LLM Call: ${options.model} (temp=${options.temperature}, format=${options.response_format})`);
 
-  // Mock response based on response_format
-  // In production, this would be: await openai.chat.completions.create({...})
+  try {
+    // Build the prompt (add JSON instruction if needed)
+    let finalPrompt = options.prompt;
+    if (options.response_format === 'json' || options.response_format === 'json_schema') {
+      // OpenAI requires the word "json" in the prompt when using json_object mode
+      finalPrompt = `${options.prompt}\n\n**IMPORTANT**: Respond with valid JSON only. Do not include any text outside the JSON structure.`;
+    }
 
-  // For now, return mock data based on the prompt content
-  if (options.prompt.includes('signal_enrichment')) {
-    return {
-      signals: [
+    // Build the API call parameters
+    const apiParams: any = {
+      model: DEFAULT_MODEL, // Use model from .env
+      temperature: options.temperature,
+      messages: [
         {
-          id: 'SIG_MOCK_001',
-          description: 'Mock signal for testing - protocol compliance gap detected in pre-operative checklist',
-          evidence_type: 'L2',
-          group_id: 'bundle_compliance',
-          linked_tool_id: 'TOOL_CHECKLIST_001',
-        },
-        {
-          id: 'SIG_MOCK_002',
-          description: 'Mock signal for testing - delay in antibiotic prophylaxis administration beyond recommended window',
-          evidence_type: 'L1',
-          group_id: 'delay_drivers',
-          linked_tool_id: null,
+          role: 'user',
+          content: finalPrompt,
         },
       ],
     };
-  } else if (options.prompt.includes('event_summary')) {
-    return {
-      summary: 'Mock event summary for testing: Patient underwent orthopedic surgery with protocol compliance reviewed. Bundle checklist completed with minor delays noted in antibiotic prophylaxis timing.',
-    };
-  } else if (options.prompt.includes('summary_20_80')) {
-    return {
-      patient_summary: 'Mock patient summary: Your surgery went well. The care team followed safety protocols.',
-      provider_summary: 'Mock provider summary: Orthopedic procedure completed successfully. Pre-op bundle compliance at 95%. Antibiotic prophylaxis administered with 15-minute delay beyond optimal window.',
-    };
-  } else if (options.prompt.includes('followup_questions')) {
-    return {
-      questions: [
-        'What was the root cause of the antibiotic prophylaxis delay?',
-        'Were there any other protocol deviations during the case?',
-        'What measures can prevent similar delays in future cases?',
-      ],
-    };
-  } else if (options.prompt.includes('clinical_review_plan')) {
-    return {
-      clinical_tools: [
-        {
-          tool_id: 'TOOL_CHECKLIST_001',
-          description: 'Pre-operative bundle compliance checklist',
-          priority: 1,
-        },
-        {
-          tool_id: 'TOOL_TIMELINE_001',
-          description: 'Timeline analysis of protocol adherence',
-          priority: 2,
-        },
-      ],
-      review_order: ['TOOL_CHECKLIST_001', 'TOOL_TIMELINE_001'],
-    };
+
+    // Set response format based on task requirements
+    if (options.response_format === 'json' || options.response_format === 'json_schema') {
+      // OpenAI uses 'json_object' for JSON mode
+      apiParams.response_format = { type: 'json_object' };
+    }
+
+    // Make the API call
+    const completion = await openai.chat.completions.create(apiParams);
+
+    // Extract the response content
+    const content = completion.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error('No content in OpenAI response');
+    }
+
+    // Parse JSON responses
+    if (options.response_format === 'json' || options.response_format === 'json_schema') {
+      try {
+        return JSON.parse(content);
+      } catch (parseError) {
+        console.error(`    ⚠️  Failed to parse JSON response: ${content.substring(0, 100)}...`);
+        throw new Error(`Invalid JSON response from OpenAI: ${parseError}`);
+      }
+    }
+
+    // Return plain text response
+    return { result: content };
+
+  } catch (error: any) {
+    console.error(`    ❌ OpenAI API error: ${error.message}`);
+    throw new Error(`OpenAI API call failed: ${error.message}`);
   }
-
-  // Default mock response
-  return { result: 'Mock LLM output for testing' };
 }
 
 // ============================================================================
@@ -142,16 +152,31 @@ You are a clinical quality expert analyzing ${domain} cases.
 - Archetype: ${archetype}
 - Focus: ${archetype === 'Process_Auditor' ? 'Protocol compliance and quality metrics' : 'Preventability assessment and root cause'}
 
-**Signal Groups to Enrich:**
-${skeleton?.clinical_config?.signals?.signal_groups?.map((g: any) => `- ${g.group_id}: ${g.display_name}`).join('\n')}
+**Signal Groups to Enrich (MUST generate 2 signals for EACH group):**
+${skeleton?.clinical_config?.signals?.signal_groups?.map((g: any, idx: number) => `${idx + 1}. ${g.group_id}: ${g.display_name}`).join('\n')}
 
-**Requirements:**
+**CRITICAL Requirements:**
+- MUST generate exactly 2 signals for EACH of the ${skeleton?.clinical_config?.signals?.signal_groups?.length || 5} signal groups above
 - Each signal must have: id, description, evidence_type (L1/L2/L3), group_id
 - Signals should be clinically relevant to ${domain}
 ${archetype === 'Process_Auditor' ? '- Focus on protocol deviations and compliance gaps' : '- Focus on preventability indicators'}
 - Use evidence-based sources
+- Total signals expected: ${(skeleton?.clinical_config?.signals?.signal_groups?.length || 5) * 2}
 
-Generate 2 signals per group in JSON format.
+**REQUIRED JSON SCHEMA:**
+{
+  "signals": [
+    {
+      "id": "SIG_001",
+      "description": "Clinical description of the signal",
+      "evidence_type": "L1",
+      "group_id": "delay_drivers",
+      "linked_tool_id": null
+    }
+  ]
+}
+
+Generate the signals array with 2 signals for each of the ${skeleton?.clinical_config?.signals?.signal_groups?.length || 5} signal groups listed above.
 `,
 
     event_summary: `
@@ -165,10 +190,15 @@ ${ranking_context ? `- Institution Rank: #${ranking_context.rank} in ${ranking_c
 **Requirements:**
 ${archetype === 'Process_Auditor' ? '- Describe protocol adherence timeline\n- Highlight compliance successes and failures' : '- Follow HAC investigation narrative arc\n- State preventability determination clearly'}
 ${ranking_context ? `- MUST mention: "ranked #${ranking_context.rank} in ${ranking_context.specialty_name}"` : ''}
-- Length: 150-300 words
+- Length: 150-300 words (minimum 100 characters)
 - Include patient safety context
 
-Generate a comprehensive event summary.
+**REQUIRED JSON SCHEMA:**
+{
+  "summary": "A comprehensive narrative summary of the clinical case, 150-300 words, describing the event timeline, protocol adherence, and quality findings."
+}
+
+Generate a detailed event summary in the exact JSON format shown above.
 `,
 
     summary_20_80: `
@@ -187,7 +217,13 @@ ${ranking_context ? `**Institution Context:** Ranked #${ranking_context.rank} in
 ${ranking_context ? `- Reference ranking context (#${ranking_context.rank} performance standards)` : ''}
 - Actionable improvement opportunities
 
-Generate both summaries.
+**REQUIRED JSON SCHEMA:**
+{
+  "patient_summary": "Simple, clear language summary for the patient (50-100 words)",
+  "provider_summary": "Detailed clinical summary for providers with quality metrics (100-150 words)"
+}
+
+Generate both summaries in the exact JSON format shown above.
 `,
 
     followup_questions: `
@@ -197,7 +233,16 @@ You are generating follow-up questions for a ${domain} case investigation.
 - Archetype: ${archetype}
 - Focus: ${archetype === 'Process_Auditor' ? 'Protocol compliance investigation' : 'Root cause analysis'}
 
-Generate 3-5 targeted follow-up questions that would help clarify the case.
+**REQUIRED JSON SCHEMA:**
+{
+  "questions": [
+    "First targeted follow-up question?",
+    "Second targeted follow-up question?",
+    "Third targeted follow-up question?"
+  ]
+}
+
+Generate 3-5 targeted follow-up questions in the exact JSON format shown above.
 `,
 
     clinical_review_plan: `
@@ -211,7 +256,19 @@ You are designing a clinical review plan for a ${domain} case.
 - Specify review order prioritizing high-impact areas
 - Include 2-3 tools with priorities
 
-Generate the clinical review plan.
+**REQUIRED JSON SCHEMA:**
+{
+  "clinical_tools": [
+    {
+      "tool_id": "TOOL_001",
+      "description": "Description of the clinical review tool",
+      "priority": 1
+    }
+  ],
+  "review_order": ["TOOL_001", "TOOL_002"]
+}
+
+Generate the clinical review plan in the exact JSON format shown above.
 `,
   };
 
@@ -269,9 +326,20 @@ export class S5_TaskExecutionStage {
         response_format: config.response_format,
         schema: config.schema_ref ? { /* would load schema */ } : undefined,
         prompt,
+        task_type: promptNode.type,
+        skeleton, // Pass skeleton for signal group context
       });
 
       console.log(`    ✅ Task completed`);
+
+      // Debug: show output structure for troubleshooting
+      if (promptNode.type === 'signal_enrichment') {
+        console.log(`    📝 Debug - signal_enrichment output keys:`, Object.keys(output || {}));
+        console.log(`    📝 Debug - signals type:`, typeof output?.signals, Array.isArray(output?.signals));
+      }
+      if (promptNode.type === 'event_summary') {
+        console.log(`    📝 Debug - event_summary output:`, JSON.stringify(output, null, 2).substring(0, 200));
+      }
 
       // Local validation (context-aware)
       const validation = validateTaskWithArchetypeContext(
@@ -293,14 +361,21 @@ export class S5_TaskExecutionStage {
 
       // Store task output
       const taskOutput: TaskOutput = {
-        task_id: taskId,
-        task_type: promptNode.type,
-        output,
-        validation_result: validation,
-        metadata: {
-          model: config.model,
-          temperature: config.temperature,
-          timestamp: new Date().toISOString(),
+        taskId: taskId,
+        output: {
+          ...output,
+          task_type: promptNode.type,
+          metadata: {
+            model: config.model,
+            temperature: config.temperature,
+            timestamp: new Date().toISOString(),
+          },
+        },
+        validation: {
+          passed: validation.passed,
+          errors: validation.errors,
+          warnings: validation.warnings,
+          metrics: validation.metadata ? { ...validation.metadata } : undefined,
         },
       };
 
@@ -381,7 +456,7 @@ export class S5_TaskExecutionStage {
 
     // Check all tasks have outputs
     const taskIds = new Set(taskGraph.nodes.map(n => n.id));
-    const outputIds = new Set(results.outputs.map(o => o.task_id));
+    const outputIds = new Set(results.outputs.map((o: TaskOutput) => o.taskId));
 
     for (const taskId of taskIds) {
       if (!outputIds.has(taskId)) {
@@ -391,12 +466,12 @@ export class S5_TaskExecutionStage {
 
     // Check each output passed local validation
     for (const output of results.outputs) {
-      if (!output.validation_result.passed) {
-        errors.push(`⭐ CRITICAL: Task ${output.task_id} failed local validation`);
+      if (!output.validation.passed) {
+        errors.push(`⭐ CRITICAL: Task ${output.taskId} failed local validation`);
       }
 
-      if (output.validation_result.warnings.length > 0) {
-        warnings.push(`Task ${output.task_id} has warnings: ${output.validation_result.warnings.join(', ')}`);
+      if (output.validation.warnings.length > 0) {
+        warnings.push(`Task ${output.taskId} has warnings: ${output.validation.warnings.join(', ')}`);
       }
     }
 
