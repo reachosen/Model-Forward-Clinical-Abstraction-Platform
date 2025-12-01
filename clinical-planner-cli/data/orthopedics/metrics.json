@@ -1,0 +1,174 @@
+{
+  "I25": {
+    "metric_name": "Supracondylar fracture to OR <18 hours",
+    "metric_type": "outcome_oriented_process",
+    "clinical_focus": "Timeliness and safety of supracondylar fracture care",
+    "rationale": "Time-to-OR for supracondylar fractures is associated with risk of ischemic hand, nerve injury, and compartment syndrome. The real goal is to balance timely decompression and reduction with safe conditions (experienced team, appropriate timing) rather than blindly chasing an 18-hour clock.",
+    "submetrics": [
+      "Timely operative management relative to clinical status of the hand",
+      "Avoidance of unnecessary night-time surgery when not clinically indicated"
+    ],
+    "risk_factors": [
+      "Ischemic (white/cool) hand with delayed operative management",
+      "Missing or incomplete pre-operative neurovascular exam documentation",
+      "Unnecessary after-hours surgery performed mainly for metric performance",
+      "Missed or late recognition of compartment syndrome warning signs"
+    ],
+    "review_questions": [
+      "Was a complete neurovascular exam documented before surgery?",
+      "Was the hand perfusion status (pink/warm vs white/cool) clearly described?",
+      "If time to OR exceeded 18 hours, is there a clear, clinically justified reason?",
+      "Were compartment syndrome red flags documented and acted upon promptly?"
+    ],
+    "signal_groups": [
+      "delay_drivers",
+      "outcome_risks",
+      "safety_signals",
+      "documentation_gaps"
+    ],
+    "priority_for_clinical_review": "high"
+  },
+  "I26": {
+    "metric_name": "Femoral shaft fracture to OR <18 hours",
+    "metric_type": "outcome_oriented_process",
+    "clinical_focus": "Timely and appropriate management of pediatric femoral shaft fractures",
+    "rationale": "Femoral shaft fractures require age- and weight-appropriate management. Delays to definitive fixation can increase pain, length of stay, and risk of complications such as malunion or limb length discrepancy. Clinical reviews should ensure timing and method of treatment are appropriate for the child.",
+    "submetrics": [
+      "Timely operative or definitive management within 18 hours when indicated",
+      "Appropriate choice of fixation versus traction or casting by age and size"
+    ],
+    "risk_factors": [
+      "Prolonged traction or temporizing care without clear reason",
+      "Delayed OR related to system issues rather than clinical need",
+      "Use of fixation techniques not aligned with age/weight norms",
+      "Inadequate follow-up imaging leading to late recognition of malalignment"
+    ],
+    "review_questions": [
+      "Was definitive management chosen according to age and size guidelines?",
+      "If OR timing exceeded 18 hours, is the delay clinically justified?",
+      "Were alignment and length assessed on follow-up imaging?",
+      "Was pain control adequate while waiting for definitive treatment?"
+    ],
+    "signal_groups": [
+      "delay_drivers",
+      "outcome_risks",
+      "safety_signals",
+      "documentation_gaps"
+    ],
+    "priority_for_clinical_review": "high"
+  },
+  "I27": {
+    "metric_name": "Operative treatment of displaced forearm fracture",
+    "metric_type": "outcome_oriented_process",
+    "clinical_focus": "Appropriateness and quality of operative care for displaced forearm fractures",
+    "rationale": "Displaced forearm fractures in children may be managed non-operatively or operatively depending on age, remodeling potential, and fracture pattern. Over- or under-treatment can lead to malunion, stiffness, or unnecessary surgical risk. Clinical review should focus on indication quality, reduction quality, and early detection of loss of reduction.",
+    "submetrics": [
+      "Appropriate selection of operative vs non-operative treatment",
+      "Quality and maintenance of reduction in cast or fixation"
+    ],
+    "risk_factors": [
+      "Operative treatment when closed management would have been acceptable",
+      "Non-operative management when operative stabilization was clearly indicated",
+      "Inadequate casting or splinting leading to loss of reduction",
+      "Missed associated injuries (e.g., Monteggia, Galeazzi variants)"
+    ],
+    "review_questions": [
+      "Was the decision for operative vs non-operative care justified by age and fracture pattern?",
+      "Was reduction quality documented immediately post-procedure?",
+      "Were early follow-up radiographs obtained to check for loss of reduction?",
+      "Were associated injuries considered and ruled out in documentation?"
+    ],
+    "signal_groups": [
+      "outcome_risks",
+      "safety_signals",
+      "documentation_gaps"
+    ],
+    "priority_for_clinical_review": "high"
+  },
+  "I25.1": {
+    "metric_name": "Percent supracondylar fractures treated with open procedure",
+    "metric_type": "outcome_proxy",
+    "clinical_focus": "Appropriate use of open reduction in supracondylar fractures",
+    "rationale": "Open reduction in supracondylar fractures is sometimes necessary due to severe displacement, soft tissue compromise, vascular injury, or failed closed reduction. However, higher-than-expected open rates may indicate delays, technical challenges, or inconsistent decision-making. Clinical review should distinguish justified from potentially preventable open procedures.",
+    "submetrics": [
+      "Open reduction clearly indicated by vascular compromise or soft tissue issues",
+      "Open reduction used after reasonable closed reduction attempts"
+    ],
+    "risk_factors": [
+      "Delayed presentation or transfer leading to stiff, swollen elbows",
+      "Inadequate closed reduction attempts or technique",
+      "Lack of pre-op imaging/assessment for vascular status",
+      "Use of open reduction without clear documentation of indication"
+    ],
+    "review_questions": [
+      "Is the indication for open reduction clearly documented?",
+      "Were one or more closed reduction attempts performed and documented when appropriate?",
+      "Was vascular or soft tissue compromise described as a driver for open approach?",
+      "Were complications of open procedures (infection, stiffness) monitored and documented?"
+    ],
+    "signal_groups": [
+      "outcome_risks",
+      "documentation_gaps",
+      "safety_signals"
+    ],
+    "priority_for_clinical_review": "high"
+  },
+  "I32a": {
+    "metric_name": "Idiopathic scoliosis \u2013 30-day unplanned admission and return to OR",
+    "metric_type": "outcome",
+    "clinical_focus": "Prevention of early complications and unplanned care after AIS surgery",
+    "rationale": "Adolescent idiopathic scoliosis patients are generally healthy; unplanned admissions and returns to the OR often signal preventable issues such as infection, hematoma, hardware problems, uncontrolled pain, or GI complications. Clinical review can identify gaps in perioperative care and discharge planning.",
+    "submetrics": [
+      "Idiopathic scoliosis \u2013 unplanned admission within 30 days",
+      "Idiopathic scoliosis \u2013 unplanned return to OR within 30 days"
+    ],
+    "risk_factors": [
+      "Incomplete SSI prevention bundle or prolonged operative time without antibiotic re-dosing",
+      "Inadequate pain control or bowel regimen leading to readmission",
+      "Technical or hardware issues requiring early revision",
+      "Insufficient discharge teaching or follow-up planning"
+    ],
+    "review_questions": [
+      "Was the full SSI prevention bundle documented for AIS fusion?",
+      "Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?",
+      "Was this return to OR documented as planned vs unplanned?",
+      "Were discharge instructions and follow-up appointments clearly documented?"
+    ],
+    "signal_groups": [
+      "infection_risks",
+      "bundle_compliance",
+      "outcome_risks",
+      "readmission_risks"
+    ],
+    "priority_for_clinical_review": "high"
+  },
+  "I32b": {
+    "metric_name": "Neuromuscular scoliosis \u2013 30-day readmit and 90-day return to OR",
+    "metric_type": "outcome",
+    "clinical_focus": "Safe perioperative management of medically complex NMS scoliosis patients",
+    "rationale": "Children with neuromuscular scoliosis have high baseline medical vulnerability. Readmissions and reoperations within 30\u201390 days often reflect pulmonary, nutritional, skin, bladder/bowel, or infection-related issues. Structured clinical review can surface modifiable risk factors and improve perioperative planning and follow-up.",
+    "submetrics": [
+      "Neuromuscular scoliosis \u2013 30-day hospital readmission",
+      "Neuromuscular scoliosis \u2013 unplanned return to OR within 90 days"
+    ],
+    "risk_factors": [
+      "Malnutrition or poor pre-operative nutritional optimization",
+      "Poor pulmonary reserve without documented pulmonary optimization plan",
+      "Neurogenic bladder or bowel without clear infection-prevention strategy",
+      "Complex spine constructs with higher hardware complication risk"
+    ],
+    "review_questions": [
+      "Were nutritional and pulmonary risks assessed and optimized before surgery?",
+      "Is a bladder/bowel management and infection-prevention plan documented?",
+      "Is each readmission cause clearly categorized (pulmonary, GI, infection, hardware, other)?",
+      "Are returns to OR clearly labeled as planned lengthening vs complication-driven revision?"
+    ],
+    "signal_groups": [
+      "infection_risks",
+      "readmission_risks",
+      "bundle_compliance",
+      "safety_signals"
+    ],
+    "priority_for_clinical_review": "high"
+  }
+}

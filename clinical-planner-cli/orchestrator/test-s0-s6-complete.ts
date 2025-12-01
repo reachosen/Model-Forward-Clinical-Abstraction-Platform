@@ -60,7 +60,7 @@ async function testCompletePipeline(testCase: { name: string; input: PlanningInp
     console.log('\n🔹 Stage 3: Task Graph Identification');
     const s3 = new S3_TaskGraphIdentificationStage();
     const taskGraph = await s3.execute(routedInput, domainContext, skeleton);
-    const s3Validation = s3.validate(taskGraph, domainContext.archetype);
+    const s3Validation = s3.validate(taskGraph, domainContext.primary_archetype);
     const s3Gate = ValidationFramework.enforceGate('S3', s3Validation);
     console.log(s3Gate.message);
     if (s3Gate.policy === GatePolicy.HALT) throw new Error('S3 gate blocked');
@@ -95,14 +95,15 @@ async function testCompletePipeline(testCase: { name: string; input: PlanningInp
     // Summary
     console.log(`\n${'='.repeat(80)}`);
     console.log(`✅ PIPELINE COMPLETE: ${testCase.name}`);
-    console.log(`${'='.repeat(80)}`);
+    console.log(`${'='.repeat(80)}\n`);
     console.log(`\n📊 Final Plan Summary:`);
     console.log(`  Plan ID: ${plan.plan_metadata.plan_id}`);
     console.log(`  Domain: ${plan.plan_metadata.concern.domain}`);
     console.log(`  Concern Type: ${plan.plan_metadata.concern.concern_type}`);
-    console.log(`  Archetype: ${domainContext.archetype}`);
+    console.log(`  Primary Archetype: ${domainContext.primary_archetype}`);
+    console.log(`  All Archetypes: ${domainContext.archetypes.join(', ')}`);
     console.log(`  Signal Groups: ${plan.clinical_config.signals.signal_groups.length}`);
-    console.log(`  Total Signals: ${plan.clinical_config.signals.signal_groups.reduce((sum, g) => sum + g.signals.length, 0)}`);
+    console.log(`  Total Signals: ${plan.clinical_config.signals.signal_groups.reduce((sum, g) => sum + (g.signals?.length || 0), 0)}`);
     console.log(`  Clinical Tools: ${plan.clinical_config.clinical_tools.length}`);
     const eventSummary = (plan.clinical_config.questions as any).event_summary || '';
     console.log(`  Event Summary: ${eventSummary.substring(0, 100)}...`);
@@ -111,20 +112,13 @@ async function testCompletePipeline(testCase: { name: string; input: PlanningInp
     if (rankingCtx) {
       console.log(`    Rank: #${rankingCtx.rank} in ${rankingCtx.specialty_name}`);
     }
-    const summary2080 = (plan.clinical_config.questions as any).summary_20_80;
-    console.log(`  Has 20/80 Summary: ${summary2080 ? 'YES' : 'NO'}`);
-    const followupQuestions = (plan.clinical_config.questions as any).followup_questions || [];
-    console.log(`  Follow-up Questions: ${followupQuestions.length}`);
-
+    
     // Validation summary
     console.log(`\n🎯 Quality Gates Summary:`);
-    console.log(`  S0: ${s0Gate.policy === GatePolicy.PASS ? '✅ PASS' : s0Gate.policy === GatePolicy.WARN ? '⚠️  WARN' : '❌ HALT'}`);
-    console.log(`  S1: ${s1Gate.policy === GatePolicy.PASS ? '✅ PASS' : s1Gate.policy === GatePolicy.WARN ? '⚠️  WARN' : '❌ HALT'}`);
-    console.log(`  S2: ${s2Gate.policy === GatePolicy.PASS ? '✅ PASS' : s2Gate.policy === GatePolicy.WARN ? '⚠️  WARN' : '❌ HALT'}`);
-    console.log(`  S3: ${s3Gate.policy === GatePolicy.PASS ? '✅ PASS' : s3Gate.policy === GatePolicy.WARN ? '⚠️  WARN' : '❌ HALT'}`);
-    console.log(`  S4: ${s4Gate.policy === GatePolicy.PASS ? '✅ PASS' : s4Gate.policy === GatePolicy.WARN ? '⚠️  WARN' : '❌ HALT'}`);
-    console.log(`  S5: ${s5Gate.policy === GatePolicy.PASS ? '✅ PASS' : s5Gate.policy === GatePolicy.WARN ? '⚠️  WARN' : '❌ HALT'}`);
-    console.log(`  S6: ${s6Gate.policy === GatePolicy.PASS ? '✅ PASS' : s6Gate.policy === GatePolicy.WARN ? '⚠️  WARN' : '❌ HALT'}`);
+    const gates = [s0Gate, s1Gate, s2Gate, s3Gate, s4Gate, s5Gate, s6Gate];
+    gates.forEach((g, i) => {
+      console.log(`  S${i}: ${g.policy === GatePolicy.PASS ? '✅ PASS' : g.policy === GatePolicy.WARN ? '⚠️  WARN' : '❌ HALT'}`);
+    });
 
     if (s6Validation.warnings.length > 0) {
       console.log(`\n⚠️  Tier 2 Warnings:`);
@@ -150,9 +144,9 @@ async function testCompletePipeline(testCase: { name: string; input: PlanningInp
   }
 }
 
-// ============================================================================
+// ============================================================================ 
 // Test Cases
-// ============================================================================
+// ============================================================================ 
 
 async function runTests() {
   console.log('╔═══════════════════════════════════════════════════════════════╗');
@@ -183,24 +177,20 @@ async function runTests() {
     },
   }));
 
-  // Test Case 2: HAC CLABSI (Preventability_Detective)
+  // Test Case 2: Multi-Archetype Ortho (I32b)
   results.push(await testCompletePipeline({
-    name: 'HAC_CLABSI_Preventability_Detective',
+    name: 'USNWR_Ortho_I32b_MultiArchetype',
     input: {
-      planning_input_id: 'test_hac_clabsi_001',
-      concern: 'CLABSI event requiring preventability assessment',
-      concern_id: 'CLABSI',
-      domain_hint: 'HAC',
-      intent: 'surveillance',
-      target_population: 'inpatient',
-      specific_requirements: ['preventability determination', 'root cause analysis'],
+      planning_input_id: 'test_ortho_i32b',
+      concern: 'I32b Neuromuscular Scoliosis review',
+      concern_id: 'I32b', // This should trigger packet loading
+      domain_hint: 'Orthopedics',
+      intent: 'quality_reporting',
+      target_population: 'pediatric',
+      specific_requirements: ['complex spine', 'infection prevention'],
       clinical_context: {
-        admission_summary: 'Central line-associated bloodstream infection detected on day 5',
-        timeline: [
-          { timestamp: '2024-01-10T08:00:00Z', event: 'Central line inserted' },
-          { timestamp: '2024-01-15T10:00:00Z', event: 'Positive blood culture' },
-          { timestamp: '2024-01-15T14:00:00Z', event: 'CLABSI confirmed' },
-        ],
+        admission_summary: 'NMS patient for spine fusion',
+        timeline: [],
       },
     },
   }));

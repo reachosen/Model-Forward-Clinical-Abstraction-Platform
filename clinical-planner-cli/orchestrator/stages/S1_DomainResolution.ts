@@ -1,23 +1,26 @@
 /**
  * S1: Domain & Archetype & Ranking Context Resolution
  *
- * Purpose: Map concern_id → (domain, archetype), load ranking context (USNWR only)
+ * Purpose: Map concern_id → (domain, archetypes), load ranking & semantic context
  * Reuses:
- * - ARCHETYPE_MATRIX from plannerAgent.ts
- * - rankingsLoader.ts (4 functions)
+ * - ARCHETYPE_MATRIX from plannerAgent.ts (as base)
+ * - rankingsLoader.ts
+ * - semanticPacketLoader.ts
  *
- * CRITICAL DISTINCTION:
- * - USNWR cases (I25, C35, etc.): Load ranking_context via rankingsLoader
- * - HAC cases (CLABSI, CAUTI, VAP): ranking_context = null (HAC is safety, not rankings)
+ * V10 Upgrade:
+ * - Supports Multi-Archetype resolution based on Packet risks
+ * - Loads Semantic Packet for ANY domain
+ * - Returns structured SemanticContext
  */
 
-import { RoutedInput, DomainContext, RankingContext, ValidationResult, ArchetypeType } from '../types';
+import { RoutedInput, DomainContext, RankingContext, ValidationResult, ArchetypeType, SemanticContext, PacketContext } from '../types';
 import {
   getRankingForConcern,
   getRankingContext,
   getTopPerformerBenchmarks,
   getSignalEmphasis
 } from '../../utils/rankingsLoader';
+import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
 
 // Import archetype lookup from legacy planner
 // We'll need to make this available as an export
@@ -55,7 +58,7 @@ const ARCHETYPE_MATRIX: ArchetypeMapping[] = [
 
 export class S1_DomainResolutionStage {
   /**
-   * Execute S1: Resolve domain, archetype, and ranking context
+   * Execute S1: Resolve domain, archetypes, and semantic context
    */
   async execute(input: RoutedInput): Promise<DomainContext> {
     console.log('🎯 [S1] Starting Domain & Archetype Resolution');
@@ -63,57 +66,100 @@ export class S1_DomainResolutionStage {
     const { concern_id } = input;
     console.log(`   Concern ID: ${concern_id}`);
 
-    // Step 1: Lookup archetype and domain from matrix
+    // Step 1: Lookup primary archetype and domain from matrix
     const archetypeInfo = this.lookupArchetype(concern_id, input.raw_domain);
     console.log(`   Domain: ${archetypeInfo.domain}`);
-    console.log(`   Archetype: ${archetypeInfo.archetype}`);
+    console.log(`   Primary Archetype: ${archetypeInfo.archetype}`);
 
-    // Step 2: Determine if this is USNWR (ranked) or HAC (safety)
+    // Step 2: Load Semantic Packet (Generic)
+    const packetLoader = SemanticPacketLoader.getInstance();
+    const packet = packetLoader.load(archetypeInfo.domain);
+    const metric = packet ? packetLoader.getMetric(archetypeInfo.domain, concern_id) : undefined;
+
+    let packetContext: PacketContext | undefined;
+    if (packet && metric) {
+      console.log(`   📦 Semantic Packet loaded for ${concern_id}`);
+      packetContext = {
+        metric,
+        signals: packet.signals,
+        priorities: packet.priorities
+      };
+    }
+
+    // Step 3: Derive Multi-Archetypes based on Packet Risks
+    const archetypes = this.deriveMultiArchetypes(archetypeInfo.archetype, packetContext);
+    console.log(`   👥 Resolved Archetypes: ${archetypes.join(', ')}`);
+
+    // Step 4: Load Ranking Context (USNWR only)
     const isUSNWR = archetypeInfo.domain !== 'HAC';
     let ranking_context: RankingContext | undefined;
 
     if (isUSNWR) {
-      // USNWR case - load ranking context
-      console.log(`   🏆 USNWR concern detected, loading ranking context...`);
-
       const rankingInfo = getRankingForConcern(concern_id);
-
       if (rankingInfo && rankingInfo.ranking.rank <= 20) {
-        // Top 20 specialty - build full ranking context
-        console.log(`   ✅ Found ranking: ${rankingInfo.specialty} #${rankingInfo.ranking.rank}`);
-
-        const topPerformerBenchmarks = getTopPerformerBenchmarks(archetypeInfo.domain);
-        const signalEmphasis = getSignalEmphasis(archetypeInfo.domain);
-        const qualityDifferentiators = this.extractQualityDifferentiators(rankingInfo);
-
+        console.log(`   🏆 USNWR Top 20 Ranking Loaded`);
         ranking_context = {
           specialty_name: rankingInfo.specialty,
           rank: rankingInfo.ranking.rank,
           summary: getRankingContext(concern_id) || undefined,
-          top_performer_benchmarks: topPerformerBenchmarks || undefined,
-          quality_differentiators: qualityDifferentiators.length > 0 ? qualityDifferentiators : undefined,
-          signal_emphasis: signalEmphasis,
+          top_performer_benchmarks: getTopPerformerBenchmarks(archetypeInfo.domain) || undefined,
+          quality_differentiators: this.extractQualityDifferentiators(rankingInfo),
+          signal_emphasis: getSignalEmphasis(archetypeInfo.domain),
         };
-
-        console.log(`   📊 Signal emphasis (${signalEmphasis.length} groups):`, signalEmphasis.join(', '));
-      } else {
-        console.log(`   ℹ️  Not in top 20 or no ranking data available`);
-        ranking_context = undefined;
       }
-    } else {
-      // HAC case - no ranking context
-      console.log(`   🏥 HAC concern detected - patient safety focus (no rankings)`);
-      ranking_context = undefined;
     }
+
+    const semantic_context: SemanticContext = {
+      packet: packetContext,
+      ranking: ranking_context
+    };
 
     const domainContext: DomainContext = {
       domain: archetypeInfo.domain,
-      archetype: archetypeInfo.archetype,
-      ranking_context,
+      primary_archetype: archetypeInfo.archetype,
+      archetypes,
+      semantic_context
     };
 
     console.log('✅ [S1] Domain resolution complete');
     return domainContext;
+  }
+
+  /**
+   * Derive multiple archetypes based on Packet Risks
+   */
+  private deriveMultiArchetypes(primary: ArchetypeType, packet?: PacketContext): ArchetypeType[] {
+    const archetypes = new Set<ArchetypeType>([primary]);
+
+    if (packet?.metric.risk_factors) {
+      const risks = packet.metric.risk_factors.join(' ').toLowerCase();
+      
+      // Exclusion_Hunter Trigger
+      if (risks.includes('exclusion') || risks.includes('rule out') || risks.includes('contraindication')) {
+        archetypes.add('Exclusion_Hunter');
+      }
+
+      // Process_Auditor Trigger
+      if (risks.includes('time to') || risks.includes('delay') || risks.includes('protocol')) {
+        archetypes.add('Process_Auditor');
+      }
+
+      // Preventability_Detective Trigger
+      if (risks.includes('bundle') || risks.includes('compliance') || risks.includes('preventable')) {
+        archetypes.add('Preventability_Detective');
+      }
+    }
+
+    // Enforce Strict Ordering: Process -> Exclusion -> Preventability -> Data
+    const order: ArchetypeType[] = [
+      'Process_Auditor',
+      'Exclusion_Hunter',
+      'Preventability_Detective',
+      'Preventability_Detective_Metric',
+      'Data_Scavenger'
+    ];
+
+    return Array.from(archetypes).sort((a, b) => order.indexOf(a) - order.indexOf(b));
   }
 
   /**
@@ -125,21 +171,18 @@ export class S1_DomainResolutionStage {
   ): { archetype: ArchetypeType; domain: string } {
     const concernUpper = concern.toUpperCase();
 
-    // Try exact match first
     for (const mapping of ARCHETYPE_MATRIX) {
       if (typeof mapping.concern === 'string') {
         if (mapping.concern.toUpperCase() === concernUpper) {
           return { archetype: mapping.archetype, domain: mapping.domain };
         }
       } else {
-        // RegExp match
         if (mapping.concern.test(concern)) {
           return { archetype: mapping.archetype, domain: mapping.domain };
         }
       }
     }
 
-    // Default fallback: Use domainHint if provided, otherwise default to HAC
     console.warn(`⚠️  No archetype match for concern '${concern}', using fallback: ${domainHint || 'HAC'}/Preventability_Detective`);
     return {
       archetype: 'Preventability_Detective',
@@ -169,51 +212,8 @@ export class S1_DomainResolutionStage {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    // Required fields
-    if (!output.domain) {
-      errors.push('domain is required');
-    }
-
-    if (!output.archetype) {
-      errors.push('archetype is required');
-    }
-
-    // Valid archetype values
-    const validArchetypes: ArchetypeType[] = [
-      'Process_Auditor',
-      'Preventability_Detective',
-      'Preventability_Detective_Metric'
-    ];
-
-    if (output.archetype && !validArchetypes.includes(output.archetype)) {
-      errors.push(`Invalid archetype: ${output.archetype}`);
-    }
-
-    // USNWR-specific validations
-    const usnwrDomains = ['Orthopedics', 'Endocrinology', 'Cardiology', 'Neurology', 'Cancer'];
-    if (usnwrDomains.includes(output.domain)) {
-      // USNWR domain - check if ranking_context is populated for top 20
-      if (output.ranking_context) {
-        if (!output.ranking_context.specialty_name) {
-          warnings.push('USNWR domain has ranking_context but missing specialty_name');
-        }
-        if (!output.ranking_context.signal_emphasis || output.ranking_context.signal_emphasis.length !== 5) {
-          warnings.push('USNWR domain has ranking_context but signal_emphasis is not exactly 5 groups');
-        }
-      } else {
-        console.log(`   ℹ️  USNWR domain without ranking_context (rank > 20 or no data)`);
-      }
-    }
-
-    // HAC-specific validations
-    if (output.domain === 'HAC') {
-      if (output.ranking_context) {
-        warnings.push('HAC domain should not have ranking_context (HAC is safety, not rankings)');
-      }
-      if (output.archetype !== 'Preventability_Detective') {
-        warnings.push('HAC domain should use Preventability_Detective archetype');
-      }
-    }
+    if (!output.domain) errors.push('domain is required');
+    if (!output.archetypes || output.archetypes.length === 0) errors.push('at least one archetype is required');
 
     return {
       passed: errors.length === 0,
@@ -221,10 +221,9 @@ export class S1_DomainResolutionStage {
       warnings,
       metadata: {
         domain: output.domain,
-        archetype: output.archetype,
-        has_ranking_context: !!output.ranking_context,
-        is_usnwr: usnwrDomains.includes(output.domain),
-        is_hac: output.domain === 'HAC',
+        archetypes: output.archetypes,
+        has_packet: !!output.semantic_context.packet,
+        has_ranking: !!output.semantic_context.ranking
       },
     };
   }

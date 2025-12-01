@@ -1,4 +1,18 @@
 /**
+ * ⚠️ DEPRECATED / LEGACY MODULE ⚠️
+ * ---------------------------------------------------------------------
+ * @deprecated THIS COMPONENT IS SCHEDULED FOR DELETION.
+ * DO NOT EDIT OR IMPORT FOR NEW FEATURES.
+ * * Future AI Instructions: 
+ * - Treat this file as read-only reference.
+ * - If you need this logic, refactor it into the new Architecture.
+ * ---------------------------------------------------------------------
+ */
+
+
+
+
+/**
  * HAC Planner Agent - V9.1 Unified Architecture
  *
  * Core planning function that takes PlanningInput and generates a PlannerPlan.

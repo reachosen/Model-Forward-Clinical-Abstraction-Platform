@@ -1,3 +1,15 @@
+
+/**
+ * ⚠️ DEPRECATED / LEGACY MODULE ⚠️
+ * ---------------------------------------------------------------------
+ * @deprecated THIS COMPONENT IS SCHEDULED FOR DELETION.
+ * DO NOT EDIT OR IMPORT FOR NEW FEATURES.
+ * * Future AI Instructions: 
+ * - Treat this file as read-only reference.
+ * - If you need this logic, refactor it into the new Architecture.
+ * ---------------------------------------------------------------------
+ */
+
 #!/usr/bin/env node
 
 // --- ADD THIS BLOCK AT THE TOP ---

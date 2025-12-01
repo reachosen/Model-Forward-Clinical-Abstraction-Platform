@@ -77,7 +77,8 @@ export function validateS2WithDomainContext(
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  const { domain, ranking_context } = domainContext;
+  const { domain, semantic_context } = domainContext;
+  const ranking_context = semantic_context.ranking;
   const signal_groups = skeleton.clinical_config?.signals?.signal_groups || [];
 
   // CRITICAL: Exactly 5 groups (universal)
@@ -105,10 +106,20 @@ export function validateS2WithDomainContext(
     }
 
   } else if (domain === 'Orthopedics') {
+    // Orthopedics with specific metric context (Ortho Packet)
+    if (domainContext.semantic_context.packet) {
+      const expected_groups = domainContext.semantic_context.packet.metric.signal_groups;
+      const has_all_groups = expected_groups.every(id => group_ids.includes(id));
+
+      if (!has_all_groups) {
+        warnings.push(`Orthopedics (Packet) should use metric-specific groups: ${expected_groups.join(', ')}`);
+        warnings.push(`Found groups: ${group_ids.join(', ')}`);
+      }
+    }
     // Orthopedics with rankings - check for ranking-informed groups
-    if (ranking_context && ranking_context.signal_emphasis) {
+    else if (ranking_context && ranking_context.signal_emphasis) {
       const expected_groups = ranking_context.signal_emphasis;
-      const has_all_ranking_groups = expected_groups.every(id => group_ids.includes(id));
+      const has_all_ranking_groups = expected_groups.every((id: string) => group_ids.includes(id));
 
       if (!has_all_ranking_groups) {
         warnings.push(`Orthopedics (ranked) should use signal_emphasis groups: ${expected_groups.join(', ')}`);

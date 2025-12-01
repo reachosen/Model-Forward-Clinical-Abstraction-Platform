@@ -1,0 +1,52 @@
+{
+  "delay_drivers": [
+    "Admission-to-OR time >18 hours without clinical justification",
+    "After-hours surgery for routine supracondylar fracture without safety need",
+    "Multiple interfacility transfers before definitive fixation",
+    "Repeat imaging cycles causing delay before OR start",
+    "OR start delayed due to team/room availability without documented rationale"
+  ],
+  "bundle_compliance": [
+    "Pre-op antibiotics not administered within recommended window before incision",
+    "Missing antibiotic re-dosing for long spine cases (>4 hours)",
+    "Missing CHG wash or MRSA screening documentation for spine fusion cases",
+    "No documentation of vancomycin powder or betadine irrigation in high-risk spine cases",
+    "Post-op antibiotics continued >24 hours without evidence of infection"
+  ],
+  "outcome_risks": [
+    "Ischemic hand progression after supracondylar fracture",
+    "Iatrogenic nerve palsy after pinning of supracondylar fracture",
+    "Loss of reduction in cast or spica requiring reoperation",
+    "Limb length discrepancy >2 cm after femoral shaft fracture treatment",
+    "Deep surgical site infection after spine or long-bone fixation",
+    "Malunion or angular deformity after displaced forearm fracture"
+  ],
+  "readmission_risks": [
+    "High-risk neuromuscular scoliosis with poor nutrition or pulmonary reserve",
+    "Post\u2013spine fusion readmissions for pneumonia, ileus, UTI, or SSI",
+    "Early return after fracture surgery for pain, loss of reduction, or hardware failure"
+  ],
+  "infection_risks": [
+    "Long fusion construct with prolonged operative time",
+    "Neuromuscular scoliosis with poor soft tissue coverage or incontinence",
+    "Reoperation through prior incision or scar tissue",
+    "Early dressing disruption or persistent wound drainage after surgery"
+  ],
+  "volume_signals": [
+    "Annual volume of index fracture procedures (SCH, femoral shaft, displaced forearm)",
+    "Annual spine fusion volume per surgeon for AIS and NMS",
+    "Proportion of complex or high-risk deformity cases in total volume"
+  ],
+  "documentation_gaps": [
+    "Missing pre-operative neurovascular exam for limb fractures",
+    "Missing post-reduction perfusion status documentation (e.g., pink/warm vs white/cool hand)",
+    "No clear documentation of planned vs unplanned return to OR",
+    "ICD-10 codes missing specificity for fracture type, laterality, or open/closed status"
+  ],
+  "safety_signals": [
+    "Pain out of proportion to exam after casting or fixation",
+    "3 As pattern: anxiety, agitation, and escalating analgesia requirements",
+    "Pale or cool extremity after casting or surgery without timely escalation",
+    "Rapid response activation, ICU transfer, or emergent return to OR after limb surgery"
+  ]
+}

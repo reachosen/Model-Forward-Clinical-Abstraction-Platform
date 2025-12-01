@@ -4,21 +4,11 @@
  * **Quality-Guided Generation**: Assemble from pre-validated components
  *
  * Assembles the final V9.1 plan from validated components:
- * - Structural skeleton (S2) - already validated
- * - Task outputs (S5) - locally validated
- * - Domain context (S1) - includes ranking context
+ * - Structural skeleton (S2)
+ * - Task outputs (S5)
+ * - Domain context (S1)
  *
- * Performs global validation (Tier 1/2/3) using validateV91.ts
- *
- * Input: StructuralSkeleton + TaskExecutionResults + DomainContext
- * Output: Complete V9.1 PlannerPlan
- *
- * Quality Strategy:
- * - Assemble from pre-validated components (rarely fails)
- * - Global validation confirms cross-component consistency
- * - Tier 1: Structural completeness (HALT if fails)
- * - Tier 2: Semantic quality (WARN if issues)
- * - Tier 3: Clinical quality scoring (optional)
+ * Handles Multi-Archetype Synthesis if present.
  */
 
 import {
@@ -29,35 +19,60 @@ import {
 import { PlannerPlanV2 } from '../../models/PlannerPlan';
 import { TaskExecutionResults } from './S5_TaskExecution';
 
-// ============================================================================
-// Plan Assembly
-// ============================================================================
-
 export class S6_PlanAssemblyStage {
   async execute(
     skeleton: StructuralSkeleton,
     taskResults: TaskExecutionResults,
     domainContext: DomainContext
   ): Promise<PlannerPlanV2> {
-    const { domain, archetype, ranking_context } = domainContext;
+    const { domain, primary_archetype, semantic_context } = domainContext;
+    const archetype = primary_archetype;
+    const ranking_context = semantic_context.ranking;
 
     console.log(`\n[S6] Plan Assembly & Global Validation`);
     console.log(`  Domain: ${domain}`);
-    console.log(`  Archetype: ${archetype}`);
+    console.log(`  Primary Archetype: ${archetype}`);
     console.log(`  Task outputs: ${taskResults.outputs.length}`);
 
     // Extract task outputs
-    const signalEnrichmentOutput = this.getTaskOutput(taskResults, 'signal_enrichment');
     const eventSummaryOutput = this.getTaskOutput(taskResults, 'event_summary');
     const summary2080Output = this.getTaskOutput(taskResults, 'summary_20_80');
     const followupQuestionsOutput = this.getTaskOutput(taskResults, 'followup_questions');
     const clinicalReviewPlanOutput = this.getTaskOutput(taskResults, 'clinical_review_plan');
+    const synthesisOutput = this.getTaskOutput(taskResults, 'multi_archetype_synthesis');
 
     const timestamp = new Date().toISOString();
 
+    // Determine final content sources
+    let finalSignalGroups = skeleton.clinical_config?.signals?.signal_groups || [];
+    let finalTools = clinicalReviewPlanOutput?.clinical_tools || [];
+    let finalSummary = eventSummaryOutput?.summary || '';
+    let finalFollowup = followupQuestionsOutput?.questions || [];
+
+    // If Synthesis exists, it takes precedence for summary and unified lists
+    if (synthesisOutput) {
+      console.log('  📦 Integrating Multi-Archetype Synthesis results');
+      if (synthesisOutput.final_determination) finalSummary = synthesisOutput.final_determination;
+      if (synthesisOutput.unified_clinical_tools) finalTools = synthesisOutput.unified_clinical_tools;
+      if (synthesisOutput.merged_signal_groups) {
+         finalSignalGroups = synthesisOutput.merged_signal_groups;
+      }
+    } 
+    
+    // Fallback enrichment if synthesis didn't provide merged groups (or single lane)
+    if (!synthesisOutput || !synthesisOutput.merged_signal_groups) {
+       // Collect signals from ALL signal_enrichment tasks (across lanes)
+       const allSignals: any[] = [];
+       taskResults.outputs.forEach(o => {
+         if (o.output.task_type === 'signal_enrichment' && o.output.signals) {
+           allSignals.push(...o.output.signals);
+         }
+       });
+       finalSignalGroups = this.enrichSignalGroups(finalSignalGroups, allSignals);
+    }
+
     // Assemble plan from validated components (V9.1 schema)
     const plan: PlannerPlanV2 = {
-      // Plan metadata (complete PlanMetadataV2 structure)
       plan_metadata: {
         plan_id: skeleton.plan_metadata.plan_id,
         plan_version: '1.0',
@@ -65,7 +80,7 @@ export class S6_PlanAssemblyStage {
         planning_input_id: taskResults.execution_id,
         concern: {
           ...skeleton.plan_metadata.concern,
-          care_setting: 'inpatient', // Default to inpatient
+          care_setting: 'inpatient',
         },
         workflow: {
           mode: 'CPPO-automated',
@@ -81,7 +96,6 @@ export class S6_PlanAssemblyStage {
         },
       },
 
-      // Quality attributes (minimal valid structure)
       quality: {
         overall_score: 85,
         deployment_ready: true,
@@ -107,34 +121,28 @@ export class S6_PlanAssemblyStage {
         recommendations: [],
       },
 
-      // Provenance (correct V9.1 structure)
       provenance: {
         research_enabled: false,
         sources: [],
-        clinical_tools: clinicalReviewPlanOutput?.clinical_tools || [],
+        clinical_tools: finalTools,
         conflicts_resolved: [],
       },
 
-      // Clinical config with enriched signals
       clinical_config: {
         ...skeleton.clinical_config,
         signals: {
           ...skeleton.clinical_config.signals,
-          signal_groups: this.enrichSignalGroups(
-            skeleton.clinical_config?.signals?.signal_groups || [],
-            signalEnrichmentOutput?.signals || []
-          ),
+          signal_groups: finalSignalGroups,
         },
-        clinical_tools: clinicalReviewPlanOutput?.clinical_tools || [],
+        clinical_tools: finalTools,
         questions: {
-          event_summary: eventSummaryOutput?.summary || '',
-          followup_questions: followupQuestionsOutput?.questions || [],
+          event_summary: finalSummary,
+          followup_questions: finalFollowup,
           summary_20_80: summary2080Output || undefined,
           ranking_context: ranking_context || undefined,
         },
       } as any,
 
-      // Validation results (correct V9.1 structure)
       validation: {
         checklist: {
           schema_completeness: { result: 'YES', severity: 'CRITICAL' },
@@ -156,15 +164,11 @@ export class S6_PlanAssemblyStage {
     console.log(`    Signal groups: ${plan.clinical_config.signals.signal_groups.length}`);
     console.log(`    Total signals: ${this.countSignals(plan.clinical_config.signals.signal_groups)}`);
     console.log(`    Clinical tools: ${plan.clinical_config.clinical_tools.length}`);
-    const eventSummary = (plan.clinical_config.questions as any)?.event_summary || '';
-    console.log(`    Event summary length: ${eventSummary.length} chars`);
+    console.log(`    Event summary length: ${finalSummary.length} chars`);
 
     return plan;
   }
 
-  /**
-   * Enrich signal groups with signals from task execution
-   */
   private enrichSignalGroups(groups: any[], signals: any[]): any[] {
     return groups.map(group => {
       const groupSignals = signals.filter(s => s.group_id === group.group_id);
@@ -175,138 +179,52 @@ export class S6_PlanAssemblyStage {
     });
   }
 
-  /**
-   * Get task output by type
-   */
-  private getTaskOutput(results: any, taskType: string): any {
+  private getTaskOutput(results: TaskExecutionResults, taskType: string): any {
+    // Find LAST task of that type (since lanes might duplicate types, we want the most relevant or we need to merge)
     const output = results.outputs.find((o: any) => o.output.task_type === taskType);
     return output?.output;
   }
 
-  /**
-   * Count total signals across all groups
-   */
   private countSignals(groups: any[]): number {
     return groups.reduce((sum, g) => sum + (g.signals?.length || 0), 0);
   }
 
-  /**
-   * Validate assembled plan
-   *
-   * Performs global validation (Tier 1/2/3):
-   * - Tier 1: Structural completeness (required fields, 5 groups, etc.)
-   * - Tier 2: Semantic quality (ranking mentions, archetype alignment)
-   * - Tier 3: Clinical quality scoring (optional)
-   *
-   * Should rarely fail since components are pre-validated.
-   */
   validate(plan: PlannerPlanV2, domainContext: DomainContext): ValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
+    const { domain, primary_archetype, semantic_context } = domainContext;
+    const ranking_context = semantic_context.ranking;
+    const archetype = primary_archetype;
 
-    // Tier 1: Structural validation (CRITICAL)
-    if (!plan.plan_metadata) {
-      errors.push('⭐ CRITICAL: Missing plan_metadata');
-    }
-
-    if (!plan.clinical_config) {
-      errors.push('⭐ CRITICAL: Missing clinical_config');
-    }
+    if (!plan.plan_metadata) errors.push('⭐ CRITICAL: Missing plan_metadata');
+    if (!plan.clinical_config) errors.push('⭐ CRITICAL: Missing clinical_config');
 
     const signalGroups = plan.clinical_config?.signals?.signal_groups || [];
     if (signalGroups.length !== 5) {
       errors.push(`⭐ CRITICAL: Expected 5 signal groups, found ${signalGroups.length}`);
     }
 
-    // Check each signal group has signals
     signalGroups.forEach(group => {
       if (!group.signals || group.signals.length === 0) {
         errors.push(`⭐ CRITICAL: Signal group ${group.group_id} has no signals`);
       }
-
-      // Check each signal has required fields
       group.signals?.forEach((signal: any, idx: number) => {
-        if (!signal.id) {
-          errors.push(`⭐ CRITICAL: Signal ${group.group_id}[${idx}] missing id`);
-        }
-        if (!signal.evidence_type) {
-          errors.push(`⭐ CRITICAL: Signal ${signal.id || idx} missing evidence_type`);
-        }
+        if (!signal.id) errors.push(`⭐ CRITICAL: Signal ${group.group_id}[${idx}] missing id`);
+        if (!signal.evidence_type) errors.push(`⭐ CRITICAL: Signal ${signal.id || idx} missing evidence_type`);
       });
     });
 
     const eventSummary = (plan.clinical_config.questions as any)?.event_summary || '';
-    if (!eventSummary) {
-      errors.push('⭐ CRITICAL: Missing event_summary');
-    }
+    if (!eventSummary) errors.push('⭐ CRITICAL: Missing event_summary');
+    if (eventSummary && eventSummary.length < 100) warnings.push('Event summary is very short (< 100 chars)');
 
-    if (eventSummary && eventSummary.length < 100) {
-      warnings.push('Event summary is very short (< 100 chars)');
-    }
-
-    // Tier 2: Semantic validation (context-aware)
-    const { domain, archetype, ranking_context } = domainContext;
-
-    // Check domain-specific groups
-    if (domain === 'HAC') {
-      const hacGroups = ['rule_in', 'rule_out', 'delay_drivers', 'documentation_gaps', 'bundle_gaps'];
-      const groupIds = signalGroups.map(g => g.group_id);
-      const missingHacGroups = hacGroups.filter(id => !groupIds.includes(id));
-      if (missingHacGroups.length > 0) {
-        warnings.push(`HAC plan missing expected groups: ${missingHacGroups.join(', ')}`);
-      }
-    }
-
-    // Check ranking context awareness
+    // Semantic validation
     const planRankingContext = (plan.clinical_config.questions as any)?.ranking_context;
     if (ranking_context) {
-      // USNWR top 20 plan should have ranking context
-      if (!planRankingContext) {
-        warnings.push('Plan for ranked institution missing ranking_context');
-      }
-
-      // Event summary should mention rank
-      const mentionsRank = eventSummary.includes(`#${ranking_context.rank}`) ||
-                          eventSummary.includes(`ranked`);
-      if (!mentionsRank) {
-        warnings.push(`Event summary should mention rank #${ranking_context.rank}`);
-      }
-
-      // Should have summary_20_80 for Process_Auditor
-      const summary2080 = (plan.clinical_config.questions as any)?.summary_20_80;
-      if (archetype === 'Process_Auditor' && !summary2080) {
-        warnings.push('Process_Auditor plan should include summary_20_80');
-      }
-    } else {
-      // HAC plan should NOT have ranking context
-      if (planRankingContext) {
-        warnings.push('HAC plan should not have ranking_context');
-      }
+      if (!planRankingContext) warnings.push('Plan for ranked institution missing ranking_context');
+      const mentionsRank = eventSummary.includes(`#${ranking_context.rank}`) || eventSummary.includes(`ranked`);
+      if (!mentionsRank) warnings.push(`Event summary should mention rank #${ranking_context.rank}`);
     }
-
-    // Check archetype alignment
-    if (archetype === 'Process_Auditor') {
-      // Should have clinical tools for compliance checking
-      const hasComplianceTools = plan.clinical_config?.clinical_tools?.some(
-        (t: any) => t.description?.toLowerCase().includes('checklist') ||
-                   t.description?.toLowerCase().includes('audit')
-      );
-      if (!hasComplianceTools) {
-        warnings.push('Process_Auditor plan should include compliance checking tools');
-      }
-    }
-
-    if (archetype === 'Preventability_Detective') {
-      // Should have preventability language in summary
-      const mentionsPreventability = eventSummary.toLowerCase().includes('preventable') ||
-                                     eventSummary.toLowerCase().includes('avoidable');
-      if (!mentionsPreventability) {
-        warnings.push('Preventability_Detective plan should mention preventability in event summary');
-      }
-    }
-
-    // Tier 3: Clinical quality scoring (optional - not implemented yet)
-    // Would score: signal quality, evidence strength, clinical relevance
 
     return {
       passed: errors.length === 0,
@@ -318,40 +236,7 @@ export class S6_PlanAssemblyStage {
         signal_count: this.countSignals(signalGroups),
         domain,
         archetype,
-        has_ranking_context: !!ranking_context,
       },
     };
   }
 }
-
-/**
- * Quality-First Architecture Notes:
- *
- * 1. Assembly from Pre-Validated Components:
- *    - Skeleton already validated in S2 (Tier 1 passed)
- *    - Task outputs locally validated in S5 (Tier 1/2 passed)
- *    - Assembly rarely fails (components are correct)
- *
- * 2. Global Validation Confirms Consistency:
- *    - Check cross-component consistency (not individual components)
- *    - Validate 5-group rule still holds after enrichment
- *    - Validate ranking mentions in event summary
- *    - Validate archetype alignment across plan
- *
- * 3. Context-Aware Quality:
- *    - HAC plans checked for HAC-specific groups
- *    - USNWR plans checked for ranking mentions
- *    - Process_Auditor checked for compliance tools
- *    - Preventability_Detective checked for preventability language
- *
- * 4. Three-Tier Validation:
- *    - Tier 1 (HALT): Structural completeness, 5 groups, required fields
- *    - Tier 2 (WARN): Ranking mentions, archetype alignment, domain groups
- *    - Tier 3 (SCORE): Clinical quality metrics (future)
- *
- * 5. Benefits:
- *    - Rarely fails (pre-validated components)
- *    - Fast validation (simple checks, no LLM calls)
- *    - Context-aware (domain/archetype-specific checks)
- *    - Comprehensive (Tier 1/2/3 coverage)
- */

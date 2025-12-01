@@ -6,6 +6,7 @@
 
 import { PlannerPlanV2, PlanningInput } from '../models/PlannerPlan';
 import { ResearchBundle } from '../models/ResearchBundle';
+import { SemanticMetric, SemanticSignals, SemanticPriority } from '../utils/semanticPacketLoader';
 
 // ============================================================================
 // Stage IDs and Status
@@ -61,7 +62,9 @@ export interface RoutedInput {
 export type ArchetypeType =
   | 'Process_Auditor'
   | 'Preventability_Detective'
-  | 'Preventability_Detective_Metric';
+  | 'Preventability_Detective_Metric'
+  | 'Exclusion_Hunter'
+  | 'Data_Scavenger';
 
 export interface RankingContext {
   specialty_name: string;
@@ -72,10 +75,23 @@ export interface RankingContext {
   signal_emphasis?: string[];
 }
 
+export interface PacketContext {
+  metric: SemanticMetric;
+  signals: SemanticSignals;
+  priorities: SemanticPriority;
+}
+
+export interface SemanticContext {
+  packet?: PacketContext;
+  ranking?: RankingContext;
+  clinical?: any; // Placeholder for patient clinical context
+}
+
 export interface DomainContext {
   domain: string;
-  archetype: ArchetypeType;
-  ranking_context?: RankingContext;
+  archetypes: ArchetypeType[]; // Changed from archetype (singular)
+  primary_archetype: ArchetypeType; // For UI/Summary
+  semantic_context: SemanticContext; // Consolidated context
 }
 
 // ============================================================================
@@ -114,7 +130,8 @@ export type TaskType =
   | 'event_summary'
   | 'summary_20_80'
   | 'followup_questions'
-  | 'clinical_review_plan';
+  | 'clinical_review_plan'
+  | 'multi_archetype_synthesis';
 
 export interface TaskNode {
   id: string;
