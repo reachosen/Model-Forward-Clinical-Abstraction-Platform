@@ -14,6 +14,7 @@
  */
 
 import { RoutedInput, DomainContext, RankingContext, ValidationResult, ArchetypeType, SemanticContext, PacketContext } from '../types';
+import { getArchetypeMappings } from '../../config/concernRegistry';
 import {
   getRankingForConcern,
   getRankingContext,
@@ -31,30 +32,15 @@ interface ArchetypeMapping {
   description: string;
 }
 
-// Temporary inline archetype matrix (we'll export this from plannerAgent.ts later)
-const ARCHETYPE_MATRIX: ArchetypeMapping[] = [
-  // HAC Domain
-  { concern: 'CLABSI', domain: 'HAC', archetype: 'Preventability_Detective', description: 'CLABSI surveillance' },
-  { concern: 'CAUTI', domain: 'HAC', archetype: 'Preventability_Detective', description: 'CAUTI surveillance' },
-  { concern: /^VAP$|^VAE$/i, domain: 'HAC', archetype: 'Preventability_Detective', description: 'VAP surveillance' },
-  { concern: /^SSI$/i, domain: 'HAC', archetype: 'Preventability_Detective', description: 'SSI surveillance' },
-  { concern: /PSI\.09|PSI09/i, domain: 'HAC', archetype: 'Preventability_Detective', description: 'PSI.09 surveillance' },
+// Load archetype mappings from centralized config
+// This replaces the old hardcoded ARCHETYPE_MATRIX
+const getArchetypeMatrix = (): ArchetypeMapping[] => {
+  return getArchetypeMappings() as ArchetypeMapping[];
+};
 
-  // USNWR - Orthopedics (I25)
-  { concern: 'I25', domain: 'Orthopedics', archetype: 'Process_Auditor', description: 'Orthopedic procedure review' },
-
-  // USNWR - Endocrinology (I26)
-  { concern: 'I26', domain: 'Endocrinology', archetype: 'Preventability_Detective_Metric', description: 'Diabetes management' },
-
-  // USNWR - Cardiology (I21)
-  { concern: 'I21', domain: 'Cardiology', archetype: 'Process_Auditor', description: 'Cardiac procedure review' },
-
-  // USNWR - Neurology (I60)
-  { concern: 'I60', domain: 'Neurology', archetype: 'Process_Auditor', description: 'Neurological procedure review' },
-
-  // USNWR - Cancer (C35, C36)
-  { concern: /^C3[56]$/i, domain: 'Cancer', archetype: 'Process_Auditor', description: 'Oncology procedure review' },
-];
+// DEPRECATED: Old hardcoded ARCHETYPE_MATRIX removed
+// Now using centralized config: config/concern-registry.json
+// See config/concernRegistry.ts for the loader
 
 export class S1_DomainResolutionStage {
   /**
@@ -66,8 +52,11 @@ export class S1_DomainResolutionStage {
     const { concern_id } = input;
     console.log(`   Concern ID: ${concern_id}`);
 
+    // Load archetype mappings from centralized config
+    const ARCHETYPE_MATRIX = getArchetypeMatrix();
+
     // Step 1: Lookup primary archetype and domain from matrix
-    const archetypeInfo = this.lookupArchetype(concern_id, input.raw_domain);
+    const archetypeInfo = this.lookupArchetype(concern_id, input.raw_domain, ARCHETYPE_MATRIX);
     console.log(`   Domain: ${archetypeInfo.domain}`);
     console.log(`   Primary Archetype: ${archetypeInfo.archetype}`);
 
@@ -126,28 +115,31 @@ export class S1_DomainResolutionStage {
   }
 
   /**
-   * Derive multiple archetypes based on Packet Risks
+   * Derive multiple archetypes based on Packet Risks + Signal Groups
    */
   private deriveMultiArchetypes(primary: ArchetypeType, packet?: PacketContext): ArchetypeType[] {
     const archetypes = new Set<ArchetypeType>([primary]);
 
-    if (packet?.metric.risk_factors) {
-      const risks = packet.metric.risk_factors.join(' ').toLowerCase();
-      
-      // Exclusion_Hunter Trigger
-      if (risks.includes('exclusion') || risks.includes('rule out') || risks.includes('contraindication')) {
-        archetypes.add('Exclusion_Hunter');
-      }
+    if (!packet?.metric) return Array.from(archetypes);
 
-      // Process_Auditor Trigger
-      if (risks.includes('time to') || risks.includes('delay') || risks.includes('protocol')) {
-        archetypes.add('Process_Auditor');
-      }
+    // Combine risk_factors AND signal_groups for comprehensive archetype detection
+    const risks = packet.metric.risk_factors?.join(' ').toLowerCase() || '';
+    const signalGroups = packet.metric.signal_groups?.join(' ').toLowerCase() || '';
+    const combined = `${risks} ${signalGroups}`;
 
-      // Preventability_Detective Trigger
-      if (risks.includes('bundle') || risks.includes('compliance') || risks.includes('preventable')) {
-        archetypes.add('Preventability_Detective');
-      }
+    // Exclusion_Hunter Trigger
+    if (combined.includes('exclusion') || combined.includes('rule out') || combined.includes('contraindication')) {
+      archetypes.add('Exclusion_Hunter');
+    }
+
+    // Process_Auditor Trigger
+    if (combined.includes('time to') || combined.includes('delay') || combined.includes('protocol')) {
+      archetypes.add('Process_Auditor');
+    }
+
+    // Preventability_Detective Trigger
+    if (combined.includes('bundle') || combined.includes('compliance') || combined.includes('preventable') || combined.includes('infection')) {
+      archetypes.add('Preventability_Detective');
     }
 
     // Enforce Strict Ordering: Process -> Exclusion -> Preventability -> Data
@@ -167,11 +159,12 @@ export class S1_DomainResolutionStage {
    */
   private lookupArchetype(
     concern: string,
-    domainHint?: string
-  ): { archetype: ArchetypeType; domain: string } {
+    domainHint: string | undefined,
+    matrix: ArchetypeMapping[]
+  ): { archetype: ArchetypeType; domain: string} {
     const concernUpper = concern.toUpperCase();
 
-    for (const mapping of ARCHETYPE_MATRIX) {
+    for (const mapping of matrix) {
       if (typeof mapping.concern === 'string') {
         if (mapping.concern.toUpperCase() === concernUpper) {
           return { archetype: mapping.archetype, domain: mapping.domain };

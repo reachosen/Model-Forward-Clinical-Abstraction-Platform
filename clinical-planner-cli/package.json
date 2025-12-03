@@ -22,7 +22,11 @@
     "learn:status": "ts-node cli/learn.ts --status",
     "learn:mock": "ts-node cli/learn.ts --mock",
     "revise": "ts-node cli/revise.ts",
-    "test": "ts-node tests/integration/rpi-workflow.test.ts",
+    "batch": "ts-node orchestrator/batch-runner.ts",
+    "test:gates": "ts-node orchestrator/test-gates-i32b.ts",
+    "test:full": "ts-node orchestrator/test-s0-s6-complete.ts",
+    "test:s6": "ts-node tests/integration/s6-sufficiency.test.ts",
+    "test": "ts-node tests/integration/rpi-workflow.test.ts && ts-node tests/integration/s6-sufficiency.test.ts",
     "test:integration": "ts-node tests/integration/rpi-workflow.test.ts",
     "build": "tsc",
     "clean": "rm -rf dist *.json validation_report.txt"

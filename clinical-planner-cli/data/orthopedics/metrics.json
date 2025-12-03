@@ -26,6 +26,14 @@
       "safety_signals",
       "documentation_gaps"
     ],
+    "primary_archetype": "Process_Auditor",
+    "expected_signal_groups": [
+      "delay_drivers",
+      "outcome_risks",
+      "safety_signals",
+      "documentation_gaps"
+    ],
+    "expected_signal_group_count": 4,
     "priority_for_clinical_review": "high"
   },
   "I26": {
@@ -55,6 +63,14 @@
       "safety_signals",
       "documentation_gaps"
     ],
+    "primary_archetype": "Process_Auditor",
+    "expected_signal_groups": [
+      "delay_drivers",
+      "outcome_risks",
+      "safety_signals",
+      "documentation_gaps"
+    ],
+    "expected_signal_group_count": 4,
     "priority_for_clinical_review": "high"
   },
   "I27": {
@@ -83,6 +99,13 @@
       "safety_signals",
       "documentation_gaps"
     ],
+    "primary_archetype": "Process_Auditor",
+    "expected_signal_groups": [
+      "outcome_risks",
+      "safety_signals",
+      "documentation_gaps"
+    ],
+    "expected_signal_group_count": 3,
     "priority_for_clinical_review": "high"
   },
   "I25.1": {
@@ -111,16 +134,23 @@
       "documentation_gaps",
       "safety_signals"
     ],
+    "primary_archetype": "Process_Auditor",
+    "expected_signal_groups": [
+      "outcome_risks",
+      "documentation_gaps",
+      "safety_signals"
+    ],
+    "expected_signal_group_count": 3,
     "priority_for_clinical_review": "high"
   },
   "I32a": {
-    "metric_name": "Idiopathic scoliosis \u2013 30-day unplanned admission and return to OR",
+    "metric_name": "Idiopathic scoliosis – 30-day unplanned admission and return to OR",
     "metric_type": "outcome",
     "clinical_focus": "Prevention of early complications and unplanned care after AIS surgery",
     "rationale": "Adolescent idiopathic scoliosis patients are generally healthy; unplanned admissions and returns to the OR often signal preventable issues such as infection, hematoma, hardware problems, uncontrolled pain, or GI complications. Clinical review can identify gaps in perioperative care and discharge planning.",
     "submetrics": [
-      "Idiopathic scoliosis \u2013 unplanned admission within 30 days",
-      "Idiopathic scoliosis \u2013 unplanned return to OR within 30 days"
+      "Idiopathic scoliosis – unplanned admission within 30 days",
+      "Idiopathic scoliosis – unplanned return to OR within 30 days"
     ],
     "risk_factors": [
       "Incomplete SSI prevention bundle or prolonged operative time without antibiotic re-dosing",
@@ -140,16 +170,24 @@
       "outcome_risks",
       "readmission_risks"
     ],
+    "primary_archetype": "Preventability_Detective",
+    "expected_signal_groups": [
+      "infection_risks",
+      "bundle_compliance",
+      "outcome_risks",
+      "readmission_risks"
+    ],
+    "expected_signal_group_count": 4,
     "priority_for_clinical_review": "high"
   },
   "I32b": {
-    "metric_name": "Neuromuscular scoliosis \u2013 30-day readmit and 90-day return to OR",
+    "metric_name": "Neuromuscular scoliosis – 30-day readmit and 90-day return to OR",
     "metric_type": "outcome",
     "clinical_focus": "Safe perioperative management of medically complex NMS scoliosis patients",
-    "rationale": "Children with neuromuscular scoliosis have high baseline medical vulnerability. Readmissions and reoperations within 30\u201390 days often reflect pulmonary, nutritional, skin, bladder/bowel, or infection-related issues. Structured clinical review can surface modifiable risk factors and improve perioperative planning and follow-up.",
+    "rationale": "Children with neuromuscular scoliosis have high baseline medical vulnerability. Readmissions and reoperations within 30–90 days often reflect pulmonary, nutritional, skin, bladder/bowel, or infection-related issues. Structured clinical review can surface modifiable risk factors and improve perioperative planning and follow-up.",
     "submetrics": [
-      "Neuromuscular scoliosis \u2013 30-day hospital readmission",
-      "Neuromuscular scoliosis \u2013 unplanned return to OR within 90 days"
+      "Neuromuscular scoliosis – 30-day hospital readmission",
+      "Neuromuscular scoliosis – unplanned return to OR within 90 days"
     ],
     "risk_factors": [
       "Malnutrition or poor pre-operative nutritional optimization",
@@ -169,6 +207,14 @@
       "bundle_compliance",
       "safety_signals"
     ],
+    "primary_archetype": "Preventability_Detective",
+    "expected_signal_groups": [
+      "infection_risks",
+      "readmission_risks",
+      "bundle_compliance",
+      "safety_signals"
+    ],
+    "expected_signal_group_count": 4,
     "priority_for_clinical_review": "high"
   }
 }

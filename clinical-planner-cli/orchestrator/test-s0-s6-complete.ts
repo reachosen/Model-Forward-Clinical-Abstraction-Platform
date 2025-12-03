@@ -51,7 +51,7 @@ async function testCompletePipeline(testCase: { name: string; input: PlanningInp
     console.log('\n🔹 Stage 2: Structural Skeleton');
     const s2 = new S2_StructuralSkeletonStage();
     const skeleton = await s2.execute(routedInput, domainContext);
-    const s2Validation = s2.validate(skeleton);
+    const s2Validation = s2.validate(skeleton, domainContext);
     const s2Gate = ValidationFramework.enforceGate('S2', s2Validation);
     console.log(s2Gate.message);
     if (s2Gate.policy === GatePolicy.HALT) throw new Error('S2 gate blocked');
@@ -105,13 +105,8 @@ async function testCompletePipeline(testCase: { name: string; input: PlanningInp
     console.log(`  Signal Groups: ${plan.clinical_config.signals.signal_groups.length}`);
     console.log(`  Total Signals: ${plan.clinical_config.signals.signal_groups.reduce((sum, g) => sum + (g.signals?.length || 0), 0)}`);
     console.log(`  Clinical Tools: ${plan.clinical_config.clinical_tools.length}`);
-    const eventSummary = (plan.clinical_config.questions as any).event_summary || '';
-    console.log(`  Event Summary: ${eventSummary.substring(0, 100)}...`);
-    const rankingCtx = (plan.clinical_config.questions as any).ranking_context;
-    console.log(`  Has Ranking Context: ${rankingCtx ? 'YES' : 'NO'}`);
-    if (rankingCtx) {
-      console.log(`    Rank: #${rankingCtx.rank} in ${rankingCtx.specialty_name}`);
-    }
+    // Event summary is no longer pre-generated, so we don't log it here
+    console.log(`  Event Summary: (Runtime Generated)`);
     
     // Validation summary
     console.log(`\n🎯 Quality Gates Summary:`);

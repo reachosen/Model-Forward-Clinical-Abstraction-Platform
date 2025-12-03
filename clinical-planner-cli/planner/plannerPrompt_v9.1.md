@@ -69,7 +69,30 @@ The Planner strictly accepts this JSON structure. This is the seed for all downs
     "pediatric_notes": "string (Validation Source)"
   }
 ]
-5.4 surveillance & timelineSurveillance: objective, population, detection_window, reporting_frameworks.Timeline: phases (pre_event, peri_event, post_event).5.5 signals (The Engine)Rule: Must use the 5 Required Groups. Must link to tool_id. Must specify evidence_type (L1/L2/L3).5.5 criteria (Granular Logic)JSON{
+5.4 surveillance & timelineSurveillance: objective, population, detection_window, reporting_frameworks.Timeline: phases (pre_event, peri_event, post_event).5.5 signals (The Engine)
+Rule: Must use the 5 Required Groups. Must link to tool_id. Must specify evidence_type (L1/L2/L3).
+
+SIGNAL SELECTION RULES (CRITICAL):
+
+1. For each signal_group, first enumerate ALL clinically meaningful candidate signals.
+   - For each candidate, set:
+     - priority: "MUST_HAVE" | "NICE_TO_HAVE"
+     - reason: short rationale
+
+2. Then select the final signals for the plan:
+   - Include ALL "MUST_HAVE" signals.
+   - Add "NICE_TO_HAVE" signals only until you reach at most 5 signals per group.
+   - If there are fewer than 5 clinically meaningful signals, return fewer. DO NOT invent weak or redundant signals just to reach 5.
+
+3. In each signal_group, populate:
+   - `selection_summary`: {
+       total_candidates,
+       must_have_candidates,
+       selected_signals,
+       excluded_signals_with_reasons
+     }
+
+4. You must always fill `id`, `name`, `evidence_type`, and `provenance` for every selected signal.5.5 criteria (Granular Logic)JSON{
   "rules": [
     {
       "rule_id": "string",

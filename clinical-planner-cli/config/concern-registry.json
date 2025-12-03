@@ -1,0 +1,447 @@
+{
+  "$schema": "./concern-registry-schema.json",
+  "version": "1.0.0",
+  "last_updated": "2024-11-30",
+  "description": "Centralized registry mapping concern_id → (domain, archetype, specialty)",
+
+  "concerns": {
+    "CLABSI": {
+      "domain": "HAC",
+      "archetype": "Preventability_Detective",
+      "specialty": null,
+      "description": "Central line-associated bloodstream infection",
+      "category": "healthcare_acquired_condition"
+    },
+    "CAUTI": {
+      "domain": "HAC",
+      "archetype": "Preventability_Detective",
+      "specialty": null,
+      "description": "Catheter-associated urinary tract infection",
+      "category": "healthcare_acquired_condition"
+    },
+    "VAP": {
+      "domain": "HAC",
+      "archetype": "Preventability_Detective",
+      "specialty": null,
+      "description": "Ventilator-associated pneumonia",
+      "category": "healthcare_acquired_condition"
+    },
+    "SSI": {
+      "domain": "HAC",
+      "archetype": "Preventability_Detective",
+      "specialty": null,
+      "description": "Surgical site infection",
+      "category": "healthcare_acquired_condition"
+    },
+    "PSI.09": {
+      "domain": "HAC",
+      "archetype": "Preventability_Detective",
+      "specialty": null,
+      "description": "Perioperative hemorrhage or hematoma",
+      "category": "patient_safety_indicator"
+    },
+    "UE": {
+      "domain": "HAC",
+      "archetype": "Preventability_Detective",
+      "specialty": null,
+      "description": "Unintended extubation",
+      "category": "healthcare_acquired_condition"
+    },
+
+    "I25": {
+      "domain": "Orthopedics",
+      "archetype": "Process_Auditor",
+      "specialty": "Orthopedics",
+      "description": "Supracondylar fracture to OR <18 hours",
+      "category": "usnwr_process_measure"
+    },
+    "I26": {
+      "domain": "Orthopedics",
+      "archetype": "Process_Auditor",
+      "specialty": "Orthopedics",
+      "description": "Femoral shaft fracture to OR <18 hours",
+      "category": "usnwr_process_measure"
+    },
+    "I27": {
+      "domain": "Orthopedics",
+      "archetype": "Process_Auditor",
+      "specialty": "Orthopedics",
+      "description": "Operative treatment of displaced forearm fracture",
+      "category": "usnwr_process_measure"
+    },
+    "I25.1": {
+      "domain": "Orthopedics",
+      "archetype": "Process_Auditor",
+      "specialty": "Orthopedics",
+      "description": "Percent supracondylar fractures with open procedure",
+      "category": "usnwr_outcome_proxy"
+    },
+    "I32a": {
+      "domain": "Orthopedics",
+      "archetype": "Preventability_Detective",
+      "specialty": "Orthopedics",
+      "description": "Idiopathic scoliosis - 30-day unplanned admission and return to OR",
+      "category": "usnwr_outcome"
+    },
+    "I32b": {
+      "domain": "Orthopedics",
+      "archetype": "Preventability_Detective",
+      "specialty": "Orthopedics",
+      "description": "Neuromuscular scoliosis - 30-day readmit and 90-day return to OR",
+      "category": "usnwr_outcome"
+    },
+    "I06": {
+      "domain": "Orthopedics",
+      "archetype": "Preventability_Detective",
+      "specialty": "Orthopedics",
+      "description": "Orthopedic complications",
+      "category": "usnwr_outcome"
+    },
+    "I07": {
+      "domain": "Orthopedics",
+      "archetype": "Preventability_Detective",
+      "specialty": "Orthopedics",
+      "description": "Orthopedic complications",
+      "category": "usnwr_outcome"
+    },
+    "I08": {
+      "domain": "Orthopedics",
+      "archetype": "Preventability_Detective",
+      "specialty": "Orthopedics",
+      "description": "Orthopedic complications",
+      "category": "usnwr_outcome"
+    },
+
+    "C41.1a": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "LDL cholesterol mg/L, type 1, private insurance",
+      "category": "usnwr_quality_metric"
+    },
+    "C41.1b": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "LDL cholesterol mg/L, type 1, Medicaid",
+      "category": "usnwr_quality_metric"
+    },
+    "C41.2a": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "Triglycerides mg/L, type 2, private insurance",
+      "category": "usnwr_quality_metric"
+    },
+    "C41.2b": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "Triglycerides mg/L, type 2, Medicaid",
+      "category": "usnwr_quality_metric"
+    },
+    "C35.1a1": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% Optimal A1c control age 0-7, private insurance",
+      "category": "usnwr_quality_metric"
+    },
+    "C35.1a2": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% Optimal A1c control age 0-7, Medicaid",
+      "category": "usnwr_quality_metric"
+    },
+    "C35.1b1": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% Optimal A1c control age 8-13, private insurance",
+      "category": "usnwr_quality_metric"
+    },
+    "C35.1b2": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% Optimal A1c control age 8-13, Medicaid",
+      "category": "usnwr_quality_metric"
+    },
+    "C35.1c1": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% Optimal A1c control age 14-18, private insurance",
+      "category": "usnwr_quality_metric"
+    },
+    "C35.1c2": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% Optimal A1c control age 14-18, Medicaid",
+      "category": "usnwr_quality_metric"
+    },
+    "C59": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% congenital hypothyroidism patients referred <21 days with confirmatory TSH >50",
+      "category": "usnwr_quality_metric"
+    },
+    "C59.1": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% congenital hypothyroidism patients <3 with TSH in normal range",
+      "category": "usnwr_quality_metric"
+    },
+    "C59.2": {
+      "domain": "Endocrinology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Diabetes & Endocrinology",
+      "description": "% newly diagnosed Graves Disease with at least 1 Free T4 value in normal range",
+      "category": "usnwr_quality_metric"
+    },
+
+    "D21": {
+      "domain": "Gastroenterology",
+      "archetype": "Process_Auditor",
+      "specialty": "Gastroenterology & GI Surgery",
+      "description": "Liver transplant survival - one year, observed to expected",
+      "category": "usnwr_outcome"
+    },
+    "D22": {
+      "domain": "Gastroenterology",
+      "archetype": "Process_Auditor",
+      "specialty": "Gastroenterology & GI Surgery",
+      "description": "Liver transplant survival - three year, observed to expected",
+      "category": "usnwr_outcome"
+    },
+    "D29": {
+      "domain": "Gastroenterology",
+      "archetype": "Preventability_Detective",
+      "specialty": "Gastroenterology & GI Surgery",
+      "description": "Endoscopic procedures with severe complications",
+      "category": "usnwr_outcome"
+    },
+
+    "E24": {
+      "domain": "Cardiology",
+      "archetype": "Process_Auditor",
+      "specialty": "Cardiology & Heart Surgery",
+      "description": "Heart transplant survival - three year, observed to expected",
+      "category": "usnwr_outcome"
+    },
+    "C01": {
+      "domain": "Cardiology",
+      "archetype": "Process_Auditor",
+      "specialty": "Cardiology & Heart Surgery",
+      "description": "Cardiac procedure outcomes",
+      "category": "usnwr_outcome"
+    },
+    "C02": {
+      "domain": "Cardiology",
+      "archetype": "Process_Auditor",
+      "specialty": "Cardiology & Heart Surgery",
+      "description": "Cardiac procedure outcomes",
+      "category": "usnwr_outcome"
+    },
+
+    "F32.1": {
+      "domain": "Neonatology",
+      "archetype": "Preventability_Detective",
+      "specialty": "Neonatology",
+      "description": "Unintended removal of breathing tube",
+      "category": "usnwr_harm_event"
+    },
+    "NICU01": {
+      "domain": "Neonatology",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Neonatology",
+      "description": "NICU quality metrics bundle",
+      "category": "usnwr_quality_metric"
+    },
+
+    "G32.1": {
+      "domain": "Nephrology",
+      "archetype": "Process_Auditor",
+      "specialty": "Nephrology",
+      "description": "One year graft survival, unadjusted",
+      "category": "usnwr_outcome"
+    },
+    "G32.2": {
+      "domain": "Nephrology",
+      "archetype": "Process_Auditor",
+      "specialty": "Nephrology",
+      "description": "Three year graft survival, unadjusted",
+      "category": "usnwr_outcome"
+    },
+    "G32.3": {
+      "domain": "Nephrology",
+      "archetype": "Process_Auditor",
+      "specialty": "Nephrology",
+      "description": "One year patient survival, unadjusted",
+      "category": "usnwr_outcome"
+    },
+    "G32.4": {
+      "domain": "Nephrology",
+      "archetype": "Process_Auditor",
+      "specialty": "Nephrology",
+      "description": "Three year patient survival, unadjusted",
+      "category": "usnwr_outcome"
+    },
+    "G15": {
+      "domain": "Nephrology",
+      "archetype": "Preventability_Detective",
+      "specialty": "Nephrology",
+      "description": "Native percutaneous kidney biopsies, complication rate",
+      "category": "usnwr_outcome"
+    },
+
+    "K19": {
+      "domain": "Urology",
+      "archetype": "Process_Auditor",
+      "specialty": "Urology",
+      "description": "Emergency treatment for testicular torsion",
+      "category": "usnwr_process_measure"
+    },
+    "K16.1a": {
+      "domain": "Urology",
+      "archetype": "Preventability_Detective",
+      "specialty": "Urology",
+      "description": "30-day readmit after inpatient procedure",
+      "category": "usnwr_outcome"
+    },
+    "K16.1b": {
+      "domain": "Urology",
+      "archetype": "Preventability_Detective",
+      "specialty": "Urology",
+      "description": "30-day readmit after ambulatory procedure",
+      "category": "usnwr_outcome"
+    },
+    "K16.1c": {
+      "domain": "Urology",
+      "archetype": "Preventability_Detective",
+      "specialty": "Urology",
+      "description": "Unplanned reoperation within 48 days",
+      "category": "usnwr_outcome"
+    },
+    "K15a": {
+      "domain": "Urology",
+      "archetype": "Preventability_Detective",
+      "specialty": "Urology",
+      "description": "Distal hypospadias revision surgery",
+      "category": "usnwr_outcome"
+    },
+    "K15b": {
+      "domain": "Urology",
+      "archetype": "Preventability_Detective",
+      "specialty": "Urology",
+      "description": "Pyeloplasty revision surgery",
+      "category": "usnwr_outcome"
+    },
+
+    "L27": {
+      "domain": "Behavioral Health",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Behavioral Health",
+      "description": "% patients on antipsychotics with complete metabolic screening",
+      "category": "usnwr_quality_metric"
+    },
+    "L29": {
+      "domain": "Behavioral Health",
+      "archetype": "Preventability_Detective_Metric",
+      "specialty": "Behavioral Health",
+      "description": "Rate of at least 2 follow-ups for patients on ADHD medications",
+      "category": "usnwr_quality_metric"
+    },
+    "L36": {
+      "domain": "Behavioral Health",
+      "archetype": "Process_Auditor",
+      "specialty": "Behavioral Health",
+      "description": "% patients receiving psychiatric consultation in <2 hours",
+      "category": "usnwr_quality_metric"
+    },
+
+    "C35": {
+      "domain": "Cancer",
+      "archetype": "Process_Auditor",
+      "specialty": "Cancer",
+      "description": "Cancer outcomes",
+      "category": "usnwr_outcome"
+    },
+    "C36": {
+      "domain": "Cancer",
+      "archetype": "Process_Auditor",
+      "specialty": "Cancer",
+      "description": "Cancer outcomes",
+      "category": "usnwr_outcome"
+    },
+    "ONCO01": {
+      "domain": "Cancer",
+      "archetype": "Process_Auditor",
+      "specialty": "Cancer",
+      "description": "Cancer outcomes",
+      "category": "usnwr_outcome"
+    }
+  },
+
+  "regex_patterns": {
+    "H16_neurosurgical_survival": {
+      "pattern": "^H16[bcdef]$",
+      "domain": "Neurology",
+      "archetype": "Process_Auditor",
+      "description": "Neurosurgical survival outcomes"
+    },
+    "H17_neurosurgical_readmissions": {
+      "pattern": "^H17[abcde]$",
+      "domain": "Neurology",
+      "archetype": "Preventability_Detective",
+      "description": "Neurosurgical readmissions"
+    },
+    "H_neurosurgical_return_to_or": {
+      "pattern": "^(H17\\.1|H17|H29|H34)$",
+      "domain": "Neurology",
+      "archetype": "Preventability_Detective",
+      "description": "Neurosurgical unplanned return to OR"
+    },
+    "H31_epilepsy_seizure_freedom": {
+      "pattern": "^H31\\.[1234]$",
+      "domain": "Neurology",
+      "archetype": "Process_Auditor",
+      "description": "Epilepsy surgery seizure freedom rates"
+    },
+    "J24_cystic_fibrosis": {
+      "pattern": "^J24[bcdef]$",
+      "domain": "Pulmonology",
+      "archetype": "Preventability_Detective_Metric",
+      "description": "Cystic fibrosis management metrics"
+    }
+  },
+
+  "metadata": {
+    "total_concerns": 87,
+    "domains": [
+      "HAC",
+      "Orthopedics",
+      "Endocrinology",
+      "Gastroenterology",
+      "Cardiology",
+      "Neonatology",
+      "Nephrology",
+      "Neurology",
+      "Pulmonology",
+      "Urology",
+      "Behavioral Health",
+      "Cancer"
+    ],
+    "archetypes": [
+      "Process_Auditor",
+      "Preventability_Detective",
+      "Preventability_Detective_Metric",
+      "Exclusion_Hunter",
+      "Data_Scavenger"
+    ]
+  }
+}

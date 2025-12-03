@@ -8,6 +8,7 @@
 import { PlanningInput } from '../../models/PlannerPlan';
 import { inferPlanningMetadata } from '../../planner/intentInference';
 import { RoutedInput, ValidationResult, InferredMetadata } from '../types';
+import { getAllConcernIds } from '../../config/concernRegistry';
 
 export class S0_InputNormalizationStage {
   /**
@@ -129,18 +130,14 @@ export class S0_InputNormalizationStage {
       errors.push('planning_input is required');
     }
 
-    // Concern ID format validation
-    const validConcernIdPattern = /^(I\d{2}|C\d{2}|P\d{2}|CLABSI|CAUTI|VAP|SSI|PSI\.09)$/;
+    // Concern ID format validation (supports all USNWR formats: I25, I32a, C41.1a, K16.1a, etc.)
+    const validConcernIdPattern = /^([A-Z]\d{2,3}([a-z])?(\.\d+[a-z]?\d?)?|CLABSI|CAUTI|VAP|SSI|PSI\.09|NICU\d+|ONCO\d+|UE)$/;
     if (output.concern_id && !validConcernIdPattern.test(output.concern_id)) {
       warnings.push(`concern_id format may be invalid: ${output.concern_id}`);
     }
 
-    // Check if concern_id is recognized
-    const knownConcernIds = [
-      'I25', 'I26', 'I21', 'I60', // USNWR Ortho, Endo, Cardio, Neuro
-      'C35', 'C36', // USNWR Cancer
-      'CLABSI', 'CAUTI', 'VAP', 'SSI', 'PSI.09', // HAC
-    ];
+    // Load recognized concern IDs from centralized config
+    const knownConcernIds = getAllConcernIds();
 
     if (output.concern_id && !knownConcernIds.includes(output.concern_id)) {
       warnings.push(`concern_id not in known set: ${output.concern_id}`);

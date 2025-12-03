@@ -277,10 +277,7 @@ export interface Prompts {
 }
 
 export interface TaskPrompts {
-  patient_event_summary: TaskPrompt;
-  enrichment: TaskPrompt;
-  abstraction?: TaskPrompt;
-  qa: TaskPrompt;
+  [taskName: string]: TaskPrompt;
 }
 
 export interface TaskPrompt {

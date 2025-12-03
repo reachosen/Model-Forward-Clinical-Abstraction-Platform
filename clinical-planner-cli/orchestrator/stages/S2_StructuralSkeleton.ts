@@ -66,19 +66,20 @@ export class S2_StructuralSkeletonStage {
     if (packet) {
       console.log('   Using Semantic Packet signal groups');
       const packetGroups = packet.metric.signal_groups;
-      return this.buildGroupsFromEmphasis(packetGroups, domain);
+      // Do NOT force 5 groups for packet-based generation
+      return this.buildGroupsFromEmphasis(packetGroups, domain, false);
     }
 
     if (ranking_context && ranking_context.signal_emphasis) {
       console.log('   Using ranking-informed signal_emphasis from top 20 ranking');
-      return this.buildGroupsFromEmphasis(ranking_context.signal_emphasis, domain);
+      return this.buildGroupsFromEmphasis(ranking_context.signal_emphasis, domain, true);
     }
 
     console.log('   Using domain-specific defaults (no ranking/packet data)');
     return this.getDomainDefaultGroups(domain);
   }
 
-  private buildGroupsFromEmphasis(signalEmphasis: string[], domain: string): SignalGroupSkeleton[] {
+  private buildGroupsFromEmphasis(signalEmphasis: string[], domain: string, forceFive: boolean = true): SignalGroupSkeleton[] {
     const groupDefinitions: Record<string, { display_name: string; description: string }> = {
       bundle_compliance: { display_name: 'Bundle Compliance', description: 'Adherence to evidence-based care bundles and protocols' },
       handoff_failures: { display_name: 'Handoff Failures', description: 'Gaps in care transitions, surgical handoffs, and discharge planning' },
@@ -98,6 +99,9 @@ export class S2_StructuralSkeletonStage {
       outcome_risks: { display_name: 'Outcome Risks', description: 'Adverse outcomes, ischemic progression, and iatrogenic injury' },
       readmission_risks: { display_name: 'Readmission Risks', description: 'Risk factors for unplanned hospital readmission' },
       infection_risks: { display_name: 'Infection Risks', description: 'Device-related infections and procedural infection risks' },
+      rule_in: { display_name: 'Rule In', description: 'Evidence supporting metric inclusion' },
+      rule_out: { display_name: 'Rule Out', description: 'Exclusion criteria' },
+      overrides: { display_name: 'Overrides', description: 'Manual override signals' },
     };
 
     const groups: SignalGroupSkeleton[] = signalEmphasis.map((group_id) => {
@@ -119,7 +123,7 @@ export class S2_StructuralSkeletonStage {
       };
     });
 
-    if (groups.length !== 5) {
+    if (forceFive && groups.length !== 5) {
       // Pad if less than 5
       const defaults = this.getDomainDefaultGroups(domain);
       for (const def of defaults) {
@@ -128,9 +132,10 @@ export class S2_StructuralSkeletonStage {
           groups.push(def);
         }
       }
+      return groups.slice(0, 5);
     }
 
-    return groups.slice(0, 5);
+    return groups;
   }
 
   private getDomainDefaultGroups(domain: string): SignalGroupSkeleton[] {
@@ -159,7 +164,7 @@ export class S2_StructuralSkeletonStage {
     ];
   }
 
-  validate(output: StructuralSkeleton): ValidationResult {
+  validate(output: StructuralSkeleton, domainCtx?: DomainContext): ValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
 
@@ -169,8 +174,29 @@ export class S2_StructuralSkeletonStage {
     const signal_groups = output.clinical_config?.signals?.signal_groups;
     if (!signal_groups) {
       errors.push('clinical_config.signals.signal_groups is required');
-    } else if (signal_groups.length !== 5) {
-      errors.push(`V9.1 requires exactly 5 signal groups, found ${signal_groups.length}`);
+      return { passed: false, errors, warnings };
+    }
+
+    // Dynamic Validation based on Metric Packet
+    const expectedGroups = domainCtx?.semantic_context?.packet?.metric?.signal_groups;
+    
+    if (expectedGroups && expectedGroups.length > 0) {
+       // Packet-based validation
+       const planGroupIds = signal_groups.map(g => g.group_id);
+       const missingGroups = expectedGroups.filter(gid => !planGroupIds.includes(gid));
+       
+       if (missingGroups.length > 0) {
+          warnings.push(`⚠️ S2: Missing expected signal groups: ${missingGroups.join(', ')}`);
+       }
+       
+       if (signal_groups.length < 3) {
+          errors.push(`S2 CRITICAL: Too few signal groups (${signal_groups.length}), expected around ${expectedGroups.length}`);
+       }
+    } else {
+       // Legacy Fallback: Allow 4-6 groups
+       if (signal_groups.length < 4 || signal_groups.length > 6) {
+         errors.push(`S2 CRITICAL: Expected 4-6 signal groups (Legacy), found ${signal_groups.length}`);
+       }
     }
 
     return {

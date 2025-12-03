@@ -17,10 +17,17 @@ import {
   ArchetypeType,
   TaskType,
 } from '../types';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
-// ============================================================================ 
+dotenv.config({ path: path.join(__dirname, '../../../.env') });
+
+// Load model from environment variable
+const DEFAULT_MODEL = process.env.MODEL || 'gpt-4o-mini';
+
+// ============================================================================
 // Prompt Registry
-// ============================================================================ 
+// ============================================================================
 
 function getPromptConfig(
   domain: string,
@@ -38,7 +45,7 @@ function getPromptConfig(
 
   const config: PromptConfig = {
     template_id,
-    model: 'gpt-4',
+    model: DEFAULT_MODEL,
     temperature: getTemperature(taskType),
     response_format,
     schema_ref,

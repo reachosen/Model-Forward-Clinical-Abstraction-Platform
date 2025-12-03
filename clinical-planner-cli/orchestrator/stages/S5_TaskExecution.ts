@@ -128,11 +128,27 @@ You are a clinical quality expert analyzing ${domain} cases.
 - Archetype: ${archetype}
 ${orthoContextString}
 
-**Signal Groups:**
-${skeleton?.clinical_config?.signals?.signal_groups?.map((g: any, idx: number) => `${idx + 1}. ${g.group_id}: ${g.display_name}`).join('\n')}
+${!orthoContextString ? `**Signal Groups:**
+${skeleton?.clinical_config?.signals?.signal_groups?.map((g: any, idx: number) => `${idx + 1}. ${g.group_id}: ${g.display_name}`).join('\n')}` : '**Use Signal Groups defined in ORTHOPEDIC METRIC CONTEXT above.**'}
 
 **REQUIRED JSON SCHEMA:**
-{ "signals": [{ "id": "SIG_001", "description": "...", "evidence_type": "L1", "group_id": "..." }] }
+{ 
+  "signals": [
+    { 
+      "id": "SIG_001", 
+      "description": "Full text description of the clinical signal", 
+      "evidence_type": "L1", 
+      "group_id": "...", 
+      "provenance": { "source_text": "...", "timestamps": "..." },
+      "feasibility": { "cpt_codes": [], "icd_codes": [] }
+    } 
+  ] 
+}
+
+**CRITICAL INSTRUCTION:**
+ALL signal descriptions must be returned as a single string field:
+"description": "<text>"
+Do NOT return per-character arrays.
 `,
 
     event_summary: `
@@ -187,6 +203,9 @@ ${orthoContextString}
 **LANE FINDINGS TO SYNTHESIZE:**
 ${laneFindings}
 
+**REQUIRED SIGNAL GROUPS (MUST MATCH EXACTLY):**
+${skeleton?.clinical_config?.signals?.signal_groups?.map((g: any) => `- ${g.group_id}: ${g.display_name}`).join('\n')}
+
 **INSTRUCTIONS:**
 1. Review the findings from each lane above.
 2. Resolve any conflicts (e.g., if Exclusion Hunter found a valid exclusion, the case is EXCLUDED).
@@ -197,9 +216,27 @@ ${laneFindings}
 {
   "final_determination": "string (Summary of final status)",
   "synthesis_rationale": "string (Why this determination was reached)",
-  "merged_signal_groups": [ { "group_id": "...", "signals": [...] } ],
+  "merged_signal_groups": [ 
+    { 
+      "group_id": "...", 
+      "signals": [
+        {
+          "id": "...",
+          "description": "Full text description",
+          "evidence_type": "L1",
+          "provenance": { "source_text": "...", "timestamps": "..." },
+          "feasibility": { "cpt_codes": [], "icd_codes": [] }
+        }
+      ] 
+    } 
+  ],
   "unified_clinical_tools": [...]
 }
+
+**CRITICAL INSTRUCTION:**
+ALL signal descriptions must be returned as a single string field:
+"description": "<text>"
+Do NOT return per-character arrays.
 `
   };
 

@@ -1,0 +1,9 @@
+You are converting this case into structured clinical signals for retrospective review.
+
+From the patient payload, extract signals into groups such as:
+{{signal_group_list}}
+
+For each signal, include id, description, evidence_type, and text provenance. Do not invent events.
+
+Now analyze:
+{{patient_payload}}

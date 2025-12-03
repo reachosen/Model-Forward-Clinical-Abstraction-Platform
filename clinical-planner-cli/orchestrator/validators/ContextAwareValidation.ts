@@ -27,7 +27,7 @@ export interface ValidationContext {
  */
 export function getS2DomainCriteria(domain: string, ranking_context_present: boolean): string[] {
   const criteria: string[] = [
-    '⭐ CRITICAL: Exactly 5 signal groups',
+    '✓ Appropriate signal groups (packet-defined or domain default)',
   ];
 
   // Domain-specific criteria
@@ -80,14 +80,30 @@ export function validateS2WithDomainContext(
   const { domain, semantic_context } = domainContext;
   const ranking_context = semantic_context.ranking;
   const signal_groups = skeleton.clinical_config?.signals?.signal_groups || [];
-
-  // CRITICAL: Exactly 5 groups (universal)
-  if (signal_groups.length !== 5) {
-    errors.push(`CRITICAL: Expected exactly 5 signal groups, found ${signal_groups.length}`);
-    return { passed: false, errors, warnings };
-  }
-
   const group_ids = signal_groups.map(g => g.group_id);
+
+  // Dynamic Validation based on Metric Packet
+  const packet = semantic_context?.packet;
+  
+  if (packet) {
+     const expected_groups = packet.metric.signal_groups;
+     const has_all_groups = expected_groups.every((id: string) => group_ids.includes(id));
+
+     if (!has_all_groups) {
+       warnings.push(`Domain (Packet) should use metric-specific groups: ${expected_groups.join(', ')}`);
+       warnings.push(`Found groups: ${group_ids.join(', ')}`);
+     }
+
+     // Sanity check for packet-based
+     if (signal_groups.length < 3) {
+        errors.push(`CRITICAL: Too few signal groups (${signal_groups.length}), expected around ${expected_groups.length}`);
+     }
+  } else {
+     // Legacy/Default Fallback
+     if (signal_groups.length < 4 || signal_groups.length > 6) {
+        errors.push(`CRITICAL: Expected 4-6 signal groups, found ${signal_groups.length}`);
+     }
+  }
 
   // Domain-specific validation
   if (domain === 'HAC') {
@@ -106,42 +122,37 @@ export function validateS2WithDomainContext(
     }
 
   } else if (domain === 'Orthopedics') {
-    // Orthopedics with specific metric context (Ortho Packet)
-    if (domainContext.semantic_context.packet) {
-      const expected_groups = domainContext.semantic_context.packet.metric.signal_groups;
-      const has_all_groups = expected_groups.every(id => group_ids.includes(id));
+    // Orthopedics with specific metric context (Ortho Packet) - already handled above dynamically, 
+    // but we can keep specific logic if needed, or just skip to ranking check if packet not present.
+    
+    if (!packet) {
+        // Orthopedics with rankings - check for ranking-informed groups
+        if (ranking_context && ranking_context.signal_emphasis) {
+          const expected_groups = ranking_context.signal_emphasis;
+          const has_all_ranking_groups = expected_groups.every((id: string) => group_ids.includes(id));
 
-      if (!has_all_groups) {
-        warnings.push(`Orthopedics (Packet) should use metric-specific groups: ${expected_groups.join(', ')}`);
-        warnings.push(`Found groups: ${group_ids.join(', ')}`);
-      }
-    }
-    // Orthopedics with rankings - check for ranking-informed groups
-    else if (ranking_context && ranking_context.signal_emphasis) {
-      const expected_groups = ranking_context.signal_emphasis;
-      const has_all_ranking_groups = expected_groups.every((id: string) => group_ids.includes(id));
+          if (!has_all_ranking_groups) {
+            warnings.push(`Orthopedics (ranked) should use signal_emphasis groups: ${expected_groups.join(', ')}`);
+            warnings.push(`Found groups: ${group_ids.join(', ')}`);
+          }
 
-      if (!has_all_ranking_groups) {
-        warnings.push(`Orthopedics (ranked) should use signal_emphasis groups: ${expected_groups.join(', ')}`);
-        warnings.push(`Found groups: ${group_ids.join(', ')}`);
-      }
+          // Check for quality differentiator alignment
+          const quality_focus_groups = ['bundle_compliance', 'handoff_failures', 'complication_tracking'];
+          const has_quality_focus = quality_focus_groups.some(g => group_ids.includes(g));
 
-      // Check for quality differentiator alignment
-      const quality_focus_groups = ['bundle_compliance', 'handoff_failures', 'complication_tracking'];
-      const has_quality_focus = quality_focus_groups.some(g => group_ids.includes(g));
+          if (!has_quality_focus) {
+            warnings.push('Orthopedics (ranked) should include quality-focused groups (bundle_compliance, handoff_failures, or complication_tracking)');
+          }
 
-      if (!has_quality_focus) {
-        warnings.push('Orthopedics (ranked) should include quality-focused groups (bundle_compliance, handoff_failures, or complication_tracking)');
-      }
+        } else {
+          // Orthopedics without rankings - check for default groups
+          const expected_ortho_groups = ['rule_in', 'rule_out', 'delay_drivers', 'bundle_compliance', 'handoff_failures'];
+          const missing_groups = expected_ortho_groups.filter(g => !group_ids.includes(g));
 
-    } else {
-      // Orthopedics without rankings - check for default groups
-      const expected_ortho_groups = ['rule_in', 'rule_out', 'delay_drivers', 'bundle_compliance', 'handoff_failures'];
-      const missing_groups = expected_ortho_groups.filter(g => !group_ids.includes(g));
-
-      if (missing_groups.length > 0) {
-        warnings.push(`Orthopedics (unranked) should use default groups. Missing: ${missing_groups.join(', ')}`);
-      }
+          if (missing_groups.length > 0) {
+            warnings.push(`Orthopedics (unranked) should use default groups. Missing: ${missing_groups.join(', ')}`);
+          }
+        }
     }
 
   } else if (domain === 'Endocrinology') {

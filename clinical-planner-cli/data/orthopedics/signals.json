@@ -1,52 +1,95 @@
 {
   "delay_drivers": [
-    "Admission-to-OR time >18 hours without clinical justification",
-    "After-hours surgery for routine supracondylar fracture without safety need",
-    "Multiple interfacility transfers before definitive fixation",
-    "Repeat imaging cycles causing delay before OR start",
-    "OR start delayed due to team/room availability without documented rationale"
-  ],
-  "bundle_compliance": [
-    "Pre-op antibiotics not administered within recommended window before incision",
-    "Missing antibiotic re-dosing for long spine cases (>4 hours)",
-    "Missing CHG wash or MRSA screening documentation for spine fusion cases",
-    "No documentation of vancomycin powder or betadine irrigation in high-risk spine cases",
-    "Post-op antibiotics continued >24 hours without evidence of infection"
+    "Admission to incision >18 hours",
+    "OR scheduled after 22:00 (10 PM)",
+    "Transfer from outside hospital",
+    "NPO violation delay",
+    "Medical clearance delay",
+    "Lack of OR availability",
+    "Surgeon unavailability",
+    "Imaging delay"
   ],
   "outcome_risks": [
-    "Ischemic hand progression after supracondylar fracture",
-    "Iatrogenic nerve palsy after pinning of supracondylar fracture",
-    "Loss of reduction in cast or spica requiring reoperation",
-    "Limb length discrepancy >2 cm after femoral shaft fracture treatment",
-    "Deep surgical site infection after spine or long-bone fixation",
-    "Malunion or angular deformity after displaced forearm fracture"
-  ],
-  "readmission_risks": [
-    "High-risk neuromuscular scoliosis with poor nutrition or pulmonary reserve",
-    "Post\u2013spine fusion readmissions for pneumonia, ileus, UTI, or SSI",
-    "Early return after fracture surgery for pain, loss of reduction, or hardware failure"
-  ],
-  "infection_risks": [
-    "Long fusion construct with prolonged operative time",
-    "Neuromuscular scoliosis with poor soft tissue coverage or incontinence",
-    "Reoperation through prior incision or scar tissue",
-    "Early dressing disruption or persistent wound drainage after surgery"
-  ],
-  "volume_signals": [
-    "Annual volume of index fracture procedures (SCH, femoral shaft, displaced forearm)",
-    "Annual spine fusion volume per surgeon for AIS and NMS",
-    "Proportion of complex or high-risk deformity cases in total volume"
-  ],
-  "documentation_gaps": [
-    "Missing pre-operative neurovascular exam for limb fractures",
-    "Missing post-reduction perfusion status documentation (e.g., pink/warm vs white/cool hand)",
-    "No clear documentation of planned vs unplanned return to OR",
-    "ICD-10 codes missing specificity for fracture type, laterality, or open/closed status"
+    "Hand perfusion: white/cool/pulseless",
+    "Neurological deficit (median/ulnar/radial)",
+    "Compartment syndrome suspicion",
+    "Loss of reduction requiring re-operation",
+    "Malunion",
+    "Limb length discrepancy",
+    "Infection (SSI)",
+    "Hardware failure"
   ],
   "safety_signals": [
-    "Pain out of proportion to exam after casting or fixation",
-    "3 As pattern: anxiety, agitation, and escalating analgesia requirements",
-    "Pale or cool extremity after casting or surgery without timely escalation",
-    "Rapid response activation, ICU transfer, or emergent return to OR after limb surgery"
+    "Pain out of proportion to injury",
+    "Increasing analgesic requirement",
+    "Passive stretch pain",
+    "Paresthesia/numbness",
+    "Pallor or delayed capillary refill",
+    "Tenseness of compartment",
+    "Fasciotomy performed",
+    "Unexpected ICU admission"
+  ],
+  "documentation_gaps": [
+    "Neurovascular exam not documented pre-op",
+    "Neurovascular exam not documented post-op",
+    "Perfusion status not described (pink/warm)",
+    "Compartment check frequency not met",
+    "Surgical pause/timeout missing",
+    "Antibiotic timing not documented",
+    "Justification for delay >18h missing",
+    "Discharge instructions unclear"
+  ],
+  "infection_risks": [
+    "Antibiotic prophylaxis not given within 60 min",
+    "Inappropriate antibiotic selection",
+    "Prolonged operative time",
+    "Implant/hardware present",
+    "History of prior infection",
+    "Immunosuppression",
+    "Wound drainage/erythema",
+    "Positive culture"
+  ],
+  "readmission_risks": [
+    "Uncontrolled pain",
+    "Surgical site infection",
+    "GI complication (ileus/obstruction)",
+    "Hardware complication",
+    "Pneumonia/respiratory distress",
+    "UTI/urinary retention",
+    "Nutritional failure",
+    "Social/caregiver concern"
+  ],
+  "bundle_compliance": [
+    "Pre-op warming not documented",
+    "Chlorhexidine prep not used/documented",
+    "Antibiotic redosing missed in long case",
+    "Traffic in OR excessive",
+    "Glucose control (if diabetic)",
+    "Post-op dressing protocol deviation",
+    "DVT prophylaxis missed (if indicated)",
+    "Foley catheter duration >48h"
+  ],
+  "rule_in": [
+    "Diagnosis of supracondylar fracture",
+    "Diagnosis of femoral shaft fracture",
+    "Diagnosis of forearm fracture",
+    "Diagnosis of scoliosis (idiopathic)",
+    "Diagnosis of scoliosis (neuromuscular)",
+    "Age < 18 years",
+    "Surgical procedure performed"
+  ],
+  "rule_out": [
+    "Polytrauma",
+    "Open fracture (if metric excludes open)",
+    "Pathologic fracture",
+    "Prior surgery on same site",
+    "Patient transferred out",
+    "Non-operative management (if metric is operative only)"
+  ],
+  "overrides": [
+    "Clinical stability required delay",
+    "Parent/guardian refusal",
+    "Palliative care goals",
+    "Complex comorbidity priority"
   ]
 }
