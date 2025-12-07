@@ -1,0 +1,109 @@
+{
+  "concern_id": "I25",
+  "total_scenarios": 50,
+  "batch_size": 5,
+  "total_batches": 10,
+  "archetype": "Full_Batch1_Execution",
+  "batches": [
+    {
+      "batch_index": 1,
+      "scenarios": [
+        "Generated Case 1: [Process_Auditor] 6yo male with supracondylar fracture from falling off a swing, pink pulseless hand, arrived Saturday 20:00, surgery Sunday 09:00 (13h delay), Borderline.",
+        "Generated Case 2: [Preventability_Detective] 7-year-old female with supracondylar fracture due to skateboard accident, AIN palsy, arrived Sunday 15:30, surgery Sunday 18:00 (2.5h delay), Clear Pass.",
+        "Generated Case 3: [Delay_Driver_Profiler] 5yo male with supracondylar fracture from monkey bars fall, pucker sign, arrived Friday 17:00, surgery Saturday 11:00 (18h delay), Clear Fail.",
+        "Generated Case 4: [Exclusion_Hunter] 9yo female with supracondylar fracture from bicycle crash, compartment syndrome, arrived Saturday 14:00, surgery Saturday 16:00 (2h delay), Clear Pass.",
+        "Generated Case 5: [Safety_Signal] 4-year-old male with supracondylar fracture from trampoline accident, normal neurovascular status, arrived Saturday 12:00, surgery Saturday 14:00 (2h delay), Clear Pass."
+      ]
+    },
+    {
+      "batch_index": 2,
+      "scenarios": [
+        "Generated Case 6: [Documentation_Gap] 8yo female with supracondylar fracture from fall off the jungle gym, pink pulseless hand, arrived Saturday 08:00, surgery Saturday 20:00 (12h delay), Borderline.",
+        "Generated Case 7: [Process_Auditor] 5yo male with supracondylar fracture from a fall during soccer, AIN palsy, arrived Friday 22:00, surgery Saturday 08:00 (10h delay), Clear Fail.",
+        "Generated Case 8: [Preventability_Detective] 6-year-old female with supracondylar fracture following a fall off the monkey bars, pink pulseless hand, arrived Friday 18:30, surgery Saturday 02:00 (7.5h delay), Borderline.",
+        "Generated Case 9: [Delay_Driver_Profiler] 10yo male with supracondylar fracture from a horse riding incident, normal neurovascular status, arrived Saturday 16:30, surgery Saturday 19:00 (2.5h delay), Clear Pass.",
+        "Generated Case 10: [Exclusion_Hunter] 7-year-old female with supracondylar fracture from mountain biking, pucker sign, arrived Friday 17:00, surgery Friday 19:00 (2h delay), Clear Pass."
+      ]
+    },
+    {
+      "batch_index": 3,
+      "scenarios": [
+        "Generated Case 11: [Safety_Signal] 9yo male with supracondylar fracture from a basketball game, normal neurovascular status, arrived Sunday 14:00, surgery Sunday 15:30 (1.5h delay), Clear Pass.",
+        "Generated Case 12: [Documentation_Gap] 6yo female with supracondylar fracture from a trampoline fall, AIN palsy, arrived Saturday 21:00, surgery Sunday 03:00 (6h delay), Borderline.",
+        "Generated Case 13: [Process_Auditor] 5yo male with supracondylar fracture from a backyard fall, pink pulseless hand, arrived Saturday 13:00, surgery Saturday 15:30 (2.5h delay), Clear Pass.",
+        "Generated Case 14: [Preventability_Detective] 8-year-old female with supracondylar fracture from sliding down stairs, compartment syndrome, arrived Saturday 11:30, surgery Saturday 13:00 (1.5h delay), Clear Pass.",
+        "Generated Case 15: [Delay_Driver_Profiler] 7yo male with supracondylar fracture from a football game, pucker sign, arrived Friday 23:00, surgery Saturday 09:00 (10h delay), Clear Fail."
+      ]
+    },
+    {
+      "batch_index": 4,
+      "scenarios": [
+        "Generated Case 16: [Exclusion_Hunter] 10yo female with supracondylar fracture from scooter accident, normal neurovascular status, arrived Sunday 18:00, surgery Sunday 20:00 (2h delay), Clear Pass.",
+        "Generated Case 17: [Safety_Signal] 4-year-old male with supracondylar fracture from a slide, pink pulseless hand, arrived Friday 15:00, surgery Saturday 00:00 (9h delay), Clear Fail.",
+        "Generated Case 18: [Documentation_Gap] 8yo female with supracondylar fracture from falling out of bed, AIN palsy, arrived Thursday 17:00, surgery Friday 07:00 (14h delay), Borderline.",
+        "Generated Case 19: [Process_Auditor] 5yo male with supracondylar fracture from a playdate accident, compartment syndrome, arrived Saturday 20:00, surgery Sunday 01:00 (5h delay), Clear Fail.",
+        "Generated Case 20: [Preventability_Detective] 6-year-old female with supracondylar fracture from falling off a chair, pucker sign, arrived Sunday 12:30, surgery Sunday 14:00 (1.5h delay), Clear Pass."
+      ]
+    },
+    {
+      "batch_index": 5,
+      "scenarios": [
+        "Generated Case 21: [Delay_Driver_Profiler] 7yo male with supracondylar fracture from a tree climbing fall, pink pulseless hand, arrived Saturday 08:00, surgery Saturday 08:30 (0.5h delay), Clear Pass.",
+        "Generated Case 22: [Exclusion_Hunter] 9-year-old female with supracondylar fracture from running in the park, normal neurovascular status, arrived Friday 13:00, surgery Friday 16:00 (3h delay), Clear Pass.",
+        "Generated Case 23: [Safety_Signal] 10yo male with supracondylar fracture from a group sport, AIN palsy, arrived Saturday 22:00, surgery Sunday 04:00 (6h delay), Borderline.",
+        "Generated Case 24: [Documentation_Gap] 8yo female with supracondylar fracture from playground equipment, compartment syndrome, arrived Saturday 10:00, surgery Saturday 11:30 (1.5h delay), Clear Pass.",
+        "Generated Case 25: [Process_Auditor] 5yo male with supracondylar fracture from slipping on the ice, pink pulseless hand, arrived Sunday 19:00, surgery Monday 01:00 (6h delay), Clear Fail."
+      ]
+    },
+    {
+      "batch_index": 6,
+      "scenarios": [
+        "Generated Case 26: [Preventability_Detective] 6-year-old female with supracondylar fracture from a fall on stairs, pucker sign, arrived Saturday 16:00, surgery Saturday 17:30 (1.5h delay), Clear Pass.",
+        "Generated Case 27: [Delay_Driver_Profiler] 7yo male with supracondylar fracture from backyard play, AIN palsy, arrived Friday 18:00, surgery Saturday 09:00 (15h delay), Clear Fail.",
+        "Generated Case 28: [Exclusion_Hunter] 8-year-old female with supracondylar fracture from a float trip, normal neurovascular status, arrived Saturday 11:00, surgery Saturday 13:00 (2h delay), Clear Pass.",
+        "Generated Case 29: [Safety_Signal] 4-year-old male with supracondylar fracture from a sports activity, pink pulseless hand, arrived Friday 09:00, surgery Saturday 11:00 (26h delay), Clear Fail.",
+        "Generated Case 30: [Documentation_Gap] 9yo female with supracondylar fracture after a house accident, AIN palsy, arrived Friday 14:00, surgery Friday 20:00 (6h delay), Borderline."
+      ]
+    },
+    {
+      "batch_index": 7,
+      "scenarios": [
+        "Generated Case 31: [Process_Auditor] 7yo male with supracondylar fracture from running in the park, pucker sign, arrived Saturday 15:00, surgery Saturday 16:15 (1.25h delay), Clear Pass.",
+        "Generated Case 32: [Preventability_Detective] 5-year-old female with supracondylar fracture from scooter race, pink pulseless hand, arrived Saturday 08:30, surgery Saturday 10:30 (2h delay), Clear Pass.",
+        "Generated Case 33: [Delay_Driver_Profiler] 10yo male with supracondylar fracture from motorcycle accident, compartment syndrome, arrived Saturday 12:00, surgery Saturday 18:00 (6h delay), Clear Fail.",
+        "Generated Case 34: [Exclusion_Hunter] 6yo female with supracondylar fracture from a diving board slip, normal neurovascular status, arrived Sunday 09:00, surgery Sunday 10:30 (1.5h delay), Clear Pass.",
+        "Generated Case 35: [Safety_Signal] 8-year-old male with supracondylar fracture from trampoline, AIN palsy, arrived Friday 13:00, surgery Friday 17:00 (4h delay), Borderline."
+      ]
+    },
+    {
+      "batch_index": 8,
+      "scenarios": [
+        "Generated Case 36: [Documentation_Gap] 9yo female with supracondylar fracture due to falling off a horse, pink pulseless hand, arrived Saturday 14:00, surgery Saturday 22:00 (8h delay), Clear Fail.",
+        "Generated Case 37: [Process_Auditor] 5yo male with supracondylar fracture from a climbing accident, compartment syndrome, arrived Friday 18:00, surgery Saturday 04:00 (10h delay), Clear Fail.",
+        "Generated Case 38: [Preventability_Detective] 6-year-old female with supracondylar fracture from an in-line skating accident, pucker sign, arrived Saturday 11:30, surgery Saturday 12:30 (1h delay), Clear Pass.",
+        "Generated Case 39: [Delay_Driver_Profiler] 7yo male with supracondylar fracture following a basketball fall, pink pulseless hand, arrived Sunday 20:00, surgery Monday 07:00 (11h delay), Borderline.",
+        "Generated Case 40: [Exclusion_Hunter] 8-year-old female with supracondylar fracture from a school playground accident, normal neurovascular status, arrived Friday 12:00, surgery Friday 15:00 (3h delay), Clear Pass."
+      ]
+    },
+    {
+      "batch_index": 9,
+      "scenarios": [
+        "Generated Case 41: [Safety_Signal] 4-year-old male with supracondylar fracture from backyard sports, AIN palsy, arrived Sunday 18:00, surgery Sunday 20:30 (2.5h delay), Clear Pass.",
+        "Generated Case 42: [Documentation_Gap] 9yo female with supracondylar fracture from a picnic accident, pink pulseless hand, arrived Saturday 10:00, surgery Sunday 00:00 (14h delay), Clear Fail.",
+        "Generated Case 43: [Process_Auditor] 5yo male with supracondylar fracture from a birthday party accident, pucker sign, arrived Saturday 03:00, surgery Saturday 05:30 (2.5h delay), Clear Pass.",
+        "Generated Case 44: [Preventability_Detective] 6-year-old female with supracondylar fracture from a zoo trip, compartment syndrome, arrived Friday 10:00, surgery Friday 11:30 (1.5h delay), Clear Pass.",
+        "Generated Case 45: [Delay_Driver_Profiler] 10yo male with supracondylar fracture after a batting cage fall, AIN palsy, arrived Saturday 17:00, surgery Saturday 19:00 (2h delay), Clear Pass."
+      ]
+    },
+    {
+      "batch_index": 10,
+      "scenarios": [
+        "Generated Case 46: [Exclusion_Hunter] 7yo female with supracondylar fracture from a family outing accident, normal neurovascular status, arrived Sunday 15:00, surgery Sunday 17:00 (2h delay), Clear Pass.",
+        "Generated Case 47: [Safety_Signal] 6yo male with supracondylar fracture due to running into a wall, pink pulseless hand, arrived Friday 11:00, surgery Friday 23:00 (12h delay), Clear Fail.",
+        "Generated Case 48: [Documentation_Gap] 8-year-old female with supracondylar fracture from collapsing swing set, AIN palsy, arrived Saturday 14:00, surgery Saturday 18:00 (4h delay), Borderline.",
+        "Generated Case 49: [Process_Auditor] 5yo male with supracondylar fracture from an in-home fall, compartment syndrome, arrived Sunday 21:00, surgery Monday 06:00 (9h delay), Clear Fail.",
+        "Generated Case 50: [Preventability_Detective] 10yo female with supracondylar fracture from a sports collision, pink pulseless hand, arrived Friday 12:00, surgery Friday 14:00 (2h delay), Clear Pass."
+      ]
+    }
+  ]
+}

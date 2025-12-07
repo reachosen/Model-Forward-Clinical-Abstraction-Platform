@@ -8,8 +8,10 @@ against patient data.
 import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
+import json
 
 from ca_factory.agents.base import BaseAgent, AgentValidationError
+from ca_factory.core.prompt_builder import build_metric_framed_prompt, EXAMPLE_RULE_EVALUATION_SCHEMA
 
 logger = logging.getLogger(__name__)
 
@@ -298,7 +300,7 @@ class RuleEvaluationAgent(BaseAgent):
         include_evidence: bool
     ) -> Dict[str, Any]:
         """
-        Evaluate a single rule.
+        Evaluate a single rule using LLM.
 
         Args:
             rule: Rule definition
@@ -306,156 +308,118 @@ class RuleEvaluationAgent(BaseAgent):
             include_evidence: Include detailed evidence
 
         Returns:
-            Rule evaluation result
+            Rule evaluation result (JSON from LLM)
         """
         rule_id = rule["ruleId"]
-
         logger.debug(f"Evaluating rule: {rule_id}")
 
-        # Mock rule evaluation logic
-        # In production, this would use LLM to evaluate rule against evidence
-        status, confidence, rationale, evidence = self._mock_rule_evaluation(
-            rule=rule,
-            patient_data=patient_data
+        # Construct metric context from rule details
+        metric_context_str = (
+            f"Rule ID: {rule_id}\n"
+            f"Rule Name: {rule['ruleName']}\n"
+            f"Description: {rule['description']}"
         )
 
+        core_body = f"""
+Evaluate the following clinical rule against the provided patient data.
+Your response MUST be in JSON format, adhering to the following schema:
+
+{json.dumps(EXAMPLE_RULE_EVALUATION_SCHEMA, indent=2)}
+
+Clinical Rule to Evaluate:
+{json.dumps(rule, indent=2)}
+
+Patient Data:
+{json.dumps(patient_data, indent=2)}
+
+Strictly adhere to the rule's description.
+If patient data is insufficient to make a determination, use "unclear" status.
+Do NOT invent information.
+"""
+        full_prompt = build_metric_framed_prompt(
+            role_name="Clinical Rule Evaluator",
+            core_body=core_body,
+            metric_context=metric_context_str
+        )
+
+        # --- MOCK LLM CALL ---
+        # In production, this would involve a real LLM API call:
+        # llm_response = await self.call_llm(full_prompt, json_mode=True)
+        # parsed_response = json.loads(llm_response.text)
+        # ---------------------
+        
+        # Call the adapted mock to get a JSON-like response
+        llm_output = self._mock_rule_evaluation_llm(rule=rule, patient_data=patient_data)
+
+        # The LLM output is expected to conform to EXAMPLE_RULE_EVALUATION_SCHEMA
         evaluation = {
-            "ruleId": rule_id,
+            "ruleId": llm_output.get("rule_id", rule_id),
             "ruleName": rule["ruleName"],
-            "category": rule["category"],
-            "status": status,
-            "isRequired": rule["isRequired"],
-            "description": rule["description"],
-            "rationale": rationale,
-            "confidence": confidence,
+            "category": rule["category"], # Retain from original rule def
+            "status": llm_output.get("status", "unclear"),
+            "isRequired": rule["isRequired"], # Retain from original rule def
+            "description": rule["description"], # Retain from original rule def
+            "rationale": llm_output.get("rationale", "No rationale provided by LLM mock."),
+            "confidence": llm_output.get("confidence", 0.7), # LLM might provide confidence
             "evaluatedAt": datetime.utcnow().isoformat()
         }
 
-        if include_evidence:
-            evaluation["evidence"] = evidence
+        if include_evidence and llm_output.get("evidence"):
+            evaluation["evidence"] = llm_output["evidence"]
 
         return evaluation
 
-    def _mock_rule_evaluation(
+    def _mock_rule_evaluation_llm(
         self,
         rule: Dict[str, Any],
         patient_data: Dict[str, Any]
-    ) -> tuple:
+    ) -> Dict[str, Any]:
         """
-        Mock rule evaluation logic.
-
-        Args:
-            rule: Rule definition
-            patient_data: Patient data
-
-        Returns:
-            Tuple of (status, confidence, rationale, evidence)
+        Mock LLM rule evaluation logic, returning JSON matching EXAMPLE_RULE_EVALUATION_SCHEMA.
         """
         rule_id = rule["ruleId"]
+        
+        # Default response
+        response = {
+            "rule_id": rule_id,
+            "status": "unclear",
+            "rationale": f"Mock rationale for rule {rule_id}: could not determine from patient data.",
+            "evidence": []
+        }
 
-        # Simple mock logic for demonstration
-        if rule_id == "CLABSI-001":
+        # Simple mock logic based on patient_data
+        if rule_id == "CLABSI-001": # Central line present for >2 calendar days
             if patient_data.get("central_line_days", 0) > 2:
-                return (
-                    "pass",
-                    0.95,
-                    f"Central line present for {patient_data['central_line_days']} days",
-                    [
-                        {
-                            "id": "E001",
-                            "type": "SIGNAL",
-                            "content": f"Central line inserted on Day {patient_data.get('line_insertion_day', 1)}",
-                            "timestamp": datetime.utcnow().isoformat(),
-                            "strength": "strong"
-                        }
-                    ]
-                )
+                response["status"] = "pass"
+                response["rationale"] = f"Central line present for {patient_data['central_line_days']} days."
+                response["evidence"].append({"evidence_id": "MOCK-EV-001", "content": f"Central line inserted on Day {patient_data.get('line_insertion_day', 1)}"})
             else:
-                return ("fail", 0.90, "Central line present for <2 days", [])
+                response["status"] = "fail"
+                response["rationale"] = "Central line present for <= 2 days."
 
-        elif rule_id == "CLABSI-002":
+        elif rule_id == "CLABSI-002": # Positive blood culture
             if patient_data.get("blood_culture_positive", False):
-                return (
-                    "pass",
-                    0.98,
-                    f"Positive blood culture for {patient_data.get('organism', 'unknown')}",
-                    [
-                        {
-                            "id": "E002",
-                            "type": "LAB",
-                            "content": f"Blood culture positive for {patient_data.get('organism', 'unknown')}",
-                            "timestamp": datetime.utcnow().isoformat(),
-                            "strength": "strong"
-                        }
-                    ]
-                )
+                response["status"] = "pass"
+                response["rationale"] = f"Positive blood culture for {patient_data.get('organism', 'unknown')}."
+                response["evidence"].append({"evidence_id": "MOCK-EV-002", "content": f"Blood culture positive for {patient_data.get('organism', 'unknown')}"})
             else:
-                return ("fail", 0.95, "No positive blood culture", [])
+                response["status"] = "fail"
+                response["rationale"] = "No positive blood culture."
 
-        elif rule_id == "CLABSI-003":
+        elif rule_id == "CLABSI-003": # Clinical symptoms present
             if patient_data.get("fever_present", False):
-                return (
-                    "pass",
-                    0.88,
-                    f"Fever documented ({patient_data.get('temp_celsius', 0)}°C)",
-                    [
-                        {
-                            "id": "E003",
-                            "type": "SIGNAL",
-                            "content": f"Temperature: {patient_data.get('temp_celsius', 0)}°C",
-                            "timestamp": datetime.utcnow().isoformat(),
-                            "strength": "strong"
-                        }
-                    ]
-                )
+                response["status"] = "pass"
+                response["rationale"] = f"Fever documented ({patient_data.get('temp_celsius', 0)}°C)."
+                response["evidence"].append({"evidence_id": "MOCK-EV-003", "content": f"Temperature: {patient_data.get('temp_celsius', 0)}°C"})
             else:
-                return ("fail", 0.80, "No clinical symptoms documented", [])
+                response["status"] = "fail"
+                response["rationale"] = "No clinical symptoms documented."
+        
+        # ... add more rule logic if necessary for other CLABSI rules
+        # For simplicity, other rules will default to "unclear" for this mock
 
-        elif rule_id == "CLABSI-004":
-            if not patient_data.get("alternate_source", False):
-                return (
-                    "pass",
-                    0.75,
-                    "No alternate infection source identified",
-                    [
-                        {
-                            "id": "E004",
-                            "type": "NOTE",
-                            "content": "Clinical assessment: no other infection source identified",
-                            "timestamp": datetime.utcnow().isoformat(),
-                            "strength": "moderate"
-                        }
-                    ]
-                )
-            else:
-                return ("fail", 0.85, "Alternate infection source present", [])
-
-        elif rule_id == "CLABSI-005":
-            insertion_day = patient_data.get("line_insertion_day", 1)
-            culture_day = patient_data.get("positive_culture_day", 1)
-            days_diff = culture_day - insertion_day
-
-            if 3 <= days_diff <= 7:
-                return (
-                    "pass",
-                    0.92,
-                    f"Positive culture on Day {culture_day}, within infection window",
-                    [
-                        {
-                            "id": "E005",
-                            "type": "EVENT",
-                            "content": f"Infection window: Day {insertion_day} to Day {insertion_day + 7}",
-                            "timestamp": datetime.utcnow().isoformat(),
-                            "strength": "strong"
-                        }
-                    ]
-                )
-            else:
-                return ("fail", 0.88, "Outside infection window", [])
-
-        else:
-            # Default for unmocked rules
-            return ("not_evaluated", 0.5, "Rule not evaluated in mock", [])
+        response["confidence"] = 0.8 # Mock confidence
+        return response
 
     def _generate_evaluation_summary(
         self,
@@ -473,7 +437,7 @@ class RuleEvaluationAgent(BaseAgent):
         total_rules = len(evaluations)
         passed_rules = sum(1 for e in evaluations if e["status"] == "pass")
         failed_rules = sum(1 for e in evaluations if e["status"] == "fail")
-        not_evaluated = sum(1 for e in evaluations if e["status"] == "not_evaluated")
+        not_evaluated = sum(1 for e in evaluations if e["status"] == "not_evaluated" or e["status"] == "unclear")
 
         required_rules = [e for e in evaluations if e["isRequired"]]
         required_total = len(required_rules)

@@ -26,6 +26,10 @@
       "safety_signals",
       "documentation_gaps"
     ],
+    "archetypes": [
+      "Process_Auditor",
+      "Delay_Driver_Profiler"
+    ],
     "primary_archetype": "Process_Auditor",
     "expected_signal_groups": [
       "delay_drivers",
@@ -63,6 +67,10 @@
       "safety_signals",
       "documentation_gaps"
     ],
+    "archetypes": [
+      "Process_Auditor",
+      "Delay_Driver_Profiler"
+    ],
     "primary_archetype": "Process_Auditor",
     "expected_signal_groups": [
       "delay_drivers",
@@ -99,6 +107,10 @@
       "safety_signals",
       "documentation_gaps"
     ],
+    "archetypes": [
+      "Process_Auditor",
+      "Exclusion_Hunter"
+    ],
     "primary_archetype": "Process_Auditor",
     "expected_signal_groups": [
       "outcome_risks",
@@ -133,6 +145,10 @@
       "outcome_risks",
       "documentation_gaps",
       "safety_signals"
+    ],
+    "archetypes": [
+      "Process_Auditor",
+      "Preventability_Detective"
     ],
     "primary_archetype": "Process_Auditor",
     "expected_signal_groups": [
@@ -170,6 +186,10 @@
       "outcome_risks",
       "readmission_risks"
     ],
+    "archetypes": [
+      "Preventability_Detective",
+      "Outcome_Tracker"
+    ],
     "primary_archetype": "Preventability_Detective",
     "expected_signal_groups": [
       "infection_risks",
@@ -206,6 +226,11 @@
       "readmission_risks",
       "bundle_compliance",
       "safety_signals"
+    ],
+    "archetypes": [
+      "Preventability_Detective",
+      "Outcome_Tracker",
+      "Data_Scavenger"
     ],
     "primary_archetype": "Preventability_Detective",
     "expected_signal_groups": [

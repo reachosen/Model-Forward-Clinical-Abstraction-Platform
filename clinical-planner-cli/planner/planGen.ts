@@ -1,0 +1,54 @@
+import { PlanningInput } from '../models/PlanningInput';
+import { PlannerPlanV2 } from '../models/PlannerPlan';
+import { S0_InputNormalizationStage } from '../orchestrator/stages/S0_InputNormalization';
+import { S1_DomainResolutionStage } from '../orchestrator/stages/S1_DomainResolution';
+import { S2_StructuralSkeletonStage } from '../orchestrator/stages/S2_StructuralSkeleton';
+import { S3_TaskGraphIdentificationStage } from '../orchestrator/stages/S3_TaskGraphIdentification';
+import { S4_PromptPlanGenerationStage } from '../orchestrator/stages/S4_PromptPlanGeneration';
+import { S5_TaskExecutionStage } from '../orchestrator/stages/S5_TaskExecution';
+import { S6_PlanAssemblyStage } from '../orchestrator/stages/S6_PlanAssembly';
+
+export interface PlannerConfig {
+  apiKey?: string;
+  model?: string;
+  useMock?: boolean;
+  temperature?: number;
+}
+
+export async function generatePlan(
+  input: PlanningInput,
+  config: PlannerConfig
+): Promise<PlannerPlanV2> { // Return V2 plan
+  
+  console.log('🚀 Starting S0-S6 Pipeline via generatePlan...');
+
+  // S0
+  const s0 = new S0_InputNormalizationStage();
+  const routed = await s0.execute(input as any);
+
+  // S1
+  const s1 = new S1_DomainResolutionStage();
+  const domain = await s1.execute(routed);
+
+  // S2
+  const s2 = new S2_StructuralSkeletonStage();
+  const skeleton = await s2.execute(routed, domain);
+
+  // S3
+  const s3 = new S3_TaskGraphIdentificationStage();
+  const graph = await s3.execute(routed, domain, skeleton);
+
+  // S4
+  const s4 = new S4_PromptPlanGenerationStage();
+  const prompts = await s4.execute(graph, domain);
+
+  // S5
+  const s5 = new S5_TaskExecutionStage();
+  const taskResults = await s5.execute(prompts, graph, skeleton, domain);
+
+  // S6
+  const s6 = new S6_PlanAssemblyStage();
+  const plan = await s6.execute(skeleton, taskResults, domain);
+
+  return plan;
+}

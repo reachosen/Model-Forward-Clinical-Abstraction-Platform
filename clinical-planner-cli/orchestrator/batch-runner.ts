@@ -21,6 +21,8 @@ import { S4_PromptPlanGenerationStage } from './stages/S4_PromptPlanGeneration';
 import { S5_TaskExecutionStage } from './stages/S5_TaskExecution';
 import { S6_PlanAssemblyStage } from './stages/S6_PlanAssembly';
 import { getAllDomains, getConcernsByDomain, getConcernMetadata } from '../config/concernRegistry';
+import { SnowflakeLoader } from '../loaders/SnowflakeLoader';
+import { S5OutputLoader } from '../loaders/S5_OutputLoader';
 
 // ============================================================================
 // ANSI Colors for Terminal
@@ -395,6 +397,19 @@ async function executePipeline(concernIds: string[]): Promise<void> {
       const filename = `plan_${concernId}_${Date.now()}.json`;
       const filepath = path.join(outputDir, filename);
       fs.writeFileSync(filepath, JSON.stringify(plan, null, 2));
+
+      // Generate Snowflake SQL (Standard Ledger)
+      const loader = new SnowflakeLoader({
+        enableDebugProvenance: process.env.ENABLE_DEBUG_PROVENANCE === 'true',
+        outputDir: path.join(outputDir, 'sql')
+      });
+      loader.generateSql(plan);
+
+      // Generate S5 Canonical SQL (Detailed Shredded Tables)
+      const s5Loader = new S5OutputLoader({
+        outputDir: path.join(outputDir, 'sql')
+      });
+      s5Loader.generateSql(taskResults, plan.plan_metadata.plan_id);
 
       const duration = Date.now() - startTime;
       log(`  ✅ Success! Plan ID: ${plan.plan_metadata.plan_id}`, 'green');

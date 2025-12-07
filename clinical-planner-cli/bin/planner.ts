@@ -20,7 +20,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 import { Command } from 'commander';
 import * as fs from 'fs/promises';
 import { PlanningInput } from '../models/PlanningInput';
-import { generatePlan, PlannerConfig } from '../planner/plannerAgent';
+import { generatePlan, PlannerConfig } from '../planner/planGen';
 import { researchPlanImplementCommand } from '../commands/researchPlanImplement';
 import { researchCommand } from '../commands/research';
 import { listCache, refreshCache, clearCache } from '../commands/cache';
@@ -62,6 +62,7 @@ program
       console.log(`   Model: ${options.model}\n`);
 
       const input: PlanningInput = {
+        planning_input_id: `input_${Date.now()}`,
         planning_id: `input_${Date.now()}`,
         concern_id: options.concern,
         concern: options.concern, // V9.1 field
@@ -223,6 +224,15 @@ function inferArchetype(concernId: string): string {
 
   return 'HAC';
 }
+
+import { flywheel } from '../commands/flywheel';
+
+// ... (existing imports)
+
+// ============================================
+// FLYWHEEL COMMAND (Prompt Refinery)
+// ============================================
+program.addCommand(flywheel);
 
 // ============================================
 // PARSE AND EXECUTE

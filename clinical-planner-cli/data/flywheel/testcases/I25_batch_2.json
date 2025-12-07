@@ -1,0 +1,175 @@
+{
+  "batch_plan": {
+    "batch_index": 2,
+    "scenario_count": 5,
+    "scenarios": [
+      "Delay > 18h due to true lack of NPO status (ate breakfast) (Delay_Driver_Profiler)",
+      "Transfer patient from rural hospital with Gartland III, arrived with compartment syndrome signs (Exclusion_Hunter)",
+      "Simple Gartland II, prompt reduction within 4 hours, no complications (Process_Auditor)",
+      "Delay > 18h due to OR capacity issues (systemic delay) (Delay_Driver_Profiler)",
+      "Poly-trauma patient, SCH fixation delayed for neurosurgery clearance (Exclusion_Hunter)"
+    ]
+  },
+  "test_cases": [
+    {
+      "test_id": "I25-BATCH2-001",
+      "concern_id": "I25",
+      "description": "Process_Auditor case testing delay due to NPO status > 18h.",
+      "patient_payload": "An 8-year-old male presented to the emergency department at 09:15 AM after sustaining a Gartland II supracondylar humerus fracture during a fall from a swing. The patient's mother reported that he had eaten breakfast at 07:30 AM. Initial neurovascular assessment revealed a pink, pulseless hand, and a negative AIN motor exam. Due to the recent intake of food, the patient was not cleared for anesthesia until 02:30 PM. Surgery was eventually initiated at 11:00 PM, resulting in a total delay of 13 hours. The orthopedic team noted no signs of compartment syndrome during the pre-op evaluation, and the patient's pulse was not palpable at the wrist. Overall, the surgical intervention was performed successfully with no immediate complications noted post-operatively.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency department at 09:15 AM",
+            "not cleared for anesthesia until 02:30 PM",
+            "Surgery was eventually initiated at 11:00 PM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland II supracondylar humerus fracture",
+            "no signs of compartment syndrome"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "reason for delay",
+            "NPO status confirmation"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-002",
+      "concern_id": "I25",
+      "description": "Exclusion_Hunter case involving compartment syndrome signs in transfer.",
+      "patient_payload": "A 10-year-old girl was transferred from a rural hospital to our facility at 03:00 PM after sustaining a Gartland III supracondylar humerus fracture. Upon arrival, she exhibited early signs of compartment syndrome, including severe pain and swelling in the forearm, with a documented pressure of 40 mmHg on compartment measurement. Her neurovascular status was compromised with a white, cold pulseless hand. The orthopedic team rapidly assessed the situation, but due to the significant delay in transfer, definitive surgical intervention was initiated at 10:30 PM. The case was complicated by the initial lack of proper assessment at the rural facility, resulting in a need for urgent fasciotomy.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "transferred from a rural hospital at 03:00 PM",
+            "early signs of compartment syndrome",
+            "surgical intervention was initiated at 10:30 PM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland III supracondylar humerus fracture",
+            "need for urgent fasciotomy"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation discrepancy",
+            "initial assessment at transfer facility"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-003",
+      "concern_id": "I25",
+      "description": "Process_Auditor case testing prompt reduction within 4 hours.",
+      "patient_payload": "A 6-year-old boy presented to our emergency department at 10:45 AM with a Gartland II supracondylar humerus fracture after a fall while playing. He was assessed promptly, and his neurovascular examination demonstrated a pink, warm hand with full sensation. The orthopedic team prioritized his case due to the nature of the injury, and surgery was scheduled immediately. He was taken to the operating room by 02:00 PM, achieving a total time to OR of just over 3 hours. Post-operatively, he showed no signs of complications, and the AIN motor exam was intact.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to our emergency department at 10:45 AM",
+            "taken to the operating room by 02:00 PM",
+            "no signs of complications"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland II supracondylar humerus fracture",
+            "AIN motor exam was intact"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "timeliness of surgical intervention",
+            "pre-operative assessment"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-004",
+      "concern_id": "I25",
+      "description": "Process_Auditor case testing delay > 18h due to OR capacity issues.",
+      "patient_payload": "An 11-year-old female presented to the emergency department at 08:30 AM with a Gartland III supracondylar humerus fracture sustained during a soccer game. Initial examination revealed a pink hand with some sensory deficits, prompting urgent orthopedic consultation. However, due to an overcrowded operating room and multiple emergent cases, her surgery was delayed. The patient remained in the hospital for monitoring until 03:30 AM the next day when she was finally taken to the OR, resulting in a total delay of 19 hours. Throughout her stay, she was monitored for signs of compartment syndrome, which were not evident.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency department at 08:30 AM",
+            "surgery was delayed due to an overcrowded operating room",
+            "finally taken to the OR at 03:30 AM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland III supracondylar humerus fracture",
+            "monitoring for signs of compartment syndrome"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "reason for delay",
+            "OR capacity issues"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-005",
+      "concern_id": "I25",
+      "description": "Exclusion_Hunter case involving poly-trauma and neurosurgery clearance delay.",
+      "patient_payload": "A 9-year-old boy was brought to the emergency department at 07:45 PM after being involved in a multi-vehicle accident. He sustained a Gartland II supracondylar humerus fracture along with a head injury. Due to the need for neurosurgical evaluation, his definitive fixation was delayed. Neurovascular assessment indicated a pink hand with full pulses but the orthopedic team was unable to proceed with surgery until 01:00 AM the next day after clearance from neurosurgery. Overall, the delay lasted 5 hours before he could undergo surgery, but the orthopedic team noted that this delay was justified given the patient's head injury.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "brought to the emergency department at 07:45 PM",
+            "definitive fixation was delayed due to neurosurgical evaluation",
+            "unable to proceed with surgery until 01:00 AM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland II supracondylar humerus fracture",
+            "delay was justified"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "justification for delay",
+            "coordination with neurosurgery"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    }
+  ]
+}

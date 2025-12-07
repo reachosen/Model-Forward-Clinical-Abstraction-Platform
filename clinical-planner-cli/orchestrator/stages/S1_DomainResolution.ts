@@ -118,6 +118,12 @@ export class S1_DomainResolutionStage {
    * Derive multiple archetypes based on Packet Risks + Signal Groups
    */
   private deriveMultiArchetypes(primary: ArchetypeType, packet?: PacketContext): ArchetypeType[] {
+    // 1. Trust Semantic Packet Explicit Archetypes (V10 Source of Truth)
+    if (packet?.metric?.archetypes && packet.metric.archetypes.length > 0) {
+      return packet.metric.archetypes as ArchetypeType[];
+    }
+
+    // 2. Fallback: Heuristic derivation
     const archetypes = new Set<ArchetypeType>([primary]);
 
     if (!packet?.metric) return Array.from(archetypes);
@@ -142,12 +148,14 @@ export class S1_DomainResolutionStage {
       archetypes.add('Preventability_Detective');
     }
 
-    // Enforce Strict Ordering: Process -> Exclusion -> Preventability -> Data
+    // Enforce Strict Ordering: Process -> Delay -> Exclusion -> Preventability -> Outcome -> Data
     const order: ArchetypeType[] = [
       'Process_Auditor',
+      'Delay_Driver_Profiler',
       'Exclusion_Hunter',
       'Preventability_Detective',
       'Preventability_Detective_Metric',
+      'Outcome_Tracker',
       'Data_Scavenger'
     ];
 

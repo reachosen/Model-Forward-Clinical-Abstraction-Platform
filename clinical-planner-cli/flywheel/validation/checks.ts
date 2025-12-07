@@ -1,0 +1,157 @@
+import { TestCase, EngineOutput } from './types';
+
+export function validateStructural(output: EngineOutput): {
+  passed: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+  if (!output.signals || !Array.isArray(output.signals)) errors.push("Missing 'signals' array");
+  if (typeof output.summary !== 'string') errors.push("Missing 'summary' string");
+  if (!output.followup_questions || !Array.isArray(output.followup_questions)) errors.push("Missing 'followup_questions' array");
+
+  return {
+    passed: errors.length === 0,
+    errors
+  };
+}
+
+export function validateSignals(tc: TestCase, output: EngineOutput): {
+  ok: boolean;
+  recall: number | null;
+  errors: string[];
+} {
+  const errors: string[] = [];
+  const mustFind = tc.expectations.signal_generation.must_find_signals;
+  const minCount = tc.expectations.signal_generation.min_signal_count;
+
+  // Normalize extracted signals
+  const extractedText = (output.signals || []).join(' ').toLowerCase() + " " + (output.summary || "").toLowerCase();
+  
+  let foundCount = 0;
+  const missingSignals = [];
+
+  for (const signal of mustFind) {
+    if (extractedText.includes(signal.toLowerCase())) {
+      foundCount++;
+    } else {
+      missingSignals.push(signal);
+    }
+  }
+
+  const recall = mustFind.length > 0 ? foundCount / mustFind.length : 1;
+  
+  if (missingSignals.length > 0) {
+    errors.push(`Missing must_find_signals: ${missingSignals.slice(0, 3).join(", ")}...`);
+  }
+
+  if ((output.signals?.length || 0) < minCount) {
+    errors.push(`Extracted signal count ${output.signals?.length} < min ${minCount}`);
+  }
+
+  return {
+    ok: errors.length === 0,
+    recall,
+    errors: errors.map(e => `signals:${e}`)
+  };
+}
+
+export function validateSummary(tc: TestCase, output: EngineOutput): {
+  ok: boolean;
+  coverage: number | null;
+  errors: string[];
+} {
+  const errors: string[] = [];
+  const requiredPhrases = tc.expectations.event_summary.must_contain_phrases;
+  const summaryText = (output.summary || "").toLowerCase();
+
+  let foundCount = 0;
+  const missingPhrases = [];
+
+  for (const phrase of requiredPhrases) {
+    if (summaryText.includes(phrase.toLowerCase())) {
+      foundCount++;
+    } else {
+      missingPhrases.push(phrase);
+    }
+  }
+
+  const coverage = requiredPhrases.length > 0 ? foundCount / requiredPhrases.length : 1;
+
+  if (missingPhrases.length > 0) {
+    errors.push(`Summary missing phrases: ${missingPhrases.slice(0, 3).join(", ")}...`);
+  }
+
+  return {
+    ok: errors.length === 0,
+    coverage,
+    errors: errors.map(e => `summary:${e}`)
+  };
+}
+
+export function validateFollowups(tc: TestCase, output: EngineOutput): {
+  ok: boolean;
+  coverage: number | null;
+  errors: string[];
+} {
+  const errors: string[] = [];
+  const requiredThemes = tc.expectations.followup_questions.required_themes;
+  const forbiddenTerms = tc.expectations.followup_questions.forbidden_terms;
+  
+  const questionsText = (output.followup_questions || []).join(' ').toLowerCase();
+
+  // Check Themes (simple substring match on the whole block for now, ideal is semantic but fuzzy is ok)
+  let foundThemes = 0;
+  const missingThemes = [];
+  for (const theme of requiredThemes) {
+    if (questionsText.includes(theme.toLowerCase())) {
+      foundThemes++;
+    } else {
+      missingThemes.push(theme);
+    }
+  }
+
+  const coverage = requiredThemes.length > 0 ? foundThemes / requiredThemes.length : 1;
+  if (missingThemes.length > 0) {
+    errors.push(`Missing themes in follow-ups: ${missingThemes.join(", ")}`);
+  }
+
+  // Check Forbidden
+  for (const term of forbiddenTerms) {
+    if (questionsText.includes(term.toLowerCase())) {
+      errors.push(`Forbidden term found in follow-ups: "${term}"`);
+    }
+  }
+
+  return {
+    ok: errors.length === 0,
+    coverage,
+    errors: errors.map(e => `followups:${e}`)
+  };
+}
+
+export function validateEnrichment(tc: TestCase, output: EngineOutput): {
+  ok: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+  const enrichmentSpecs = tc.expectations as any; // Access optional fields
+
+  // Example check: 20/80 summary
+  if (enrichmentSpecs.enrichment_20_80) {
+    if (!output.enrichment_20_80) {
+      errors.push("enrichment:20_80 summary missing");
+    } else {
+      const text = output.enrichment_20_80.toLowerCase();
+      const keywords = enrichmentSpecs.enrichment_20_80.required_keywords || [];
+      const missing = keywords.filter((k: string) => !text.includes(k.toLowerCase()));
+      if (missing.length > 0) {
+        errors.push(`enrichment:20_80 missing keywords: ${missing.join(", ")}`);
+      }
+    }
+  }
+
+  return {
+    ok: errors.length === 0,
+    errors
+  };
+}

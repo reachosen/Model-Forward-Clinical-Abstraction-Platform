@@ -1,0 +1,19 @@
+{
+  "concern_id": "I25",
+  "total_scenarios": 5,
+  "batch_size": 5,
+  "total_batches": 1,
+  "archetype": "Sample_Context_Rich",
+  "batches": [
+    {
+      "batch_index": 1,
+      "scenarios": [
+        "Generated Case 1: [Process_Auditor] 6yo male with supracondylar fracture from falling off a swing, pink pulseless hand, arrived Saturday 20:00, surgery Sunday 09:00 (13h delay), Borderline.",
+        "Generated Case 2: [Preventability_Detective] 7-year-old female with supracondylar fracture due to skateboard accident, AIN palsy, arrived Sunday 15:30, surgery Sunday 18:00 (2.5h delay), Clear Pass.",
+        "Generated Case 3: [Delay_Driver_Profiler] 5yo male with supracondylar fracture from monkey bars fall, pucker sign, arrived Friday 17:00, surgery Saturday 11:00 (18h delay), Clear Fail.",
+        "Generated Case 4: [Exclusion_Hunter] 9yo female with supracondylar fracture from bicycle crash, compartment syndrome, arrived Saturday 14:00, surgery Saturday 16:00 (2h delay), Clear Pass.",
+        "Generated Case 5: [Safety_Signal] 4-year-old male with supracondylar fracture from trampoline accident, normal neurovascular status, arrived Saturday 12:00, surgery Saturday 14:00 (2h delay), Clear Pass."
+      ]
+    }
+  ]
+}

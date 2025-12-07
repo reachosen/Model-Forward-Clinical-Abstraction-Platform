@@ -7,7 +7,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { ResearchOrchestrator } from '../research/researchOrchestrator';
-import { generatePlan, PlannerConfig } from '../planner/plannerAgent';
+import { generatePlan, PlannerConfig } from '../planner/planGen';
 import { PlanningInput } from '../models/PlanningInput';
 import { PlannerPlanV2 } from '../models/PlannerPlan';
 import { QualityAttributes } from '../models/QualityAttributes';
@@ -92,7 +92,8 @@ export async function researchPlanImplementCommand(options: any) {
   };
 
   // V9.1: Use unified generatePlan entry point
-  const plan = await generatePlan(input, config, research) as PlannerPlanV2;
+  // TODO: Re-integrate research bundle into S0-S6 pipeline
+  const plan = await generatePlan(input, config) as PlannerPlanV2;
 
   // Save plan
   await fs.mkdir(path.join(outputDirectory, '02-plan'), { recursive: true });

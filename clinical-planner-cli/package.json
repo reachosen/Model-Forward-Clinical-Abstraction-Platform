@@ -26,6 +26,7 @@
     "test:gates": "ts-node orchestrator/test-gates-i32b.ts",
     "test:full": "ts-node orchestrator/test-s0-s6-complete.ts",
     "test:s6": "ts-node tests/integration/s6-sufficiency.test.ts",
+    "flywheel": "ts-node bin/planner.ts flywheel",
     "test": "ts-node tests/integration/rpi-workflow.test.ts && ts-node tests/integration/s6-sufficiency.test.ts",
     "test:integration": "ts-node tests/integration/rpi-workflow.test.ts",
     "build": "tsc",

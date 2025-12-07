@@ -8,7 +8,7 @@
 import { PlanningInput } from '../../models/PlannerPlan';
 import { inferPlanningMetadata } from '../../planner/intentInference';
 import { RoutedInput, ValidationResult, InferredMetadata } from '../types';
-import { getAllConcernIds } from '../../config/concernRegistry';
+import { isConcernKnown } from '../../config/concernRegistry';
 
 export class S0_InputNormalizationStage {
   /**
@@ -75,8 +75,9 @@ export class S0_InputNormalizationStage {
     // Priority 2: Extract from concern text using pattern matching
     const concernText = input.concern?.toUpperCase() || '';
 
-    // USNWR patterns (I25, I26, C35, etc.)
-    const usnwrMatch = concernText.match(/\b([ICP]\d{2})\b/);
+    // USNWR patterns (I25, I26, C35, I32a, I25.1, etc.)
+    // Matches: [ICP] + 2 digits + optional letter + optional dot extension
+    const usnwrMatch = concernText.match(/\b([ICP]\d{2,3}([a-z])?(\.\d+)?)\b/);
     if (usnwrMatch) {
       return usnwrMatch[1];
     }
@@ -98,17 +99,11 @@ export class S0_InputNormalizationStage {
       }
     }
 
-    // Priority 3: Map from domain_hint (fallback)
-    const domainToConcernId: Record<string, string> = {
-      'HAC': 'CLABSI', // Default HAC
-      'orthopedics': 'I25',
-      'endocrinology': 'I26',
-      'cardiology': 'I21',
-    };
-
-    if (input.domain_hint && domainToConcernId[input.domain_hint]) {
-      console.warn(`[S0] Using fallback concern_id from domain_hint: ${input.domain_hint}`);
-      return domainToConcernId[input.domain_hint];
+    // Priority 3: Domain hint alone is NOT sufficient to determine concern_id
+    // This is intentional - we want explicit concern IDs, not implicit mapping.
+    // If only domain_hint is provided, S1 will use the semantic packet for resolution.
+    if (input.domain_hint) {
+      console.log(`[S0] Domain inference deferred – will use semantic packet in S1 for domain: ${input.domain_hint}`);
     }
 
     return null;
@@ -136,11 +131,10 @@ export class S0_InputNormalizationStage {
       warnings.push(`concern_id format may be invalid: ${output.concern_id}`);
     }
 
-    // Load recognized concern IDs from centralized config
-    const knownConcernIds = getAllConcernIds();
-
-    if (output.concern_id && !knownConcernIds.includes(output.concern_id)) {
-      warnings.push(`concern_id not in known set: ${output.concern_id}`);
+    // Validate concern_id against centralized registry
+    if (output.concern_id && !isConcernKnown(output.concern_id)) {
+      // This is a warning, not an error - S1 may still resolve via semantic packet
+      warnings.push(`concern_id '${output.concern_id}' not in registry – S1 will attempt semantic packet resolution`);
     }
 
     return {

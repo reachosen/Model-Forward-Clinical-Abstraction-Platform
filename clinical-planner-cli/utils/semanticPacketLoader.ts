@@ -11,6 +11,10 @@ export interface SemanticMetric {
   review_questions: string[];
   signal_groups: string[];
   priority_for_clinical_review: string;
+  primary_archetype?: string;
+  archetypes?: string[];
+  expected_signal_groups?: string[];
+  expected_signal_group_count?: number;
 }
 
 export interface SemanticSignals {

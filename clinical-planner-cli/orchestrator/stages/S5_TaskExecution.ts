@@ -11,13 +11,142 @@ import {
   DomainContext,
   TaskOutput,
   ValidationResult,
+  ArchetypeType,
 } from '../types';
 import { validateTaskWithArchetypeContext } from '../validators/ContextAwareValidation';
 import OpenAI from 'openai';
+import { ChatCompletionContentPart, ChatCompletionContentPartText } from 'openai/resources/chat/completions';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { getSignalEnrichmentCoreBody } from '../prompts/signalEnrichment';
+import { getEventSummaryCoreBody } from '../prompts/eventSummary';
+import { getSummary2080CoreBody } from '../prompts/summary2080';
+import { getFollowupQuestionsCoreBody } from '../prompts/followupQuestions';
+import { getClinicalReviewPlanCoreBody } from '../prompts/clinicalReviewPlan';
+import { getMultiArchetypeSynthesisDraftCoreBody, getMultiArchetypeSynthesisVerifyCoreBody } from '../prompts/multiArchetypeSynthesis';
+import { signalEnrichmentJsonSchema, SignalEnrichmentResult } from '../schemas/signalEnrichmentSchema';
+import { eventSummaryJsonSchema, EventSummaryResult } from '../schemas/eventSummarySchema';
+import { followupQuestionsJsonSchema, FollowupQuestionsResult } from '../schemas/followupQuestionsSchema';
+import { clinicalReviewPlanJsonSchema, ClinicalReviewPlanResult } from '../schemas/clinicalReviewPlanSchema';
+import { multiArchetypeSynthesisJsonSchema, MultiArchetypeSynthesisResult } from '../schemas/multiArchetypeSynthesisSchema';
+import { buildMetricFramedPrompt, buildDynamicRoleName, buildMetricContextString } from '../utils/promptBuilder';
 
 dotenv.config({ path: path.join(__dirname, '../../../.env') });
+
+const TASK_SCHEMAS: Partial<Record<string, object>> = {
+  signal_enrichment: signalEnrichmentJsonSchema,
+  event_summary: eventSummaryJsonSchema,
+  followup_questions: followupQuestionsJsonSchema,
+  clinical_review_plan: clinicalReviewPlanJsonSchema,
+  // CoVE tasks use the same schema
+  multi_archetype_synthesis_draft: multiArchetypeSynthesisJsonSchema,
+  multi_archetype_synthesis_verify: multiArchetypeSynthesisJsonSchema,
+};
+
+function parseSignalEnrichment(raw: any): SignalEnrichmentResult {
+  let parsed = raw;
+  if (typeof raw === 'string') {
+     try {
+       parsed = JSON.parse(raw);
+     } catch (e) {
+       throw new Error(`signal_enrichment: invalid JSON: ${(e as Error).message}`);
+     }
+  }
+
+  if (
+    !parsed ||
+    typeof parsed !== 'object' ||
+    !Array.isArray((parsed as any).signal_groups)
+  ) {
+    throw new Error('signal_enrichment: missing signal_groups array');
+  }
+
+  return parsed as SignalEnrichmentResult;
+}
+
+function parseEventSummary(raw: any): EventSummaryResult {
+  let parsed = raw;
+  if (typeof raw === 'string') {
+     try {
+       parsed = JSON.parse(raw);
+     } catch (e) {
+       throw new Error(`event_summary: invalid JSON: ${(e as Error).message}`);
+     }
+  }
+
+  if (
+    !parsed ||
+    typeof parsed !== 'object' ||
+    typeof (parsed as any).event_summary !== 'string'
+  ) {
+    throw new Error('event_summary: missing or invalid event_summary field');
+  }
+
+  return parsed as EventSummaryResult;
+}
+
+function parseFollowupQuestions(raw: any): FollowupQuestionsResult {
+  let parsed = raw;
+  if (typeof raw === 'string') {
+     try {
+       parsed = JSON.parse(raw);
+     } catch (e) {
+       throw new Error(`followup_questions: invalid JSON: ${(e as Error).message}`);
+     }
+  }
+
+  if (
+    !parsed ||
+    typeof parsed !== 'object' ||
+    !Array.isArray((parsed as any).followup_questions)
+  ) {
+    throw new Error('followup_questions: missing followup_questions array');
+  }
+
+  return parsed as FollowupQuestionsResult;
+}
+
+function parseClinicalReviewPlan(raw: any): ClinicalReviewPlanResult {
+  let parsed = raw;
+  if (typeof raw === 'string') {
+     try {
+       parsed = JSON.parse(raw);
+     } catch (e) {
+       throw new Error(`clinical_review_plan: invalid JSON: ${(e as Error).message}`);
+     }
+  }
+
+  if (
+    !parsed ||
+    typeof parsed !== 'object' ||
+    !Array.isArray((parsed as any).clinical_tools)
+  ) {
+    throw new Error('clinical_review_plan: missing clinical_tools array');
+  }
+
+  return parsed as ClinicalReviewPlanResult;
+}
+
+function parseMultiArchetypeSynthesis(raw: any): MultiArchetypeSynthesisResult {
+  let parsed = raw;
+  if (typeof raw === 'string') {
+     try {
+       parsed = JSON.parse(raw);
+     } catch (e) {
+       throw new Error(`multi_archetype_synthesis: invalid JSON: ${(e as Error).message}`);
+     }
+  }
+
+  if (
+    !parsed ||
+    typeof parsed !== 'object' ||
+    !Array.isArray((parsed as any).merged_signal_groups)
+  ) {
+    throw new Error('multi_archetype_synthesis: missing merged_signal_groups array');
+  }
+
+  return parsed as MultiArchetypeSynthesisResult;
+}
 
 export interface TaskExecutionResults {
   execution_id: string;
@@ -54,23 +183,71 @@ async function callLLM(options: LLMCallOptions & { task_type?: string }): Promis
       messages: [{ role: 'user', content: finalPrompt }],
     };
 
-    if (options.response_format === 'json' || options.response_format === 'json_schema') {
+    if (options.response_format === 'json_schema' && options.schema) {
+      // Use OpenAI's structured output via tools
+      apiParams.tools = [
+        {
+          type: 'function',
+          function: {
+            name: 'extract_data', // A dummy function name for schema adherence
+            description: `Extracts data according to the provided schema for task type: ${options.task_type}`,
+            parameters: options.schema,
+          },
+        },
+      ];
+      apiParams.tool_choice = { type: 'function', function: { name: 'extract_data' } };
+    } else if (options.response_format === 'json') {
+      // For general JSON, use response_format directly
       apiParams.response_format = { type: 'json_object' };
     }
 
     const completion = await openai.chat.completions.create(apiParams);
-    const content = completion.choices[0]?.message?.content;
-    if (!content) throw new Error('No content in OpenAI response');
+    const message = completion.choices[0]?.message;
 
-    if (options.response_format === 'json' || options.response_format === 'json_schema') {
+    if (!message) {
+      console.log('    ⚠️  OpenAI response message is empty. Raw completion:', completion);
+      throw new Error('No message in OpenAI response');
+    }
+
+    if (options.response_format === 'json_schema' && options.schema) {
+      // For structured output via tools, the content is in tool_calls
+      const toolCall = message.tool_calls?.[0];
+      if (!toolCall || toolCall.function.name !== 'extract_data') {
+        throw new Error('OpenAI did not call the expected structured extraction tool.');
+      }
+      try {
+        return JSON.parse(toolCall.function.arguments);
+      } catch (parseError) {
+        throw new Error(`Invalid JSON arguments from OpenAI tool call: ${parseError}`);
+      }
+    } else if (options.response_format === 'json') {
+      const content = message.content;
+      if (!content) {
+        console.log('    ⚠️  OpenAI response content is empty for JSON mode. Raw message:', message);
+        throw new Error('No content in OpenAI response for JSON mode');
+      }
       try {
         return JSON.parse(content);
       } catch (parseError) {
         throw new Error(`Invalid JSON response from OpenAI: ${parseError}`);
       }
-    }
+    } else { // Handle 'text' response_format, which might also have array content
+      let extractedContent: string | null = null;
+      if (typeof message.content === 'string') {
+        extractedContent = message.content;
+      } else if (Array.isArray(message.content)) {
+        extractedContent = (message.content as ChatCompletionContentPart[])
+          .filter((part): part is ChatCompletionContentPartText => part.type === 'text' && typeof part.text === 'string')
+          .map(part => part.text)
+          .join('\n'); // Join text parts with newlines
+      }
 
-    return { result: content };
+      if (!extractedContent || extractedContent.trim().length === 0) {
+        console.log('    ⚠️  OpenAI response content is empty for TEXT mode. Raw message:', message);
+        throw new Error('No text content in OpenAI response');
+      }
+      return { result: extractedContent };
+    }
 
   } catch (error: any) {
     console.error(`    ❌ OpenAI API error: ${error.message}`);
@@ -79,38 +256,18 @@ async function callLLM(options: LLMCallOptions & { task_type?: string }): Promis
 }
 
 function loadPromptTemplate(template_id: string, context: any): string {
-  const { domain, archetype, task_type, skeleton, ranking_context, ortho_context, task_outputs } = context;
+  const { domain, archetype, task_type, ortho_context, task_outputs } = context;
 
-  // Build Ortho Context String
-  let orthoContextString = '';
-  if (ortho_context) {
-    const { metric, signals } = ortho_context;
-    orthoContextString = `
-**ORTHOPEDIC METRIC CONTEXT (HIGH PRIORITY):**
-- **Metric Name:** ${metric.metric_name}
-- **Clinical Focus:** ${metric.clinical_focus}
-- **Rationale:** ${metric.rationale}
-
-**Risk Factors (MUST ADDRESS):**
-${metric.risk_factors.map((r: string) => `- ${r}`).join('\n')}
-
-**Review Questions (MUST ANSWER):**
-${metric.review_questions.map((q: string) => `- ${q}`).join('\n')}
-
-**Signal Groups & Definitions:**
-${metric.signal_groups.map((gid: string) => {
-     const sigs = signals[gid] || [];
-     return `- **${gid}**: ${sigs.join(', ')}`;
-  }).join('\n')}
-`;
-  }
+  // Build metric context string using the domain-agnostic builder
+  const metricContextString = buildMetricContextString(ortho_context);
+  const metricName = ortho_context?.metric?.metric_name;
 
   // Aggregate Lane Summaries for Synthesis
   let laneFindings = '';
   if (task_outputs && task_type === 'multi_archetype_synthesis') {
     const outputsMap = task_outputs as Map<string, TaskOutput>;
     const summaries: string[] = [];
-    
+
     outputsMap.forEach((val, key) => {
       if (key.includes('event_summary')) {
         const lane = key.split(':')[0];
@@ -120,124 +277,52 @@ ${metric.signal_groups.map((gid: string) => {
     laneFindings = summaries.join('\n\n');
   }
 
+  // Create an extended context for prompts that need local variables
+  const promptContext = { ...context, laneFindings };
+
+  // Build dynamic role names based on task type, domain, and metric
   const templates: Record<string, string> = {
-    signal_enrichment: `
-You are a clinical quality expert analyzing ${domain} cases.
-**Context:**
-- Domain: ${domain}
-- Archetype: ${archetype}
-${orthoContextString}
+    signal_enrichment: buildMetricFramedPrompt({
+      roleName: buildDynamicRoleName('signal_enrichment', domain, metricName, archetype),
+      metricContext: metricContextString,
+      coreBody: getSignalEnrichmentCoreBody(promptContext)
+    }),
 
-${!orthoContextString ? `**Signal Groups:**
-${skeleton?.clinical_config?.signals?.signal_groups?.map((g: any, idx: number) => `${idx + 1}. ${g.group_id}: ${g.display_name}`).join('\n')}` : '**Use Signal Groups defined in ORTHOPEDIC METRIC CONTEXT above.**'}
+    event_summary: buildMetricFramedPrompt({
+      roleName: buildDynamicRoleName('event_summary', domain, metricName),
+      metricContext: metricContextString,
+      coreBody: getEventSummaryCoreBody(promptContext)
+    }),
 
-**REQUIRED JSON SCHEMA:**
-{ 
-  "signals": [
-    { 
-      "id": "SIG_001", 
-      "description": "Full text description of the clinical signal", 
-      "evidence_type": "L1", 
-      "group_id": "...", 
-      "provenance": { "source_text": "...", "timestamps": "..." },
-      "feasibility": { "cpt_codes": [], "icd_codes": [] }
-    } 
-  ] 
-}
+    summary_20_80: buildMetricFramedPrompt({
+      roleName: buildDynamicRoleName('summary_20_80', domain, metricName),
+      metricContext: metricContextString,
+      coreBody: getSummary2080CoreBody(promptContext)
+    }),
 
-**CRITICAL INSTRUCTION:**
-ALL signal descriptions must be returned as a single string field:
-"description": "<text>"
-Do NOT return per-character arrays.
-`,
+    followup_questions: buildMetricFramedPrompt({
+      roleName: buildDynamicRoleName('followup_questions', domain, metricName),
+      metricContext: metricContextString,
+      coreBody: getFollowupQuestionsCoreBody(promptContext)
+    }),
 
-    event_summary: `
-You are a clinical narrative expert summarizing a ${domain} case.
-**Context:**
-- Domain: ${domain}
-- Archetype: ${archetype}
-${ranking_context ? `- Institution Rank: #${ranking_context.rank}` : ''}
-${orthoContextString}
+    clinical_review_plan: buildMetricFramedPrompt({
+      roleName: buildDynamicRoleName('clinical_review_plan', domain, metricName),
+      metricContext: metricContextString,
+      coreBody: getClinicalReviewPlanCoreBody(promptContext)
+    }),
 
-**REQUIRED JSON SCHEMA:**
-{ "summary": "Comprehensive narrative summary..." }
-`,
+    multi_archetype_synthesis_draft: buildMetricFramedPrompt({
+      roleName: buildDynamicRoleName('multi_archetype_synthesis_draft', domain, metricName),
+      metricContext: metricContextString,
+      coreBody: getMultiArchetypeSynthesisDraftCoreBody(promptContext)
+    }),
 
-    summary_20_80: `
-You are generating patient/provider summaries.
-${ranking_context ? `**Rank:** #${ranking_context.rank}` : ''}
-${orthoContextString}
-
-**REQUIRED JSON SCHEMA:**
-{ "patient_summary": "...", "provider_summary": "..." }
-`,
-
-    followup_questions: `
-Generate follow-up questions.
-**Context:**
-- Archetype: ${archetype}
-${orthoContextString}
-
-**REQUIRED JSON SCHEMA:**
-{ "questions": ["Question 1?", "Question 2?"] }
-`,
-
-    clinical_review_plan: `
-Design a clinical review plan.
-**Context:**
-- Archetype: ${archetype}
-${orthoContextString}
-
-**REQUIRED JSON SCHEMA:**
-{ "clinical_tools": [{ "tool_id": "...", "description": "..." }], "review_order": ["..."] }
-`,
-
-    multi_archetype_synthesis: `
-You are the Lead Clinical Investigator synthesizing findings from multiple specialist agents.
-
-**Context:**
-- Domain: ${domain}
-- Primary Archetype: ${archetype}
-${orthoContextString}
-
-**LANE FINDINGS TO SYNTHESIZE:**
-${laneFindings}
-
-**REQUIRED SIGNAL GROUPS (MUST MATCH EXACTLY):**
-${skeleton?.clinical_config?.signals?.signal_groups?.map((g: any) => `- ${g.group_id}: ${g.display_name}`).join('\n')}
-
-**INSTRUCTIONS:**
-1. Review the findings from each lane above.
-2. Resolve any conflicts (e.g., if Exclusion Hunter found a valid exclusion, the case is EXCLUDED).
-3. Synthesize a final determination narrative.
-4. Compile a unified list of signals and tools.
-
-**REQUIRED JSON SCHEMA:**
-{
-  "final_determination": "string (Summary of final status)",
-  "synthesis_rationale": "string (Why this determination was reached)",
-  "merged_signal_groups": [ 
-    { 
-      "group_id": "...", 
-      "signals": [
-        {
-          "id": "...",
-          "description": "Full text description",
-          "evidence_type": "L1",
-          "provenance": { "source_text": "...", "timestamps": "..." },
-          "feasibility": { "cpt_codes": [], "icd_codes": [] }
-        }
-      ] 
-    } 
-  ],
-  "unified_clinical_tools": [...]
-}
-
-**CRITICAL INSTRUCTION:**
-ALL signal descriptions must be returned as a single string field:
-"description": "<text>"
-Do NOT return per-character arrays.
-`
+    multi_archetype_synthesis_verify: buildMetricFramedPrompt({
+      roleName: buildDynamicRoleName('multi_archetype_synthesis_verify', domain, metricName),
+      metricContext: metricContextString,
+      coreBody: getMultiArchetypeSynthesisVerifyCoreBody(promptContext)
+    })
   };
 
   return templates[task_type] || `Generate output for ${task_type} task.`;
@@ -271,37 +356,138 @@ export class S5_TaskExecutionStage {
 
       const config = promptNode.prompt_config;
       
-      // Determine specific archetype for this task if namespaced
-      // e.g. "process_auditor:event_summary" -> "Process_Auditor"
-      let taskArchetype = archetype;
+      // Lane-to-Archetype mapping: each lane uses its own archetype prompts
+      // Exception: synthesis lane uses primary archetype's synthesis prompt
+      const LANE_TO_ARCHETYPE = {
+        process_auditor: 'Process_Auditor',
+        exclusion_hunter: 'Exclusion_Hunter',
+        preventability_detective: 'Preventability_Detective',
+        preventability_detective_metric: 'Preventability_Detective_Metric',
+        data_scavenger: 'Data_Scavenger',
+        delay_driver_profiler: 'Delay_Driver_Profiler',
+        outcome_tracker: 'Outcome_Tracker',
+        synthesis: 'SYNTHESIS', // Special merge node - uses primary archetype
+      } as const satisfies Record<string, ArchetypeType | 'SYNTHESIS'>;
+
+      // Determine specific archetype for this task based on lane
+      let taskArchetype: ArchetypeType = archetype; // Default to primary archetype
+
       if (taskId.includes(':')) {
         const prefix = taskId.split(':')[0];
-        // Simple mapping back to Title Case (heuristic)
-        if (prefix === 'process_auditor') taskArchetype = 'Process_Auditor';
-        if (prefix === 'exclusion_hunter') taskArchetype = 'Exclusion_Hunter';
-        if (prefix === 'preventability_detective') taskArchetype = 'Preventability_Detective';
-        if (prefix === 'data_scavenger') taskArchetype = 'Data_Scavenger';
+        const mappedArchetype = LANE_TO_ARCHETYPE[prefix];
+
+        if (mappedArchetype === 'SYNTHESIS') {
+          // Synthesis lane: use primary archetype for synthesis prompts
+          // e.g., Orthopedics_Process_Auditor_multi_archetype_synthesis_v3
+          taskArchetype = archetype;
+        } else if (mappedArchetype) {
+          // Regular lane: use lane-specific archetype
+          // e.g., Orthopedics_Delay_Driver_Profiler_signal_enrichment_v3
+          taskArchetype = mappedArchetype;
+        }
+        // If prefix not found, fall back to primary archetype
       }
 
-      const prompt = loadPromptTemplate(config.template_id, {
-        domain,
-        archetype: taskArchetype,
-        task_type: promptNode.type,
-        skeleton,
-        ranking_context,
-        ortho_context,
-        task_outputs: taskOutputs,
-      });
+      let output;
 
-      const output = await callLLM({
-        model: config.model,
-        temperature: config.temperature,
-        response_format: config.response_format,
-        schema: config.schema_ref ? {} : undefined,
-        prompt,
-        task_type: promptNode.type,
-        skeleton,
-      });
+      // Special handling for CoVE (Chain of Verification) tasks
+      if (promptNode.type === 'multi_archetype_synthesis') {
+        console.log(`    🔄 Starting CoVE: Draft -> Verify`);
+
+        // Step 1: DRAFT
+        const draftPrompt = loadPromptTemplate('multi_archetype_synthesis_draft', {
+          domain,
+          archetype: taskArchetype,
+          task_type: 'multi_archetype_synthesis_draft',
+          skeleton,
+          ranking_context,
+          ortho_context,
+          task_outputs: taskOutputs,
+        });
+
+        const draftSchema = TASK_SCHEMAS['multi_archetype_synthesis_draft'];
+
+        let draftRaw = await callLLM({
+          model: config.model,
+          temperature: config.temperature,
+          response_format: draftSchema ? 'json_schema' : config.response_format,
+          schema: draftSchema, // No schema yet for synthesis -> Now we have one
+          prompt: draftPrompt,
+          task_type: 'multi_archetype_synthesis_draft',
+          skeleton,
+        });
+        
+        // Validate draft
+        draftRaw = parseMultiArchetypeSynthesis(draftRaw);
+
+        console.log(`    📝 Draft synthesis complete`);
+
+        // Step 2: VERIFY
+        // Need to pass draftSynthesisJson to the template
+        const verifyPrompt = loadPromptTemplate('multi_archetype_synthesis_verify', {
+          domain,
+          archetype: taskArchetype,
+          task_type: 'multi_archetype_synthesis_verify',
+          skeleton,
+          ranking_context,
+          ortho_context,
+          task_outputs: taskOutputs,
+          draftSynthesisJson: JSON.stringify(draftRaw, null, 2), // Pass draft as string
+        });
+
+        const verifySchema = TASK_SCHEMAS['multi_archetype_synthesis_verify'];
+
+        let verifiedRaw = await callLLM({
+          model: config.model,
+          temperature: 0.0, // Strict verification
+          response_format: verifySchema ? 'json_schema' : config.response_format,
+          schema: verifySchema,
+          prompt: verifyPrompt,
+          task_type: 'multi_archetype_synthesis_verify',
+          skeleton,
+        });
+        
+        // Validate verification result
+        verifiedRaw = parseMultiArchetypeSynthesis(verifiedRaw);
+
+        console.log(`    🛡️  Verification complete`);
+        output = verifiedRaw;
+
+      } else {
+        // Standard single-pass execution
+        const prompt = loadPromptTemplate(config.template_id, {
+          domain,
+          archetype: taskArchetype,
+          task_type: promptNode.type,
+          skeleton,
+          ranking_context,
+          ortho_context,
+          task_outputs: taskOutputs,
+        });
+
+        const schema = TASK_SCHEMAS[promptNode.type];
+        
+        output = await callLLM({
+          model: config.model,
+          temperature: config.temperature,
+          response_format: schema ? 'json_schema' : config.response_format,
+          schema: schema,
+          prompt,
+          task_type: promptNode.type,
+          skeleton,
+        });
+      }
+      
+      // Post-processing / Type-casting for known schemas
+      if (promptNode.type === 'signal_enrichment') {
+        output = parseSignalEnrichment(output);
+      } else if (promptNode.type === 'event_summary') {
+        output = parseEventSummary(output);
+      } else if (promptNode.type === 'followup_questions') {
+        output = parseFollowupQuestions(output);
+      } else if (promptNode.type === 'clinical_review_plan') {
+        output = parseClinicalReviewPlan(output);
+      }
 
       console.log(`    ✅ Task completed`);
 

@@ -97,16 +97,37 @@ export class S4_PromptPlanGenerationStage {
 
     const promptPlanNodes: PromptPlanNode[] = [];
 
+    // Lane-to-Archetype mapping: each lane uses its own archetype prompts
+    // Exception: synthesis lane uses primary archetype's synthesis prompt
+    const LANE_TO_ARCHETYPE = {
+      process_auditor: 'Process_Auditor',
+      exclusion_hunter: 'Exclusion_Hunter',
+      preventability_detective: 'Preventability_Detective',
+      preventability_detective_metric: 'Preventability_Detective_Metric',
+      data_scavenger: 'Data_Scavenger',
+      delay_driver_profiler: 'Delay_Driver_Profiler',
+      outcome_tracker: 'Outcome_Tracker',
+      synthesis: 'SYNTHESIS', // Special merge node - uses primary archetype
+    } as const satisfies Record<string, ArchetypeType | 'SYNTHESIS'>;
+
     for (const node of taskGraph.nodes) {
-      // Determine archetype for this task (support Multi-Archetype)
-      let taskArchetype = archetype;
-      
-      if (node.id.includes(':') && node.type !== 'multi_archetype_synthesis') {
+      // Determine archetype for this task (support Multi-Archetype lanes)
+      let taskArchetype = archetype; // Default to primary archetype
+
+      if (node.id.includes(':')) {
          const prefix = node.id.split(':')[0];
-         if (prefix === 'process_auditor') taskArchetype = 'Process_Auditor';
-         else if (prefix === 'exclusion_hunter') taskArchetype = 'Exclusion_Hunter';
-         else if (prefix === 'preventability_detective') taskArchetype = 'Preventability_Detective';
-         else if (prefix === 'data_scavenger') taskArchetype = 'Data_Scavenger';
+         const mappedArchetype = LANE_TO_ARCHETYPE[prefix];
+
+         if (mappedArchetype === 'SYNTHESIS') {
+           // Synthesis lane: use primary archetype for synthesis prompts
+           // e.g., Orthopedics_Process_Auditor_multi_archetype_synthesis_v3
+           taskArchetype = archetype;
+         } else if (mappedArchetype) {
+           // Regular lane: use lane-specific archetype
+           // e.g., Orthopedics_Delay_Driver_Profiler_signal_enrichment_v3
+           taskArchetype = mappedArchetype;
+         }
+         // If prefix not found, fall back to primary archetype
       }
 
       const config = getPromptConfig(domain, taskArchetype, node.type);
@@ -118,7 +139,8 @@ export class S4_PromptPlanGenerationStage {
       };
 
       promptPlanNodes.push(promptPlanNode);
-      console.log(`  ✅ Loaded prompt: ${config.template_id}`);
+      const laneId = node.id.includes(':') ? node.id.split(':')[0] : 'N/A';
+      console.log(`  ✅ [Lane: ${laneId} – Archetype: ${taskArchetype}] Loaded prompt: ${config.template_id}`);
     }
 
     const promptPlan: PromptPlan = {

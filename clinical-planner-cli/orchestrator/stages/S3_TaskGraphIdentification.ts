@@ -92,6 +92,46 @@ const DATA_SCAVENGER_GRAPH: Omit<TaskGraph, 'graph_id'> = {
   },
 };
 
+// Delay_Driver_Profiler: Focuses on timing and delay analysis (similar to Process_Auditor)
+const DELAY_DRIVER_PROFILER_GRAPH: Omit<TaskGraph, 'graph_id'> = {
+  nodes: [
+    { id: 'signal_enrichment', type: 'signal_enrichment', description: 'Extract delay-related signals' },
+    { id: 'event_summary', type: 'event_summary', description: 'Generate delay timeline summary' },
+    { id: 'summary_20_80', type: 'summary_20_80', description: 'Summarize key delay drivers' },
+    { id: 'followup_questions', type: 'followup_questions', description: 'Generate timing clarification questions' },
+    { id: 'clinical_review_plan', type: 'clinical_review_plan', description: 'Generate delay analysis tools' },
+  ],
+  edges: [
+    ['signal_enrichment', 'event_summary'],
+    ['event_summary', 'summary_20_80'],
+    ['event_summary', 'followup_questions'],
+    ['event_summary', 'clinical_review_plan'],
+  ],
+  constraints: {
+    must_run: ['signal_enrichment', 'event_summary', 'clinical_review_plan'],
+    optional: ['summary_20_80', 'followup_questions'],
+  },
+};
+
+// Outcome_Tracker: Focuses on outcome monitoring (similar to Preventability_Detective)
+const OUTCOME_TRACKER_GRAPH: Omit<TaskGraph, 'graph_id'> = {
+  nodes: [
+    { id: 'signal_enrichment', type: 'signal_enrichment', description: 'Extract outcome-related signals' },
+    { id: 'event_summary', type: 'event_summary', description: 'Generate outcome narrative' },
+    { id: 'followup_questions', type: 'followup_questions', description: 'Generate outcome clarification questions' },
+    { id: 'clinical_review_plan', type: 'clinical_review_plan', description: 'Generate outcome tracking tools' },
+  ],
+  edges: [
+    ['signal_enrichment', 'event_summary'],
+    ['event_summary', 'followup_questions'],
+    ['event_summary', 'clinical_review_plan'],
+  ],
+  constraints: {
+    must_run: ['signal_enrichment', 'event_summary', 'clinical_review_plan'],
+    optional: ['followup_questions'],
+  },
+};
+
 // ============================================================================ 
 // S3: Task Graph Identification Stage
 // ============================================================================ 
@@ -103,9 +143,12 @@ export class S3_TaskGraphIdentificationStage {
     skeleton: StructuralSkeleton
   ): Promise<TaskGraph> {
     const { archetypes } = domainContext;
+    const laneCount = archetypes.length;
+    const laneMode = laneCount === 1 ? 'Single Lane' : 'Multi-Lane';
 
     console.log(`
-[S3] Task Graph Identification (Multi-Lane)`);
+[S3] Task Graph Identification (${laneMode})`);
+    console.log(`  Lane Count: ${laneCount}`);
     console.log(`  Archetypes: ${archetypes.join(', ')}`);
 
     const combinedGraph: TaskGraph = {
@@ -167,7 +210,7 @@ export class S3_TaskGraphIdentificationStage {
       combinedGraph.edges.push([finalNodeId, synthesisId]);
     }
 
-    console.log(`  ✅ Generated ${combinedGraph.nodes.length} tasks across ${archetypes.length} lanes`);
+    console.log(`  ✅ Generated ${combinedGraph.nodes.length} tasks across ${laneCount} ${laneCount === 1 ? 'lane' : 'lanes'} (${laneMode})`);
     return combinedGraph;
   }
 
@@ -178,6 +221,8 @@ export class S3_TaskGraphIdentificationStage {
       Preventability_Detective_Metric: PREVENTABILITY_DETECTIVE_METRIC_GRAPH,
       Exclusion_Hunter: EXCLUSION_HUNTER_GRAPH,
       Data_Scavenger: DATA_SCAVENGER_GRAPH,
+      Delay_Driver_Profiler: DELAY_DRIVER_PROFILER_GRAPH,
+      Outcome_Tracker: OUTCOME_TRACKER_GRAPH,
     };
 
     const template = templates[archetype];

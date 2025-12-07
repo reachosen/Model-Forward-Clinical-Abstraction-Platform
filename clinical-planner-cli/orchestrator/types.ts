@@ -64,7 +64,9 @@ export type ArchetypeType =
   | 'Preventability_Detective'
   | 'Preventability_Detective_Metric'
   | 'Exclusion_Hunter'
-  | 'Data_Scavenger';
+  | 'Data_Scavenger'
+  | 'Delay_Driver_Profiler'
+  | 'Outcome_Tracker';
 
 export interface RankingContext {
   specialty_name: string;

@@ -3,6 +3,9 @@
  *
  * Centralized configuration for concern_id → (domain, archetype) mappings.
  * Replaces hardcoded ARCHETYPE_MATRIX with config-driven approach.
+ *
+ * V10 Upgrade: Registry-driven routing for metric-agnostic operation.
+ * All new metrics should be added to concern-registry.json, not hardcoded.
  */
 
 import * as fs from 'fs';
@@ -15,6 +18,8 @@ export interface ConcernMetadata {
   specialty: string | null;
   description: string;
   category: string;
+  /** Optional default archetypes if semantic packet unavailable */
+  default_archetypes?: ArchetypeType[];
 }
 
 export interface RegexPattern {
@@ -154,6 +159,41 @@ export function getConcernsByDomain(domain: string): string[] {
   return Object.entries(registry.concerns)
     .filter(([_, meta]) => meta.domain === domain)
     .map(([id, _]) => id);
+}
+
+/**
+ * Get routing info for a concern_id (used by S0 for generic routing)
+ * Returns null if concern is unknown - S1 will defer to semantic packet
+ */
+export interface ConcernRoutingInfo {
+  concern_id: string;
+  domain: string;
+  primary_archetype: ArchetypeType;
+  default_archetypes?: ArchetypeType[];
+  known: boolean;
+}
+
+export function getConcernRouting(concernId: string): ConcernRoutingInfo | null {
+  const metadata = getConcernMetadata(concernId);
+
+  if (!metadata) {
+    return null; // Unknown concern - defer to S1 semantic packet
+  }
+
+  return {
+    concern_id: concernId,
+    domain: metadata.domain,
+    primary_archetype: metadata.archetype,
+    default_archetypes: metadata.default_archetypes,
+    known: true
+  };
+}
+
+/**
+ * Check if a concern_id is known to the registry
+ */
+export function isConcernKnown(concernId: string): boolean {
+  return getConcernMetadata(concernId) !== null;
 }
 
 /**

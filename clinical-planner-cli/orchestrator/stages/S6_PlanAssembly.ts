@@ -18,8 +18,7 @@ import {
 } from '../types';
 import { PlannerPlanV2 } from '../../models/PlannerPlan';
 import { TaskExecutionResults } from './S5_TaskExecution';
-import * as fs from 'fs';
-import * as path from 'path';
+import { getPromptText } from '../utils/promptBuilder';
 
 export class S6_PlanAssemblyStage {
   async execute(
@@ -75,53 +74,23 @@ export class S6_PlanAssemblyStage {
     // Construct Downstream Prompts (V9.1 Section 5.7)
     // Modular Task Separation: Each task gets a specialized prompt
     const metricName = semantic_context?.packet?.metric?.metric_name || `${domain} Quality Metric`;
-    
-    const signalGroupNames = finalSignalGroups
-        .map(g => g.display_name)
-        .filter(Boolean)
-        .join(', ') || 'identified clinical risks';
-
-    const signalGroupList = finalSignalGroups
-        .map(g => `     • ${g.display_name} (${g.description})`)
-        .join('\n');
         
     const domainWithMetric = `${domain} (${metricName})`;
 
-    // Construct Dynamic USNWR Context for System Prompt
-    const concernId = skeleton.plan_metadata.concern.concern_id;
-    const clinicalFocus = semantic_context?.packet?.metric?.clinical_focus || 'Clinical quality and safety review';
-    
-    // Dynamic Context for Clinical Reviewer (V9.1+)
-    const usnwrMetricContext = `This case is being reviewed for USNWR ${domain} metric ${concernId}:
-"${metricName}"
-Review focuses on: ${clinicalFocus}
+    // Load and hydrate Task Prompts via centralized builder
+    // We wrap domainContext to inject derived values if needed, but mostly use raw context
+    const promptContext = {
+      ...domainContext,
+      // Override domain to include metric name if desired, or stick to raw domain
+      domain: domainWithMetric 
+    };
 
-Key Thresholds & Risks:
-${semantic_context?.packet?.metric?.risk_factors?.map((r: string) => `- ${r}`).join('\n') || '- See clinical configuration'}`;
-
-    // Load and hydrate System Prompt
-    const systemPromptTemplate = this.loadTaskPrompt('task_clinical_reviewer');
-    const systemPrompt = systemPromptTemplate
-      .replace('{{usnwr_metric_context}}', usnwrMetricContext)
-      .replace('{{signal_group_names}}', signalGroupNames);
-
-    // Load and hydrate Task Prompts
-    const eventSummaryPrompt = this.loadTaskPrompt('task_event_summary')
-      .replace('{{domain}}', domainWithMetric)
-      .replace('{{signal_group_names}}', signalGroupNames);
-
-    const followupPrompt = this.loadTaskPrompt('task_followup_questions')
-      .replace('{{signal_group_list}}', signalGroupList);
-
-    const signalGenerationPrompt = this.loadTaskPrompt('task_signal_generation')
-      .replace('{{signal_group_list}}', signalGroupList);
-
-    const summary2080Prompt = this.loadTaskPrompt('task_summary_20_80')
-      .replace('{{domain}}', domainWithMetric);
-
-    const clinicalReviewerPrompt = this.loadTaskPrompt('task_clinical_reviewer')
-      .replace('{{usnwr_metric_context}}', usnwrMetricContext)
-      .replace('{{signal_group_names}}', signalGroupNames);
+    const systemPrompt = getPromptText('task_clinical_reviewer', promptContext);
+    const eventSummaryPrompt = getPromptText('task_event_summary', promptContext);
+    const followupPrompt = getPromptText('task_followup_questions', promptContext);
+    const signalGenerationPrompt = getPromptText('task_signal_generation', promptContext);
+    const summary2080Prompt = getPromptText('task_summary_20_80', promptContext);
+    const clinicalReviewerPrompt = getPromptText('task_clinical_reviewer', promptContext);
 
     // Assemble plan from validated components (V9.1 schema)
     const plan: PlannerPlanV2 = {
@@ -243,16 +212,6 @@ ${semantic_context?.packet?.metric?.risk_factors?.map((r: string) => `- ${r}`).j
     console.log(`    Event summary length: ${finalSummary.length} chars`);
 
     return plan;
-  }
-
-  private loadTaskPrompt(taskName: string): string {
-    try {
-      const templatePath = path.join(__dirname, `../../prompts/${taskName}.txt`);
-      return fs.readFileSync(templatePath, 'utf-8');
-    } catch (error) {
-      console.warn(`⚠️  Could not load prompt template '${taskName}', using fallback.`);
-      return `Analyze this case for ${taskName}.`;
-    }
   }
 
   private enrichSignalGroups(groups: any[], signals: any[]): any[] {
