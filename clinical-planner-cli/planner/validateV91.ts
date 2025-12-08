@@ -8,6 +8,7 @@
  */
 
 import { PlannerPlan } from '../models/PlannerPlan';
+import { recordPlanValidationResult } from '../refinery/observation/ObservationHooks';
 import {
   HAC_GROUP_DEFINITIONS,
   ORTHO_GROUP_DEFINITIONS,
@@ -83,6 +84,12 @@ export function validatePlanV91(plan: PlannerPlan): PlanValidationResult {
     medium_count: checklist.filter(c => !c.passed && c.severity === 'MEDIUM').length,
     info_count: checklist.filter(c => !c.passed && c.severity === 'INFO').length,
   };
+
+  recordPlanValidationResult({
+    runId: (plan as any)?.plan_metadata?.run_id,
+    tier1Errors: summary.critical_count,
+    tier2Warnings: summary.high_count + summary.medium_count + summary.info_count,
+  });
 
   return {
     tiers: {

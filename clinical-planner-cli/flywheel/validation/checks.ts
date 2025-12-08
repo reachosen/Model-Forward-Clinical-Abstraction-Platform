@@ -1,4 +1,5 @@
 import { TestCase, EngineOutput } from './types';
+import { recordRecallCoverageResult } from '../../refinery/observation/ObservationHooks';
 
 export function validateStructural(output: EngineOutput): {
   passed: boolean;
@@ -47,6 +48,13 @@ export function validateSignals(tc: TestCase, output: EngineOutput): {
   if ((output.signals?.length || 0) < minCount) {
     errors.push(`Extracted signal count ${output.signals?.length} < min ${minCount}`);
   }
+
+  recordRecallCoverageResult({
+    promptName: 'signal_enrichment',
+    promptCategory: 'enrichment',
+    mustFindMissingCount: missingSignals.length,
+    forbiddenFoundCount: 0,
+  });
 
   return {
     ok: errors.length === 0,
@@ -121,6 +129,13 @@ export function validateFollowups(tc: TestCase, output: EngineOutput): {
       errors.push(`Forbidden term found in follow-ups: "${term}"`);
     }
   }
+
+  recordRecallCoverageResult({
+    promptName: 'followup_questions',
+    promptCategory: 'questions',
+    mustFindMissingCount: missingThemes.length,
+    forbiddenFoundCount: (errors.filter(e => e.includes('Forbidden term')).length),
+  });
 
   return {
     ok: errors.length === 0,

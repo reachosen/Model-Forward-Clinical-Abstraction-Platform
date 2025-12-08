@@ -17,6 +17,7 @@ import {
   ArchetypeType,
   TaskType,
 } from '../types';
+import { getTaskLLMConfig } from '../config/taskConfig';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
@@ -34,8 +35,10 @@ function getPromptConfig(
   archetype: ArchetypeType,
   taskType: TaskType
 ): PromptConfig {
-  // Build template_id: {domain}_{archetype}_{task}_v3
-  const template_id = `${domain}_${archetype}_${taskType}_v3`;
+  const taskConfig = getTaskLLMConfig(taskType);
+
+  // Build template_id: {domain}_{archetype}_{task}_v3, override if config provides
+  const template_id = taskConfig?.prompt_template_id || `${domain}_${archetype}_${taskType}_v3`;
 
   const response_format = getResponseFormat(taskType);
 
@@ -45,10 +48,13 @@ function getPromptConfig(
 
   const config: PromptConfig = {
     template_id,
-    model: DEFAULT_MODEL,
-    temperature: getTemperature(taskType),
+    model: taskConfig?.model || DEFAULT_MODEL,
+    temperature: taskConfig?.temperature ?? getTemperature(taskType),
     response_format,
     schema_ref,
+    max_tokens: taskConfig?.max_tokens,
+    top_p: taskConfig?.top_p,
+    context_policy: taskConfig?.context_policy,
   };
 
   return config;
@@ -99,7 +105,7 @@ export class S4_PromptPlanGenerationStage {
 
     // Lane-to-Archetype mapping: each lane uses its own archetype prompts
     // Exception: synthesis lane uses primary archetype's synthesis prompt
-    const LANE_TO_ARCHETYPE = {
+    const LANE_TO_ARCHETYPE: Record<string, ArchetypeType | 'SYNTHESIS'> = {
       process_auditor: 'Process_Auditor',
       exclusion_hunter: 'Exclusion_Hunter',
       preventability_detective: 'Preventability_Detective',
@@ -108,7 +114,7 @@ export class S4_PromptPlanGenerationStage {
       delay_driver_profiler: 'Delay_Driver_Profiler',
       outcome_tracker: 'Outcome_Tracker',
       synthesis: 'SYNTHESIS', // Special merge node - uses primary archetype
-    } as const satisfies Record<string, ArchetypeType | 'SYNTHESIS'>;
+    };
 
     for (const node of taskGraph.nodes) {
       // Determine archetype for this task (support Multi-Archetype lanes)

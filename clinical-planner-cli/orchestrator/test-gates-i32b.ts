@@ -44,7 +44,7 @@ async function testGates() {
     console.log('\n📊 S0 Results:');
     console.log(`  Concern ID: ${routedInput.concern_id}`);
     console.log(`  Domain Hint: ${routedInput.raw_domain}`);
-    console.log(`  Has Metadata: ${!!routedInput.inferred_metadata}`);
+    // REMOVED: Has Metadata line - inferred_metadata field no longer exists
     console.log(`\n✅ Validation: ${s0Validation.passed ? 'PASS' : 'FAIL'}`);
     if (s0Validation.errors.length > 0) {
       console.log(`  ❌ Errors: ${s0Validation.errors.join(', ')}`);

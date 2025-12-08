@@ -362,13 +362,28 @@ async function executePipeline(concernIds: string[]): Promise<void> {
       const s5 = new S5_TaskExecutionStage();
       const s6 = new S6_PlanAssemblyStage();
 
-      // Build input
+      // Build input (fill required PlanningInput fields to satisfy type + pipeline)
       const input = {
         planning_input_id: `batch_${concernId}_${Date.now()}`,
         concern: `${concernId} quality review`,
         concern_id: concernId,
-        intent: 'quality_reporting',
+        intent: 'quality_reporting' as const,
+        domain_hint: 'Quality' as const,
         target_population: 'pediatric',
+        specific_requirements: ['auto-generated batch run'],
+        data_profile: {
+          sources: [
+            {
+              source_id: 'ehr',
+              type: 'EHR',
+              available_data: ['demographics', 'diagnosis', 'labs', 'clinical_notes'],
+            },
+          ],
+        },
+        clinical_context: {
+          objective: 'Quality metric planning batch run',
+          regulatory_frameworks: ['USNWR_2025'],
+        },
       };
 
       // Execute pipeline

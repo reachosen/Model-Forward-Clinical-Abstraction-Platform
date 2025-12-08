@@ -6,9 +6,9 @@
  */
 
 import { PlanningInput } from '../../models/PlannerPlan';
-import { inferPlanningMetadata } from '../../planner/intentInference';
-import { RoutedInput, ValidationResult, InferredMetadata } from '../types';
+import { RoutedInput, ValidationResult } from '../types';
 import { isConcernKnown } from '../../config/concernRegistry';
+// REMOVED: inferPlanningMetadata import - inferred_metadata was not consumed downstream
 
 export class S0_InputNormalizationStage {
   /**
@@ -25,33 +25,15 @@ export class S0_InputNormalizationStage {
 
     console.log(`   Concern ID: ${concern_id}`);
 
-    // Infer metadata using intentInference (pattern matching by default)
-    let inferred_metadata: InferredMetadata | undefined;
-
-    try {
-      const metadata = await inferPlanningMetadata(
-        input.concern || '',
-        false // Use pattern matching, not LLM (faster for S0)
-      );
-
-      inferred_metadata = {
-        domain_hints: metadata.clinical_domain ? [metadata.clinical_domain] : undefined,
-        patient_context: metadata.review_template_type || undefined,
-        confidence: metadata.confidence,
-      };
-
-      console.log(`   Inferred domain hints: ${inferred_metadata.domain_hints?.join(', ') || 'none'}`);
-    } catch (error) {
-      console.warn('[S0] Intent inference failed, continuing without metadata:', error);
-      inferred_metadata = undefined;
-    }
+    // REMOVED: inferred_metadata construction
+    // Domain resolution is now handled entirely by S1 semantic packet lookup
+    // This simplifies S0 to pure input normalization without LLM calls
 
     // Build routed input
     const routedInput: RoutedInput = {
       planning_input: input,
       concern_id,
       raw_domain: input.domain_hint,
-      inferred_metadata,
     };
 
     console.log('✅ [S0] Input normalized successfully');
@@ -143,7 +125,7 @@ export class S0_InputNormalizationStage {
       warnings,
       metadata: {
         concern_id: output.concern_id,
-        has_metadata: !!output.inferred_metadata,
+        // REMOVED: has_metadata field - inferred_metadata no longer exists
       },
     };
   }

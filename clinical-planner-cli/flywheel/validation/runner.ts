@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 // import glob from 'glob'; // Not available, using manual dir scan
-import { runI25Engine } from './engine';
-import { 
-  validateStructural, 
-  validateSignals, 
-  // validateSummary, 
-  // validateFollowups, 
-  // validateEnrichment 
+import { runI25Engine, sampleCases, getEvalConfig, EvalConfig } from './engine';
+import {
+  validateStructural,
+  validateSignals,
+  // validateSummary,
+  // validateFollowups,
+  // validateEnrichment
 } from './checks';
 import { AggregateReport, TestCase, ValidationResult, Archetype } from './types';
 
@@ -36,11 +36,13 @@ export class I25BatchRunner {
   private concernId: string;
   private planPath: string;
   private testDataDir: string;
+  private evalConfig: EvalConfig;
 
-  constructor(concernId: string, planPath: string, testDataDir: string) {
+  constructor(concernId: string, planPath: string, testDataDir: string, evalConfig?: EvalConfig) {
     this.concernId = concernId;
     this.planPath = planPath;
     this.testDataDir = testDataDir;
+    this.evalConfig = evalConfig || getEvalConfig();
   }
 
   async run(systemPrompt?: string): Promise<AggregateReport> {
@@ -52,6 +54,7 @@ export class I25BatchRunner {
     // Match I25_batch_*.json OR golden_set.json
     const batchFiles = getFiles(this.testDataDir, /(I25_batch_\d+|golden_set)\.json$/);
     console.log(`Found ${batchFiles.length} batch files in ${this.testDataDir}`);
+    console.log(`  📊 C11 Eval Config: maxTokens=${this.evalConfig.maxTokens}, sampleSize=${this.evalConfig.sampleSize}, fullMode=${this.evalConfig.fullMode}`);
 
     const results: ValidationResult[] = [];
 
@@ -59,9 +62,11 @@ export class I25BatchRunner {
     for (const file of batchFiles) {
       const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
       const batchPlan = data.batch_plan;
-      const testCases: TestCase[] = data.test_cases;
+      const allTestCases: TestCase[] = data.test_cases;
 
-      console.log(`Processing ${file} (${testCases.length} cases)...`);
+      // C11: Apply sampling for fast iteration mode
+      const testCases = sampleCases(allTestCases, this.evalConfig);
+      console.log(`Processing ${file} (${testCases.length}/${allTestCases.length} cases)...`);
 
       for (let i = 0; i < testCases.length; i++) {
         const tc = testCases[i];

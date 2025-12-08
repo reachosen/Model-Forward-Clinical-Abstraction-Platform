@@ -4,8 +4,14 @@ import * as dotenv from 'dotenv';
 import OpenAI from 'openai';
 
 // Load environment variables
-// Adjusted path for .env from 'clinical-planner-cli/flywheel/generators' to root
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+
+// C10: Configuration from .env
+const DATASET_MODEL = process.env.DATASET_MODEL || 'gpt-4o-mini';
+const DATASET_MAX_TOKENS = parseInt(process.env.DATASET_MAX_TOKENS || '8000', 10);
+const DATASET_TEMPERATURE = parseFloat(process.env.DATASET_TEMPERATURE || '0.7');
+const NARRATIVE_MIN_WORDS = process.env.DATASET_NARRATIVE_MIN_WORDS || '80';
+const NARRATIVE_MAX_WORDS = process.env.DATASET_NARRATIVE_MAX_WORDS || '120';
 
 export interface GeneratorConfig {
   concern_id: string;
@@ -16,7 +22,9 @@ export interface GeneratorConfig {
   plan_only?: boolean;
 }
 
-const SYSTEM_PROMPT = `You are a Clinical Data Simulator for Pediatric Orthopedics.
+// C10: Build system prompt with configurable narrative length
+function buildSystemPrompt(): string {
+  return `You are a Clinical Data Simulator for Pediatric Orthopedics.
 Your goal is to generate "Golden Test Cases" for the "I25" (Supracondylar Humerus Fracture) metric.
 
 You must produce a JSON object with a "test_cases" array. Each case must be mathematically consistent, clinically realistic, and aligned with the provided scenario.
@@ -59,7 +67,7 @@ Signals must cover:
 For each scenario provided by the user:
 1. Analyze the Scenario: Identify Archetype, Clinical Pattern, Context, and Outcome Label.
 2. Plan the Math: Pick Arrival Time and Surgery Time to match the label (e.g., 18h delay = Fail).
-3. Draft Narrative: Write 150-300 words. MUST include explicit times, age, and signs.
+3. Draft Narrative: Write ${NARRATIVE_MIN_WORDS}-${NARRATIVE_MAX_WORDS} words. MUST include explicit times, age, and signs.
    - If [Documentation_Gap], purposefully omit or contradict a key detail (e.g., "notes conflict on pulse").
 4. Extract Expectations:
    - signal_generation: Pick 3-5 VERBATIM phrases from your text.
@@ -93,6 +101,7 @@ For each scenario provided by the user:
   ]
 }
 `;
+}
 
 async function generateBatch(client: OpenAI, config: GeneratorConfig, batchScenarios: string[], batchIndex: number) {
   console.log(`\n🚀 Generating Batch ${batchIndex + 1} (${batchScenarios.length} scenarios)...`);
@@ -121,12 +130,13 @@ Ensure:
 
   try {
     const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini', // Fast, capable model
+      model: DATASET_MODEL,
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: buildSystemPrompt() },
         { role: 'user', content: userPrompt }
       ],
-      temperature: 0.7,
+      temperature: DATASET_TEMPERATURE,
+      max_tokens: DATASET_MAX_TOKENS,
       response_format: { type: 'json_object' }
     });
 

@@ -23,14 +23,19 @@
     "learn:mock": "ts-node cli/learn.ts --mock",
     "revise": "ts-node cli/revise.ts",
     "batch": "ts-node orchestrator/batch-runner.ts",
-    "test:gates": "ts-node orchestrator/test-gates-i32b.ts",
-    "test:full": "ts-node orchestrator/test-s0-s6-complete.ts",
+    "test:gates": "npm run test:semantic && ts-node orchestrator/test-gates-i32b.ts",
+    "test:full": "npm run test:semantic && ts-node orchestrator/test-s0-s6-complete.ts",
     "test:s6": "ts-node tests/integration/s6-sufficiency.test.ts",
     "flywheel": "ts-node bin/planner.ts flywheel",
     "test": "ts-node tests/integration/rpi-workflow.test.ts && ts-node tests/integration/s6-sufficiency.test.ts",
     "test:integration": "ts-node tests/integration/rpi-workflow.test.ts",
     "build": "tsc",
-    "clean": "rm -rf dist *.json validation_report.txt"
+    "clean": "rm -rf dist *.json validation_report.txt",
+    "missions": "ts-node tools/mission-control.ts help",
+    "missions:list": "ts-node tools/mission-control.ts list",
+    "missions:run": "ts-node tools/mission-control.ts run",
+    "missions:pick": "ts-node tools/mission-control.ts pick",
+    "test:semantic": "ts-node tests/semantic/semantic-contracts.test.ts"
   },
   "keywords": [
     "healthcare",

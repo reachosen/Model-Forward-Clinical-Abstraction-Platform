@@ -14,6 +14,7 @@ import {
   ArchetypeType,
 } from '../types';
 import { validateTaskWithArchetypeContext } from '../validators/ContextAwareValidation';
+import { recordLLMCall } from '../../refinery/observation/ObservationHooks';
 import OpenAI from 'openai';
 import { ChatCompletionContentPart, ChatCompletionContentPartText } from 'openai/resources/chat/completions';
 import * as dotenv from 'dotenv';
@@ -29,7 +30,7 @@ import { eventSummaryJsonSchema, EventSummaryResult } from '../schemas/eventSumm
 import { followupQuestionsJsonSchema, FollowupQuestionsResult } from '../schemas/followupQuestionsSchema';
 import { clinicalReviewPlanJsonSchema, ClinicalReviewPlanResult } from '../schemas/clinicalReviewPlanSchema';
 import { multiArchetypeSynthesisJsonSchema, MultiArchetypeSynthesisResult } from '../schemas/multiArchetypeSynthesisSchema';
-import { buildMetricFramedPrompt, buildDynamicRoleName, buildMetricContextString } from '../utils/promptBuilder';
+import { buildMetricFramedPrompt, buildDynamicRoleName, buildMetricContextString, compressLaneFindings, buildCompressedLaneFindingsString } from '../utils/promptBuilder';
 
 dotenv.config({ path: path.join(__dirname, '../../../.env') });
 
@@ -159,6 +160,11 @@ const openai = new OpenAI({
 
 const DEFAULT_MODEL = process.env.MODEL || 'gpt-4o-mini';
 
+// C7/C8: Configuration from .env
+const SYNTHESIS_MAX_TOKENS = parseInt(process.env.SYNTHESIS_MAX_TOKENS || '1200', 10);
+// NOTE: synth temperature reserved for future tuning; removed to avoid unused var
+const SYNTHESIS_VERIFY_TEMPERATURE = parseFloat(process.env.SYNTHESIS_VERIFY_TEMPERATURE || '0.0');
+
 interface LLMCallOptions {
   model: string;
   temperature: number;
@@ -166,10 +172,21 @@ interface LLMCallOptions {
   schema?: any;
   prompt: string;
   skeleton?: any;
+  max_tokens?: number; // C7/C8: Optional token limit
+  top_p?: number;
 }
 
 async function callLLM(options: LLMCallOptions & { task_type?: string }): Promise<any> {
-  console.log(`    🤖 LLM Call: ${options.model} (temp=${options.temperature}, format=${options.response_format})`);
+  const tokenInfo = options.max_tokens ? `, max_tokens=${options.max_tokens}` : '';
+  console.log(`    🤖 LLM Call: ${options.model} (temp=${options.temperature}, format=${options.response_format}${tokenInfo})`);
+  recordLLMCall({
+    stageId: 'S5',
+    taskId: options.task_type,
+    model: options.model,
+    temperature: options.temperature,
+    max_tokens: options.max_tokens,
+    top_p: options.top_p,
+  });
 
   try {
     let finalPrompt = options.prompt;
@@ -178,10 +195,18 @@ async function callLLM(options: LLMCallOptions & { task_type?: string }): Promis
     }
 
     const apiParams: any = {
-      model: DEFAULT_MODEL,
+      model: options.model || DEFAULT_MODEL,
       temperature: options.temperature,
       messages: [{ role: 'user', content: finalPrompt }],
     };
+
+    // C7/C8: Apply max_tokens if specified
+    if (options.max_tokens) {
+      apiParams.max_tokens = options.max_tokens;
+    }
+    if (options.top_p !== undefined) {
+      apiParams.top_p = options.top_p;
+    }
 
     if (options.response_format === 'json_schema' && options.schema) {
       // Use OpenAI's structured output via tools
@@ -262,19 +287,13 @@ function loadPromptTemplate(template_id: string, context: any): string {
   const metricContextString = buildMetricContextString(ortho_context);
   const metricName = ortho_context?.metric?.metric_name;
 
-  // Aggregate Lane Summaries for Synthesis
+  // C7/C8: Use compressed lane findings for synthesis prompts to reduce token usage
   let laneFindings = '';
   if (task_outputs && task_type === 'multi_archetype_synthesis') {
     const outputsMap = task_outputs as Map<string, TaskOutput>;
-    const summaries: string[] = [];
-
-    outputsMap.forEach((val, key) => {
-      if (key.includes('event_summary')) {
-        const lane = key.split(':')[0];
-        summaries.push(`### ${lane.toUpperCase()} FINDINGS:\n${JSON.stringify(val.output.summary || val.output)}`);
-      }
-    });
-    laneFindings = summaries.join('\n\n');
+    const compressed = compressLaneFindings(outputsMap);
+    laneFindings = buildCompressedLaneFindingsString(compressed);
+    console.log(`    📦 Compressed ${compressed.length} lane findings for synthesis`);
   }
 
   // Create an extended context for prompts that need local variables
@@ -358,7 +377,7 @@ export class S5_TaskExecutionStage {
       
       // Lane-to-Archetype mapping: each lane uses its own archetype prompts
       // Exception: synthesis lane uses primary archetype's synthesis prompt
-      const LANE_TO_ARCHETYPE = {
+      const LANE_TO_ARCHETYPE: Record<string, ArchetypeType | 'SYNTHESIS'> = {
         process_auditor: 'Process_Auditor',
         exclusion_hunter: 'Exclusion_Hunter',
         preventability_detective: 'Preventability_Detective',
@@ -367,7 +386,7 @@ export class S5_TaskExecutionStage {
         delay_driver_profiler: 'Delay_Driver_Profiler',
         outcome_tracker: 'Outcome_Tracker',
         synthesis: 'SYNTHESIS', // Special merge node - uses primary archetype
-      } as const satisfies Record<string, ArchetypeType | 'SYNTHESIS'>;
+      };
 
       // Determine specific archetype for this task based on lane
       let taskArchetype: ArchetypeType = archetype; // Default to primary archetype
@@ -411,10 +430,12 @@ export class S5_TaskExecutionStage {
           model: config.model,
           temperature: config.temperature,
           response_format: draftSchema ? 'json_schema' : config.response_format,
-          schema: draftSchema, // No schema yet for synthesis -> Now we have one
+          schema: draftSchema,
           prompt: draftPrompt,
           task_type: 'multi_archetype_synthesis_draft',
           skeleton,
+          max_tokens: SYNTHESIS_MAX_TOKENS, // C7/C8: Cap synthesis draft tokens
+          top_p: config.top_p,
         });
         
         // Validate draft
@@ -439,12 +460,14 @@ export class S5_TaskExecutionStage {
 
         let verifiedRaw = await callLLM({
           model: config.model,
-          temperature: 0.0, // Strict verification
+          temperature: SYNTHESIS_VERIFY_TEMPERATURE,
           response_format: verifySchema ? 'json_schema' : config.response_format,
           schema: verifySchema,
           prompt: verifyPrompt,
           task_type: 'multi_archetype_synthesis_verify',
           skeleton,
+          max_tokens: SYNTHESIS_MAX_TOKENS,
+          top_p: config.top_p,
         });
         
         // Validate verification result
@@ -475,6 +498,8 @@ export class S5_TaskExecutionStage {
           prompt,
           task_type: promptNode.type,
           skeleton,
+          max_tokens: config.max_tokens,
+          top_p: config.top_p,
         });
       }
       

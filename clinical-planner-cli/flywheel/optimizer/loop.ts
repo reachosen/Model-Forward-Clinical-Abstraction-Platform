@@ -64,6 +64,48 @@ Rules:
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// C12: Configuration from .env
+const OPTIMIZER_MODEL = process.env.OPTIMIZER_MODEL || 'gpt-4o-mini';
+const OPTIMIZER_FALLBACK_MODEL = process.env.OPTIMIZER_FALLBACK_MODEL || 'gpt-4o';
+const OPTIMIZER_MAX_TOKENS = parseInt(process.env.OPTIMIZER_MAX_TOKENS || '2000', 10);
+const MAX_EVIDENCE_TOKENS = parseInt(process.env.OPTIMIZER_MAX_EVIDENCE_TOKENS || '600', 10);
+
+/**
+ * C12: Summarize failure evidence to reduce token usage
+ * Keeps top 1-2 examples per failure type, capped to ~500-800 tokens
+ */
+function summarizeFailureEvidence(
+  topFailures: [string, { count: number; sample_test_ids: string[] }][],
+  report: AggregateReport
+): string {
+  let evidenceBlock = "";
+  let currentTokenEstimate = 0;
+
+  // Process only top 2 failures to keep evidence compact
+  const limitedFailures = topFailures.slice(0, 2);
+
+  limitedFailures.forEach(([failType, data]) => {
+    if (currentTokenEstimate >= MAX_EVIDENCE_TOKENS) return;
+
+    evidenceBlock += `\nFAILURE: ${failType} (x${data.count})\n`;
+    currentTokenEstimate += 15;
+
+    // Only include first example, truncated
+    const caseId = data.sample_test_ids[0];
+    const result = report.raw_results.find(r => r.test_id === caseId);
+
+    if (result) {
+      // Truncate patient text to ~150 chars for efficiency
+      const truncatedText = result.engine_output.raw_input.slice(0, 150).replace(/\n/g, ' ');
+      evidenceBlock += `  Case: ${caseId}\n`;
+      evidenceBlock += `  Text: "...${truncatedText}..."\n`;
+      currentTokenEstimate += 50;
+    }
+  });
+
+  return evidenceBlock;
+}
+
 async function runFlywheel(maxLoops: number = 3) {
   console.log(`🏎️  Starting Prompt Refinery Flywheel for ${CONCERN_ID}`);
   console.log(`   Max Loops: ${maxLoops}`);
@@ -184,32 +226,20 @@ function updateHistoryMetrics(version: number, metrics: any) {
 }
 
 async function optimizePrompt(
-  currentPrompt: string, 
-  report: AggregateReport, 
+  currentPrompt: string,
+  report: AggregateReport,
   scoreDelta: number,
-  hasHistory: boolean
+  hasHistory: boolean,
+  useFallbackModel: boolean = false
 ): Promise<any> {
-  
-  // Turbo-Charge: Extract detailed failure examples
+
+  // C12: Extract and summarize failure examples (top 2, capped tokens)
   const topFailures = Object.entries(report.failures_by_type)
     .sort((a, b) => b[1].count - a[1].count)
-    .slice(0, 3); // Top 3 failure types
+    .slice(0, 2); // Top 2 failure types only
 
-  let evidenceBlock = "";
-  
-  topFailures.forEach(([failType, data]) => {
-    evidenceBlock += `\nFAILURE TYPE: ${failType} (Count: ${data.count})\n`;
-    // Find a specific case for this failure
-    const caseId = data.sample_test_ids[0];
-    const result = report.raw_results.find(r => r.test_id === caseId);
-    
-    if (result) {
-      evidenceBlock += `  - Example Case: ${caseId}\n`;
-      // evidenceBlock += `  - Context: ${result.scenario_label || "N/A"}\n`;
-      evidenceBlock += `  - Patient Text Snippet: "...${result.engine_output.raw_input.slice(0, 300).replace(/\n/g, ' ')}..."\n`;
-      evidenceBlock += `  - Validator Error: ${failType}\n`;
-    }
-  });
+  // C12: Use summarized evidence to reduce token usage
+  const evidenceBlock = summarizeFailureEvidence(topFailures, report);
 
   // Dynamic Instructions based on Regression
   let dynamicInstruction = "";
@@ -255,9 +285,14 @@ OUTPUT JSON:
 }
 `;
 
+  // C12: Use configurable model with fallback support
+  const modelToUse = useFallbackModel ? OPTIMIZER_FALLBACK_MODEL : OPTIMIZER_MODEL;
+  console.log(`    🤖 Optimizer using model: ${modelToUse}`);
+
   const response = await client.chat.completions.create({
-    model: 'gpt-4o',
+    model: modelToUse,
     messages: [{ role: 'user', content: metaPrompt }],
+    max_tokens: OPTIMIZER_MAX_TOKENS,
     response_format: { type: 'json_object' }
   });
 

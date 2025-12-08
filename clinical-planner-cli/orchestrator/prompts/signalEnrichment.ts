@@ -6,14 +6,9 @@
 export function getSignalEnrichmentCoreBody(context: any): string {
   const { ortho_context, archetype } = context;
   const metric = ortho_context?.metric;
-  const signals = ortho_context?.signals;
 
-  // Build dynamic signal group list from metric definition
+  // Dynamic group ids from metric context; details live in metric_context
   const signalGroupIds = metric?.signal_groups || ['delay_drivers', 'outcome_risks', 'safety_signals', 'documentation_gaps'];
-  const signalGroupList = signalGroupIds.map((gid: string) => {
-    const sigs = signals?.[gid] || [];
-    return `- **${gid}**: ${sigs.length > 0 ? sigs.slice(0, 3).join(', ') + (sigs.length > 3 ? '...' : '') : 'extract relevant signals'}`;
-  }).join('\n');
 
   // Build extraction requirements from risk_factors
   const riskFactorInstructions = (metric?.risk_factors || []).map((rf: string, idx: number) =>
@@ -36,8 +31,8 @@ ${riskFactorInstructions || '1. Key clinical events and their timing\n2. Risk in
 
 Use ONLY the patient_payload as your factual source.
 
-**TARGET SIGNAL GROUPS:**
-${signalGroupList}
+**TARGET SIGNAL GROUPS (use definitions from metric_context.signal_group_definitions):**
+- ${signalGroupIds.join('\n- ')}
 
 **REQUIRED JSON SCHEMA:**
 {

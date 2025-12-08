@@ -1,6 +1,42 @@
 // Spec: docs/PromptSpecs/MultiArchetypeSynthesis.md
+
+/**
+ * Build ranking context section for synthesis prompts
+ * Wires RankingContext.summary, top_performer_benchmarks, and quality_differentiators
+ */
+function buildRankingContextSection(rankingContext: any): string {
+  if (!rankingContext) return '';
+
+  const parts: string[] = [];
+
+  if (rankingContext.summary) {
+    parts.push(`- **Ranking Summary:** ${rankingContext.summary}`);
+  }
+
+  if (rankingContext.top_performer_benchmarks) {
+    parts.push(`- **Top Performer Benchmarks:** ${rankingContext.top_performer_benchmarks}`);
+  }
+
+  if (rankingContext.quality_differentiators?.length > 0) {
+    parts.push(`- **Quality Differentiators:**`);
+    rankingContext.quality_differentiators.forEach((d: string) => {
+      parts.push(`  - ${d}`);
+    });
+  }
+
+  if (parts.length === 0) return '';
+
+  return `
+**RANKING & BENCHMARK CONTEXT (Reference Only):**
+${parts.join('\n')}
+`;
+}
+
 export function getMultiArchetypeSynthesisDraftCoreBody(context: any): string {
-  const { domain, archetype, laneFindings } = context;
+  const { domain, archetype, laneFindings, ranking_context } = context;
+
+  // Build optional ranking context section
+  const rankingSection = buildRankingContextSection(ranking_context);
 
   return `
 **GOAL (STEP 1 – DRAFT):**
@@ -11,12 +47,14 @@ You must:
 - Combine all relevant facts from the lane findings.
 - Highlight areas of agreement and disagreement between lanes.
 - Keep your focus strictly on the metric and this encounter.
+${rankingSection ? `- Consider ranking benchmarks when assessing quality gaps (see below).` : ''}
 
 **INPUTS:**
 - Domain: ${domain}
 - Primary Archetype: ${archetype}
 - Lane Findings JSON (each lane is already metric-focused and schema-validated):
 ${laneFindings}
+${rankingSection}
 
 **STRICT RULES:**
 - Use ONLY the lane findings as your factual source.

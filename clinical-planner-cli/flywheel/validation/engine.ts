@@ -8,6 +8,55 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// C11: Configuration from .env
+const EVAL_MODEL = process.env.EVAL_MODEL || 'gpt-4o-mini';
+const EVAL_MAX_TOKENS = parseInt(process.env.EVAL_MAX_TOKENS || '400', 10);
+const EVAL_TEMPERATURE = parseFloat(process.env.EVAL_TEMPERATURE || '0.0');
+const EVAL_SAMPLE_SIZE = parseInt(process.env.EVAL_SAMPLE_SIZE || '50', 10);
+const EVAL_FULL_MODE = process.env.EVAL_FULL_MODE === 'true';
+
+export interface EvalConfig {
+  maxTokens?: number;
+  sampleSize?: number;
+  fullMode?: boolean;
+}
+
+/**
+ * C11: Get evaluation configuration
+ */
+export function getEvalConfig(): EvalConfig {
+  return {
+    maxTokens: EVAL_MAX_TOKENS,
+    sampleSize: EVAL_SAMPLE_SIZE,
+    fullMode: EVAL_FULL_MODE,
+  };
+}
+
+/**
+ * C11: Sample cases for fast iteration mode
+ * Returns subset of cases for quick evaluation runs
+ */
+export function sampleCases<T>(cases: T[], config?: EvalConfig): T[] {
+  const evalConfig = config || getEvalConfig();
+
+  if (evalConfig.fullMode) {
+    console.log(`  📊 C11: Full eval mode - using all ${cases.length} cases`);
+    return cases;
+  }
+
+  const sampleSize = evalConfig.sampleSize || EVAL_SAMPLE_SIZE;
+  if (cases.length <= sampleSize) {
+    console.log(`  📊 C11: Using all ${cases.length} cases (below sample threshold)`);
+    return cases;
+  }
+
+  // Random sampling without replacement
+  const shuffled = [...cases].sort(() => Math.random() - 0.5);
+  const sampled = shuffled.slice(0, sampleSize);
+  console.log(`  📊 C11: Sampled ${sampled.length}/${cases.length} cases for fast iteration`);
+  return sampled;
+}
+
 // Default extraction prompt (baseline)
 const DEFAULT_SYSTEM_PROMPT = `You are a specialized Clinical Signal Extraction Engine for pediatric orthopedics.
 Your goal is to analyze the provided patient narrative and extract key structured data.
@@ -47,13 +96,14 @@ export async function runI25Engine(input: {
 
   try {
     const response = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: EVAL_MODEL,
       messages: [
         { role: 'system', content: promptToUse },
         { role: 'user', content: input.patient_payload }
       ],
       response_format: { type: 'json_object' },
-      temperature: 0.0 // Deterministic for testing
+      temperature: EVAL_TEMPERATURE,
+      max_tokens: EVAL_MAX_TOKENS,
     });
 
     const content = response.choices[0].message.content;
@@ -77,8 +127,8 @@ export async function runI25Engine(input: {
       summary: parsed.summary || "Summary skipped in lean mode",
       signals: flattenedSignals,
       followup_questions: parsed.followup_questions || [],
-      enrichment_20_80: parsed.enrichment_20_80, 
-      model_name: 'gpt-4o-mini',
+      enrichment_20_80: parsed.enrichment_20_80,
+      model_name: EVAL_MODEL,
       latency_ms: Date.now() - start
     };
 
@@ -90,7 +140,7 @@ export async function runI25Engine(input: {
       summary: "ENGINE_ERROR",
       signals: [],
       followup_questions: [],
-      model_name: 'gpt-4o-mini-error',
+      model_name: `${EVAL_MODEL}-error`,
       latency_ms: Date.now() - start
     };
   }

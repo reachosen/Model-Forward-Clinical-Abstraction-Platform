@@ -51,15 +51,24 @@ export interface PlanningInput {
   planning_input_id: string;
   concern: string;
   domain_hint: DomainType;
-  intent: IntentType;
-  target_population: string;
-  specific_requirements: string[];
+
+  // FUTURE USE: These fields are defined but not yet consumed by the pipeline.
+  // They are reserved for future enhancements to support:
+  // - Multi-intent workflows (surveillance vs quality_reporting vs CDS)
+  // - Population-specific rule filtering
+  // - Custom requirement injection
+  // - Data availability-aware plan generation
+  // - Patient-specific clinical context injection
+  intent: IntentType;                    // FUTURE USE: workflow mode selection
+  target_population: string;             // FUTURE USE: population-specific filtering
+  specific_requirements: string[];       // FUTURE USE: custom requirement injection
+  data_profile?: any;                    // FUTURE USE: data availability awareness
+  clinical_context?: any;                // FUTURE USE: patient-specific context
+
   // Optional fields for compatibility
   concern_id?: string;
   domain?: string;
   archetype?: string;
-  data_profile?: any;
-  clinical_context?: any;
 }
 
 // ==========================================
@@ -113,6 +122,7 @@ export interface ClinicalConfig {
   prompts: Prompts;
   fieldMappings: FieldMappings;
   domain: DomainInfo;
+  metric_context?: MetricContext;
 
   // Optional sections for backward compatibility
   summary_config?: any;
@@ -134,6 +144,16 @@ export interface DomainInfo {
   name: string;
   display_name: string;
   description: string;
+}
+
+export interface MetricContext {
+  metric_id: string;
+  metric_name: string;
+  clinical_focus: string;
+  rationale: string;
+  risk_factors: string[];
+  review_questions: string[];
+  signal_group_definitions: Record<string, string[]>;
 }
 
 // ==========================================
@@ -207,9 +227,13 @@ export interface Signal {
   evidence_type: EvidenceType;
   linked_tool_id?: string;
   trigger_expr?: string;
-  severity?: 'info' | 'warn' | 'error';
   provenance: SignalProvenance;
   thresholds?: SignalThresholds;
+
+  // OPTIONAL ENRICHMENT FIELDS: These are not required by validators.
+  // They provide additional metadata when available from LLM enrichment.
+  severity?: 'info' | 'warn' | 'error';  // Optional: signal severity level
+  tags?: string[];                        // Optional: categorization tags
 }
 
 export interface SignalProvenance {
@@ -312,7 +336,7 @@ export interface ValidationResults {
 
 export interface ValidationChecklist {
   schema_completeness: CheckResult;
-  domain_structure_5_groups: CheckResult;
+  expected_signal_groups_match?: CheckResult; // renamed for flexibility; optional to maintain compatibility
   provenance_safety: CheckResult;
   pediatric_compliance: CheckResult;
   dependency_integrity: CheckResult;
@@ -371,6 +395,7 @@ export interface PlanMetadataV2 {
     generated_at: string;
     generated_by: string;
     model_used?: string;
+    case_type?: string;
   };
 
   status: {

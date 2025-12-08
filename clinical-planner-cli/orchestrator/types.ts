@@ -5,8 +5,8 @@
  */
 
 import { PlannerPlanV2, PlanningInput } from '../models/PlannerPlan';
-import { ResearchBundle } from '../models/ResearchBundle';
 import { SemanticMetric, SemanticSignals, SemanticPriority } from '../utils/semanticPacketLoader';
+// Note: ResearchBundle import removed - TaskInput.context.researchBundle was unused
 
 // ============================================================================
 // Stage IDs and Status
@@ -42,17 +42,14 @@ export interface OrchestratorResult {
 // Stage 0: Input Normalization & Routing
 // ============================================================================
 
-export interface InferredMetadata {
-  domain_hints?: string[];
-  patient_context?: string;
-  confidence?: number;
-}
+// REMOVED: InferredMetadata interface - was unused downstream
+// Domain resolution now handled entirely by S1 semantic packet lookup
 
 export interface RoutedInput {
   planning_input: PlanningInput;
   concern_id: string;
   raw_domain?: string;
-  inferred_metadata?: InferredMetadata;
+  // REMOVED: inferred_metadata - was not consumed by any downstream stage
 }
 
 // ============================================================================
@@ -86,7 +83,7 @@ export interface PacketContext {
 export interface SemanticContext {
   packet?: PacketContext;
   ranking?: RankingContext;
-  clinical?: any; // Placeholder for patient clinical context
+  // REMOVED: clinical field - was a placeholder never populated or consumed
 }
 
 export interface DomainContext {
@@ -161,6 +158,9 @@ export interface PromptConfig {
   temperature: number;
   response_format: 'json' | 'json_schema' | 'text';
   schema_ref?: string;
+  max_tokens?: number;
+  top_p?: number;
+  context_policy?: string;
 }
 
 export interface PromptPlanNode {
@@ -185,7 +185,7 @@ export interface TaskInput {
     skeleton: StructuralSkeleton;
     domainContext: DomainContext;
     previousTaskOutputs: Map<string, any>;
-    researchBundle?: ResearchBundle;
+    // REMOVED: researchBundle - was never populated or consumed in task execution
   };
 }
 

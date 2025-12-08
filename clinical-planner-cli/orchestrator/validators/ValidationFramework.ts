@@ -6,6 +6,7 @@
  */
 
 import { StageId, ValidationResult, StageResult } from '../types';
+import { recordGateOutcome } from '../../refinery/observation/ObservationHooks';
 
 // ============================================================================
 // Gate Policy
@@ -55,6 +56,11 @@ export class ValidationFramework {
   ): GateResult {
     // Tier 1 Check: Critical errors = HALT
     if (!validationResult.passed && validationResult.errors.length > 0) {
+      recordGateOutcome({
+        stageId,
+        gateResult: 'HALT',
+        runId: validationResult.metadata?.runId,
+      });
       return {
         stageId,
         policy: GatePolicy.HALT,
@@ -65,6 +71,11 @@ export class ValidationFramework {
 
     // Tier 2 Check: Warnings only = WARN but continue
     if (validationResult.warnings.length > 0) {
+      recordGateOutcome({
+        stageId,
+        gateResult: 'WARN',
+        runId: validationResult.metadata?.runId,
+      });
       return {
         stageId,
         policy: GatePolicy.WARN,
@@ -74,6 +85,11 @@ export class ValidationFramework {
     }
 
     // No issues = PASS
+    recordGateOutcome({
+      stageId,
+      gateResult: 'PASS',
+      runId: validationResult.metadata?.runId,
+    });
     return {
       stageId,
       policy: GatePolicy.PASS,

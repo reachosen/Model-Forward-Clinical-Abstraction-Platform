@@ -10,6 +10,7 @@
  */
 
 import { ValidationResult, ArchetypeType, TaskType, DomainContext, StructuralSkeleton } from '../types';
+import { recordContextMatrixUsage } from '../../refinery/observation/ObservationHooks';
 
 // ============================================================================
 // Context-Aware Validation Rules
@@ -164,6 +165,14 @@ export function validateS2WithDomainContext(
       warnings.push(`Endocrinology domain should include domain-specific groups: ${endo_specific_groups.join(', ')}`);
     }
   }
+
+  recordContextMatrixUsage({
+    stageId: 'S2',
+    runId: undefined,
+    domain,
+    archetype: domainContext?.primary_archetype || domainContext?.archetypes?.[0],
+    rulesApplied: group_ids,
+  });
 
   return {
     passed: errors.length === 0,
@@ -355,6 +364,15 @@ export function validateTaskWithArchetypeContext(
       }
     }
   }
+
+  const rulesApplied = [`archetype:${archetype}`, `task:${task}`];
+  recordContextMatrixUsage({
+    stageId: 'S5',
+    runId: output?.runId,
+    domain: undefined,
+    archetype,
+    rulesApplied,
+  });
 
   return {
     passed: errors.length === 0,

@@ -3,12 +3,119 @@ import { getFollowupQuestionsCoreBody } from '../prompts/followupQuestions';
 import { getSignalEnrichmentCoreBody } from '../prompts/signalEnrichment';
 import { getSummary2080CoreBody } from '../prompts/summary2080';
 import { getClinicalReviewPlanCoreBody } from '../prompts/clinicalReviewPlan';
-import { TaskType, ArchetypeType } from '../types';
+import { TaskType, ArchetypeType, TaskOutput } from '../types';
+
+/**
+ * C7/C8: Compressed lane findings structure for synthesis prompts
+ * Only includes key timestamps, determinations, and flags to reduce token usage
+ */
+export interface CompressedLaneFindings {
+  lane: string;
+  determination: string;
+  key_timestamps: string[];
+  flags: string[];
+  signal_count: number;
+}
+
+/**
+ * C7/C8: Compress lane outputs into a compact structure for synthesis prompts
+ * Extracts only essential information to reduce token usage in synthesis calls
+ */
+export function compressLaneFindings(
+  taskOutputs: Map<string, TaskOutput>
+): CompressedLaneFindings[] {
+  const compressed: CompressedLaneFindings[] = [];
+
+  taskOutputs.forEach((val, key) => {
+    // Only process event_summary outputs as they contain the lane summaries
+    if (key.includes('event_summary')) {
+      const lane = key.split(':')[0];
+      const output = val.output;
+
+      // Extract key information
+      const determination = output.summary || output.event_summary || '';
+      const keyTimestamps: string[] = [];
+      const flags: string[] = [];
+
+      // Extract timestamps from summary if present
+      const timestampMatches = determination.match(/\d{1,2}:\d{2}|\d{1,2}h|\d{1,2}\s*hours?/gi);
+      if (timestampMatches) {
+        keyTimestamps.push(...timestampMatches.slice(0, 3)); // Limit to 3 timestamps
+      }
+
+      // Extract flags/signals count from related signal_enrichment
+      const signalKey = `${lane}:signal_enrichment`;
+      const signalOutput = taskOutputs.get(signalKey);
+      let signalCount = 0;
+
+      if (signalOutput?.output?.signal_groups) {
+        signalCount = signalOutput.output.signal_groups.reduce(
+          (sum: number, g: any) => sum + (g.signals?.length || 0),
+          0
+        );
+        // Extract high-priority flags
+        signalOutput.output.signal_groups.forEach((g: any) => {
+          if (g.signals) {
+            g.signals.slice(0, 2).forEach((s: any) => {
+              if (s.description && flags.length < 3) {
+                flags.push(s.description.slice(0, 50));
+              }
+            });
+          }
+        });
+      }
+
+      compressed.push({
+        lane: lane.toUpperCase(),
+        determination: determination.slice(0, 200), // Truncate to ~200 chars
+        key_timestamps: keyTimestamps,
+        flags,
+        signal_count: signalCount,
+      });
+    }
+  });
+
+  return compressed;
+}
+
+/**
+ * C7/C8: Build compact laneFindings string from compressed data
+ */
+export function buildCompressedLaneFindingsString(
+  compressed: CompressedLaneFindings[]
+): string {
+  if (compressed.length === 0) return 'No lane findings available.';
+
+  return compressed
+    .map(
+      (c) =>
+        `### ${c.lane}:\n` +
+        `  Determination: ${c.determination}\n` +
+        `  Timestamps: ${c.key_timestamps.join(', ') || 'N/A'}\n` +
+        `  Key Flags: ${c.flags.join('; ') || 'N/A'}\n` +
+        `  Signal Count: ${c.signal_count}`
+    )
+    .join('\n\n');
+}
 
 export interface MetricPromptOptions {
   roleName: string;
   coreBody: string;
   metricContext?: string;
+}
+
+export function buildSystemPrompt(metricContext: any): string {
+  return [
+    'SYSTEM CONTEXT:',
+    'You have access to a shared metric_context JSON object (provided separately) and patient_payload.',
+    '',
+    'Safety & Guardrails:',
+    '- Use ONLY patient_payload for evidence; do not speculate or invent.',
+    '- Do NOT teach or generalize; stay on-task.',
+    '- Emit strictly valid JSON per the task schema.',
+    '- Stay aligned to metric_context; do not introduce other metrics.',
+    '- Assume metric_context is available to every task; do not restate it.',
+  ].join('\n');
 }
 
 /**
@@ -73,31 +180,19 @@ export function buildDynamicRoleName(
 export function buildMetricFramedPrompt(opts: MetricPromptOptions): string {
   const { roleName, coreBody, metricContext } = opts;
 
-  // No metric context -> simple, role-scoped wrapper
-  if (!metricContext || metricContext.trim().length === 0) {
-    return [
-      `ROLE: ${roleName}`,
-      ``,
-      coreBody.trim(),
-    ].join('\n');
-  }
+  const contextLine = metricContext && metricContext.trim().length > 0
+    ? `Use shared metric_context: ${metricContext}`
+    : 'Use the shared metric_context from the system prompt.';
 
-  // SAFE PATTERN #6: Metric-Locked Context Flooding
   return [
-    `!!! CRITICAL METRIC CONTEXT (READ FIRST) !!!`,
-    metricContext,
-    ``,
-    `=========================================`,
     `ROLE: ${roleName}`,
-    `=========================================`,
+    ``,
+    contextLine,
+    `- Use ONLY patient_payload.`,
+    `- Do NOT restate metric_context; consume it from the system prompt.`,
+    `- Emit JSON exactly matching the schema below.`,
     ``,
     coreBody.trim(),
-    ``,
-    `=========================================`,
-    `CRITICAL REMINDER`,
-    `=========================================`,
-    `Your analysis must align STRICTLY with the metric definition above.`,
-    `Do not hallucinate policies or drift from this specific definition.`,
   ].join('\n');
 }
 
@@ -111,24 +206,13 @@ export function buildMetricContextString(packet: any): string {
   const { metric, signals } = packet;
   const domainLabel = packet.metric.metric_type?.toUpperCase() || 'CLINICAL';
 
-  return `
-**${domainLabel} METRIC CONTEXT (HIGH PRIORITY):**
-- **Metric Name:** ${metric.metric_name}
-- **Clinical Focus:** ${metric.clinical_focus}
-- **Rationale:** ${metric.rationale}
-
-**Risk Factors (MUST ADDRESS):**
-${(metric.risk_factors || []).map((r: string) => `- ${r}`).join('\n')}
-
-**Review Questions (MUST ANSWER):**
-${(metric.review_questions || []).map((q: string) => `- ${q}`).join('\n')}
-
-**Signal Groups & Definitions:**
-${(metric.signal_groups || []).map((gid: string) => {
+  const groups = (metric.signal_groups || []).map((gid: string) => {
      const sigs = signals?.[gid] || [];
-     return `- **${gid}**: ${sigs.join(', ')}`;
-  }).join('\n')}
-`;
+     return `${gid}: ${sigs.slice(0, 2).join(', ')}`;
+  }).join('; ');
+
+  // Short reference line; full details live in metric_context JSON in the system prompt
+  return `${domainLabel} Metric: ${metric.metric_name}. Focus: ${metric.clinical_focus}. Groups: ${groups}`;
 }
 
 // Helper to load prompt text reusing the S5 logic

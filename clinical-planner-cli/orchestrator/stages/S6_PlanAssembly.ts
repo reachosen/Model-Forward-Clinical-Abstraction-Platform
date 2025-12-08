@@ -18,7 +18,8 @@ import {
 } from '../types';
 import { PlannerPlanV2 } from '../../models/PlannerPlan';
 import { TaskExecutionResults } from './S5_TaskExecution';
-import { getPromptText } from '../utils/promptBuilder';
+import { getPromptText, buildSystemPrompt } from '../utils/promptBuilder';
+import { validatePlanSemantic } from '../validators/semanticContracts';
 
 export class S6_PlanAssemblyStage {
   async execute(
@@ -85,7 +86,8 @@ export class S6_PlanAssemblyStage {
       domain: domainWithMetric 
     };
 
-    const systemPrompt = getPromptText('task_clinical_reviewer', promptContext);
+    const metricContext = this.buildMetricContext(domainContext);
+    const systemPrompt = buildSystemPrompt(metricContext);
     const eventSummaryPrompt = getPromptText('task_event_summary', promptContext);
     const followupPrompt = getPromptText('task_followup_questions', promptContext);
     const signalGenerationPrompt = getPromptText('task_signal_generation', promptContext);
@@ -108,6 +110,7 @@ export class S6_PlanAssemblyStage {
           generated_at: timestamp,
           generated_by: 'CPPO-S0-S6',
           model_used: 'gpt-4o-mini',
+          case_type: 'example_clean_pass',
         },
         status: {
           deployment_status: 'draft', // Templates are always drafts until reviewed
@@ -151,6 +154,7 @@ export class S6_PlanAssemblyStage {
 
       clinical_config: {
         ...skeleton.clinical_config,
+        metric_context: metricContext,
         signals: {
           ...skeleton.clinical_config.signals,
           signal_groups: finalSignalGroups,
@@ -191,7 +195,7 @@ export class S6_PlanAssemblyStage {
       validation: {
         checklist: {
           schema_completeness: { result: 'YES', severity: 'CRITICAL' },
-          domain_structure_5_groups: { result: 'YES', severity: 'CRITICAL' },
+          expected_signal_groups_match: { result: 'YES', severity: 'CRITICAL' },
           provenance_safety: { result: 'YES', severity: 'CRITICAL' },
           pediatric_compliance: { result: 'YES', severity: 'HIGH' },
           dependency_integrity: { result: 'YES', severity: 'MEDIUM' },
@@ -212,6 +216,45 @@ export class S6_PlanAssemblyStage {
     console.log(`    Event summary length: ${finalSummary.length} chars`);
 
     return plan;
+  }
+
+  private buildMetricContext(domainContext: DomainContext) {
+    const packet = domainContext.semantic_context?.packet;
+    const metric = packet?.metric;
+    const signals = packet?.signals || {};
+    if (!metric) {
+      return {
+        metric_id: domainContext?.domain,
+        metric_name: 'Unknown metric',
+        clinical_focus: '',
+        rationale: '',
+        risk_factors: [],
+        review_questions: [],
+        signal_group_definitions: {},
+      };
+    }
+
+    const metricId =
+      (metric as any).metric_id ||
+      (metric as any).concern_id ||
+      (metric as any).id ||
+      metric.metric_name ||
+      domainContext.domain;
+
+    const groupDefs: Record<string, string[]> = {};
+    (metric.signal_groups || []).forEach((gid: string) => {
+      groupDefs[gid] = signals[gid] || [];
+    });
+
+    return {
+      metric_id: metricId,
+      metric_name: metric.metric_name,
+      clinical_focus: metric.clinical_focus,
+      rationale: metric.rationale,
+      risk_factors: metric.risk_factors || [],
+      review_questions: metric.review_questions || [],
+      signal_group_definitions: groupDefs,
+    };
   }
 
   private enrichSignalGroups(groups: any[], signals: any[]): any[] {
@@ -315,6 +358,11 @@ export class S6_PlanAssemblyStage {
     if (totalSignals === 0) {
        errors.push('⭐ CRITICAL: Plan has 0 total signals across all groups');
     }
+
+    // Config-driven semantic checks (expected groups, provenance, etc.)
+    const semanticResult = validatePlanSemantic(plan, domainContext);
+    errors.push(...semanticResult.errors);
+    warnings.push(...semanticResult.warnings);
 
     return {
       passed: errors.length === 0,

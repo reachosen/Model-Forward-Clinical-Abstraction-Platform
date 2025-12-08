@@ -10,6 +10,7 @@ interface LLMConfig {
   model?: string;
   temperature?: number;
   maxTokens?: number;
+  topP?: number;
   timeout?: number; // Timeout in milliseconds (default: 60000)
   jsonSchema?: {
     name: string;
@@ -61,6 +62,7 @@ export async function callLLM(
   const model = config.model || 'gpt-4o-mini';
   const temperature = config.temperature ?? 0.7;
   const maxTokens = config.maxTokens || 4000;
+  const topP = config.topP;
 
   try {
     // Use structured outputs if schema provided, otherwise use json_object mode
@@ -79,6 +81,7 @@ export async function callLLM(
       model,
       messages,
       temperature,
+      top_p: topP,
       max_tokens: maxTokens,
       response_format: responseFormat,
     };
