@@ -226,13 +226,23 @@ function inferArchetype(concernId: string): string {
 }
 
 import { flywheel } from '../commands/flywheel';
-
-// ... (existing imports)
+import { safeScore } from '../commands/safeScore';
+import { evalCommand } from '../commands/eval';
 
 // ============================================
 // FLYWHEEL COMMAND (Prompt Refinery)
 // ============================================
 program.addCommand(flywheel);
+
+// ============================================
+// SAFE:SCORE COMMAND (SAFE v0 Evaluation)
+// ============================================
+program.addCommand(safeScore);
+
+// ============================================
+// EVAL COMMAND (New EvalFactory)
+// ============================================
+program.addCommand(evalCommand);
 
 // ============================================
 // PARSE AND EXECUTE

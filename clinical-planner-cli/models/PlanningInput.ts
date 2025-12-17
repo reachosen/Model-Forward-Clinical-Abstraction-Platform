@@ -134,6 +134,12 @@ export interface PlanningInput {
     population?: string;
 
     /**
+     * Narrative patient data for analysis
+     * V9.1: Used as the primary factual source for signal extraction
+     */
+    patient_payload?: string;
+
+    /**
      * Surveillance or reporting requirements
      */
     surveillance_requirements?: string[];

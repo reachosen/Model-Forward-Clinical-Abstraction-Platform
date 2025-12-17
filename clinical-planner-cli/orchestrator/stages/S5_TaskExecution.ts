@@ -13,18 +13,20 @@ import {
   ValidationResult,
   ArchetypeType,
 } from '../types';
-import { validateTaskWithArchetypeContext } from '../validators/ContextAwareValidation';
+import { validateTaskWithArchetypeContext, scoreTaskSafety } from '../validators/ContextAwareValidation';
+import { SAFEObserverContext } from '../../types/safety';
 import { recordLLMCall } from '../../refinery/observation/ObservationHooks';
 import OpenAI from 'openai';
 import { ChatCompletionContentPart, ChatCompletionContentPartText } from 'openai/resources/chat/completions';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-import { getSignalEnrichmentCoreBody } from '../prompts/signalEnrichment';
-import { getEventSummaryCoreBody } from '../prompts/eventSummary';
-import { getSummary2080CoreBody } from '../prompts/summary2080';
-import { getFollowupQuestionsCoreBody } from '../prompts/followupQuestions';
-import { getClinicalReviewPlanCoreBody } from '../prompts/clinicalReviewPlan';
-import { getMultiArchetypeSynthesisDraftCoreBody, getMultiArchetypeSynthesisVerifyCoreBody } from '../prompts/multiArchetypeSynthesis';
+import * as promptsConfig from '../config/prompts.json';
+import { getSignalEnrichmentVariables } from '../prompts/signalEnrichment';
+import { getEventSummaryVariables } from '../prompts/eventSummary';
+import { getSummary2080Variables } from '../prompts/summary2080';
+import { getFollowupQuestionsVariables } from '../prompts/followupQuestions';
+import { getClinicalReviewPlanVariables } from '../prompts/clinicalReviewPlan';
+import { getMultiArchetypeSynthesisDraftVariables, getMultiArchetypeSynthesisVerifyVariables } from '../prompts/multiArchetypeSynthesis';
 import { signalEnrichmentJsonSchema, SignalEnrichmentResult } from '../schemas/signalEnrichmentSchema';
 import { eventSummaryJsonSchema, EventSummaryResult } from '../schemas/eventSummarySchema';
 import { followupQuestionsJsonSchema, FollowupQuestionsResult } from '../schemas/followupQuestionsSchema';
@@ -165,6 +167,17 @@ const SYNTHESIS_MAX_TOKENS = parseInt(process.env.SYNTHESIS_MAX_TOKENS || '1200'
 // NOTE: synth temperature reserved for future tuning; removed to avoid unused var
 const SYNTHESIS_VERIFY_TEMPERATURE = parseFloat(process.env.SYNTHESIS_VERIFY_TEMPERATURE || '0.0');
 
+// TESTING HOOK: Allow injecting prompts for Refinery without writing to disk
+const promptOverrides = new Map<string, string>();
+
+export function registerPromptOverride(templateId: string, templateText: string) {
+  promptOverrides.set(templateId, templateText);
+}
+
+export function clearPromptOverrides() {
+  promptOverrides.clear();
+}
+
 interface LLMCallOptions {
   model: string;
   temperature: number;
@@ -174,6 +187,7 @@ interface LLMCallOptions {
   skeleton?: any;
   max_tokens?: number; // C7/C8: Optional token limit
   top_p?: number;
+  patient_payload?: string;
 }
 
 async function callLLM(options: LLMCallOptions & { task_type?: string }): Promise<any> {
@@ -194,10 +208,20 @@ async function callLLM(options: LLMCallOptions & { task_type?: string }): Promis
       finalPrompt = `${options.prompt}\n\n**IMPORTANT**: Respond with valid JSON only.`;
     }
 
+    const messages: any[] = [{ role: 'user', content: finalPrompt }];
+
+    // DETERMINISTIC HAND-OFF (E2): Inject patient narrative if provided
+    if (options.patient_payload) {
+      messages.unshift({
+        role: 'system',
+        content: `PATIENT NARRATIVE (factual source):\n\n${options.patient_payload}`
+      });
+    }
+
     const apiParams: any = {
       model: options.model || DEFAULT_MODEL,
       temperature: options.temperature,
-      messages: [{ role: 'user', content: finalPrompt }],
+      messages: messages,
     };
 
     // C7/C8: Apply max_tokens if specified
@@ -281,7 +305,7 @@ async function callLLM(options: LLMCallOptions & { task_type?: string }): Promis
 }
 
 function loadPromptTemplate(template_id: string, context: any): string {
-  const { domain, archetype, task_type, ortho_context, task_outputs } = context;
+  const { domain, archetype, task_type, ortho_context, task_outputs, patient_payload } = context;
 
   // Build metric context string using the domain-agnostic builder
   const metricContextString = buildMetricContextString(ortho_context);
@@ -297,54 +321,50 @@ function loadPromptTemplate(template_id: string, context: any): string {
   }
 
   // Create an extended context for prompts that need local variables
-  const promptContext = { ...context, laneFindings };
+  const promptContext = { ...context, laneFindings, patient_payload };
 
-  // Build dynamic role names based on task type, domain, and metric
-  const templates: Record<string, string> = {
-    signal_enrichment: buildMetricFramedPrompt({
-      roleName: buildDynamicRoleName('signal_enrichment', domain, metricName, archetype),
-      metricContext: metricContextString,
-      coreBody: getSignalEnrichmentCoreBody(promptContext)
-    }),
+  // 1. Get Template (Check overrides first)
+  let promptText: string = promptOverrides.get(template_id) || '';
 
-    event_summary: buildMetricFramedPrompt({
-      roleName: buildDynamicRoleName('event_summary', domain, metricName),
-      metricContext: metricContextString,
-      coreBody: getEventSummaryCoreBody(promptContext)
-    }),
+  if (!promptText) {
+    const templateEntry = (promptsConfig as any)[template_id];
+    if (!templateEntry || !templateEntry.template) {
+        throw new Error(`Prompt template not found in registry: ${template_id}`);
+    }
+    promptText = templateEntry.template;
+  }
 
-    summary_20_80: buildMetricFramedPrompt({
-      roleName: buildDynamicRoleName('summary_20_80', domain, metricName),
-      metricContext: metricContextString,
-      coreBody: getSummary2080CoreBody(promptContext)
-    }),
+  // 2. Get Variables (from helper functions)
+  let variables: Record<string, string> = {};
+  
+  if (template_id === 'signal_enrichment') {
+    variables = getSignalEnrichmentVariables(promptContext);
+  } else if (template_id === 'event_summary') {
+    variables = getEventSummaryVariables(promptContext);
+  } else if (template_id === 'summary_20_80') {
+    variables = getSummary2080Variables(promptContext);
+  } else if (template_id === 'followup_questions') {
+    variables = getFollowupQuestionsVariables(promptContext);
+  } else if (template_id === 'clinical_review_plan') {
+    variables = getClinicalReviewPlanVariables(promptContext);
+  } else if (template_id === 'multi_archetype_synthesis_draft') {
+    variables = getMultiArchetypeSynthesisDraftVariables(promptContext);
+  } else if (template_id === 'multi_archetype_synthesis_verify') {
+    variables = getMultiArchetypeSynthesisVerifyVariables(promptContext);
+  }
 
-    followup_questions: buildMetricFramedPrompt({
-      roleName: buildDynamicRoleName('followup_questions', domain, metricName),
-      metricContext: metricContextString,
-      coreBody: getFollowupQuestionsCoreBody(promptContext)
-    }),
+  // 3. Interpolate
+  for (const [key, value] of Object.entries(variables)) {
+    // Global replace for {{key}}
+    promptText = promptText.split(`{{${key}}}`).join(value);
+  }
 
-    clinical_review_plan: buildMetricFramedPrompt({
-      roleName: buildDynamicRoleName('clinical_review_plan', domain, metricName),
-      metricContext: metricContextString,
-      coreBody: getClinicalReviewPlanCoreBody(promptContext)
-    }),
-
-    multi_archetype_synthesis_draft: buildMetricFramedPrompt({
-      roleName: buildDynamicRoleName('multi_archetype_synthesis_draft', domain, metricName),
-      metricContext: metricContextString,
-      coreBody: getMultiArchetypeSynthesisDraftCoreBody(promptContext)
-    }),
-
-    multi_archetype_synthesis_verify: buildMetricFramedPrompt({
-      roleName: buildDynamicRoleName('multi_archetype_synthesis_verify', domain, metricName),
-      metricContext: metricContextString,
-      coreBody: getMultiArchetypeSynthesisVerifyCoreBody(promptContext)
-    })
-  };
-
-  return templates[task_type] || `Generate output for ${task_type} task.`;
+  // 4. Wrap in System Prompt
+  return buildMetricFramedPrompt({
+    roleName: buildDynamicRoleName(template_id, domain, metricName, archetype),
+    metricContext: metricContextString,
+    coreBody: promptText
+  });
 }
 
 export class S5_TaskExecutionStage {
@@ -358,10 +378,16 @@ export class S5_TaskExecutionStage {
     const ranking_context = semantic_context.ranking;
     const ortho_context = semantic_context.packet;
     const archetype = primary_archetype; // Use primary for context
+    const patient_payload = domainContext.patient_payload;
 
     console.log(`\n[S5] Task Execution & Local Validation`);
     console.log(`  Domain: ${domain}`);
     console.log(`  Primary Archetype: ${archetype}`);
+    if (patient_payload) {
+      console.log(`  Patient Payload: ${patient_payload.length} chars`);
+    } else {
+      console.warn('  ⚠️  No patient payload provided in domainContext');
+    }
     console.log(`  Tasks to execute: ${promptPlan.nodes.length}`);
 
     const taskOutputs: Map<string, TaskOutput> = new Map();
@@ -372,6 +398,12 @@ export class S5_TaskExecutionStage {
 
       const promptNode = promptPlan.nodes.find(n => n.id === taskId);
       if (!promptNode) throw new Error(`No prompt found for task: ${taskId}`);
+
+      // E2: Deterministic Hand-off Fix - Fail-fast if narrative is missing for clinical tasks
+      const narrativeRequiredTasks: string[] = ['signal_enrichment', 'event_summary', 'summary_20_80', 'followup_questions'];
+      if (narrativeRequiredTasks.includes(promptNode.type) && !patient_payload) {
+        throw new Error(`[S5] Critical Error: Task ${taskId} (${promptNode.type}) requires patient_payload but it is empty. Check S0 normalization.`);
+      }
 
       const config = promptNode.prompt_config;
       
@@ -422,6 +454,7 @@ export class S5_TaskExecutionStage {
           ranking_context,
           ortho_context,
           task_outputs: taskOutputs,
+          patient_payload,
         });
 
         const draftSchema = TASK_SCHEMAS['multi_archetype_synthesis_draft'];
@@ -436,6 +469,7 @@ export class S5_TaskExecutionStage {
           skeleton,
           max_tokens: SYNTHESIS_MAX_TOKENS, // C7/C8: Cap synthesis draft tokens
           top_p: config.top_p,
+          patient_payload,
         });
         
         // Validate draft
@@ -454,6 +488,7 @@ export class S5_TaskExecutionStage {
           ortho_context,
           task_outputs: taskOutputs,
           draftSynthesisJson: JSON.stringify(draftRaw, null, 2), // Pass draft as string
+          patient_payload,
         });
 
         const verifySchema = TASK_SCHEMAS['multi_archetype_synthesis_verify'];
@@ -468,6 +503,7 @@ export class S5_TaskExecutionStage {
           skeleton,
           max_tokens: SYNTHESIS_MAX_TOKENS,
           top_p: config.top_p,
+          patient_payload,
         });
         
         // Validate verification result
@@ -486,6 +522,7 @@ export class S5_TaskExecutionStage {
           ranking_context,
           ortho_context,
           task_outputs: taskOutputs,
+          patient_payload,
         });
 
         const schema = TASK_SCHEMAS[promptNode.type];
@@ -500,6 +537,7 @@ export class S5_TaskExecutionStage {
           skeleton,
           max_tokens: config.max_tokens,
           top_p: config.top_p,
+          patient_payload,
         });
       }
       
@@ -527,6 +565,24 @@ export class S5_TaskExecutionStage {
         console.log(`    ❌ Validation failed: ${validation.errors.join(', ')}`);
         // For now, we log and throw. In future, retry logic goes here.
         throw new Error(`Task ${taskId} validation failed: ${validation.errors[0]}`);
+      }
+
+      // SAFE Scorecard Hook (Phase 1: Log only)
+      try {
+        const safeContext: SAFEObserverContext = {
+          run_id: `run_${Date.now()}`, // Simple run ID for now
+          task_id: taskId,
+          metric_id: ortho_context?.metric?.metric_name || 'unknown',
+          archetype: taskArchetype
+        };
+        const scorecard = scoreTaskSafety(output, safeContext);
+        // Debug-level log to avoid cluttering production output too much
+        if (process.env.DEBUG_SAFE === 'true') {
+           console.log(`    🛡️  [SAFE Scorecard] ${taskId}:`, JSON.stringify(scorecard, null, 0));
+        }
+      } catch (safeErr) {
+        // Non-blocking catch
+        console.warn(`    ⚠️  SAFE Scoring failed for ${taskId}:`, safeErr);
       }
 
       const taskOutput: TaskOutput = {

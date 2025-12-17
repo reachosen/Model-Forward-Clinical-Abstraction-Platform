@@ -107,7 +107,8 @@ export class S1_DomainResolutionStage {
       domain: archetypeInfo.domain,
       primary_archetype: archetypeInfo.archetype,
       archetypes,
-      semantic_context
+      semantic_context,
+      patient_payload: input.patient_payload
     };
 
     console.log('✅ [S1] Domain resolution complete');

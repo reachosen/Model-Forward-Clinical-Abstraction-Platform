@@ -34,7 +34,12 @@ export class S0_InputNormalizationStage {
       planning_input: input,
       concern_id,
       raw_domain: input.domain_hint,
+      patient_payload: input.clinical_context?.patient_payload ?? input.metadata?.notes,
     };
+
+    if (routedInput.patient_payload) {
+      console.log('   📄 Patient payload resolved (Narrative size: ' + routedInput.patient_payload.length + ' chars)');
+    }
 
     console.log('✅ [S0] Input normalized successfully');
     return routedInput;

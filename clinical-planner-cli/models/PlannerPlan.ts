@@ -63,7 +63,20 @@ export interface PlanningInput {
   target_population: string;             // FUTURE USE: population-specific filtering
   specific_requirements: string[];       // FUTURE USE: custom requirement injection
   data_profile?: any;                    // FUTURE USE: data availability awareness
-  clinical_context?: any;                // FUTURE USE: patient-specific context
+  clinical_context?: {
+    objective?: string;
+    population?: string;
+    patient_payload?: string;
+    [key: string]: any;
+  };
+
+  /**
+   * Metadata about the planning request
+   */
+  metadata?: {
+    notes?: string;
+    [key: string]: any;
+  };
 
   // Optional fields for compatibility
   concern_id?: string;

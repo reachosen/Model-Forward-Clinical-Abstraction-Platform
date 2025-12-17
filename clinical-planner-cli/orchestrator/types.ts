@@ -49,6 +49,7 @@ export interface RoutedInput {
   planning_input: PlanningInput;
   concern_id: string;
   raw_domain?: string;
+  patient_payload?: string;
   // REMOVED: inferred_metadata - was not consumed by any downstream stage
 }
 
@@ -91,6 +92,7 @@ export interface DomainContext {
   archetypes: ArchetypeType[]; // Changed from archetype (singular)
   primary_archetype: ArchetypeType; // For UI/Summary
   semantic_context: SemanticContext; // Consolidated context
+  patient_payload?: string;
 }
 
 // ============================================================================
