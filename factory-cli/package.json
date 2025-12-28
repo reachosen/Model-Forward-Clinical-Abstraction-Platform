@@ -1,0 +1,70 @@
+{
+  "name": "factory-cli",
+  "version": "2.0.0",
+  "description": "Clinical Abstraction Planner CLI - Multi-domain surveillance configuration generator for HAC, USNWR, Quality, and Safety metrics",
+  "main": "bin/planner.ts",
+  "scripts": {
+    "planner": "ts-node bin/planner.ts",
+    "generate": "ts-node bin/planner.ts generate",
+    "generate:clabsi": "ts-node bin/planner.ts generate --concern CLABSI --domain picu",
+    "plan": "ts-node bin/planner.ts generate",
+    "plan:clabsi": "ts-node bin/planner.ts generate --concern CLABSI --domain picu",
+    "plan:vap": "ts-node bin/planner.ts generate --concern VAP --domain picu",
+    "validate:clabsi": "ts-node bin/planner.ts generate --concern CLABSI --domain picu --validate-only",
+    "validate:vap": "ts-node bin/planner.ts generate --concern VAP --domain picu --validate-only",
+    "learn": "ts-node PlanningFactory/cli/learn.ts",
+    "learn:status": "ts-node PlanningFactory/cli/learn.ts --status",
+    "learn:mock": "ts-node PlanningFactory/cli/learn.ts --mock",
+    "revise": "ts-node PlanningFactory/cli/revise.ts",
+    "batch": "ts-node PlanningFactory/batch-runner.ts",
+    "test:gates": "npm run test:semantic && ts-node PlanningFactory/test-gates-i32b.ts",
+    "test:full": "npm run test:semantic && ts-node PlanningFactory/test-s0-s6-complete.ts",
+    "test:s6": "ts-node tests/integration/s6-sufficiency.test.ts",
+    "flywheel": "ts-node bin/planner.ts flywheel",
+    "test": "ts-node tests/integration/s6-sufficiency.test.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist *.json validation_report.txt",
+    "missions": "ts-node MissionControl/browse-and-run.ts",
+    "missions:browse": "ts-node MissionControl/browse-and-run.ts",
+    "missions:process": "ts-node MissionControl/process-case.ts",
+    "test:semantic": "ts-node tests/semantic/semantic-contracts.test.ts"
+  },
+  "keywords": [
+    "healthcare",
+    "clinical-abstraction",
+    "surveillance",
+    "HAC",
+    "hospital-acquired-conditions",
+    "CLABSI",
+    "CAUTI",
+    "VAP",
+    "SSI",
+    "USNWR",
+    "quality-metrics",
+    "clinical-informatics",
+    "NHSN",
+    "pediatrics",
+    "orthopedics",
+    "endocrinology"
+  ],
+  "author": "Clinical Informatics Team",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1",
+    "commander": "^11.1.0",
+    "dotenv": "^17.2.3"
+  },
+  "optionalDependencies": {
+    "openai": "^4.24.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

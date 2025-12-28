@@ -1,0 +1,33 @@
+[
+  {
+    "test_id": "i32b_case_01_readmit",
+    "concern_id": "I32b",
+    "description": "NMS patient readmitted on day 14 with pneumonia",
+    "patient_payload": "Patient admitted POD#14 with fever and hypoxia...",
+    "expectations": {
+      "signal_generation": {
+        "must_find_signals": ["readmission_risks", "infection_risks"],
+        "min_signal_count": 2
+      },
+      "event_summary": {
+        "must_contain_phrases": ["readmission", "pneumonia"],
+        "max_length_chars": 300
+      },
+      "followup_questions": {
+        "required_themes": ["pulmonary_optimization", "discharge_planning"],
+        "forbidden_terms": ["policy", "guideline"]
+      },
+      "20_80_display_fields": {
+        "patient_summary_focus": ["timeline"],
+        "provider_summary_focus": ["risk"]
+      },
+      "clinical_reviewer": {
+        "expected_navigation_hints": true
+      }
+    },
+    "hard_fail_conditions": {
+      "hallucination_check": true,
+      "policy_drift_check": true
+    }
+  }
+]

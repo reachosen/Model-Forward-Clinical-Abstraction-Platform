@@ -1,0 +1,76 @@
+{
+  "$schema": "../../../_shared/definitions/field_registry.schema.json",
+  "metric_id": "I25",
+  "version": "1.0",
+  "description": "20/80 field registry for I25 (Supracondylar fracture to OR <18 hours)",
+
+  "critical_fields": [
+    {
+      "field_id": "arrival_timestamp",
+      "display_name": "ED/Hospital Arrival Time",
+      "source_path": "patient_payload.encounters[0].admission_datetime",
+      "weight": 1.0,
+      "display_order": 1,
+      "required": true,
+      "extraction_hints": ["arrived", "presented", "admission", "ED arrival", "triage"]
+    },
+    {
+      "field_id": "or_start_timestamp",
+      "display_name": "OR Procedure Start Time",
+      "source_path": "patient_payload.procedures[?type='surgical'].start_datetime",
+      "weight": 1.0,
+      "display_order": 2,
+      "required": true,
+      "extraction_hints": ["OR", "surgery", "procedure", "incision", "anesthesia start"]
+    },
+    {
+      "field_id": "time_to_or",
+      "display_name": "Time to OR (calculated)",
+      "derived_from": ["arrival_timestamp", "or_start_timestamp"],
+      "formula": "or_start_timestamp - arrival_timestamp",
+      "unit": "hours",
+      "weight": 1.0,
+      "display_order": 3,
+      "threshold": {
+        "pass": "< 18",
+        "fail": ">= 18"
+      }
+    },
+    {
+      "field_id": "fracture_type",
+      "display_name": "Fracture Classification",
+      "source_path": "patient_payload.diagnoses[?category='fracture'].description",
+      "weight": 0.8,
+      "display_order": 4,
+      "required": true
+    },
+    {
+      "field_id": "patient_age",
+      "display_name": "Patient Age",
+      "source_path": "patient_payload.demographics.age",
+      "weight": 0.6,
+      "display_order": 5,
+      "required": true,
+      "validation": {
+        "type": "number",
+        "min": 0,
+        "max": 18
+      }
+    },
+    {
+      "field_id": "compartment_status",
+      "display_name": "Compartment Syndrome Status",
+      "source_path": "patient_payload.assessments[?type='compartment']",
+      "weight": 0.9,
+      "display_order": 6,
+      "required": false,
+      "clinical_significance": "Indicates urgency of surgical intervention"
+    }
+  ],
+
+  "optional_highlights": {
+    "llm_can_suggest": true,
+    "max_suggestions": 3,
+    "suggestion_prompt": "Identify up to 3 additional fields that may explain delays or complications for this supracondylar fracture case"
+  }
+}

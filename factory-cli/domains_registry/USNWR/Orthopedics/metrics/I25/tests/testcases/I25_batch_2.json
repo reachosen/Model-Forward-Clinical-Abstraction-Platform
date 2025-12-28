@@ -1,0 +1,148 @@
+{
+  "batch_strategy": {
+    "batch_index": 2,
+    "scenario_count": 3,
+    "scenarios": [
+      {
+        "description": "Arrival to OR at 22h with a confirmed diagnosis of supracondylar fracture, but patient reports previous trauma and miscommunication leads to conflicting reports on pre-operative NPO adherence. Requires resolution of dietary history. [Doubt: 2]",
+        "archetype": "Delay_Driver_Profiler",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Clarify the timeline of NPO violation due to conflicting patient accounts and prior treatment."
+          },
+          {
+            "type": "missing_result",
+            "instruction": "Verify pre-operative lab results and their influence on surgical timing."
+          }
+        ]
+      },
+      {
+        "description": "Documentation gap identified where critical vitals taken after a re-visit show fluctuating blood pressure and pulse that contradicts earlier assessments, raising concern for shock. Need to verify earlier documentation for any discrepancies. [Doubt: 3]",
+        "archetype": "Documentation_Gap",
+        "doubt": [
+          {
+            "type": "missing_documentation",
+            "instruction": "Audit for missing vital signs documentation post-serious incident."
+          },
+          {
+            "type": "conflicting_vitals",
+            "instruction": "Investigate extreme variations in heart rate measurements taken pre and post-arrival."
+          }
+        ]
+      },
+      {
+        "description": "Patient presents with a pink pulseless hand before surgery, but history indicates recent controlled trauma. Confusion arises with the signed consent form indicating 'check for perfusion' instead of 'immediate reduction.' Prior medical history needs verification due to conflicting signed agreements. [Doubt: 3]",
+        "archetype": "Safety_Signal",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Clarify the consent form inconsistencies related to needed procedures."
+          },
+          {
+            "type": "missing_procedure",
+            "instruction": "Determine if the initial perfusion check was missed and its implication on immediate intervention."
+          }
+        ]
+      }
+    ]
+  },
+  "test_cases": [
+    {
+      "test_id": "I25-BATCH2-001",
+      "concern_id": "I25",
+      "description": "Patient arrived to OR at 22h with a supracondylar fracture and conflicting NPO history.",
+      "patient_payload": "An 8-year-old male presented to the ER after a fall while playing basketball. X-rays confirmed a supracondylar fracture. The patient's mother reported he had eaten at 18h, but the pre-op team documented NPO status as clear. Due to the conflicting reports, surgery was delayed until a thorough dietary history could be resolved. The patient finally arrived in the OR at 22h, risking potential complications due to NPO violations.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "conflicting reports on pre-operative NPO adherence",
+            "surgery was delayed until a thorough dietary history could be resolved",
+            "patient arrived in the OR at 22h"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "confirmed diagnosis of supracondylar fracture",
+            "NPO violation due to conflicting patient accounts"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "NPO adherence",
+            "dietary history resolution"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-002",
+      "concern_id": "I25",
+      "description": "Critical vitals show discrepancies raising concern for shock before surgery.",
+      "patient_payload": "A 10-year-old girl was diagnosed with a supracondylar fracture after a skateboarding accident. Upon re-evaluation, post-injury vitals indicated fluctuating blood pressure (90/50 to 110/70) and pulse (tachycardic at 120 bpm). These readings contradicted earlier assessments taken upon arrival. An audit revealed that critical vital signs were not documented properly at triage, causing concerns for potential shock and delaying the surgical intervention.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "fluctuating blood pressure and pulse",
+            "critical vital signs were not documented properly",
+            "delaying the surgical intervention"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "discrepancies raising concern for shock",
+            "extreme variations in heart rate measurements"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation of vital signs",
+            "investigation of discrepancies"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-003",
+      "concern_id": "I25",
+      "description": "Confusion over consent form raises risk flags for potential perfusion issues.",
+      "patient_payload": "A 6-year-old boy presented with a pink, pulseless hand following a fall from a swing. The pre-op assessment showed conflicting information: the consent form indicated 'check for perfusion' instead of 'immediate reduction.' The patient's medical history suggested controlled trauma, but the inconsistencies in the consent raised flags. The surgical team delayed the operation to verify the appropriateness of the signed agreement and ensure the child received necessary immediate intervention.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "pink pulseless hand before surgery",
+            "consent form inconsistencies",
+            "delayed operation to verify the appropriateness"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "confusion arises with the signed consent form",
+            "determine if the initial perfusion check was missed"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "verification of medical history",
+            "clarification of consent form"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "../../../_shared/definitions/exclusion_criteria.schema.json",
+  "metric_id": "I25",
+  "version": "1.0",
+  "description": "Denominator exclusion criteria for I25",
+
+  "exclusions": [
+    {
+      "exclusion_id": "polytrauma",
+      "description": "Patient has polytrauma requiring multi-system management",
+      "detection_rule": {
+        "type": "diagnosis_present",
+        "codes": ["S00-T88"],
+        "context": "Multiple body regions involved"
+      },
+      "evidence_required": true,
+      "clinical_rationale": "Polytrauma patients require stabilization of multiple systems before orthopedic surgery"
+    },
+    {
+      "exclusion_id": "preexisting_hardware",
+      "description": "Fracture site has pre-existing hardware requiring removal",
+      "detection_rule": {
+        "type": "procedure_present",
+        "codes": ["CPT:20680", "CPT:20670"],
+        "timing": "same_encounter"
+      },
+      "evidence_required": true,
+      "clinical_rationale": "Hardware removal adds complexity and extends surgical time"
+    },
+    {
+      "exclusion_id": "open_fracture_grade_iii",
+      "description": "Open fracture Gustilo Grade III requiring staged procedures",
+      "detection_rule": {
+        "type": "diagnosis_present",
+        "codes": ["S52.501B", "S52.502B"],
+        "context": "Grade III open fracture"
+      },
+      "evidence_required": true,
+      "clinical_rationale": "Grade III open fractures require wound management before definitive fixation"
+    },
+    {
+      "exclusion_id": "medical_instability",
+      "description": "Patient medically unstable requiring stabilization before surgery",
+      "detection_rule": {
+        "type": "llm_assessment",
+        "prompt_key": "medical_instability_check",
+        "confidence_threshold": 0.85,
+        "indicators": [
+          "hemodynamic instability",
+          "respiratory failure",
+          "sepsis",
+          "acute cardiac event"
+        ]
+      },
+      "evidence_required": true,
+      "clinical_rationale": "Medical stabilization takes priority over orthopedic surgery"
+    }
+  ],
+
+  "exceptions": [
+    {
+      "exception_id": "weekend_or_holiday",
+      "description": "Arrival during weekend or hospital-recognized holiday",
+      "detection_rule": {
+        "type": "temporal_check",
+        "field": "arrival_timestamp",
+        "condition": "is_weekend_or_holiday"
+      },
+      "adjustment": "extends_threshold_by_hours",
+      "adjustment_value": 24,
+      "clinical_rationale": "Limited OR availability during weekends/holidays"
+    },
+    {
+      "exception_id": "after_hours_arrival",
+      "description": "Arrival after 5 PM on weekday",
+      "detection_rule": {
+        "type": "temporal_check",
+        "field": "arrival_timestamp",
+        "condition": "arrival_hour >= 17"
+      },
+      "adjustment": "extends_threshold_by_hours",
+      "adjustment_value": 12,
+      "clinical_rationale": "After-hours arrival may delay OR scheduling"
+    }
+  ]
+}

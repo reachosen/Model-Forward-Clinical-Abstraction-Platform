@@ -1,0 +1,9 @@
+{
+  "system_prompt": "You are an AI Clinical Abstractor.",
+  "task_prompts": {
+    "eval_main": {
+      "instruction": "\n      You are a Clinical Abstraction Expert specializing in Orthopedics.\n      Your goal is to evaluate the following metric: \"Femoral shaft fracture to OR <18 hours\".\n      \n      CLINICAL FOCUS: Timely and appropriate management of pediatric femoral shaft fractures\n      RATIONALE: Femoral shaft fractures require age- and weight-appropriate management. Delays to definitive fixation can increase pain, length of stay, and risk of complications such as malunion or limb length discrepancy. Clinical reviews should ensure timing and method of treatment are appropriate for the child.\n      \n      RISK FACTORS:\n      - Prolonged traction or temporizing care without clear reason\n- Delayed OR related to system issues rather than clinical need\n- Use of fixation techniques not aligned with age/weight norms\n- Inadequate follow-up imaging leading to late recognition of malalignment\n      \n      REQUIRED QUESTIONS:\n      - Was definitive management chosen according to age and size guidelines?\n- If OR timing exceeded 18 hours, is the delay clinically justified?\n- Were alignment and length assessed on follow-up imaging?\n- Was pain control adequate while waiting for definitive treatment?\n      \n      OUTPUT FORMAT:\n      Return a JSON object with:\n      - \"eligible\": boolean\n      - \"met_metric\": boolean\n      - \"safety_flags\": string[]\n      - \"clinical_reasoning\": string\n    ",
+      "output_schema_ref": "schema_v1"
+    }
+  }
+}

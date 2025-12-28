@@ -1,0 +1,18 @@
+{
+  "id": "usnwr_ortho_2025",
+  "title": "USNWR Orthopedics Implementation",
+  "context": {
+    "definitions": "factory-cli/data/orthopedics/metrics.json",
+    "signals": "factory-cli/data/orthopedics/signals.json"
+  },
+  "scope": [
+    { "metricId": "I25", "track": "flywheel:standard", "label": "Supracondylar Fx" },
+    { "metricId": "I26", "track": "flywheel:standard", "label": "Femoral Shaft Fx" },
+    { "metricId": "I32a", "track": "flywheel:standard", "label": "AIS Readmission" },
+    { "metricId": "I27", "track": "flywheel:lite", "label": "Forearm Fx" }
+  ],
+  "config": {
+    "batchSize": 5,
+    "scoringPolicy": "config/scoring_policy.json"
+  }
+}

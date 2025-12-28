@@ -5,7 +5,11 @@
       "Bash(npx ts-node:*)",
       "Bash(timeout 60 npx ts-node:*)",
       "Bash(npx tsc:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(npm run missions:process:*)",
+      "Bash(npm run missions:*)"
     ],
     "deny": [],
     "ask": []

@@ -21,12 +21,12 @@ POTENTIAL_PATHS = [
 
     # 2. If script is in root scripts/ folder
     SCRIPT_DIR.parent / "hac-planner-cli" / "cli" / "plan.ts",
-    SCRIPT_DIR.parent / "clinical-planner-cli" / "cli" / "plan.ts",
+    SCRIPT_DIR.parent / "factory-cli" / "cli" / "plan.ts",
 
     # 3. Fallback: Try CWD
     Path.cwd() / "cli" / "plan.ts",
     Path.cwd() / "hac-planner-cli" / "cli" / "plan.ts",
-    Path.cwd() / "clinical-planner-cli" / "cli" / "plan.ts"
+    Path.cwd() / "factory-cli" / "cli" / "plan.ts"
 ]
 
 # Locate the correct entry point

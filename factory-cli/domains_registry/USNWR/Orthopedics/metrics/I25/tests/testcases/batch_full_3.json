@@ -1,0 +1,175 @@
+{
+  "batch_plan": {
+    "batch_index": 3,
+    "scenario_count": 5,
+    "scenarios": [
+      "Generated Case 11: [Safety_Signal] 9yo male with supracondylar fracture from a basketball game, normal neurovascular status, arrived Sunday 14:00, surgery Sunday 15:30 (1.5h delay), Clear Pass.",
+      "Generated Case 12: [Documentation_Gap] 6yo female with supracondylar fracture from a trampoline fall, AIN palsy, arrived Saturday 21:00, surgery Sunday 03:00 (6h delay), Borderline.",
+      "Generated Case 13: [Process_Auditor] 5yo male with supracondylar fracture from a backyard fall, pink pulseless hand, arrived Saturday 13:00, surgery Saturday 15:30 (2.5h delay), Clear Pass.",
+      "Generated Case 14: [Preventability_Detective] 8-year-old female with supracondylar fracture from sliding down stairs, compartment syndrome, arrived Saturday 11:30, surgery Saturday 13:00 (1.5h delay), Clear Pass.",
+      "Generated Case 15: [Delay_Driver_Profiler] 7yo male with supracondylar fracture from a football game, pucker sign, arrived Friday 23:00, surgery Saturday 09:00 (10h delay), Clear Fail."
+    ]
+  },
+  "test_cases": [
+    {
+      "test_id": "I25-BATCH3-001",
+      "concern_id": "I25",
+      "description": "Safety_Signal case testing a 1.5h delay in surgery for a 9yo male with a supracondylar fracture.",
+      "patient_payload": "A 9-year-old male presented to the emergency department at 14:00 on Sunday following a fall during a basketball game, resulting in a left supracondylar humerus fracture. Upon arrival, a thorough neurovascular assessment was performed, revealing normal capillary refill, sensation intact, and no motor deficits. The patient exhibited a clear pass in neurovascular status with no signs of compartment syndrome noted during the examination. The surgical team was notified, and the patient underwent surgery at 15:30, which was a 1.5-hour delay from the target initiation time, but no significant complications arose from the wait. The patient's postoperative course was unremarkable, and he was scheduled for follow-up in one week.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency department at 14:00",
+            "normal capillary refill, sensation intact",
+            "underwent surgery at 15:30"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "left supracondylar humerus fracture",
+            "1.5-hour delay from the target initiation time"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "safety signals regarding neurovascular status",
+            "adequacy of surgical delay justification"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH3-002",
+      "concern_id": "I25",
+      "description": "Documentation_Gap case for a 6yo female with supracondylar fracture and AIN palsy.",
+      "patient_payload": "A 6-year-old female presented to the emergency room at 21:00 on Saturday after falling off a trampoline, resulting in a right supracondylar humerus fracture. Initial assessment indicated an anterior interosseous nerve (AIN) palsy, evidenced by the inability to perform the 'OK' sign. Despite the urgent need for surgical intervention, the surgery was delayed until 03:00 on Sunday, which amounted to a 6-hour wait. There were inconsistencies noted in the documentation regarding the neurovascular assessment performed at the time of arrival, as the notes failed to explicitly state the presence of the AIN palsy initially. The surgical team was alerted, and the patient was taken to OR with a complicated but manageable postoperative course.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency room at 21:00",
+            "AIN palsy, evidenced by the inability to perform the 'OK' sign",
+            "surgery was delayed until 03:00 on Sunday"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "right supracondylar humerus fracture",
+            "inconsistencies noted in the documentation"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation discrepancies",
+            "impact of AIN palsy on surgical timing"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH3-003",
+      "concern_id": "I25",
+      "description": "Process_Auditor case for a 5yo male with supracondylar fracture and pink pulseless hand.",
+      "patient_payload": "A 5-year-old male child was brought to the emergency department at 13:00 on Saturday after sustaining a left supracondylar humerus fracture during a backyard fall. Upon examination, the child presented with a pink pulseless hand, which raised immediate concern for vascular compromise. After a thorough evaluation, the surgical team was alerted, and the child was taken to the operating room at 15:30, resulting in a 2.5-hour delay. The delay was attributed to the need for additional imaging and consultation prior to surgery. The child was closely monitored throughout the wait, and there were no signs of worsening neurovascular status, allowing for a successful surgical intervention.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "brought to the emergency department at 13:00",
+            "pink pulseless hand, which raised immediate concern",
+            "taken to the operating room at 15:30"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "left supracondylar humerus fracture",
+            "2.5-hour delay attributed to additional imaging"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "justification for the delay",
+            "evaluation of neurovascular status"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH3-004",
+      "concern_id": "I25",
+      "description": "Preventability_Detective case involving compartment syndrome in an 8yo female with supracondylar fracture.",
+      "patient_payload": "An 8-year-old female presented to the emergency department at 11:30 on Saturday after suffering a left supracondylar humerus fracture while sliding down stairs. Initial evaluation revealed signs consistent with developing compartment syndrome, including severe pain and swelling in the forearm. The patient was taken to surgery at 13:00, which represented a 1.5-hour delay due to the need for an extensive assessment of her neurovascular status. The surgical intervention was deemed necessary to relieve the compartment syndrome, and the procedure was completed successfully. Postoperative care included monitoring for any complications that could have been preventable had the surgery occurred sooner.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency department at 11:30",
+            "signs consistent with developing compartment syndrome",
+            "taken to surgery at 13:00"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "left supracondylar humerus fracture",
+            "monitoring for any complications that could have been preventable"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "preventability of surgical delay",
+            "assessment of compartment syndrome"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH3-005",
+      "concern_id": "I25",
+      "description": "Delay_Driver_Profiler case for a 7yo male with supracondylar fracture and pucker sign.",
+      "patient_payload": "A 7-year-old male was brought to the emergency department at 23:00 on Friday after suffering a left supracondylar humerus fracture during a football game. Upon examination, a pucker sign was noted, indicating potential significant soft tissue injury. The patient was not taken to the operating room until 09:00 on Saturday, leading to a 10-hour delay in surgical intervention. The delay was primarily attributed to the unavailability of surgical staff during the night and a lack of OR capacity. The child's condition was stable, but the extended wait raised concerns regarding the potential for complications. Postoperatively, he was monitored closely for any signs of neurovascular compromise.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "brought to the emergency department at 23:00",
+            "pucker sign indicating potential significant soft tissue injury",
+            "not taken to the operating room until 09:00"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "left supracondylar humerus fracture",
+            "unavailability of surgical staff during the night"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "justification for the delay in surgery",
+            "impact of pucker sign on surgical timing"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    }
+  ]
+}

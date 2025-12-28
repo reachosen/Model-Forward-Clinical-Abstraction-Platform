@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "signal_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "group_id": {
+            "type": "string",
+            "description": "One of: infection_risks, bundle_compliance, outcome_risks, readmission_risks"
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "signal_id": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "evidence_type": {
+                  "type": "string",
+                  "enum": [
+                    "verbatim_text",
+                    "structured_field"
+                  ]
+                },
+                "provenance": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "signal_id",
+                "description",
+                "evidence_type",
+                "provenance"
+              ]
+            }
+          }
+        },
+        "required": [
+          "group_id",
+          "signals"
+        ]
+      }
+    }
+  },
+  "required": [
+    "signal_groups"
+  ]
+}

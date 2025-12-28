@@ -1,0 +1,175 @@
+{
+  "batch_plan": {
+    "batch_index": 10,
+    "scenario_count": 5,
+    "scenarios": [
+      "Generated Case 46: [Exclusion_Hunter] 7yo female with supracondylar fracture from a family outing accident, normal neurovascular status, arrived Sunday 15:00, surgery Sunday 17:00 (2h delay), Clear Pass.",
+      "Generated Case 47: [Safety_Signal] 6yo male with supracondylar fracture due to running into a wall, pink pulseless hand, arrived Friday 11:00, surgery Friday 23:00 (12h delay), Clear Fail.",
+      "Generated Case 48: [Documentation_Gap] 8-year-old female with supracondylar fracture from collapsing swing set, AIN palsy, arrived Saturday 14:00, surgery Saturday 18:00 (4h delay), Borderline.",
+      "Generated Case 49: [Process_Auditor] 5yo male with supracondylar fracture from an in-home fall, compartment syndrome, arrived Sunday 21:00, surgery Monday 06:00 (9h delay), Clear Fail.",
+      "Generated Case 50: [Preventability_Detective] 10yo female with supracondylar fracture from a sports collision, pink pulseless hand, arrived Friday 12:00, surgery Friday 14:00 (2h delay), Clear Pass."
+    ]
+  },
+  "test_cases": [
+    {
+      "test_id": "I25-BATCH10-001",
+      "concern_id": "I25",
+      "description": "Exclusion_Hunter case testing the presence of exclusions in care for a 7yo female with supracondylar fracture.",
+      "patient_payload": "A 7-year-old female presented with a Gartland type II supracondylar humerus fracture, sustained during a family outing when she fell off a picnic table. Upon arrival at 15:00 on Sunday, she exhibited normal neurovascular status with a pink, warm hand and intact pulses. A thorough assessment showed no signs of compartment syndrome or additional injuries. Surgery was scheduled and commenced at 17:00, resulting in a 2-hour delay. The patient was discharged the following day with no complications noted. The family was counseled on the importance of follow-up care and signs to monitor post-op.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "sustained during a family outing",
+            "normal neurovascular status",
+            "surgery was scheduled and commenced at 17:00"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland type II supracondylar humerus fracture",
+            "2-hour delay"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation of neurovascular status",
+            "justification for delay"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH10-002",
+      "concern_id": "I25",
+      "description": "Safety_Signal case testing for clear signs of a pink pulseless hand in a 6yo male with supracondylar fracture.",
+      "patient_payload": "A 6-year-old male presented to the emergency department after running into a wall, resulting in a Gartland type III supracondylar humerus fracture. Upon evaluation at 11:00 on Friday, his left hand was observed to be pink but pulseless. Immediate neurovascular assessment revealed no radial or ulnar pulse. He was taken for surgery at 23:00, which resulted in a 12-hour delay. Despite timely intervention post-surgery, the risk of vascular compromise was noted, raising concerns for potential complications. The surgical team documented the findings and emphasized the need for close monitoring.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "pink but pulseless",
+            "no radial or ulnar pulse",
+            "surgery at 23:00"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland type III supracondylar humerus fracture",
+            "12-hour delay"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "reason for delay",
+            "neurovascular assessment documentation"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH10-003",
+      "concern_id": "I25",
+      "description": "Documentation_Gap case examining inconsistencies in clinical notes for an 8-year-old female with AIN palsy post-fracture.",
+      "patient_payload": "An 8-year-old female was brought to the hospital after suffering a Gartland type II supracondylar humerus fracture when a swing set collapsed on her. She arrived at 14:00 on Saturday and was assessed for AIN palsy; however, conflicting notes indicated 'AIN intact' in one section and 'mild weakness in thumb opposition' in another. Surgery was performed at 18:00, leading to a 4-hour delay. Post-operative notes failed to clarify the extent of nerve involvement. The family was advised on follow-up care and potential rehabilitation needs for motor function.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "swing set collapsed on her",
+            "AIN intact",
+            "mild weakness in thumb opposition"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland type II supracondylar humerus fracture",
+            "4-hour delay"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "clarification of AIN status",
+            "documentation discrepancies"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH10-004",
+      "concern_id": "I25",
+      "description": "Process_Auditor case focusing on timing issues for a 5yo male with compartment syndrome from a supracondylar fracture.",
+      "patient_payload": "A 5-year-old male presented to the emergency room at 21:00 on Sunday after falling from a height while playing at home, resulting in a Gartland type III supracondylar humerus fracture. Upon examination, the patient displayed early signs of compartment syndrome, including severe pain and swelling. Surgery was delayed until 06:00 on Monday, resulting in a 9-hour wait for intervention. The surgical team documented the critical nature of the situation, outlining the urgency of addressing the potential for permanent damage. Post-operative notes indicated that the patient was monitored closely for any complications.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "early signs of compartment syndrome",
+            "surgery was delayed until 06:00",
+            "9-hour wait for intervention"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland type III supracondylar humerus fracture",
+            "9-hour wait for intervention"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "justification for delay",
+            "monitoring for complications"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH10-005",
+      "concern_id": "I25",
+      "description": "Preventability_Detective case evaluating delay reasons in a 10yo female with supracondylar fracture.",
+      "patient_payload": "A 10-year-old female was evaluated for a Gartland type II supracondylar humerus fracture after a collision during a sports activity. She arrived at the hospital at 12:00 on Friday and was found to have a pink, warm hand upon examination, indicating good perfusion. Surgery was performed at 14:00, leading to a 2-hour delay that was documented as necessary due to scheduling conflicts in the operating room. Post-surgical notes indicated no complications. The surgical team provided the family with discharge instructions and emphasized the importance of follow-up care.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "pink, warm hand",
+            "surgery was performed at 14:00",
+            "2-hour delay"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland type II supracondylar humerus fracture",
+            "no complications"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "justification for delay",
+            "scheduling conflicts"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    }
+  ]
+}

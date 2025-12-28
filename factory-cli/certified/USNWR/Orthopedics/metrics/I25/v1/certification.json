@@ -1,0 +1,12 @@
+{
+  "certified_at": "2025-12-23T20:11:17.125Z",
+  "metric_id": "I25",
+  "version": "1.0",
+  "eval_summary": {
+    "total_cases": 9,
+    "pass_count": 0,
+    "pass_rate": 0
+  },
+  "git_sha": "HEAD",
+  "author": "Mission Control"
+}

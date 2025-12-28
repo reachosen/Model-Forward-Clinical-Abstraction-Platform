@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "event_summary": {
+      "type": "string",
+      "description": "Comprehensive narrative summary"
+    },
+    "timeline_complete": {
+      "type": "boolean"
+    },
+    "key_timestamps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "event_summary",
+    "timeline_complete",
+    "key_timestamps"
+  ]
+}

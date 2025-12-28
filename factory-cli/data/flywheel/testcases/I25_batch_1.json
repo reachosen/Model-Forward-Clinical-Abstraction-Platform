@@ -1,0 +1,201 @@
+{
+  "batch_strategy": {
+    "batch_index": 1,
+    "scenario_count": 5,
+    "scenarios": [
+      {
+        "description": "Clear Pass: Arrival to OR < 12h. Standard supracondylar fracture.",
+        "archetype": "Process_Auditor"
+      },
+      {
+        "description": "Clear Fail: Arrival to OR > 24h due to NPO violation.",
+        "archetype": "Delay_Driver_Profiler"
+      },
+      {
+        "description": "Borderline: Arrival to OR ~17.5h. Verify categorization.",
+        "archetype": "Process_Auditor",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Make the exact arrival time slightly ambiguous in the triage note vs nursing note."
+          }
+        ]
+      },
+      {
+        "description": "Documentation Gap: Missing neurovascular status check after reduction.",
+        "archetype": "Documentation_Gap"
+      },
+      {
+        "description": "Safety Signal: Pink pulseless hand on arrival requiring immediate reduction.",
+        "archetype": "Safety_Signal"
+      }
+    ]
+  },
+  "test_cases": [
+    {
+      "test_id": "I25-BATCH1-001",
+      "concern_id": "I25",
+      "description": "Standard supracondylar fracture to OR < 12h.",
+      "patient_payload": "A 10-year-old boy was brought to the emergency department after a fall from a tree. X-rays confirmed a right supracondylar fracture. The patient arrived at the hospital at 3 PM and was assessed in triage. After completing the necessary imaging and obtaining medical clearance, he was taken to the OR by 9 PM. The surgical team followed all protocols, ensuring timely care within the 12-hour window.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "arrived at the hospital at 3 PM",
+            "taken to the OR by 9 PM",
+            "timely care within the 12-hour window"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "right supracondylar fracture",
+            "completed necessary imaging",
+            "followed all protocols"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "protocol compliance",
+            "timeliness"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH1-002",
+      "concern_id": "I25",
+      "description": "Supracondylar fracture to OR > 24h due to NPO violation.",
+      "patient_payload": "An 8-year-old girl arrived at the emergency department after a playground accident resulting in a left supracondylar fracture. Although she was triaged quickly, a miscommunication led to an NPO violation as she was not cleared for surgery due to a previous meal. Due to this delay and complications in scheduling, she did not reach the OR until 26 hours after her arrival, significantly increasing the risk of ischemic complications.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "miscommunication led to an NPO violation",
+            "did not reach the OR until 26 hours",
+            "increasing the risk of ischemic complications"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "left supracondylar fracture",
+            "triaged quickly",
+            "complications in scheduling"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "systemic delays",
+            "communication issues"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH1-003",
+      "concern_id": "I25",
+      "description": "Arrival to OR ~17.5h with ambiguous time documentation.",
+      "patient_payload": "A 9-year-old boy presented to the emergency department with a right supracondylar fracture after falling off his bicycle. The triage note recorded his arrival time as 2:30 PM but the nursing documentation stated 3:00 PM. After a thorough evaluation, he was taken to the OR at approximately 8:00 AM the next day, totaling around 17.5 hours from arrival. This ambiguity in documentation raised concerns about accurate categorization of the surgical timing.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "triage note recorded his arrival time as 2:30 PM",
+            "nursing documentation stated 3:00 PM",
+            "taken to the OR at approximately 8:00 AM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "right supracondylar fracture",
+            "thorough evaluation",
+            "ambiguity in documentation"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation accuracy",
+            "timing verification"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH1-004",
+      "concern_id": "I25",
+      "description": "Missing neurovascular status check after reduction.",
+      "patient_payload": "A 7-year-old girl was admitted with a left supracondylar fracture following a fall. After reduction, the surgical team proceeded with fixation. However, the post-operative documentation was flagged for missing neurovascular status checks. The absence of this critical information raised concerns about potential complications and the adequacy of post-operative care, creating a potential risk for ischemic injury.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "missing neurovascular status checks",
+            "absence of this critical information",
+            "potential risk for ischemic injury"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "left supracondylar fracture",
+            "surgical team proceeded with fixation",
+            "adequacy of post-operative care"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation completeness",
+            "post-operative protocols"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH1-005",
+      "concern_id": "I25",
+      "description": "Pink pulseless hand on arrival requiring immediate reduction.",
+      "patient_payload": "A 6-year-old boy arrived at the emergency department with a right supracondylar fracture after being struck by a swing. Upon examination, his hand was noted to be pink but pulseless, indicating a critical situation necessitating immediate intervention. The orthopedic team expedited the reduction procedure to restore blood flow, highlighting the importance of timely surgical intervention to prevent complications such as compartment syndrome.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "hand was noted to be pink but pulseless",
+            "immediate intervention necessitating",
+            "timely surgical intervention to prevent complications"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "right supracondylar fracture",
+            "expedited the reduction procedure",
+            "prevent complications such as compartment syndrome"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "urgency of care",
+            "vascular assessment"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    }
+  ]
+}

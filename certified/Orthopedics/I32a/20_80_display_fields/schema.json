@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "patient_summary": {
+      "type": "string"
+    },
+    "provider_summary": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "patient_summary",
+    "provider_summary"
+  ]
+}

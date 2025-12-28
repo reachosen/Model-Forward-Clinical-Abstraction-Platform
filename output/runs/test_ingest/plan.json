@@ -1,0 +1,516 @@
+{
+  "plan_metadata": {
+    "plan_id": "plan_I25_1766517452218",
+    "planner_version": "9.1.0",
+    "status": "draft",
+    "planning_input_id": "manual_ingest",
+    "generated_at": "2025-12-23T19:17:32.218Z"
+  },
+  "rationale": {
+    "summary": "Time-to-OR for supracondylar fractures is associated with risk of ischemic hand, nerve injury, and compartment syndrome. The real goal is to balance timely decompression and reduction with safe conditions (experienced team, appropriate timing) rather than blindly chasing an 18-hour clock.",
+    "key_decisions": [],
+    "pediatric_focus_areas": [
+      "Age appropriate management"
+    ],
+    "archetype_selection_reason": "Standard Ortho Protocol"
+  },
+  "clinical_config": {
+    "config_metadata": {
+      "config_id": "conf_I25",
+      "name": "Supracondylar fracture to OR <18 hours",
+      "concern_id": "I25",
+      "version": "1.0",
+      "archetype": "Process_Auditor",
+      "domain": "Orthopedics",
+      "created_at": "2025-12-23T19:17:32.219Z",
+      "status": "active"
+    },
+    "clinical_tools": [],
+    "surveillance": {
+      "objective": "Quality Reporting",
+      "population": "Pediatric Ortho",
+      "detection_window": {
+        "lookback_days": 0,
+        "lookahead_days": 0
+      },
+      "reporting_frameworks": [
+        "USNWR"
+      ]
+    },
+    "timeline": {
+      "phases": []
+    },
+    "signals": {
+      "signal_groups": [
+        {
+          "group_id": "delay_drivers",
+          "display_name": "DELAY DRIVERS",
+          "description": "Signals related to delay_drivers",
+          "priority": 1,
+          "signals": [
+            {
+              "id": "delay_drivers_0",
+              "name": "Admission to incision >18 hours",
+              "description": "Admission to incision >18 hours",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "delay_drivers_1",
+              "name": "OR scheduled after 22:00 (10 PM)",
+              "description": "OR scheduled after 22:00 (10 PM)",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "delay_drivers_2",
+              "name": "Transfer from outside hospital",
+              "description": "Transfer from outside hospital",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "delay_drivers_3",
+              "name": "NPO violation delay",
+              "description": "NPO violation delay",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "delay_drivers_4",
+              "name": "Medical clearance delay",
+              "description": "Medical clearance delay",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "delay_drivers_5",
+              "name": "Lack of OR availability",
+              "description": "Lack of OR availability",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "delay_drivers_6",
+              "name": "Surgeon unavailability",
+              "description": "Surgeon unavailability",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "delay_drivers_7",
+              "name": "Imaging delay",
+              "description": "Imaging delay",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            }
+          ]
+        },
+        {
+          "group_id": "outcome_risks",
+          "display_name": "OUTCOME RISKS",
+          "description": "Signals related to outcome_risks",
+          "priority": 1,
+          "signals": [
+            {
+              "id": "outcome_risks_0",
+              "name": "Hand perfusion: white/cool/pulseless",
+              "description": "Hand perfusion: white/cool/pulseless",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "outcome_risks_1",
+              "name": "Neurological deficit (median/ulnar/radial)",
+              "description": "Neurological deficit (median/ulnar/radial)",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "outcome_risks_2",
+              "name": "Compartment syndrome suspicion",
+              "description": "Compartment syndrome suspicion",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "outcome_risks_3",
+              "name": "Loss of reduction requiring re-operation",
+              "description": "Loss of reduction requiring re-operation",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "outcome_risks_4",
+              "name": "Malunion",
+              "description": "Malunion",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "outcome_risks_5",
+              "name": "Limb length discrepancy",
+              "description": "Limb length discrepancy",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "outcome_risks_6",
+              "name": "Infection (SSI)",
+              "description": "Infection (SSI)",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "outcome_risks_7",
+              "name": "Hardware failure",
+              "description": "Hardware failure",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            }
+          ]
+        },
+        {
+          "group_id": "safety_signals",
+          "display_name": "SAFETY SIGNALS",
+          "description": "Signals related to safety_signals",
+          "priority": 1,
+          "signals": [
+            {
+              "id": "safety_signals_0",
+              "name": "Pain out of proportion to injury",
+              "description": "Pain out of proportion to injury",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "safety_signals_1",
+              "name": "Increasing analgesic requirement",
+              "description": "Increasing analgesic requirement",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "safety_signals_2",
+              "name": "Passive stretch pain",
+              "description": "Passive stretch pain",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "safety_signals_3",
+              "name": "Paresthesia/numbness",
+              "description": "Paresthesia/numbness",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "safety_signals_4",
+              "name": "Pallor or delayed capillary refill",
+              "description": "Pallor or delayed capillary refill",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "safety_signals_5",
+              "name": "Tenseness of compartment",
+              "description": "Tenseness of compartment",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "safety_signals_6",
+              "name": "Fasciotomy performed",
+              "description": "Fasciotomy performed",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "safety_signals_7",
+              "name": "Unexpected ICU admission",
+              "description": "Unexpected ICU admission",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            }
+          ]
+        },
+        {
+          "group_id": "documentation_gaps",
+          "display_name": "DOCUMENTATION GAPS",
+          "description": "Signals related to documentation_gaps",
+          "priority": 1,
+          "signals": [
+            {
+              "id": "documentation_gaps_0",
+              "name": "Neurovascular exam not documented pre-op",
+              "description": "Neurovascular exam not documented pre-op",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "documentation_gaps_1",
+              "name": "Neurovascular exam not documented post-op",
+              "description": "Neurovascular exam not documented post-op",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "documentation_gaps_2",
+              "name": "Perfusion status not described (pink/warm)",
+              "description": "Perfusion status not described (pink/warm)",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "documentation_gaps_3",
+              "name": "Compartment check frequency not met",
+              "description": "Compartment check frequency not met",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "documentation_gaps_4",
+              "name": "Surgical pause/timeout missing",
+              "description": "Surgical pause/timeout missing",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "documentation_gaps_5",
+              "name": "Antibiotic timing not documented",
+              "description": "Antibiotic timing not documented",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "documentation_gaps_6",
+              "name": "Justification for delay >18h missing",
+              "description": "Justification for delay >18h missing",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            },
+            {
+              "id": "documentation_gaps_7",
+              "name": "Discharge instructions unclear",
+              "description": "Discharge instructions unclear",
+              "evidence_type": "L2",
+              "provenance": {
+                "source": "USNWR_Guidelines",
+                "confidence": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "criteria": {
+      "rules": []
+    },
+    "questions": {
+      "metric_questions": [
+        {
+          "question_id": "Q1",
+          "text": "Was a complete neurovascular exam documented before surgery?",
+          "category": "diagnostic",
+          "sme_status": "verified",
+          "display_order": 1,
+          "evidence_rules": {
+            "required_signals": [],
+            "suggested_evidence_type": [
+              "L2"
+            ]
+          }
+        },
+        {
+          "question_id": "Q2",
+          "text": "Was the hand perfusion status (pink/warm vs white/cool) clearly described?",
+          "category": "diagnostic",
+          "sme_status": "verified",
+          "display_order": 2,
+          "evidence_rules": {
+            "required_signals": [],
+            "suggested_evidence_type": [
+              "L2"
+            ]
+          }
+        },
+        {
+          "question_id": "Q3",
+          "text": "If time to OR exceeded 18 hours, is there a clear, clinically justified reason?",
+          "category": "diagnostic",
+          "sme_status": "verified",
+          "display_order": 3,
+          "evidence_rules": {
+            "required_signals": [],
+            "suggested_evidence_type": [
+              "L2"
+            ]
+          }
+        },
+        {
+          "question_id": "Q4",
+          "text": "Were compartment syndrome red flags documented and acted upon promptly?",
+          "category": "diagnostic",
+          "sme_status": "verified",
+          "display_order": 4,
+          "evidence_rules": {
+            "required_signals": [],
+            "suggested_evidence_type": [
+              "L2"
+            ]
+          }
+        }
+      ]
+    },
+    "prompts": {
+      "system_prompt": "You are an AI Clinical Abstractor.",
+      "task_prompts": {
+        "eval_main": {
+          "instruction": "\n      You are a Clinical Abstraction Expert specializing in Orthopedics.\n      Your goal is to evaluate the following metric: \"Supracondylar fracture to OR <18 hours\".\n      \n      CLINICAL FOCUS: Timeliness and safety of supracondylar fracture care\n      RATIONALE: Time-to-OR for supracondylar fractures is associated with risk of ischemic hand, nerve injury, and compartment syndrome. The real goal is to balance timely decompression and reduction with safe conditions (experienced team, appropriate timing) rather than blindly chasing an 18-hour clock.\n      \n      RISK FACTORS:\n      - Ischemic (white/cool) hand with delayed operative management\n- Missing or incomplete pre-operative neurovascular exam documentation\n- Unnecessary after-hours surgery performed mainly for metric performance\n- Missed or late recognition of compartment syndrome warning signs\n      \n      REQUIRED QUESTIONS:\n      - Was a complete neurovascular exam documented before surgery?\n- Was the hand perfusion status (pink/warm vs white/cool) clearly described?\n- If time to OR exceeded 18 hours, is there a clear, clinically justified reason?\n- Were compartment syndrome red flags documented and acted upon promptly?\n      \n      OUTPUT FORMAT:\n      Return a JSON object with:\n      - \"eligible\": boolean\n      - \"met_metric\": boolean\n      - \"safety_flags\": string[]\n      - \"clinical_reasoning\": string\n    ",
+          "output_schema_ref": "schema_v1"
+        }
+      }
+    },
+    "fieldMappings": {},
+    "domain": {
+      "name": "Orthopedics",
+      "display_name": "Pediatric Orthopedics",
+      "description": "USNWR Ortho Metrics"
+    },
+    "metric_context": {
+      "metric_id": "I25",
+      "metric_name": "Supracondylar fracture to OR <18 hours",
+      "clinical_focus": "Timeliness and safety of supracondylar fracture care",
+      "rationale": "Time-to-OR for supracondylar fractures is associated with risk of ischemic hand, nerve injury, and compartment syndrome. The real goal is to balance timely decompression and reduction with safe conditions (experienced team, appropriate timing) rather than blindly chasing an 18-hour clock.",
+      "risk_factors": [
+        "Ischemic (white/cool) hand with delayed operative management",
+        "Missing or incomplete pre-operative neurovascular exam documentation",
+        "Unnecessary after-hours surgery performed mainly for metric performance",
+        "Missed or late recognition of compartment syndrome warning signs"
+      ],
+      "review_questions": [
+        "Was a complete neurovascular exam documented before surgery?",
+        "Was the hand perfusion status (pink/warm vs white/cool) clearly described?",
+        "If time to OR exceeded 18 hours, is there a clear, clinically justified reason?",
+        "Were compartment syndrome red flags documented and acted upon promptly?"
+      ],
+      "signal_group_definitions": {}
+    }
+  },
+  "validation": {
+    "checklist": {
+      "schema_completeness": {
+        "result": "YES",
+        "severity": "CRITICAL"
+      },
+      "provenance_safety": {
+        "result": "YES",
+        "severity": "CRITICAL"
+      },
+      "pediatric_compliance": {
+        "result": "YES",
+        "severity": "HIGH"
+      },
+      "dependency_integrity": {
+        "result": "YES",
+        "severity": "HIGH"
+      }
+    },
+    "is_valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

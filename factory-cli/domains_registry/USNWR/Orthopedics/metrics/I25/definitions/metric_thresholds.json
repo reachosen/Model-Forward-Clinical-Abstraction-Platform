@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../_shared/definitions/metric_thresholds.schema.json",
+  "metric_id": "I25",
+  "version": "1.0",
+  "description": "Pass/fail thresholds for I25 metric determination",
+
+  "primary_threshold": {
+    "field": "time_to_or",
+    "unit": "hours",
+    "pass_condition": "< 18",
+    "fail_condition": ">= 18",
+    "description": "Time from hospital arrival to OR must be less than 18 hours"
+  },
+
+  "confidence_levels": {
+    "high": {
+      "min_score": 0.9,
+      "action": "auto_determine",
+      "description": "All required timestamps present and unambiguous"
+    },
+    "medium": {
+      "min_score": 0.7,
+      "max_score": 0.9,
+      "action": "flag_for_review",
+      "description": "Some ambiguity in timing documentation"
+    },
+    "low": {
+      "max_score": 0.7,
+      "action": "require_manual_review",
+      "description": "Missing or conflicting timestamps"
+    }
+  },
+
+  "override_rules": [
+    {
+      "rule_id": "exclusion_applies",
+      "condition": "exclusion_status == 'excluded'",
+      "outcome": "excluded",
+      "bypass_threshold": true,
+      "description": "Patient meets exclusion criteria"
+    },
+    {
+      "rule_id": "exception_applies",
+      "condition": "has_valid_exception == true",
+      "outcome": "recalculate_with_adjustment",
+      "description": "Valid exception extends threshold"
+    }
+  ],
+
+  "safe_scoring": {
+    "CR_threshold": 0.9,
+    "AH_threshold": 1.0,
+    "AC_threshold": 0.8,
+    "certification_min_test_cases": 20
+  }
+}

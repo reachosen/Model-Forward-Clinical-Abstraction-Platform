@@ -1,0 +1,37 @@
+{
+  "metric_id": "I25",
+  "domain": "Orthopedics",
+  "task_ids": [
+    "signal_enrichment",
+    "event_summary",
+    "followup_questions"
+  ],
+  "scenarios": [
+    {
+      "description": "Clear Pass: Arrival to OR < 12h. Standard supracondylar fracture.",
+      "archetype": "Process_Auditor"
+    },
+    {
+      "description": "Clear Fail: Arrival to OR > 24h due to NPO violation.",
+      "archetype": "Delay_Driver_Profiler"
+    },
+    {
+      "description": "Borderline: Arrival to OR ~17.5h. Verify categorization.",
+      "archetype": "Process_Auditor",
+      "doubt": [
+        {
+          "type": "ambiguity",
+          "instruction": "Make the exact arrival time slightly ambiguous in the triage note vs nursing note."
+        }
+      ]
+    },
+    {
+      "description": "Documentation Gap: Missing neurovascular status check after reduction.",
+      "archetype": "Documentation_Gap"
+    },
+    {
+      "description": "Safety Signal: Pink pulseless hand on arrival requiring immediate reduction.",
+      "archetype": "Safety_Signal"
+    }
+  ]
+}

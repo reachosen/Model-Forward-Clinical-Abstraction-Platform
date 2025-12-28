@@ -1,0 +1,185 @@
+{
+  "batch_plan": {
+    "batch_index": 2,
+    "scenario_count": 5,
+    "scenarios": [
+      "Generated Case 6: [Documentation_Gap] 8yo female with supracondylar fracture from fall off the jungle gym, pink pulseless hand, arrived Saturday 08:00, surgery Saturday 20:00 (12h delay), Borderline.",
+      "Generated Case 7: [Process_Auditor] 5yo male with supracondylar fracture from a fall during soccer, AIN palsy, arrived Friday 22:00, surgery Saturday 08:00 (10h delay), Clear Fail.",
+      "Generated Case 8: [Preventability_Detective] 6-year-old female with supracondylar fracture following a fall off the monkey bars, pink pulseless hand, arrived Friday 18:30, surgery Saturday 02:00 (7.5h delay), Borderline.",
+      "Generated Case 9: [Delay_Driver_Profiler] 10yo male with supracondylar fracture from a horse riding incident, normal neurovascular status, arrived Saturday 16:30, surgery Saturday 19:00 (2.5h delay), Clear Pass.",
+      "Generated Case 10: [Exclusion_Hunter] 7-year-old female with supracondylar fracture from mountain biking, pucker sign, arrived Friday 17:00, surgery Friday 19:00 (2h delay), Clear Pass."
+    ]
+  },
+  "test_cases": [
+    {
+      "test_id": "I25-BATCH2-001",
+      "concern_id": "I25",
+      "description": "Documentation_Gap case testing for 12h delay with pink pulseless hand.",
+      "patient_payload": "An 8-year-old female presented to the emergency department following a fall off a jungle gym. The initial assessment revealed a Gartland type III supracondylar humerus fracture with a pink pulseless hand. The injury occurred on Saturday at approximately 07:00 AM. She arrived at the hospital by 08:00 AM. Neurovascular examination showed no signs of compartment syndrome, and pulse was noted to be absent despite a pink appearance. The surgery was scheduled for Saturday at 08:00 PM, resulting in a significant delay of 12 hours. Discrepancies in the documentation noted that while the initial assessment was thorough, the timing of the neurovascular checks was poorly documented, raising concerns over compliance with standard protocols.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency department following a fall off a jungle gym",
+            "pink pulseless hand",
+            "surgery was scheduled for Saturday at 08:00 PM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland type III supracondylar humerus fracture",
+            "arrived at the hospital by 08:00 AM",
+            "discrepancies in the documentation noted"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation discrepancy",
+            "timing of neurovascular checks",
+            "justification for delay"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-002",
+      "concern_id": "I25",
+      "description": "Process_Auditor case testing for 10h delay with AIN palsy.",
+      "patient_payload": "A 5-year-old male presented after sustaining a supracondylar humerus fracture during a soccer game. He arrived at the emergency department at 10:00 PM on Friday. Neurovascular assessment showed an anterior interosseous nerve (AIN) palsy with inability to perform the 'OK sign.' The surgery was ultimately performed on Saturday at 08:00 AM, resulting in a 10-hour delay to definitive care. The clinical documentation highlighted that while the injury was significant, the urgency of the surgical intervention was not adequately communicated, leading to a clear failure to meet the 18-hour benchmark for time to OR.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "sustaining a supracondylar humerus fracture during a soccer game",
+            "anterior interosseous nerve (AIN) palsy",
+            "surgery was ultimately performed on Saturday at 08:00 AM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "arrived at the emergency department at 10:00 PM",
+            "inability to perform the 'OK sign'",
+            "clear failure to meet the 18-hour benchmark"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "justification for delay",
+            "urgency communication",
+            "timing of intervention"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-003",
+      "concern_id": "I25",
+      "description": "Preventability_Detective case testing for 7.5h delay with pink pulseless hand.",
+      "patient_payload": "A 6-year-old female was brought to the emergency department after falling off the monkey bars, resulting in a Gartland II supracondylar humerus fracture. Upon arrival at 06:30 PM on Friday, she exhibited a pink pulseless hand. The neurovascular assessment indicated no signs of compartment syndrome. However, the surgery was not performed until 02:00 AM the following day, leading to a delay of 7.5 hours. The clinical team noted that the delay was partially due to scheduling conflicts and a lack of available operating room resources, raising questions about preventability of the situation.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "resulting in a Gartland II supracondylar humerus fracture",
+            "pink pulseless hand",
+            "surgery was not performed until 02:00 AM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "arrived at 06:30 PM on Friday",
+            "neurovascular assessment indicated no signs of compartment syndrome",
+            "questions about preventability of the situation"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "scheduling conflicts",
+            "availability of resources",
+            "preventability of delay"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-004",
+      "concern_id": "I25",
+      "description": "Delay_Driver_Profiler case testing for 2.5h delay with normal neurovascular status.",
+      "patient_payload": "A 10-year-old male presented to the emergency department after a horse riding incident, resulting in a Gartland type III supracondylar humerus fracture. His arrival time was recorded at 04:30 PM on Saturday, with a thorough neurovascular examination revealing normal status. The surgery took place at 07:00 PM, resulting in a 2.5-hour delay to surgical intervention. The clinical team indicated that the delay was primarily due to the need for imaging studies and a busy operating room schedule, which were justified given the patient’s stable condition.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "resulting in a Gartland type III supracondylar humerus fracture",
+            "normal neurovascular examination",
+            "surgery took place at 07:00 PM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "presented to the emergency department after a horse riding incident",
+            "arrived at 04:30 PM on Saturday",
+            "delay was primarily due to the need for imaging studies"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "justification for imaging studies",
+            "operating room scheduling",
+            "patient stability"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH2-005",
+      "concern_id": "I25",
+      "description": "Exclusion_Hunter case testing for 2h delay with pucker sign.",
+      "patient_payload": "A 7-year-old female was brought to the emergency department after a mountain biking accident, resulting in a Gartland II supracondylar humerus fracture. The assessment noted a significant pucker sign during the physical examination, suggesting potential vascular compromise. Arriving at 05:00 PM on Friday, the surgical intervention commenced at 07:00 PM that evening, reflecting a 2-hour delay. The documentation confirmed that the injury was isolated to the supracondylar region, with no other injuries present, thus qualifying the case for inclusion in the metrics without exclusion.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "resulting in a Gartland II supracondylar humerus fracture",
+            "pucker sign during the physical examination",
+            "surgical intervention commenced at 07:00 PM"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "arriving at 05:00 PM on Friday",
+            "suggesting potential vascular compromise",
+            "qualifying the case for inclusion in the metrics without exclusion"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "assessment of vascular status",
+            "justification for delay",
+            "clarification of isolated injury"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    }
+  ]
+}

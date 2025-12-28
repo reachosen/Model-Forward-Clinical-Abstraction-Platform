@@ -1,0 +1,175 @@
+{
+  "batch_plan": {
+    "batch_index": 1,
+    "scenario_count": 5,
+    "scenarios": [
+      "Generated Case 1: [Process_Auditor] 6yo male with supracondylar fracture from falling off a swing, pink pulseless hand, arrived Saturday 20:00, surgery Sunday 09:00 (13h delay), Borderline.",
+      "Generated Case 2: [Preventability_Detective] 7-year-old female with supracondylar fracture due to skateboard accident, AIN palsy, arrived Sunday 15:30, surgery Sunday 18:00 (2.5h delay), Clear Pass.",
+      "Generated Case 3: [Delay_Driver_Profiler] 5yo male with supracondylar fracture from monkey bars fall, pucker sign, arrived Friday 17:00, surgery Saturday 11:00 (18h delay), Clear Fail.",
+      "Generated Case 4: [Exclusion_Hunter] 9yo female with supracondylar fracture from bicycle crash, compartment syndrome, arrived Saturday 14:00, surgery Saturday 16:00 (2h delay), Clear Pass.",
+      "Generated Case 5: [Safety_Signal] 4-year-old male with supracondylar fracture from trampoline accident, normal neurovascular status, arrived Saturday 12:00, surgery Saturday 14:00 (2h delay), Clear Pass."
+    ]
+  },
+  "test_cases": [
+    {
+      "test_id": "I25-BATCH1-001",
+      "concern_id": "I25",
+      "description": "Process_Auditor case testing 13h delay in surgery for a 6yo male with supracondylar fracture.",
+      "patient_payload": "A 6-year-old male presented to the emergency department on Saturday at 20:00 after falling off a swing. Upon examination, he was noted to have a Gartland type III supracondylar humerus fracture on the left side with a pink, pulseless hand. Neurovascular assessment revealed no movement in the fingers, and the AIN motor exam was not able to be performed due to the absence of finger flexion. The patient was kept under observation, and surgery was scheduled for Sunday at 09:00. The delay from injury to surgery was approximately 13 hours. There were no signs of compartment syndrome documented during the assessment, and the surgical team was notified promptly about the neurovascular status. The family expressed concern about the long wait for surgical intervention.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency department on Saturday at 20:00",
+            "surgery was scheduled for Sunday at 09:00",
+            "the delay from injury to surgery was approximately 13 hours"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Gartland type III supracondylar humerus fracture",
+            "pink, pulseless hand"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "reason for delay",
+            "documentation discrepancy"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH1-002",
+      "concern_id": "I25",
+      "description": "Preventability_Detective case assessing 2.5h delay for a 7yo female with supracondylar fracture.",
+      "patient_payload": "A 7-year-old female presented to the emergency department on Sunday at 15:30 after sustaining a supracondylar humerus fracture from a skateboard accident. Clinical evaluation revealed an AIN palsy with an inability to perform the 'OK' sign. Neurovascular assessment showed a warm, pink hand with palpable pulses. The surgery was performed at 18:00, resulting in a 2.5-hour delay. The surgical team documented that the delay was due to preoperative clearance processes. There were no signs of compartment syndrome noted during the evaluation, and the patient was stable throughout her time in the ED.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency department on Sunday at 15:30",
+            "surgery was performed at 18:00",
+            "the delay was due to preoperative clearance processes"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "AIN palsy with an inability to perform the 'OK' sign",
+            "warm, pink hand with palpable pulses"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "preventability of delay",
+            "surgical decision-making"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH1-003",
+      "concern_id": "I25",
+      "description": "Delay_Driver_Profiler case evaluating 18h delay for a 5yo male with supracondylar fracture.",
+      "patient_payload": "A 5-year-old male was brought to the emergency department on Friday at 17:00 after a fall from monkey bars, resulting in a left supracondylar humerus fracture. Upon examination, the patient exhibited a pucker sign, indicating potential nerve injury. The neurovascular assessment revealed a white, cold pulseless hand. The surgery was scheduled for Saturday at 11:00, resulting in an 18-hour delay. The surgical team indicated that the delay was due to OR availability and the need for further imaging. There were no signs of compartment syndrome documented, although the patient's extremity was closely monitored throughout his stay.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "brought to the emergency department on Friday at 17:00",
+            "surgery was scheduled for Saturday at 11:00",
+            "the delay was due to OR availability"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "left supracondylar humerus fracture",
+            "pucker sign, indicating potential nerve injury"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "justification for delay",
+            "OR scheduling issues"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH1-004",
+      "concern_id": "I25",
+      "description": "Exclusion_Hunter case analyzing compartment syndrome in a 9yo female with supracondylar fracture.",
+      "patient_payload": "A 9-year-old female presented to the emergency department on Saturday at 14:00 after a bicycle crash resulting in a right supracondylar humerus fracture. On examination, she exhibited signs of compartment syndrome, including severe pain and tense swelling. The neurovascular assessment revealed diminished sensation and a white, cold hand. Surgery was performed at 16:00, indicating a 2-hour delay. The surgical notes specified the urgency due to compartment syndrome. The patient was closely monitored, and there were no signs of additional complications recorded during her stay.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "presented to the emergency department on Saturday at 14:00",
+            "surgery was performed at 16:00",
+            "signs of compartment syndrome, including severe pain"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "right supracondylar humerus fracture",
+            "diminished sensation and a white, cold hand"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "management of compartment syndrome",
+            "timeliness of surgical intervention"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I25-BATCH1-005",
+      "concern_id": "I25",
+      "description": "Safety_Signal case for a 4yo male with supracondylar fracture and normal neurovascular status.",
+      "patient_payload": "A 4-year-old male was brought to the emergency department on Saturday at 12:00 following a trampoline accident that resulted in a left supracondylar humerus fracture. Clinical examination showed a stable neurovascular status, with a warm, pink hand and good capillary refill. The injury was classified as Gartland type II, and he was scheduled for surgery at 14:00, resulting in a 2-hour delay. The surgical team noted that there were no signs of compartment syndrome or neurovascular compromise during the assessment. The patient's parents were informed of the condition and the planned intervention without any immediate concerns raised.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "brought to the emergency department on Saturday at 12:00",
+            "surgery was scheduled for 14:00",
+            "stable neurovascular status, with a warm, pink hand"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "left supracondylar humerus fracture",
+            "no signs of compartment syndrome"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "confirmation of neurovascular status",
+            "surgical decision-making"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    }
+  ]
+}
