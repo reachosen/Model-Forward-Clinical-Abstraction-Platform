@@ -1,0 +1,137 @@
+{
+  "$schema": "../../../_shared/definitions/signal_groups.schema.json",
+  "metric_id": "I32a",
+  "version": "1.0",
+  "description": "Signal groups for I32a pediatric scoliosis surgery safety metric",
+
+  "signal_groups": [
+    {
+      "group_id": "INFECTION_PREVENTION",
+      "display_name": "Infection Prevention",
+      "description": "Signals related to SSI prevention bundle compliance",
+      "priority": 1,
+      "signals": [
+        {
+          "signal_id": "prophylactic_antibiotic_timing",
+          "description": "Prophylactic antibiotics administered within 60 minutes of incision",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "antibiotic_redosing",
+          "description": "Antibiotic redosing for procedures > 4 hours",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "wound_assessment",
+          "description": "Post-operative wound assessment documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "ssi_indicators",
+          "description": "Signs of surgical site infection (erythema, warmth, drainage)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "group_id": "SURGICAL_BUNDLE_COMPLIANCE",
+      "display_name": "Surgical Bundle Compliance",
+      "description": "Signals related to surgical safety bundle adherence",
+      "priority": 2,
+      "signals": [
+        {
+          "signal_id": "surgical_timeout",
+          "description": "Surgical timeout documented",
+          "evidence_type": "structured_field",
+          "required": true
+        },
+        {
+          "signal_id": "dvt_prophylaxis",
+          "description": "DVT prophylaxis protocol followed",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "procedure_duration",
+          "description": "Procedure duration documented",
+          "evidence_type": "structured_field",
+          "required": true
+        },
+        {
+          "signal_id": "blood_loss_documented",
+          "description": "Estimated blood loss documented",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "group_id": "OUTCOME_MONITORING",
+      "display_name": "Outcome Monitoring",
+      "description": "Signals related to post-operative outcome monitoring",
+      "priority": 3,
+      "signals": [
+        {
+          "signal_id": "neurovascular_checks",
+          "description": "Regular neurovascular checks documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "pain_assessment",
+          "description": "Pain assessment and management documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "neurological_status",
+          "description": "Neurological status changes (paresthesia, weakness)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "hardware_integrity",
+          "description": "Post-operative imaging confirming hardware position",
+          "evidence_type": "structured_field",
+          "required": false
+        }
+      ]
+    },
+    {
+      "group_id": "READMISSION_PREVENTION",
+      "display_name": "Readmission Prevention",
+      "description": "Signals related to preventing unplanned readmissions",
+      "priority": 4,
+      "signals": [
+        {
+          "signal_id": "discharge_instructions",
+          "description": "Comprehensive discharge instructions provided",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "followup_scheduled",
+          "description": "Follow-up appointment scheduled",
+          "evidence_type": "structured_field",
+          "required": true
+        },
+        {
+          "signal_id": "bowel_function",
+          "description": "Bowel function status before discharge",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "readmission_indicators",
+          "description": "Indicators leading to readmission (pain, nausea, fever)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

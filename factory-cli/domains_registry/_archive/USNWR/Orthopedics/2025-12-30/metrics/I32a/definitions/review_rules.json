@@ -1,0 +1,146 @@
+{
+  "$schema": "../../../_shared/definitions/review_rules.schema.json",
+  "metric_id": "I32a",
+  "version": "1.0",
+  "description": "Rule-in/rule-out decision criteria for pediatric scoliosis surgery safety review",
+
+  "decision_framework": {
+    "possible_outcomes": ["pass", "fail", "needs_review", "excluded"],
+    "default_if_unclear": "needs_review"
+  },
+
+  "rule_in_criteria": [
+    {
+      "rule_id": "clear_pass",
+      "description": "All bundle elements compliant, no complications, no readmission",
+      "conditions": [
+        { "field": "antibiotic_timing_compliant", "operator": "==", "value": true },
+        { "field": "dvt_prophylaxis_compliant", "operator": "==", "value": true },
+        { "field": "has_ssi", "operator": "==", "value": false },
+        { "field": "readmitted_30_days", "operator": "==", "value": false }
+      ],
+      "outcome": "pass",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "pass_with_minor_deviation",
+      "description": "Minor documentation gaps but no adverse outcomes",
+      "conditions": [
+        { "field": "has_ssi", "operator": "==", "value": false },
+        { "field": "readmitted_30_days", "operator": "==", "value": false },
+        { "field": "has_documentation_gap", "operator": "==", "value": true }
+      ],
+      "outcome": "pass",
+      "confidence": "medium",
+      "requires_documentation": ["gap_type", "mitigation_documented"]
+    }
+  ],
+
+  "rule_out_criteria": [
+    {
+      "rule_id": "clear_fail_ssi",
+      "description": "Developed surgical site infection with bundle non-compliance",
+      "conditions": [
+        { "field": "has_ssi", "operator": "==", "value": true },
+        { "field": "bundle_compliant", "operator": "==", "value": false }
+      ],
+      "outcome": "fail",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "clear_fail_readmission",
+      "description": "Unplanned readmission within 30 days due to preventable cause",
+      "conditions": [
+        { "field": "readmitted_30_days", "operator": "==", "value": true },
+        { "field": "readmission_preventable", "operator": "==", "value": true }
+      ],
+      "outcome": "fail",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "excluded",
+      "description": "Patient meets exclusion criteria",
+      "conditions": [
+        { "field": "exclusion_status", "operator": "==", "value": "excluded" }
+      ],
+      "outcome": "excluded",
+      "confidence": "high",
+      "requires_documentation": ["exclusion_id", "exclusion_evidence"]
+    }
+  ],
+
+  "ambiguity_triggers": [
+    {
+      "trigger_id": "unclear_antibiotic_timing",
+      "description": "Antibiotic timing not clearly documented or conflicting times",
+      "detection": { "field": "antibiotic_timestamp", "operator": "is_null" },
+      "reviewer_prompt": "Please verify antibiotic administration timing relative to incision",
+      "search_hints": ["antibiotic", "cefazolin", "ancef", "prophylaxis", "administered", "given"]
+    },
+    {
+      "trigger_id": "conflicting_wound_assessments",
+      "description": "Wound assessment notes show conflicting findings",
+      "detection": { "type": "llm_assessment", "prompt_key": "wound_conflict_check" },
+      "reviewer_prompt": "Wound assessments show conflicting findings. Which is accurate?",
+      "resolution_guidance": "Use most recent documented assessment, note discrepancy",
+      "search_hints": ["wound", "incision", "erythema", "healing", "drainage"]
+    },
+    {
+      "trigger_id": "borderline_readmission_timing",
+      "description": "Readmission occurred close to 30-day boundary",
+      "detection": {
+        "field": "days_to_readmission",
+        "operator": "between",
+        "value": [28, 32]
+      },
+      "reviewer_prompt": "Readmission timing is close to 30-day threshold. Verify exact dates.",
+      "escalation": "clinical_lead_review",
+      "search_hints": ["readmit", "return", "presented", "day 30", "one month"]
+    },
+    {
+      "trigger_id": "incomplete_discharge_documentation",
+      "description": "Discharge instructions partially documented or unclear",
+      "detection": { "field": "discharge_instructions_complete", "operator": "==", "value": false },
+      "reviewer_prompt": "Discharge instructions appear incomplete. Verify patient education documented.",
+      "search_hints": ["discharge", "instructions", "education", "follow-up", "pain management", "activity"]
+    },
+    {
+      "trigger_id": "neurological_change_unclear_etiology",
+      "description": "New neurological findings with unclear cause",
+      "detection": { "type": "llm_assessment", "prompt_key": "neuro_etiology_check" },
+      "reviewer_prompt": "Neurological changes noted but etiology unclear. Is this related to procedure?",
+      "search_hints": ["paresthesia", "weakness", "numbness", "neurological", "sensation", "motor"],
+      "escalation": "clinical_lead_review"
+    }
+  ],
+
+  "interactive_queries": [
+    {
+      "query_id": "find_antibiotic_timing",
+      "description": "Help reviewer locate antibiotic administration time",
+      "retrieval_strategy": "search_notes_for_keywords",
+      "keywords": ["antibiotic", "cefazolin", "ancef", "prophylaxis", "administered", "0+", "prior to incision"],
+      "note_types": ["ANESTHESIA_RECORD", "OR_NOTE", "NURSING_NOTE"]
+    },
+    {
+      "query_id": "find_wound_status",
+      "description": "Help reviewer locate wound assessment notes",
+      "retrieval_strategy": "search_notes_for_keywords",
+      "keywords": ["wound", "incision", "staples", "sutures", "erythema", "drainage", "healing"],
+      "note_types": ["PROGRESS_NOTE", "NURSING_NOTE", "WOUND_CARE_NOTE"]
+    },
+    {
+      "query_id": "find_discharge_instructions",
+      "description": "Help reviewer verify discharge education",
+      "retrieval_strategy": "search_notes_for_keywords",
+      "keywords": ["discharge", "instructions", "education", "activity", "restrictions", "follow-up", "signs to watch"],
+      "note_types": ["DISCHARGE_SUMMARY", "NURSING_NOTE", "PATIENT_EDUCATION"]
+    },
+    {
+      "query_id": "check_bundle_compliance",
+      "description": "Help reviewer verify surgical bundle compliance",
+      "retrieval_strategy": "structured_query",
+      "query_template": "Check for antibiotic timing, DVT prophylaxis, timeout documentation, and appropriate redosing"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "../../../_shared/definitions/signal_groups.schema.json",
+  "metric_id": "I25",
+  "version": "1.0",
+  "description": "Signal groups for I25 supracondylar fracture time-to-OR metric",
+
+  "signal_groups": [
+    {
+      "group_id": "TIMING_DOCUMENTATION",
+      "display_name": "Timing Documentation",
+      "description": "Signals related to timestamps and time intervals",
+      "priority": 1,
+      "signals": [
+        {
+          "signal_id": "arrival_time_documented",
+          "description": "ED/hospital arrival time is clearly documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "or_time_documented",
+          "description": "OR/procedure start time is clearly documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "delay_reason_documented",
+          "description": "Reason for any delay is documented",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "group_id": "CLINICAL_PRESENTATION",
+      "display_name": "Clinical Presentation",
+      "description": "Signals related to the clinical findings and diagnosis",
+      "priority": 2,
+      "signals": [
+        {
+          "signal_id": "fracture_type_confirmed",
+          "description": "Supracondylar fracture type is confirmed",
+          "evidence_type": "structured_field",
+          "required": true
+        },
+        {
+          "signal_id": "neurovascular_status",
+          "description": "Neurovascular status documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "compartment_assessment",
+          "description": "Compartment syndrome assessment performed",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "group_id": "SURGICAL_PLANNING",
+      "display_name": "Surgical Planning",
+      "description": "Signals related to surgical decision-making",
+      "priority": 3,
+      "signals": [
+        {
+          "signal_id": "surgical_consent",
+          "description": "Surgical consent documented",
+          "evidence_type": "structured_field",
+          "required": true
+        },
+        {
+          "signal_id": "npo_status",
+          "description": "NPO status documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "or_scheduling",
+          "description": "OR scheduling/booking documented",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "group_id": "BARRIERS_DELAYS",
+      "display_name": "Barriers and Delays",
+      "description": "Signals indicating barriers to timely surgery",
+      "priority": 4,
+      "signals": [
+        {
+          "signal_id": "medical_stabilization_needed",
+          "description": "Patient required medical stabilization before surgery",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "or_availability_issue",
+          "description": "OR availability affected timing",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "specialist_availability",
+          "description": "Specialist availability affected timing",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

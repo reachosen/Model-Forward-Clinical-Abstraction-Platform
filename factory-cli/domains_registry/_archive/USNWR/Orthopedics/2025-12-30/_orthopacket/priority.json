@@ -1,0 +1,18 @@
+{
+  "priority_by_metric": {
+    "I25": "high",
+    "I26": "high",
+    "I27": "high",
+    "I25.1": "high",
+    "I32a": "high",
+    "I32b": "high"
+  },
+  "all_high": [
+    "I25",
+    "I26",
+    "I27",
+    "I25.1",
+    "I32a",
+    "I32b"
+  ]
+}

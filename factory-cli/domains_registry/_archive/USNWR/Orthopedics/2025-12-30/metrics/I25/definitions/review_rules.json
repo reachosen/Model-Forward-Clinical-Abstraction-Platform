@@ -1,0 +1,125 @@
+{
+  "$schema": "../../../_shared/definitions/review_rules.schema.json",
+  "metric_id": "I25",
+  "version": "1.0",
+  "description": "Rule-in/rule-out decision criteria for clinical reviewer",
+
+  "decision_framework": {
+    "possible_outcomes": ["pass", "fail", "needs_review", "excluded"],
+    "default_if_unclear": "needs_review"
+  },
+
+  "rule_in_criteria": [
+    {
+      "rule_id": "clear_pass",
+      "description": "Time to OR documented and < 18 hours",
+      "conditions": [
+        { "field": "time_to_or", "operator": "<", "value": 18 },
+        { "field": "arrival_timestamp", "operator": "is_not_null" },
+        { "field": "or_start_timestamp", "operator": "is_not_null" }
+      ],
+      "outcome": "pass",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "pass_with_exception",
+      "description": "Time to OR >= 18 but valid exception applies",
+      "conditions": [
+        { "field": "time_to_or", "operator": ">=", "value": 18 },
+        { "field": "has_valid_exception", "operator": "==", "value": true },
+        { "field": "adjusted_time_to_or", "operator": "<", "value": 18 }
+      ],
+      "outcome": "pass",
+      "confidence": "medium",
+      "requires_documentation": ["exception_type", "adjustment_applied"]
+    }
+  ],
+
+  "rule_out_criteria": [
+    {
+      "rule_id": "clear_fail",
+      "description": "Time to OR documented and >= 18 hours with no valid exception",
+      "conditions": [
+        { "field": "time_to_or", "operator": ">=", "value": 18 },
+        { "field": "has_valid_exception", "operator": "==", "value": false }
+      ],
+      "outcome": "fail",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "excluded",
+      "description": "Patient meets exclusion criteria",
+      "conditions": [
+        { "field": "exclusion_status", "operator": "==", "value": "excluded" }
+      ],
+      "outcome": "excluded",
+      "confidence": "high",
+      "requires_documentation": ["exclusion_id", "exclusion_evidence"]
+    }
+  ],
+
+  "ambiguity_triggers": [
+    {
+      "trigger_id": "missing_arrival_time",
+      "description": "Arrival time not clearly documented",
+      "detection": { "field": "arrival_timestamp", "operator": "is_null" },
+      "reviewer_prompt": "Please locate documentation of hospital/ED arrival time in the chart",
+      "search_hints": ["arrived", "presented", "admission", "triage", "registration"]
+    },
+    {
+      "trigger_id": "missing_or_time",
+      "description": "OR start time not clearly documented",
+      "detection": { "field": "or_start_timestamp", "operator": "is_null" },
+      "reviewer_prompt": "Please locate documentation of OR procedure start time in the chart",
+      "search_hints": ["OR start", "surgery began", "incision", "anesthesia start", "procedure time"]
+    },
+    {
+      "trigger_id": "conflicting_times",
+      "description": "Multiple timestamps documented with discrepancies > 30 minutes",
+      "detection": { "type": "llm_assessment", "prompt_key": "timestamp_conflict_check" },
+      "reviewer_prompt": "Multiple timestamps found. Which should be used for metric calculation?",
+      "resolution_guidance": "Use the earliest documented arrival and the OR log start time"
+    },
+    {
+      "trigger_id": "borderline_timing",
+      "description": "Time to OR is between 17-19 hours (close to threshold)",
+      "detection": {
+        "field": "time_to_or",
+        "operator": "between",
+        "value": [17, 19]
+      },
+      "reviewer_prompt": "Time to OR is close to 18-hour threshold. Please verify timestamps are accurate.",
+      "escalation": "clinical_lead_review"
+    }
+  ],
+
+  "interactive_queries": [
+    {
+      "query_id": "find_arrival_time",
+      "description": "Help reviewer locate arrival timestamp",
+      "retrieval_strategy": "search_notes_for_keywords",
+      "keywords": ["arrived", "presented", "admission", "ED arrival", "triage", "registration"],
+      "note_types": ["ED_NOTE", "ADMISSION_NOTE", "TRIAGE_NOTE"]
+    },
+    {
+      "query_id": "find_or_time",
+      "description": "Help reviewer locate OR start time",
+      "retrieval_strategy": "search_notes_for_keywords",
+      "keywords": ["OR", "surgery", "procedure", "incision", "anesthesia start", "wheels in"],
+      "note_types": ["OR_NOTE", "ANESTHESIA_RECORD", "PROCEDURE_NOTE"]
+    },
+    {
+      "query_id": "find_delay_reason",
+      "description": "Help reviewer find documented delay reasons",
+      "retrieval_strategy": "search_notes_for_keywords",
+      "keywords": ["delay", "waiting", "held", "postponed", "rescheduled", "NPO"],
+      "note_types": ["PROGRESS_NOTE", "OR_NOTE", "NURSING_NOTE"]
+    },
+    {
+      "query_id": "check_exclusions",
+      "description": "Help reviewer identify potential exclusion criteria",
+      "retrieval_strategy": "structured_query",
+      "query_template": "Check for polytrauma, open fracture grade III, or medical instability"
+    }
+  ]
+}
