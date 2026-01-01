@@ -1,0 +1,232 @@
+{
+  "$schema": "../../../_shared/definitions/signal_groups.schema.json",
+  "metric_id": "I32b",
+  "version": "1.0",
+  "description": "Signal groups for I32b Neuromuscular scoliosis – 30-day readmit and 90-day return to OR",
+  "signal_groups": [
+    {
+      "group_id": "INFECTION_RISKS",
+      "display_name": "Infection Risks",
+      "description": "Signals related to infection risks for Neuromuscular scoliosis – 30-day readmit and 90-day return to OR",
+      "priority": 1,
+      "signals": [
+        {
+          "signal_id": "antibiotic_prophylaxis_not_given_within_",
+          "description": "Antibiotic prophylaxis not given within 60 min",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "inappropriate_antibiotic_selection",
+          "description": "Inappropriate antibiotic selection",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "prolonged_operative_time",
+          "description": "Prolonged operative time",
+          "evidence_type": "structured_field",
+          "required": true
+        },
+        {
+          "signal_id": "implanthardware_present",
+          "description": "Implant/hardware present",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "history_of_prior_infection",
+          "description": "History of prior infection",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "immunosuppression",
+          "description": "Immunosuppression",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "wound_drainageerythema",
+          "description": "Wound drainage/erythema",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "positive_culture",
+          "description": "Positive culture",
+          "evidence_type": "verbatim_text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "group_id": "READMISSION_RISKS",
+      "display_name": "Readmission Risks",
+      "description": "Signals related to readmission risks for Neuromuscular scoliosis – 30-day readmit and 90-day return to OR",
+      "priority": 2,
+      "signals": [
+        {
+          "signal_id": "uncontrolled_pain",
+          "description": "Uncontrolled pain",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "surgical_site_infection",
+          "description": "Surgical site infection",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "gi_complication_ileusobstruction",
+          "description": "GI complication (ileus/obstruction)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "hardware_complication",
+          "description": "Hardware complication",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "pneumoniarespiratory_distress",
+          "description": "Pneumonia/respiratory distress",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "utiurinary_retention",
+          "description": "UTI/urinary retention",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "nutritional_failure",
+          "description": "Nutritional failure",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "socialcaregiver_concern",
+          "description": "Social/caregiver concern",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "group_id": "BUNDLE_COMPLIANCE",
+      "display_name": "Bundle Compliance",
+      "description": "Signals related to bundle compliance for Neuromuscular scoliosis – 30-day readmit and 90-day return to OR",
+      "priority": 3,
+      "signals": [
+        {
+          "signal_id": "preop_warming_not_documented",
+          "description": "Pre-op warming not documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "chlorhexidine_prep_not_useddocumented",
+          "description": "Chlorhexidine prep not used/documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "antibiotic_redosing_missed_in_long_case",
+          "description": "Antibiotic redosing missed in long case",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "traffic_in_or_excessive",
+          "description": "Traffic in OR excessive",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "glucose_control_if_diabetic",
+          "description": "Glucose control (if diabetic)",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "postop_dressing_protocol_deviation",
+          "description": "Post-op dressing protocol deviation",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "dvt_prophylaxis_missed_if_indicated",
+          "description": "DVT prophylaxis missed (if indicated)",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "foley_catheter_duration_48h",
+          "description": "Foley catheter duration >48h",
+          "evidence_type": "structured_field",
+          "required": true
+        }
+      ]
+    },
+    {
+      "group_id": "SAFETY_SIGNALS",
+      "display_name": "Safety Signals",
+      "description": "Signals related to safety signals for Neuromuscular scoliosis – 30-day readmit and 90-day return to OR",
+      "priority": 4,
+      "signals": [
+        {
+          "signal_id": "pain_out_of_proportion_to_injury",
+          "description": "Pain out of proportion to injury",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "increasing_analgesic_requirement",
+          "description": "Increasing analgesic requirement",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "passive_stretch_pain",
+          "description": "Passive stretch pain",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "paresthesianumbness",
+          "description": "Paresthesia/numbness",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "pallor_or_delayed_capillary_refill",
+          "description": "Pallor or delayed capillary refill",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "tenseness_of_compartment",
+          "description": "Tenseness of compartment",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "fasciotomy_performed",
+          "description": "Fasciotomy performed",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "unexpected_icu_admission",
+          "description": "Unexpected ICU admission",
+          "evidence_type": "verbatim_text",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

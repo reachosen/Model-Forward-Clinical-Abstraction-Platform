@@ -1,0 +1,373 @@
+{
+  "$schema": "../../../_shared/definitions/signal_groups.schema.json",
+  "metric_id": "I32a",
+  "version": "1.0",
+  "description": "Signal groups for I32a Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+  "signal_groups": [
+    {
+      "group_id": "INFECTION_RISKS",
+      "display_name": "Infection Risks",
+      "description": "Signals related to infection risks for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+      "priority": 1,
+      "signals": [
+        {
+          "signal_id": "antibiotic_prophylaxis_not_given_within_",
+          "description": "Antibiotic prophylaxis not given within 60 min",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "inappropriate_antibiotic_selection",
+          "description": "Inappropriate antibiotic selection",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "prolonged_operative_time",
+          "description": "Prolonged operative time",
+          "evidence_type": "structured_field",
+          "required": true
+        },
+        {
+          "signal_id": "implanthardware_present",
+          "description": "Implant/hardware present",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "history_of_prior_infection",
+          "description": "History of prior infection",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "immunosuppression",
+          "description": "Immunosuppression",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "wound_drainageerythema",
+          "description": "Wound drainage/erythema",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "positive_culture",
+          "description": "Positive culture",
+          "evidence_type": "verbatim_text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "group_id": "BUNDLE_COMPLIANCE",
+      "display_name": "Bundle Compliance",
+      "description": "Signals related to bundle compliance for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+      "priority": 2,
+      "signals": [
+        {
+          "signal_id": "preop_warming_not_documented",
+          "description": "Pre-op warming not documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "chlorhexidine_prep_not_useddocumented",
+          "description": "Chlorhexidine prep not used/documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "antibiotic_redosing_missed_in_long_case",
+          "description": "Antibiotic redosing missed in long case",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "traffic_in_or_excessive",
+          "description": "Traffic in OR excessive",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "glucose_control_if_diabetic",
+          "description": "Glucose control (if diabetic)",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "postop_dressing_protocol_deviation",
+          "description": "Post-op dressing protocol deviation",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "dvt_prophylaxis_missed_if_indicated",
+          "description": "DVT prophylaxis missed (if indicated)",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "foley_catheter_duration_48h",
+          "description": "Foley catheter duration >48h",
+          "evidence_type": "structured_field",
+          "required": true
+        }
+      ]
+    },
+    {
+      "group_id": "OUTCOME_RISKS",
+      "display_name": "Outcome Risks",
+      "description": "Signals related to outcome risks for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+      "priority": 3,
+      "signals": [
+        {
+          "signal_id": "hand_perfusion_whitecoolpulseless",
+          "description": "Hand perfusion: white/cool/pulseless",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "neurological_deficit_medianulnarradia",
+          "description": "Neurological deficit (median/ulnar/radial)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "compartment_syndrome_suspicion",
+          "description": "Compartment syndrome suspicion",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "loss_of_reduction_requiring_reoperation",
+          "description": "Loss of reduction requiring re-operation",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "malunion",
+          "description": "Malunion",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "limb_length_discrepancy",
+          "description": "Limb length discrepancy",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "infection_ssi",
+          "description": "Infection (SSI)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "hardware_failure",
+          "description": "Hardware failure",
+          "evidence_type": "verbatim_text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "group_id": "READMISSION_RISKS",
+      "display_name": "Readmission Risks",
+      "description": "Signals related to readmission risks for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+      "priority": 4,
+      "signals": [
+        {
+          "signal_id": "uncontrolled_pain",
+          "description": "Uncontrolled pain",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "surgical_site_infection",
+          "description": "Surgical site infection",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "gi_complication_ileusobstruction",
+          "description": "GI complication (ileus/obstruction)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "hardware_complication",
+          "description": "Hardware complication",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "pneumoniarespiratory_distress",
+          "description": "Pneumonia/respiratory distress",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "utiurinary_retention",
+          "description": "UTI/urinary retention",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "nutritional_failure",
+          "description": "Nutritional failure",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "socialcaregiver_concern",
+          "description": "Social/caregiver concern",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "group_id": "infection_risks",
+      "signals": [
+        {
+          "id": "wound_drainage_erythema",
+          "name": "Wound Drainage/Erythema",
+          "description": "Presence of wound drainage or erythema is a critical indicator of potential surgical site infection (SSI) and should be monitored closely.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "surgical_site_infection",
+          "name": "Surgical Site Infection (SSI)",
+          "description": "SSIs are a critical outcome measure for surgical quality and must be tracked for preventability analysis.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "pre_op_warming_documented",
+          "name": "Pre-op Warming Documented",
+          "description": "Pre-operative warming is a key measure to prevent hypothermia and associated complications, as recommended by surgical guidelines.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "antibiotic_prophylaxis_timing",
+          "name": "Antibiotic Prophylaxis Administered Within 60 Minutes",
+          "description": "Timely administration of antibiotic prophylaxis is crucial for SSI prevention, aligning with NHSN and surgical best practices.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "unplanned_admission",
+          "name": "Unplanned Admission",
+          "description": "Unplanned admissions can indicate complications or preventability issues, important for quality assessment.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "discharge_instructions_clarity",
+          "name": "Discharge Instructions Unclear",
+          "description": "Clear discharge instructions are essential for patient safety and reducing readmissions, as per quality care standards.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "absence_of_perfusion_checks",
+          "name": "Absence of Perfusion Checks",
+          "description": "Regular perfusion checks are essential for monitoring limb viability post-surgery.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "loss_of_reduction_requiring_reoperation",
+          "name": "Loss of Reduction Requiring Re-operation",
+          "description": "Loss of reduction is a significant complication that may necessitate re-operation, impacting patient outcomes.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "neurovascular_exam_pre_op_post_op",
+          "name": "Neurovascular Exam Documented Pre-op but Lacked Post-op Details",
+          "description": "Complete neurovascular exams pre- and post-operation are crucial for detecting complications early.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "inappropriate_antibiotic_selection",
+          "name": "Inappropriate Antibiotic Selection",
+          "description": "Selecting the correct antibiotic is vital for effective infection prevention and treatment.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "pre_op_warming_not_documented",
+          "name": "Pre-op Warming Not Documented",
+          "description": "Pre-operative warming is a key factor in preventing surgical site infections (SSI) and should be documented as per best practices.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "pain_management_plan_documentation",
+          "name": "Pain Management Plan Documentation",
+          "description": "Documenting pain management plans is critical for patient comfort and recovery, and is a standard care practice.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "neurovascular_exam_post_op",
+          "name": "Neurovascular Exam Post-Op",
+          "description": "Post-operative neurovascular exams are critical for detecting complications early, especially in orthopedic surgeries.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "increased_back_pain",
+          "name": "Increased Back Pain",
+          "description": "Increased back pain post-surgery can indicate complications such as infection or hardware issues, which are crucial for assessing preventability.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "redness_and_drainage",
+          "name": "Redness and Drainage",
+          "description": "Redness and drainage are signs of infection or poor wound healing, important for evaluating post-operative complications.",
+          "evidence_type": "L2"
+        }
+      ]
+    },
+    {
+      "group_id": "bundle_compliance",
+      "signals": [
+        {
+          "id": "pre_op_warming_not_documented",
+          "name": "Pre-op Warming Not Documented",
+          "description": "Pre-operative warming is a key preventive measure against SSIs and its documentation is essential for quality assurance.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "surgical_pause_documented",
+          "name": "Surgical Pause Documented",
+          "description": "Documenting the surgical pause is crucial for ensuring all safety checks are completed before surgery, reducing preventable errors.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "discharge_instructions_unclear",
+          "name": "Discharge Instructions Unclear",
+          "description": "Clear discharge instructions are essential for patient recovery and preventing readmissions or complications.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "antibiotic_prophylaxis_timing",
+          "name": "Antibiotic Prophylaxis Administered Within 60 Minutes",
+          "description": "Timely administration of antibiotic prophylaxis is crucial for preventing SSIs, aligning with best practice guidelines.",
+          "evidence_type": "L2"
+        }
+      ]
+    },
+    {
+      "group_id": "outcome_risks",
+      "signals": [
+        {
+          "id": "unplanned_admission",
+          "name": "Unplanned Admission",
+          "description": "Unplanned admissions post-surgery can indicate complications or preventable issues that need to be addressed.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "surgical_site_infection",
+          "name": "Surgical Site Infection (SSI)",
+          "description": "Identifying SSIs is crucial for assessing surgical outcomes and preventability.",
+          "evidence_type": "L2"
+        }
+      ]
+    }
+  ]
+}

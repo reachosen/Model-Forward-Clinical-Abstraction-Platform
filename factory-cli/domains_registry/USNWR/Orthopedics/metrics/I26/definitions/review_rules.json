@@ -1,0 +1,177 @@
+{
+  "$schema": "../../../_shared/definitions/review_rules.schema.json",
+  "metric_id": "I26",
+  "version": "1.0",
+  "description": "Rule-in/rule-out decision criteria for Femoral shaft fracture to OR <18 hours",
+  "decision_framework": {
+    "possible_outcomes": [
+      "pass",
+      "fail",
+      "needs_review",
+      "excluded"
+    ],
+    "default_if_unclear": "needs_review"
+  },
+  "rule_in_criteria": [
+    {
+      "rule_id": "clear_pass",
+      "description": "All documentation complete, no complications, no adverse outcomes",
+      "conditions": [
+        {
+          "field": "documentation_complete",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "pass_with_minor_gaps",
+      "description": "Minor documentation gaps but no adverse outcomes",
+      "conditions": [
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        },
+        {
+          "field": "has_documentation_gap",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "medium",
+      "requires_documentation": [
+        "gap_type",
+        "mitigation_documented"
+      ]
+    }
+  ],
+  "rule_out_criteria": [
+    {
+      "rule_id": "risk_1",
+      "description": "Prolonged traction or temporizing care without clear reason",
+      "conditions": [
+        {
+          "field": "prolonged_traction_or_temporiz",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_2",
+      "description": "Delayed OR related to system issues rather than clinical need",
+      "conditions": [
+        {
+          "field": "delayed_or_related_to_system_i",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_3",
+      "description": "Use of fixation techniques not aligned with age/weight norms",
+      "conditions": [
+        {
+          "field": "use_of_fixation_techniques_not",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_4",
+      "description": "Inadequate follow-up imaging leading to late recognition of malalignment",
+      "conditions": [
+        {
+          "field": "inadequate_followup_imaging_l",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    }
+  ],
+  "ambiguity_triggers": [
+    {
+      "trigger_id": "unclear_definitive_management_chosen",
+      "description": "Review question: Was definitive management chosen according to age and size guidelines?",
+      "detection": {
+        "field": "definitive",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Was definitive management chosen according to age and size guidelines?",
+      "search_hints": [
+        "definitive",
+        "management",
+        "chosen",
+        "according",
+        "guidelines"
+      ]
+    },
+    {
+      "trigger_id": "unclear_timing_exceeded_hours",
+      "description": "Review question: If OR timing exceeded 18 hours, is the delay clinically justified?",
+      "detection": {
+        "field": "timing",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "If OR timing exceeded 18 hours, is the delay clinically justified?",
+      "search_hints": [
+        "timing",
+        "exceeded",
+        "hours",
+        "delay",
+        "clinically"
+      ]
+    },
+    {
+      "trigger_id": "unclear_alignment_length_assessed",
+      "description": "Review question: Were alignment and length assessed on follow-up imaging?",
+      "detection": {
+        "field": "alignment",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Were alignment and length assessed on follow-up imaging?",
+      "search_hints": [
+        "alignment",
+        "length",
+        "assessed",
+        "follow-up",
+        "imaging"
+      ]
+    },
+    {
+      "trigger_id": "unclear_control_adequate_while",
+      "description": "Review question: Was pain control adequate while waiting for definitive treatment?",
+      "detection": {
+        "field": "control",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Was pain control adequate while waiting for definitive treatment?",
+      "search_hints": [
+        "control",
+        "adequate",
+        "while",
+        "waiting",
+        "definitive"
+      ]
+    }
+  ]
+}

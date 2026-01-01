@@ -6,6 +6,16 @@
  */
 
 import { LearningQueueItem, LearningPatch } from '../../models/LearningQueue';
+import OpenAI from 'openai';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load environment variables
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 /**
  * System prompt for learning agent
@@ -44,6 +54,22 @@ Do NOT regenerate the entire config. Instead, propose small, concrete updates to
 4. **Specificity**: Proposed changes must be concrete, not vague suggestions
 5. **Evidence-Based**: Reference NHSN, SPS, or USNWR specs when applicable
 6. **Incremental**: Small, focused patches that build on existing libraries
+
+## Handling Validation Failures
+- **CR Miss (Missed Signal):** The model failed to extract a required signal.
+  - If the concept exists but was missed (e.g., missed "Erythema" when text said "Redness"), add an explicit rule to `prompt_additions` under "EXTRACTION GUIDANCE" (e.g., "Map 'redness' or 'rubor' to 'Wound Erythema'").
+  - If the signal definition is missing entirely, add the EXACT signal ID from the failure report to `signals_to_add`.
+- **AC Miss (Content Gap):** The summary missed a key phrase.
+  - Add a rule to `prompt_additions` requiring this specific content in the summary.
+- **AH Violation (Hallucination):** The model invented info.
+  - Add a negative constraint to `prompt_additions` (e.g., "Do NOT infer X from Y").
+
+## Prompt Engineering Guidelines
+- When patching prompts, respect the existing Markdown structure.
+- Use 'prompt_additions' to append new rules or context to the relevant section (e.g., "EXTRACTION GUIDANCE").
+- Use 'prompt_modifications' to strictly find and replace text. Ensure 'old_text' is unique and exists in the template.
+- Focus on clarity, precision, and alignment with the metric definition.
+- Do not remove semantic placeholders like {{metricName}}.
 
 ## Output Format
 
@@ -154,10 +180,50 @@ export async function proposeLearningPatch(
     return generateMockPatch(item);
   }
 
-  // TODO: Replace with actual LLM call (OpenAI, Anthropic, etc.)
-  // For now, use mock mode
-  console.log(`⚠️  LLM mode not yet implemented, using mock mode`);
-  return generateMockPatch(item);
+  console.log(`🤖 Consulting LLM for learning patch...`);
+  
+  try {
+      const userPrompt = `
+Analyze the following feedback and propose a configuration patch.
+
+DOMAIN: ${item.domain}
+ARCHETYPE: ${item.archetype}
+REVIEW TARGET: ${item.review_target}
+
+REVIEWER FEEDBACK:
+"${item.reviewer_comment}"
+
+Reflect on the feedback and generate a JSON patch.
+`;
+
+      const completion = await openai.chat.completions.create({
+          model: 'gpt-4o',
+          temperature: 0.2, // Low temperature for consistent JSON
+          messages: [
+              { role: 'system', content: LEARNING_AGENT_SYSTEM_PROMPT },
+              { role: 'user', content: userPrompt }
+          ],
+          response_format: { type: 'json_object' }
+      });
+
+      const content = completion.choices[0].message.content;
+      if (!content) {
+          throw new Error("Empty response from LLM");
+      }
+
+      const patch = JSON.parse(content) as LearningPatch;
+      
+      // Enforce metadata linkage
+      patch.source_queue_item_id = item.id;
+      patch.generated_at = new Date().toISOString();
+      
+      return patch;
+
+  } catch (error) {
+      console.error("❌ LLM Error:", error);
+      console.warn("⚠️ Falling back to mock implementation due to error.");
+      return generateMockPatch(item);
+  }
 }
 
 /**

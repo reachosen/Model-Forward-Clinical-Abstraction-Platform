@@ -12,6 +12,7 @@ import {
  */
 export class ObservationRecorder {
   private static _instance: ObservationRecorder | null = null;
+  private _muted: boolean = false;
 
   static get instance(): ObservationRecorder {
     if (!this._instance) {
@@ -20,7 +21,20 @@ export class ObservationRecorder {
     return this._instance;
   }
 
+  mute(): void {
+    this._muted = true;
+  }
+
+  unmute(): void {
+    this._muted = false;
+  }
+
   record(record: ObservationRecord): void {
+    // Deterministic mute check for refinery loops
+    if (this._muted || process.env.REFINERY_QUIET === 'true') {
+      return;
+    }
+
     // Observation-only: no enforcement, no behavior change
     // eslint-disable-next-line no-console
     console.log(JSON.stringify({ kind: 'prompt_refinery_observation', ...record }));

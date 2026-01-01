@@ -133,6 +133,7 @@ function inferArchetype(concernId: string): string {
 import { flywheel } from '../EvalsFactory/cli/flywheel';
 import { safeScore } from '../EvalsFactory/cli/safeScore';
 import { evalCommand } from '../EvalsFactory/cli/eval';
+import { evalStatus } from '../EvalsFactory/cli/evalStatus';
 
 // ============================================
 // FLYWHEEL COMMAND (Prompt Refinery)
@@ -148,6 +149,11 @@ program.addCommand(safeScore);
 // EVAL COMMAND (New EvalFactory)
 // ============================================
 program.addCommand(evalCommand);
+
+// ============================================
+// EVAL:STATUS COMMAND (QA Scorecard)
+// ============================================
+program.addCommand(evalStatus);
 
 // ============================================
 // PARSE AND EXECUTE

@@ -10,6 +10,15 @@ export function getSignalEnrichmentVariables(context: any): Record<string, strin
 
   const signalGroupIds = metric?.signal_groups || ['delay_drivers', 'outcome_risks', 'safety_signals', 'documentation_gaps'];
 
+  // Enhanced Signal Definitions: Expand group IDs into detailed lists of signals
+  const expandedSignalGroups = signalGroupIds.map((gid: string) => {
+      const groupSignals = ortho_context?.signals?.[gid] || [];
+      const signalList = groupSignals.map((s: any) => 
+          typeof s === 'string' ? s : (s.description || s.name || s.signal_id)
+      ).join('\n  - ');
+      return `${gid}:\n  - ${signalList}`;
+  });
+
   const riskFactorInstructions = (metric?.risk_factors || []).map((rf: string, idx: number) =>
     `${idx + 1}. Look for evidence related to: ${rf}`
   ).join('\n');
@@ -70,7 +79,7 @@ EXCLUSION CRITERIA SIGNALS (Archetype: Exclusion_Hunter):
 
   return {
     riskFactorInstructions: riskFactorInstructions || '1. Key clinical events and their timing\n2. Risk indicators and safety signals\n3. Documentation completeness\n4. Outcome-relevant findings',
-    signalGroupIds: signalGroupIds.join('\n- '),
+    signalGroupIds: expandedSignalGroups.join('\n- '), // Now contains full details
     signalGroupIdsComma: signalGroupIds.join(', '),
     metricName,
     clinicalFocus,

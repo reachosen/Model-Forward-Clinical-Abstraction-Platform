@@ -62,7 +62,7 @@ export class S1_DomainResolutionStage {
 
     // Step 2: Load Semantic Packet (Generic)
     const packetLoader = SemanticPacketLoader.getInstance();
-    const packet = packetLoader.load(archetypeInfo.domain);
+    const packet = packetLoader.load(archetypeInfo.domain, concern_id);
     const metric = packet ? packetLoader.getMetric(archetypeInfo.domain, concern_id) : undefined;
 
     let packetContext: PacketContext | undefined;

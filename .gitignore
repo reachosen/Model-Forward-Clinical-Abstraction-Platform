@@ -76,3 +76,18 @@ test_output_*/
 # After deletion, uncomment the lines below:
 # archive/
 # */archive/
+
+# Added by Gemini
+output/
+planoutput/
+.claude/
+gemini/
+gemini_deep_research.md
+gemini_deepresearch.md
+generation_strategy.json
+*_batch_*.json
+flywheel_report.json
+validation_report.json
+validation_report_partial.json
+temp_strategy*.json.context/ 
+.context.link 

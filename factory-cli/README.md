@@ -441,11 +441,18 @@ npx tsc --version  # Should be 4.5+
 
 ## 📚 Additional Resources
 
-### Related Documentation
+### LLM Context System
 
-- [CA Factory Implementation Plan](../docs/CA_FACTORY_IMPLEMENTATION_PLAN.md)
-- [CA Factory Treatment Plan](../docs/CA_FACTORY_TREATMENT_PLAN.md)
-- [Architecture Documentation](../docs/ARCHITECTURE_TO_CODE.md)
+For AI assistants (Claude, Gemini, Codex), comprehensive documentation is available in:
+
+```
+.context/
+├── INDEX.md                  # Start here - master navigation
+├── architecture/             # System overview, factory pattern, data flow
+├── factories/                # Per-factory deep dives
+├── global/                   # Style guide, workflow, LLM instructions
+└── reference/                # API patterns, dependencies, domain models
+```
 
 ### JSON Schema References
 

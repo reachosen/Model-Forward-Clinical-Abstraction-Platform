@@ -18,6 +18,7 @@ import {
   TaskType,
 } from '../types';
 import { getTaskLLMConfig } from '../config/taskConfig';
+import { Paths } from '../../utils/pathConfig';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
@@ -46,8 +47,36 @@ function getPromptConfig(
     ? `schemas/${domain}/${archetype}/${taskType}_v3.json`
     : undefined;
 
+  // Resolve template_ref path
+  // Logic: Map domain to framework/specialty to find file in domains_registry
+  let framework = 'USNWR';
+  let specialty = domain;
+  
+  if (domain === 'HAC') {
+    framework = 'HAC';
+    specialty = ''; // No specialty for HAC root
+  }
+
+  // Construct absolute path using Paths utility
+  const absPath = specialty 
+    ? Paths.sharedPrompts(framework, specialty) 
+    : Paths.sharedPrompts(framework);
+    
+  const filename = `${taskType}.md`;
+  const fullAbsPath = path.join(absPath, filename);
+  
+  // Convert to relative path from factory-cli root (where planner.ts runs)
+  // factory-cli/PlanningFactory/stages/S4... -> factory-cli/
+  // We want "domains_registry/..."
+  const cliRoot = path.resolve(__dirname, '../../'); 
+  const relativePath = path.relative(cliRoot, fullAbsPath).replace(/\\/g, '/');
+
   const config: PromptConfig = {
     template_id,
+    template_ref: {
+      path: relativePath,
+      version: 'v0' // Default version
+    },
     model: taskConfig?.model || DEFAULT_MODEL,
     temperature: taskConfig?.temperature ?? getTemperature(taskType),
     response_format,

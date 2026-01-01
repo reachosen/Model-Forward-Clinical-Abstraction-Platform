@@ -118,14 +118,30 @@ export function formatConsole(report: SAFEv0BatchReport, verbose: boolean = fals
   lines.push(colorize('-'.repeat(70), 'dim'));
 
   for (const sc of results) {
-    const archetype = sc.archetype || 'Unknown';
+    const crScore = sc.scores.CR?.score ?? 0;
+    const ahScore = sc.scores.AH?.score ?? 0;
+    const acScore = sc.scores.AC?.score ?? 0;
+    
     lines.push(
-      `  ${padRight(sc.test_id, 18)} | ${padRight(archetype.substring(0, 24), 24)} | ` +
-      `${padLeft(formatScore(sc.scores.CR.score), 5)} | ` +
-      `${padLeft(formatScore(sc.scores.AH.score), 5)} | ` +
-      `${padLeft(formatScore(sc.scores.AC.score), 5)} | ` +
+      `  ${padRight(sc.test_id, 18)} | ${padRight((sc.archetype || 'Unknown').substring(0, 24), 24)} | ` +
+      `${padLeft(formatScore(crScore), 5)} | ` +
+      `${padLeft(formatScore(ahScore), 5)} | ` +
+      `${padLeft(formatScore(acScore), 5)} | ` +
       `${labelColor(sc.label)}`
     );
+
+    // EXPLAINABILITY: Show misses for non-PASS cases
+    if (sc.label !== 'Pass') {
+        if (sc.scores.CR?.details?.missing && sc.scores.CR.details.missing.length > 0) {
+            lines.push(colorize(`     [CR] Missing: ${sc.scores.CR.details.missing.join(', ')}`, 'yellow'));
+        }
+        if (sc.scores.AC?.details?.missing && sc.scores.AC.details.missing.length > 0) {
+            lines.push(colorize(`     [AC] Missing: ${sc.scores.AC.details.missing.join(', ')}`, 'red'));
+        }
+        if (sc.scores.AC?.details?.found_evidence && (sc.scores.AC.details as any).found_evidence.length > 0) {
+            lines.push(colorize(`     [AC] Evidence: ${(sc.scores.AC.details as any).found_evidence[0]}`, 'dim'));
+        }
+    }
   }
   lines.push(colorize('-'.repeat(70), 'dim'));
   lines.push('');
@@ -170,20 +186,32 @@ export function formatConsole(report: SAFEv0BatchReport, verbose: boolean = fals
 
     for (const sc of results) {
       lines.push(colorize(`--- ${sc.test_id} (${labelColor(sc.label)}) ---`, 'cyan'));
-      lines.push(`  CR: ${formatScore(sc.scores.CR.score)} - ${sc.scores.CR.reasoning}`);
-      if (sc.scores.CR.details?.missing && sc.scores.CR.details.missing.length > 0) {
-        lines.push(`      Missing: ${sc.scores.CR.details.missing.slice(0, 3).join(', ')}${sc.scores.CR.details.missing.length > 3 ? '...' : ''}`);
+
+      if (sc.scores.CR) {
+        lines.push(`  CR: ${formatScore(sc.scores.CR.score)} - ${sc.scores.CR.reasoning}`);
+        if (sc.scores.CR.details?.missing && sc.scores.CR.details.missing.length > 0) {
+          lines.push(`      Missing: ${sc.scores.CR.details.missing.slice(0, 3).join(', ')}${sc.scores.CR.details.missing.length > 3 ? '...' : ''}`);
+        }
       }
 
-      lines.push(`  AH: ${formatScore(sc.scores.AH.score)} - ${sc.scores.AH.reasoning}`);
-      if (sc.scores.AH.details?.violations && sc.scores.AH.details.violations.length > 0) {
-        lines.push(`      Violations: ${sc.scores.AH.details.violations.join(', ')}`);
+      if (sc.scores.AH) {
+        lines.push(`  AH: ${formatScore(sc.scores.AH.score)} - ${sc.scores.AH.reasoning}`);
+        if (sc.scores.AH.details?.violations && sc.scores.AH.details.violations.length > 0) {
+          lines.push(`      Violations: ${sc.scores.AH.details.violations.join(', ')}`);
+        }
       }
 
-      lines.push(`  AC: ${formatScore(sc.scores.AC.score)} - ${sc.scores.AC.reasoning}`);
-      if (sc.scores.AC.details?.missing && sc.scores.AC.details.missing.length > 0) {
-        lines.push(`      Missing: ${sc.scores.AC.details.missing.slice(0, 3).join(', ')}${sc.scores.AC.details.missing.length > 3 ? '...' : ''}`);
+      if (sc.scores.AC) {
+        lines.push(`  AC: ${formatScore(sc.scores.AC.score)} - ${sc.scores.AC.reasoning}`);
+        if (sc.scores.AC.details?.missing && sc.scores.AC.details.missing.length > 0) {
+          lines.push(`      Missing: ${sc.scores.AC.details.missing.slice(0, 3).join(', ')}${sc.scores.AC.details.missing.length > 3 ? '...' : ''}`);
+        }
       }
+
+      if (sc.scores.DR) {
+        lines.push(`  DR: ${formatScore(sc.scores.DR.score)} - ${sc.scores.DR.reasoning}`);
+      }
+
       lines.push('');
     }
   }
@@ -245,7 +273,10 @@ export function formatMarkdown(report: SAFEv0BatchReport): string {
   for (const sc of results) {
     const label = sc.label === 'Pass' ? '**PASS**' :
                   sc.label === 'Review' ? '*REVIEW*' : '~~FAIL~~';
-    lines.push(`| ${sc.test_id} | ${sc.archetype || 'Unknown'} | ${sc.scores.CR.score.toFixed(2)} | ${sc.scores.AH.score.toFixed(2)} | ${sc.scores.AC.score.toFixed(2)} | ${label} |`);
+    const crScore = sc.scores.CR?.score ?? 0;
+    const ahScore = sc.scores.AH?.score ?? 0;
+    const acScore = sc.scores.AC?.score ?? 0;
+    lines.push(`| ${sc.test_id} | ${sc.archetype || 'Unknown'} | ${crScore.toFixed(2)} | ${ahScore.toFixed(2)} | ${acScore.toFixed(2)} | ${label} |`);
   }
   lines.push('');
 

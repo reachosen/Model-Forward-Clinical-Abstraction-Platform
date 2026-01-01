@@ -1,0 +1,32 @@
+[
+  {
+    "version": 1,
+    "timestamp": "2025-12-31T03:38:07.907Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics\n\nTask:\nExtract clinical signals for I32a (Idiopathic scoliosis – 30-day unplanned admission and return to OR).\n\nOUTPUT FORMAT (JSON):\n{\n  \"signals\": [\"verbatim phrase 1\", \"verbatim phrase 2\"]\n}\n\nRules:\n- Extract EXACT snippets from the text.\n- focus on Prevention of early complications and unplanned care after AIS surgery.\n",
+    "analysis": "Initial baseline",
+    "changes": "N/A",
+    "metrics": {
+      "signal_recall": null
+    }
+  },
+  {
+    "version": 2,
+    "timestamp": "2025-12-31T03:38:17.667Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics\n\nTask: Identify and extract relevant clinical signals for I32a (Idiopathic scoliosis – 30-day unplanned admission and return to OR) from clinical notes. Focus on both compliance and gaps related to:\n- Delay drivers affecting patient admission and surgery timing\n- Outcome risks related to patient monitoring and surgical results\n- Safety signals indicating potential complications\n- Documentation gaps in neurovascular and surgical details\n- Infection risks associated with surgical procedures\n- Readmission risks based on discharge protocols\n- Bundle compliance in terms of standard surgical practices\n\nOUTPUT FORMAT (JSON):\n{\n  \"signals\": [\"verbatim phrase 1\", \"verbatim phrase 2\"],\n  \"signal_types\": [\"delay driver\", \"outcome risk\", \"safety signal\", \"documentation gap\", \"infection risk\", \"readmission risk\", \"bundle compliance\"]\n}\n\nRules:\n- Extract EXACT snippets from the text, ensuring each snippet is categorized appropriately.\n- Prioritize signals that indicate potential early complications and the necessity for unplanned care following AIS surgery.",
+    "analysis": "The current prompt effectively identifies the role and task but lacks specificity in guiding the signal extraction from clinical documentation. It does not explicitly detail the various signal categories (delay drivers, outcome risks, safety signals, documentation gaps, infection risks, readmission risks, bundle compliance) that need to be addressed. Additionally, it may not encourage extraction of contextual phrases that highlight both compliance and missed opportunities for improvement. This can lead to missed signals crucial for preventing complications and unplanned care after AIS surgery.",
+    "changes": "This refined prompt is expected to improve the comprehensiveness and specificity of signal extraction. By explicitly categorizing signals, it will aid in identifying all relevant factors contributing to complications and care gaps in a structured manner. This should enhance clinical oversight and contribute to better patient outcomes by enabling more targeted interventions.",
+    "metrics": {
+      "signal_recall": null
+    }
+  },
+  {
+    "version": 3,
+    "timestamp": "2025-12-31T03:38:31.752Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics\n\nTask: Analyze clinical notes to identify and extract critical clinical signals related to I32a (Idiopathic scoliosis – 30-day unplanned admission and return to OR). The focus should include:\n- Detailed identification of delay drivers leading to prolonged patient admission and surgery delays, including justifications for any such delays exceeding 18 hours.\n- Outcome risks that relate to post-operative assessments, with a heightened emphasis on documentation of neurovascular checks, pain assessments, and neurological status changes.\n- Safety signals indicative of complications that may arise immediately or subsequently post-surgery, notably those relating to pain levels, compartment syndrome, and unexpected ICU admissions.\n- Documentation gaps emphasizing the need for comprehensive pre- and post-operative neurovascular examinations, perfusion status descriptions, and completeness of discharge instructions.\n- Infection risks with particular attention to the timing of prophylactic antibiotics and post-operative assessments for signs of infection.\n- Readmission risks based on clarity and completeness of discharge protocols that could lead to further patient complications.\n- Bundle compliance reflecting adherence to surgical protocols, including timeout documentation and DVT prophylaxis.\n\nOUTPUT FORMAT (JSON):\n{\n  \"signals\": {\n    \"delay_drivers\": [\"verbatim phrase 1\", \"verbatim phrase 2\"],\n    \"outcome_risks\": [\"verbatim phrase 3\", \"verbatim phrase 4\"],\n    \"safety_signals\": [\"verbatim phrase 5\", \"verbatim phrase 6\"],\n    \"documentation_gaps\": [\"verbatim phrase 7\", \"verbatim phrase 8\"],\n    \"infection_risks\": [\"verbatim phrase 9\", \"verbatim phrase 10\"],\n    \"readmission_risks\": [\"verbatim phrase 11\", \"verbatim phrase 12\"],\n    \"bundle_compliance\": [\"verbatim phrase 13\", \"verbatim phrase 14\"]\n  }\n}",
+    "analysis": "The current prompt lacks specificity in how to target nuanced details pertaining to gaps in documentation, safety signals, and infection risks, which were identified as significant misses in previous analyses. Additionally, it does not emphasize the importance of discerning signals indicating complications clearly linked to the outcome risks. The output format, while correct, might benefit from structured results that separate different signal types more effectively. Moreover, the prompt should clarify what constitutes an 'exact snippet' and suggest a hierarchy of importance for the identified signals, focusing on those with greatest potential impact on patient outcomes.",
+    "changes": "1. Enhanced signal extraction accuracy for all specified areas, particularly documentation gaps and safety signals related to unplanned complications.\n2. Improved hierarchy and categorization of extracted signals, making it easier to prioritize patient safety and compliance issues.\n3. Increased identification of critical phrases that indicate potential delays, complications, and gaps in care, leading to better clinical decision-making.\n4. Greater clarity in the expectations for 'exact snippets', allowing more consistent and relevant outputs aligned with clinical priorities.",
+    "metrics": {
+      "signal_recall": null
+    }
+  }
+]

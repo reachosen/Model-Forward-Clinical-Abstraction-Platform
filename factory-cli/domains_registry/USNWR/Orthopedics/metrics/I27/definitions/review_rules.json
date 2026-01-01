@@ -1,0 +1,176 @@
+{
+  "$schema": "../../../_shared/definitions/review_rules.schema.json",
+  "metric_id": "I27",
+  "version": "1.0",
+  "description": "Rule-in/rule-out decision criteria for Operative treatment of displaced forearm fracture",
+  "decision_framework": {
+    "possible_outcomes": [
+      "pass",
+      "fail",
+      "needs_review",
+      "excluded"
+    ],
+    "default_if_unclear": "needs_review"
+  },
+  "rule_in_criteria": [
+    {
+      "rule_id": "clear_pass",
+      "description": "All documentation complete, no complications, no adverse outcomes",
+      "conditions": [
+        {
+          "field": "documentation_complete",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "pass_with_minor_gaps",
+      "description": "Minor documentation gaps but no adverse outcomes",
+      "conditions": [
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        },
+        {
+          "field": "has_documentation_gap",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "medium",
+      "requires_documentation": [
+        "gap_type",
+        "mitigation_documented"
+      ]
+    }
+  ],
+  "rule_out_criteria": [
+    {
+      "rule_id": "risk_1",
+      "description": "Operative treatment when closed management would have been acceptable",
+      "conditions": [
+        {
+          "field": "operative_treatment_when_close",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_2",
+      "description": "Non-operative management when operative stabilization was clearly indicated",
+      "conditions": [
+        {
+          "field": "nonoperative_management_when_",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_3",
+      "description": "Inadequate casting or splinting leading to loss of reduction",
+      "conditions": [
+        {
+          "field": "inadequate_casting_or_splintin",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_4",
+      "description": "Missed associated injuries (e.g., Monteggia, Galeazzi variants)",
+      "conditions": [
+        {
+          "field": "missed_associated_injuries_e",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    }
+  ],
+  "ambiguity_triggers": [
+    {
+      "trigger_id": "unclear_decision_operative_nonoperative",
+      "description": "Review question: Was the decision for operative vs non-operative care justified by age and fracture pattern?",
+      "detection": {
+        "field": "decision",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Was the decision for operative vs non-operative care justified by age and fracture pattern?",
+      "search_hints": [
+        "decision",
+        "operative",
+        "non-operative",
+        "justified",
+        "fracture"
+      ]
+    },
+    {
+      "trigger_id": "unclear_reduction_quality_immediately",
+      "description": "Review question: Was reduction quality documented immediately post-procedure?",
+      "detection": {
+        "field": "reduction",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Was reduction quality documented immediately post-procedure?",
+      "search_hints": [
+        "reduction",
+        "quality",
+        "immediately",
+        "post-procedure"
+      ]
+    },
+    {
+      "trigger_id": "unclear_early_followup_radiographs",
+      "description": "Review question: Were early follow-up radiographs obtained to check for loss of reduction?",
+      "detection": {
+        "field": "early",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Were early follow-up radiographs obtained to check for loss of reduction?",
+      "search_hints": [
+        "early",
+        "follow-up",
+        "radiographs",
+        "obtained",
+        "check"
+      ]
+    },
+    {
+      "trigger_id": "unclear_associated_injuries_considered",
+      "description": "Review question: Were associated injuries considered and ruled out in documentation?",
+      "detection": {
+        "field": "associated",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Were associated injuries considered and ruled out in documentation?",
+      "search_hints": [
+        "associated",
+        "injuries",
+        "considered",
+        "ruled",
+        "documentation"
+      ]
+    }
+  ]
+}

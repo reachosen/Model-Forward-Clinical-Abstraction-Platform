@@ -32,22 +32,14 @@ export interface TestCase {
 }
 
 export interface EngineOutput {
-  test_id?: string;
-  concern_id?: string;
   raw_input: string;
-
   summary: string;
   signals: string[];
   followup_questions: string[];
-
-  // Optional enrichment tasks
-  enrichment_20_80?: string;
-  reviewer_payload?: any;
-  questions_enriched?: string[];
-
-  // Optional metadata
+  enrichment_20_80?: any;
   model_name?: string;
   latency_ms?: number;
+  error_message?: string; // Added for diagnostic tracking
 }
 
 export interface ValidationResult {

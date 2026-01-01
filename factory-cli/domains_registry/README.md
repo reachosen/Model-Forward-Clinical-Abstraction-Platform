@@ -1,48 +1,38 @@
 # domains_registry
 
-**Semantic Authority** for clinical metric definitions, test cases, and prompt templates.
+**Single Source of Truth** for domain knowledge, metric definitions, prompts, and test cases.
 
 ## Purpose
 
-This folder is the single source of truth for metric-specific artifacts. All domain knowledge lives here, organized by framework and specialty.
+This folder is the canonical source for all domain-specific artifacts. Both PlanningFactory and EvalsFactory read from here.
 
 ## Directory Structure
 
 ```
 domains_registry/
+├── _archive/                     # Archived golden content for validation
+│   └── USNWR/Orthopedics/2025-12-30/
+│
 ├── HAC/                          # Hospital-Acquired Conditions
-│   ├── _shared/                  # Shared across all HAC metrics
-│   │   ├── prompts/              # Common prompt templates
-│   │   ├── archetypes/           # Archetype definitions
-│   │   └── definitions/          # Shared definitions
-│   └── metrics/
-│       └── CLABSI/
-│           ├── prompts/          # Metric-specific prompts
-│           ├── definitions/      # Field registry, signal groups
-│           ├── signals/          # Curated signal library
-│           ├── config/           # Metric configuration
-│           └── tests/
-│               ├── testcases/    # Battle test cases
-│               └── golden/       # Golden reference sets
+│   ├── _shared/
+│   │   └── prompts/              # Common prompt templates
+│   └── metrics/CLABSI/
 │
 └── USNWR/                        # US News & World Report
-    ├── Orthopedics/
-    │   ├── _shared/              # Shared across Ortho metrics
-    │   └── metrics/
-    │       ├── I25/
-    │       │   ├── prompts/
-    │       │   ├── definitions/
-    │       │   ├── signals/
-    │       │   ├── config/
-    │       │   ├── tests/testcases/
-    │       │   ├── tests/golden/
-    │       │   └── strategy/
-    │       ├── I26/
-    │       ├── I27/
-    │       └── ...
-    ├── Cardiology/
-    ├── Endocrinology/
-    └── ...
+    └── Orthopedics/
+        ├── _shared/              # Domain-level (OrthoPacket)
+        │   ├── metrics.json      # Per-metric config + archetypes (from Gemini)
+        │   ├── signals.json      # Domain-wide signal library (from Gemini)
+        │   ├── priority.json     # Review priorities (from Gemini)
+        │   └── prompts/          # Shared prompt templates
+        │
+        └── metrics/
+            └── I25/
+                ├── prompts/      # Metric-specific prompts (optional)
+                ├── definitions/  # Derived from _shared/
+                │   ├── signal_groups.json
+                │   └── review_rules.json
+                └── tests/testcases/
 ```
 
 ## Path Resolution
@@ -78,15 +68,45 @@ When loading prompt templates, the system searches in order:
 | `exclusion_criteria.json` | Metric exclusion rules |
 | `review_rules.json` | Review trigger conditions |
 
-## Adding a New Metric
+## Adding a New Specialty
 
-1. Create folder structure:
+1. Run Gemini deep research prompt (see `.context/reference/domains-registry.md`)
+
+2. Place output in `_shared/`:
    ```bash
-   mkdir -p domains_registry/USNWR/{Specialty}/metrics/{METRIC}/{prompts,definitions,signals,config,tests/testcases,tests/golden,strategy}
+   mkdir -p domains_registry/USNWR/{Specialty}/_shared
+   # Add: metrics.json, signals.json, priority.json
    ```
 
-2. Add to `config/concern-registry.json`
+3. Derive definitions:
+   ```bash
+   npm run plan:derive -- --domain {Specialty}
+   ```
 
-3. Create definition files (field_registry, signal_groups, etc.)
+4. Add prompts to `_shared/prompts/` or per-metric `prompts/`
 
-4. Add prompt templates or rely on `_shared/` fallbacks
+## Adding a New Metric
+
+1. Add metric to `_shared/metrics.json` and `_shared/signals.json`
+
+2. Derive definitions:
+   ```bash
+   npm run plan:derive -- --metric {MetricId}
+   ```
+
+3. Add metric-specific prompts if needed (optional - falls back to `_shared/`)
+
+## Commands
+
+```bash
+# Derive definitions from _shared/
+npm run plan:derive -- --domain Orthopedics
+npm run plan:derive -- --metric I32a --force
+
+# Compare against archive
+npm run plan:derive -- --domain Orthopedics --compare-archive
+```
+
+## More Documentation
+
+See `.context/reference/domains-registry.md` for detailed workflow.

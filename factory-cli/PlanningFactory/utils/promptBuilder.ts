@@ -146,10 +146,18 @@ export function getPromptText(taskName: string, context: any): string {
   const { domain, primary_archetype, semantic_context, archetypes } = context;
   const ranking_context = semantic_context?.ranking;
   const specialty_name = ranking_context?.specialty_name;
+  
+  // V10: Ensure ortho_context.metric is populated if missing
+  const packet = semantic_context?.packet;
+  const concernId = context.concern_id || context.ortho_context?.metric?.metric_id;
+  
+  if (packet && concernId && !packet.metric) {
+      packet.metric = packet.metrics[concernId];
+  }
 
   // Build metric context string from semantic packet (domain-agnostic)
-  const metricContextString = buildMetricContextString(semantic_context?.packet);
-  const metricName = semantic_context?.packet?.metric?.metric_name;
+  const metricContextString = buildMetricContextString(packet);
+  const metricName = packet?.metric?.metric_name;
 
   // 1. Load Template from Registry (Unified Control Plane)
   let promptText = loadPromptFromRegistry(domain, specialty_name, taskType) || '';

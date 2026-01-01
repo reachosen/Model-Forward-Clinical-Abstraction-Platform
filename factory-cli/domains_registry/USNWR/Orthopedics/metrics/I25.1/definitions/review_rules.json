@@ -1,0 +1,174 @@
+{
+  "$schema": "../../../_shared/definitions/review_rules.schema.json",
+  "metric_id": "I25.1",
+  "version": "1.0",
+  "description": "Rule-in/rule-out decision criteria for Percent supracondylar fractures treated with open procedure",
+  "decision_framework": {
+    "possible_outcomes": [
+      "pass",
+      "fail",
+      "needs_review",
+      "excluded"
+    ],
+    "default_if_unclear": "needs_review"
+  },
+  "rule_in_criteria": [
+    {
+      "rule_id": "clear_pass",
+      "description": "All documentation complete, no complications, no adverse outcomes",
+      "conditions": [
+        {
+          "field": "documentation_complete",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "pass_with_minor_gaps",
+      "description": "Minor documentation gaps but no adverse outcomes",
+      "conditions": [
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        },
+        {
+          "field": "has_documentation_gap",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "medium",
+      "requires_documentation": [
+        "gap_type",
+        "mitigation_documented"
+      ]
+    }
+  ],
+  "rule_out_criteria": [
+    {
+      "rule_id": "risk_1",
+      "description": "Delayed presentation or transfer leading to stiff, swollen elbows",
+      "conditions": [
+        {
+          "field": "delayed_presentation_or_transf",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_2",
+      "description": "Inadequate closed reduction attempts or technique",
+      "conditions": [
+        {
+          "field": "inadequate_closed_reduction_at",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_3",
+      "description": "Lack of pre-op imaging/assessment for vascular status",
+      "conditions": [
+        {
+          "field": "lack_of_preop_imagingassessm",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_4",
+      "description": "Use of open reduction without clear documentation of indication",
+      "conditions": [
+        {
+          "field": "use_of_open_reduction_without_",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    }
+  ],
+  "ambiguity_triggers": [
+    {
+      "trigger_id": "unclear_indication_reduction",
+      "description": "Review question: Is the indication for open reduction clearly documented?",
+      "detection": {
+        "field": "indication",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Is the indication for open reduction clearly documented?",
+      "search_hints": [
+        "indication",
+        "reduction"
+      ]
+    },
+    {
+      "trigger_id": "unclear_closed_reduction_attempts",
+      "description": "Review question: Were one or more closed reduction attempts performed and documented when appropriate?",
+      "detection": {
+        "field": "closed",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Were one or more closed reduction attempts performed and documented when appropriate?",
+      "search_hints": [
+        "closed",
+        "reduction",
+        "attempts",
+        "performed",
+        "appropriate"
+      ]
+    },
+    {
+      "trigger_id": "unclear_vascular_tissue_compromise",
+      "description": "Review question: Was vascular or soft tissue compromise described as a driver for open approach?",
+      "detection": {
+        "field": "vascular",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Was vascular or soft tissue compromise described as a driver for open approach?",
+      "search_hints": [
+        "vascular",
+        "tissue",
+        "compromise",
+        "described",
+        "driver"
+      ]
+    },
+    {
+      "trigger_id": "unclear_complications_procedures_infection",
+      "description": "Review question: Were complications of open procedures (infection, stiffness) monitored and documented?",
+      "detection": {
+        "field": "complications",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Were complications of open procedures (infection, stiffness) monitored and documented?",
+      "search_hints": [
+        "complications",
+        "procedures",
+        "(infection",
+        "stiffness)",
+        "monitored"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "$schema": "../../../_shared/definitions/review_rules.schema.json",
+  "metric_id": "I32a",
+  "version": "1.0",
+  "description": "Rule-in/rule-out decision criteria for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+  "decision_framework": {
+    "possible_outcomes": [
+      "pass",
+      "fail",
+      "needs_review",
+      "excluded"
+    ],
+    "default_if_unclear": "needs_review"
+  },
+  "rule_in_criteria": [
+    {
+      "rule_id": "clear_pass",
+      "description": "All documentation complete, no complications, no adverse outcomes",
+      "conditions": [
+        {
+          "field": "documentation_complete",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "pass_with_minor_gaps",
+      "description": "Minor documentation gaps but no adverse outcomes",
+      "conditions": [
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        },
+        {
+          "field": "has_documentation_gap",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "medium",
+      "requires_documentation": [
+        "gap_type",
+        "mitigation_documented"
+      ]
+    }
+  ],
+  "rule_out_criteria": [
+    {
+      "rule_id": "risk_1",
+      "description": "Incomplete SSI prevention bundle or prolonged operative time without antibiotic re-dosing",
+      "conditions": [
+        {
+          "field": "incomplete_ssi_prevention_bund",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_2",
+      "description": "Inadequate pain control or bowel regimen leading to readmission",
+      "conditions": [
+        {
+          "field": "inadequate_pain_control_or_bow",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_3",
+      "description": "Technical or hardware issues requiring early revision",
+      "conditions": [
+        {
+          "field": "technical_or_hardware_issues_r",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_4",
+      "description": "Insufficient discharge teaching or follow-up planning",
+      "conditions": [
+        {
+          "field": "insufficient_discharge_teachin",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    }
+  ],
+  "ambiguity_triggers": [
+    {
+      "trigger_id": "unclear_prevention_bundle_fusion",
+      "description": "Review question: Was the full SSI prevention bundle documented for AIS fusion?",
+      "detection": {
+        "field": "prevention",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Was the full SSI prevention bundle documented for AIS fusion?",
+      "search_hints": [
+        "prevention",
+        "bundle",
+        "fusion"
+      ]
+    },
+    {
+      "trigger_id": "unclear_reason_readmission_return",
+      "description": "Review question: Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?",
+      "detection": {
+        "field": "reason",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?",
+      "search_hints": [
+        "reason",
+        "readmission",
+        "return",
+        "categorized",
+        "(infection"
+      ]
+    },
+    {
+      "trigger_id": "unclear_return_planned_unplanned",
+      "description": "Review question: Was this return to OR documented as planned vs unplanned?",
+      "detection": {
+        "field": "return",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Was this return to OR documented as planned vs unplanned?",
+      "search_hints": [
+        "return",
+        "planned",
+        "unplanned"
+      ]
+    },
+    {
+      "trigger_id": "unclear_discharge_instructions_followup",
+      "description": "Review question: Were discharge instructions and follow-up appointments clearly documented?",
+      "detection": {
+        "field": "discharge",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Were discharge instructions and follow-up appointments clearly documented?",
+      "search_hints": [
+        "discharge",
+        "instructions",
+        "follow-up",
+        "appointments"
+      ]
+    }
+  ]
+}

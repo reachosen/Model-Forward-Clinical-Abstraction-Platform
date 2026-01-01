@@ -6,10 +6,8 @@ import { getConcernMetadata } from '../../config/concernRegistry';
 import { BatchStrategy, GenerationScenario, DuetProfile } from './BatchStrategy';
 import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
 
-// Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
-// C10: Configuration from .env
 const DATASET_MODEL = process.env.DATASET_MODEL || 'gpt-4o-mini';
 const DATASET_MAX_TOKENS = parseInt(process.env.DATASET_MAX_TOKENS || '8000', 10);
 const DATASET_TEMPERATURE = parseFloat(process.env.DATASET_TEMPERATURE || '0.7');
@@ -31,37 +29,30 @@ export interface GeneratorConfig {
   output_dir: string;
   batch_size?: number;
   dry_run?: boolean;
+  resume?: boolean;
+  semantic_overlay?: any; 
 }
 
-// Build dynamic system prompt based on clinical metadata & semantic packets
-function buildSystemPrompt(concernId: string, domain: string, globalDuet?: DuetProfile): string {
+function buildSystemPrompt(concernId: string, domain: string, globalDuet?: DuetProfile, semantic_overlay?: any): string {
   const metadata = getConcernMetadata(concernId);
-  // Default to generic if metadata missing (though it shouldn't be if plan loaded)
   const description = metadata?.description || concernId;
   const safeDomain = domain || metadata?.domain || 'Clinical';
 
-  // Load Semantic Packet
   const loader = SemanticPacketLoader.getInstance();
-  const packet = loader.load(safeDomain);
+  const packet = semantic_overlay || loader.load(safeDomain, concernId);
   const metricDef = packet?.metrics[concernId];
   const signals = packet?.signals;
 
-  // 1. Metric Frame
   let metricFrame = `• Domain: ${safeDomain}\n• Description: ${description}\n• Goal: Generate realistic clinical narratives.`;
-  
   if (metricDef) {
     metricFrame += `\n• Clinical Focus: ${metricDef.clinical_focus}`;
     metricFrame += `\n• Rationale: ${metricDef.rationale}`;
     if (metricDef.risk_factors) metricFrame += `\n• Risk Factors: ${metricDef.risk_factors.join(', ')}`;
-  } else {
-    // Fallback for I25 if packet missing (backward compatibility)
-    if (concernId === 'I25') {
-        metricFrame += `\n• Target: Time from Arrival to OR Start < 18 hours.\n• High Risk: Pink pulseless hand, compartment syndrome.\n• Exclusions: Polytrauma, Transfer delays.`;
+    if (packet.isSpecialized) {
+        metricFrame += `\n• BIOS TIER: SPECIALIZED (Strictly follow definitions)`;
     }
   }
 
-  // 2. Archetype Lenses (Static for now, but could be loaded from packet if defined)
-  // We keep the generic list as it serves as "Persona definitions" for the LLM
   const archetypeLenses = `
 - [Process_Auditor]: Focus on exact timestamps and delays.
 - [Preventability_Detective]: Focus on "why" (root cause, prevention).
@@ -71,30 +62,18 @@ function buildSystemPrompt(concernId: string, domain: string, globalDuet?: DuetP
 - [Documentation_Gap]: Focus on missing/conflicting info.
 `;
 
-  // 3. Signal Scaffolds
   let signalScaffolds = `You must generate a "patient_payload" narrative first, then extract EXACT phrases for "must_find_signals".`;
-  
   if (signals) {
-    signalScaffolds += `\n\nSignals should be drawn from these verified groups (where relevant to the scenario):\n`;
-    // Flatten signals for context, or list by group
+    signalScaffolds += `\n\nCRITICAL: Use these EXACT signal concepts in your narrative and expectations:\n`;
     for (const [group, items] of Object.entries(signals)) {
-        if (items.length > 0) {
-            signalScaffolds += `\n[${group.toUpperCase()}]: ${items.slice(0, 8).join('; ')}${items.length > 8 ? '...' : ''}`;
+        if (Array.isArray(items) && items.length > 0) {
+            signalScaffolds += `\n[${group.toUpperCase()}]: ${items.slice(0, 15).join('; ')}`;
         }
     }
-  } else {
-    // Fallback
-    signalScaffolds += `\nSignals must cover:\n- Diagnosis / Injury\n- Timestamps\n- Clinical Signs\n- Outcome`;
   }
 
-  const duetContext = (globalDuet && (globalDuet.knowledge_source_id || globalDuet.persona))
-    ? `${SECTION_DIVIDER}
-0. DUET CONTEXT
-${SECTION_DIVIDER}
-- Knowledge Source: ${globalDuet.knowledge_source_id || 'N/A'}
-- Persona: ${globalDuet.persona || 'N/A'}
-
-`
+  const duetContext = (globalDuet && (globalDuet.knowledge_source_id || globalDuet.persona)) 
+    ? `${SECTION_DIVIDER}\n0. DUET CONTEXT\n${SECTION_DIVIDER}\n- Knowledge Source: ${globalDuet.knowledge_source_id || 'N/A'}\n- Persona: ${globalDuet.persona || 'N/A'}\n\n` 
     : '';
 
   return `You are a Clinical Data Simulator for ${safeDomain}.
@@ -122,12 +101,14 @@ ${SECTION_DIVIDER}
 ${SECTION_DIVIDER}
 For each scenario provided by the user:
 1. Analyze the Scenario: Identify Archetype, Clinical Pattern, Context, and Outcome Label.
-2. Draft Narrative: Write ${NARRATIVE_MIN_WORDS}-${NARRATIVE_MAX_WORDS} words.
-3. Apply Challenges (Doubt/Duet): If the scenario specifies "Doubt" (e.g., conflicting data) or "Duet" (specific guidelines), incorporate them into the narrative, especially any CASE PERTURBATION RULES.
+2. Draft Narrative: Write ${NARRATIVE_MIN_WORDS}-${NARRATIVE_MAX_WORDS} words. Ensure you include evidence for all required signals from the scenario.
+3. Apply Challenges (Doubt/Duet): If the scenario specifies "Doubt" (e.g., conflicting data) or "Duet" (specific guidelines), incorporate them into the narrative.
 4. Extract Expectations:
-   - signal_generation: Pick 3-5 VERBATIM phrases from your text.
-   - event_summary: 3-5 key phrases.
-   - followup_questions: 2 questions relevant to the Archetype.
+   - signal_generation: Pick 3-5 EXACT VERBATIM substrings from YOUR generated narrative.
+   - event_summary: You MUST include at least 3 phrases from the SIGNAL SCAFFOLDS above in your "must_contain_phrases", provided they are present verbatim in your narrative.
+
+CRITICAL: "must_find_signals" and "must_contain_phrases" MUST be present in your "patient_payload" exactly as written. 
+BIOS SYNCHRONIZATION: Your generated narrative should be the "Clinical Proof" that these signals exist.
 
 ${SECTION_DIVIDER}
 5. OUTPUT FORMAT (Strict JSON)
@@ -156,93 +137,58 @@ ${SECTION_DIVIDER}
   ]
 }
 `;
-
 }
 
 function buildUserPrompt(scenarios: GenerationScenario[], batchIndex: number): string {
-  return `
-Generating Batch ${batchIndex + 1} (${scenarios.length} cases).
-
-Please generate test cases for the following scenarios:
-
-${scenarios.map((s, i) => {
+  return `Generating Batch ${batchIndex + 1} (${scenarios.length} cases).\n\nPlease generate test cases for the following scenarios:\n\n${scenarios.map((s, i) => {
     const archetypeHint = ARCHETYPE_HINTS[s.archetype];
-    if (!archetypeHint) {
-      console.warn(`Warning: Unrecognized archetype "${s.archetype}" in scenario ${i + 1}`);
-    }
-
-    let text = `${i + 1}. Scenario: ${s.description}\n   Archetype Lens: [${s.archetype}] ${archetypeHint || 'Apply this archetype lens deliberately while generating the case.'}`;
-    
-    if (s.duet) {
-      text += `\n   [Knowledge Source]: Apply logic from ${s.duet.knowledge_source_id} (${s.duet.persona}).`;
-    }
-    
+    let text = `${i + 1}. Scenario: ${s.description}\n   Archetype Lens: [${s.archetype}] ${archetypeHint || 'Apply lens.'}`;
+    if (s.duet) text += `\n   [Knowledge Source]: Apply logic from ${s.duet.knowledge_source_id} (${s.duet.persona}).`;
     if (s.doubt && s.doubt.length > 0) {
       text += `\n   CASE PERTURBATION RULES:`;
-      s.doubt.forEach(d => {
-        text += `\n     - ${d.type.toUpperCase()}: ${d.instruction}`;
-      });
+      s.doubt.forEach(d => { text += `\n     - ${d.type.toUpperCase()}: ${d.instruction}`; });
     }
-    
     return text;
-  }).join('\n\n')}
-
-Ensure distinct patient demographics and clinical details for each case.
-`;
+  }).join('\n\n')}\n\nEnsure distinct patient details for each case.`;
 }
 
-async function generateBatch(client: OpenAI, concernId: string, domain: string, scenarios: GenerationScenario[], batchIndex: number, outputDir: string, globalDuet?: DuetProfile) {
-  console.log(`\n🚀 Generating Batch ${batchIndex + 1} (${scenarios.length} scenarios)...`);
+async function generateBatch(client: OpenAI, concernId: string, domain: string, scenarios: GenerationScenario[], batchIndex: number, outputDir: string, globalDuet?: DuetProfile, semantic_overlay?: any) {
+  console.log(`\n🚀 Generating Batch ${batchIndex + 1} (${scenarios.length} cases):`);
+  scenarios.forEach((s, i) => {
+      console.log(`   [Case ${i+1}] Intent: "${s.description.slice(0, 80)}..."`);
+  });
   
-  const systemPrompt = buildSystemPrompt(concernId, domain, globalDuet);
+  const systemPrompt = buildSystemPrompt(concernId, domain, globalDuet, semantic_overlay);
   const userPrompt = buildUserPrompt(scenarios, batchIndex);
 
   try {
     const response = await client.chat.completions.create({
       model: DATASET_MODEL,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ],
+      messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
       temperature: DATASET_TEMPERATURE,
       max_tokens: DATASET_MAX_TOKENS,
       response_format: { type: 'json_object' }
     });
 
     const content = response.choices[0].message.content;
-    if (!content) throw new Error('Empty response from LLM');
-
+    if (!content) throw new Error('Empty response');
     const data = JSON.parse(content);
-    
-    // Validate/Fix IDs
     const cases = data.test_cases.map((tc: any, i: number) => ({
       ...tc,
       test_id: `${concernId}-BATCH${batchIndex + 1}-${String(i + 1).padStart(3, '0')}`,
       concern_id: concernId
     }));
 
-    // Save to file
     const filename = `${concernId}_batch_${batchIndex + 1}.json`;
     const filepath = path.join(outputDir, filename);
-    
-    // Ensure dir exists
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
+    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
-    // Structure with Batch Strategy
     const output = {
-      batch_strategy: {
-        batch_index: batchIndex + 1,
-        scenario_count: scenarios.length,
-        scenarios: scenarios
-      },
+      batch_strategy: { batch_index: batchIndex + 1, scenario_count: scenarios.length, scenarios: scenarios },
       test_cases: cases
     };
-
     fs.writeFileSync(filepath, JSON.stringify(output, null, 2));
     console.log(`✅ Saved ${cases.length} cases to ${filepath}`);
-
   } catch (error: any) {
     console.error(`❌ Error generating batch ${batchIndex + 1}:`, error.message);
   }
@@ -250,47 +196,33 @@ async function generateBatch(client: OpenAI, concernId: string, domain: string, 
 
 export { buildSystemPrompt, buildUserPrompt };
 export async function runGenerator(config: GeneratorConfig) {
-  if (!process.env.OPENAI_API_KEY) {
-    console.error('❌ OPENAI_API_KEY is missing in .env');
-    process.exit(1);
-  }
-
+  if (!process.env.OPENAI_API_KEY) { console.error('❌ OPENAI_API_KEY missing'); process.exit(1); }
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const BATCH_SIZE = config.batch_size || 5;
-  const scenarios = config.strategy.scenarios;
+  let scenarios: GenerationScenario[] = [];
+  if (config.strategy.task_scenarios) scenarios = Object.values(config.strategy.task_scenarios).flatMap(ts => ts.scenarios);
+  else if (config.strategy.scenarios) scenarios = config.strategy.scenarios;
+
   const concernId = config.strategy.metric_id;
   const domain = config.strategy.domain;
-  
-  // Chunk scenarios
   const batches = [];
-  for (let i = 0; i < scenarios.length; i += BATCH_SIZE) {
-    batches.push(scenarios.slice(i, i + BATCH_SIZE));
-  }
+  for (let i = 0; i < scenarios.length; i += BATCH_SIZE) batches.push(scenarios.slice(i, i + BATCH_SIZE));
 
-  // Ensure dir exists
-  if (!fs.existsSync(config.output_dir)) {
-    fs.mkdirSync(config.output_dir, { recursive: true });
-  }
-
-  // Save Strategy Metadata
-  const strategyPath = path.join(config.output_dir, 'generation_strategy.json');
-  fs.writeFileSync(strategyPath, JSON.stringify(config.strategy, null, 2));
+  if (!fs.existsSync(config.output_dir)) fs.mkdirSync(config.output_dir, { recursive: true });
+  fs.writeFileSync(path.join(config.output_dir, 'generation_strategy.json'), JSON.stringify(config.strategy, null, 2));
   
-  console.log(`📋 Generation Strategy saved to ${strategyPath}`);
-  console.log(`   Metric: ${concernId}`);
-  console.log(`   Total Scenarios: ${scenarios.length}`);
-  console.log(`   Batches: ${batches.length}`);
+  console.log(`📋 Generation Strategy saved to ${config.output_dir}/generation_strategy.json`);
+  console.log(`   Metric: ${concernId} | Scenarios: ${scenarios.length} | Batches: ${batches.length}`);
 
-  if (config.dry_run) {
-    console.log('🛑 Dry-run mode. Exiting without generating cases.');
-    return;
-  }
-
-  console.log(`📋 Executing Strategy...`);
+  if (config.dry_run) return;
 
   for (let i = 0; i < batches.length; i++) {
-    await generateBatch(client, concernId, domain, batches[i], i, config.output_dir, config.strategy.global_duet);
+    const filename = `${concernId}_batch_${i + 1}.json`;
+    if (config.resume && fs.existsSync(path.join(config.output_dir, filename))) {
+        console.log(`   ⏭️  Batch ${i + 1} already exists. Skipping.`);
+        continue;
+    }
+    await generateBatch(client, concernId, domain, batches[i], i, config.output_dir, config.strategy.global_duet, config.semantic_overlay);
   }
-  
   console.log('\n🎉 Generation Complete.');
 }

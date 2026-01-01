@@ -1,0 +1,176 @@
+{
+  "$schema": "../../../_shared/definitions/signal_groups.schema.json",
+  "metric_id": "I27",
+  "version": "1.0",
+  "description": "Signal groups for I27 Operative treatment of displaced forearm fracture",
+  "signal_groups": [
+    {
+      "group_id": "OUTCOME_RISKS",
+      "display_name": "Outcome Risks",
+      "description": "Signals related to outcome risks for Operative treatment of displaced forearm fracture",
+      "priority": 1,
+      "signals": [
+        {
+          "signal_id": "hand_perfusion_whitecoolpulseless",
+          "description": "Hand perfusion: white/cool/pulseless",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "neurological_deficit_medianulnarradia",
+          "description": "Neurological deficit (median/ulnar/radial)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "compartment_syndrome_suspicion",
+          "description": "Compartment syndrome suspicion",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "loss_of_reduction_requiring_reoperation",
+          "description": "Loss of reduction requiring re-operation",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "malunion",
+          "description": "Malunion",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "limb_length_discrepancy",
+          "description": "Limb length discrepancy",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "infection_ssi",
+          "description": "Infection (SSI)",
+          "evidence_type": "verbatim_text",
+          "required": false
+        },
+        {
+          "signal_id": "hardware_failure",
+          "description": "Hardware failure",
+          "evidence_type": "verbatim_text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "group_id": "SAFETY_SIGNALS",
+      "display_name": "Safety Signals",
+      "description": "Signals related to safety signals for Operative treatment of displaced forearm fracture",
+      "priority": 2,
+      "signals": [
+        {
+          "signal_id": "pain_out_of_proportion_to_injury",
+          "description": "Pain out of proportion to injury",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "increasing_analgesic_requirement",
+          "description": "Increasing analgesic requirement",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "passive_stretch_pain",
+          "description": "Passive stretch pain",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "paresthesianumbness",
+          "description": "Paresthesia/numbness",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "pallor_or_delayed_capillary_refill",
+          "description": "Pallor or delayed capillary refill",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "tenseness_of_compartment",
+          "description": "Tenseness of compartment",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "fasciotomy_performed",
+          "description": "Fasciotomy performed",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "unexpected_icu_admission",
+          "description": "Unexpected ICU admission",
+          "evidence_type": "verbatim_text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "group_id": "DOCUMENTATION_GAPS",
+      "display_name": "Documentation Gaps",
+      "description": "Signals related to documentation gaps for Operative treatment of displaced forearm fracture",
+      "priority": 3,
+      "signals": [
+        {
+          "signal_id": "neurovascular_exam_not_documented_preop",
+          "description": "Neurovascular exam not documented pre-op",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "neurovascular_exam_not_documented_posto",
+          "description": "Neurovascular exam not documented post-op",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "perfusion_status_not_described_pinkwar",
+          "description": "Perfusion status not described (pink/warm)",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "compartment_check_frequency_not_met",
+          "description": "Compartment check frequency not met",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "surgical_pausetimeout_missing",
+          "description": "Surgical pause/timeout missing",
+          "evidence_type": "structured_field",
+          "required": true
+        },
+        {
+          "signal_id": "antibiotic_timing_not_documented",
+          "description": "Antibiotic timing not documented",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "justification_for_delay_18h_missing",
+          "description": "Justification for delay >18h missing",
+          "evidence_type": "verbatim_text",
+          "required": true
+        },
+        {
+          "signal_id": "discharge_instructions_unclear",
+          "description": "Discharge instructions unclear",
+          "evidence_type": "verbatim_text",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

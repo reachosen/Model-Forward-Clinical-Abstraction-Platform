@@ -1,0 +1,2533 @@
+{
+  "batch_plan": {
+    "batch_index": 1,
+    "scenario_count": 52,
+    "scenarios": [
+      {
+        "id": "signal_enrichment_pass_INFECTION_RISKS_1",
+        "type": "pass",
+        "description": "Clear Infection Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "antibiotic_prophylaxis_not_given_within_": "present",
+          "inappropriate_antibiotic_selection": "present",
+          "prolonged_operative_time": "present",
+          "implanthardware_present": "present",
+          "history_of_prior_infection": "present",
+          "immunosuppression": "present",
+          "wound_drainageerythema": "present",
+          "positive_culture": "present"
+        }
+      },
+      {
+        "id": "signal_enrichment_pass_BUNDLE_COMPLIANCE_1",
+        "type": "pass",
+        "description": "Clear Bundle Compliance documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "preop_warming_not_documented": "present",
+          "chlorhexidine_prep_not_useddocumented": "present",
+          "antibiotic_redosing_missed_in_long_case": "present",
+          "traffic_in_or_excessive": "present",
+          "glucose_control_if_diabetic": "present",
+          "postop_dressing_protocol_deviation": "present",
+          "dvt_prophylaxis_missed_if_indicated": "present",
+          "foley_catheter_duration_48h": "present"
+        }
+      },
+      {
+        "id": "event_summary_fail_OUTCOME_RISKS_1",
+        "type": "fail",
+        "description": "Missing Outcome Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "hardware_failure": "absent"
+        }
+      },
+      {
+        "id": "event_summary_fail_READMISSION_RISKS_1",
+        "type": "fail",
+        "description": "Missing Readmission Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "nutritional_failure": "absent"
+        }
+      },
+      {
+        "id": "event_summary_doubt_unclear_prevention_bundle_fusion_1",
+        "type": "doubt",
+        "description": "Review question: Was the full SSI prevention bundle documented for AIS fusion?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Was the full SSI prevention bundle documented for AIS fusion?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_flag_incomplete": true
+        }
+      },
+      {
+        "id": "event_summary_doubt_unclear_reason_readmission_return_1",
+        "type": "doubt",
+        "description": "Review question: Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_flag_incomplete": true
+        }
+      },
+      {
+        "id": "event_summary_doubt_unclear_return_planned_unplanned_1",
+        "type": "doubt",
+        "description": "Review question: Was this return to OR documented as planned vs unplanned?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Was this return to OR documented as planned vs unplanned?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_flag_incomplete": true
+        }
+      },
+      {
+        "id": "event_summary_doubt_unclear_discharge_instructions_followup_1",
+        "type": "doubt",
+        "description": "Review question: Were discharge instructions and follow-up appointments clearly documented?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Were discharge instructions and follow-up appointments clearly documented?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_flag_incomplete": true
+        }
+      },
+      {
+        "id": "followup_questions_pass_INFECTION_RISKS_1",
+        "type": "pass",
+        "description": "Clear Infection Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "antibiotic_prophylaxis_not_given_within_": "present",
+          "inappropriate_antibiotic_selection": "present",
+          "prolonged_operative_time": "present",
+          "implanthardware_present": "present",
+          "history_of_prior_infection": "present",
+          "immunosuppression": "present",
+          "wound_drainageerythema": "present",
+          "positive_culture": "present"
+        }
+      },
+      {
+        "id": "followup_questions_pass_BUNDLE_COMPLIANCE_1",
+        "type": "pass",
+        "description": "Clear Bundle Compliance documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "preop_warming_not_documented": "present",
+          "chlorhexidine_prep_not_useddocumented": "present",
+          "antibiotic_redosing_missed_in_long_case": "present",
+          "traffic_in_or_excessive": "present",
+          "glucose_control_if_diabetic": "present",
+          "postop_dressing_protocol_deviation": "present",
+          "dvt_prophylaxis_missed_if_indicated": "present",
+          "foley_catheter_duration_48h": "present"
+        }
+      },
+      {
+        "id": "followup_questions_pass_OUTCOME_RISKS_1",
+        "type": "pass",
+        "description": "Clear Outcome Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "hardware_failure": "present"
+        }
+      },
+      {
+        "id": "followup_questions_pass_READMISSION_RISKS_1",
+        "type": "pass",
+        "description": "Clear Readmission Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "nutritional_failure": "present"
+        }
+      },
+      {
+        "id": "followup_questions_fail_INFECTION_RISKS_1",
+        "type": "fail",
+        "description": "Missing Infection Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "antibiotic_prophylaxis_not_given_within_": "absent",
+          "inappropriate_antibiotic_selection": "absent",
+          "prolonged_operative_time": "absent",
+          "implanthardware_present": "absent",
+          "history_of_prior_infection": "absent",
+          "immunosuppression": "absent",
+          "wound_drainageerythema": "absent",
+          "positive_culture": "absent"
+        }
+      },
+      {
+        "id": "followup_questions_fail_BUNDLE_COMPLIANCE_1",
+        "type": "fail",
+        "description": "Missing Bundle Compliance - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "preop_warming_not_documented": "absent",
+          "chlorhexidine_prep_not_useddocumented": "absent",
+          "antibiotic_redosing_missed_in_long_case": "absent",
+          "traffic_in_or_excessive": "absent",
+          "glucose_control_if_diabetic": "absent",
+          "postop_dressing_protocol_deviation": "absent",
+          "dvt_prophylaxis_missed_if_indicated": "absent",
+          "foley_catheter_duration_48h": "absent"
+        }
+      },
+      {
+        "id": "followup_questions_fail_OUTCOME_RISKS_1",
+        "type": "fail",
+        "description": "Missing Outcome Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "hardware_failure": "absent"
+        }
+      },
+      {
+        "id": "followup_questions_fail_READMISSION_RISKS_1",
+        "type": "fail",
+        "description": "Missing Readmission Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "nutritional_failure": "absent"
+        }
+      },
+      {
+        "id": "followup_questions_doubt_unclear_prevention_bundle_fusion_1",
+        "type": "doubt",
+        "description": "Review question: Was the full SSI prevention bundle documented for AIS fusion?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Was the full SSI prevention bundle documented for AIS fusion?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_probe_ambiguity": true,
+          "probe_keywords": [
+            "prevention",
+            "bundle",
+            "fusion"
+          ]
+        }
+      },
+      {
+        "id": "followup_questions_doubt_unclear_reason_readmission_return_1",
+        "type": "doubt",
+        "description": "Review question: Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_probe_ambiguity": true,
+          "probe_keywords": [
+            "reason",
+            "readmission",
+            "return",
+            "categorized",
+            "(infection"
+          ]
+        }
+      },
+      {
+        "id": "followup_questions_doubt_unclear_return_planned_unplanned_1",
+        "type": "doubt",
+        "description": "Review question: Was this return to OR documented as planned vs unplanned?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Was this return to OR documented as planned vs unplanned?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_probe_ambiguity": true,
+          "probe_keywords": [
+            "return",
+            "planned",
+            "unplanned"
+          ]
+        }
+      },
+      {
+        "id": "followup_questions_doubt_unclear_discharge_instructions_followup_1",
+        "type": "doubt",
+        "description": "Review question: Were discharge instructions and follow-up appointments clearly documented?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Were discharge instructions and follow-up appointments clearly documented?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_probe_ambiguity": true,
+          "probe_keywords": [
+            "discharge",
+            "instructions",
+            "follow-up",
+            "appointments"
+          ]
+        }
+      },
+      {
+        "id": "clinical_review_plan_pass_INFECTION_RISKS_1",
+        "type": "pass",
+        "description": "Clear Infection Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "antibiotic_prophylaxis_not_given_within_": "present",
+          "inappropriate_antibiotic_selection": "present",
+          "prolonged_operative_time": "present",
+          "implanthardware_present": "present",
+          "history_of_prior_infection": "present",
+          "immunosuppression": "present",
+          "wound_drainageerythema": "present",
+          "positive_culture": "present"
+        }
+      },
+      {
+        "id": "clinical_review_plan_pass_BUNDLE_COMPLIANCE_1",
+        "type": "pass",
+        "description": "Clear Bundle Compliance documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "preop_warming_not_documented": "present",
+          "chlorhexidine_prep_not_useddocumented": "present",
+          "antibiotic_redosing_missed_in_long_case": "present",
+          "traffic_in_or_excessive": "present",
+          "glucose_control_if_diabetic": "present",
+          "postop_dressing_protocol_deviation": "present",
+          "dvt_prophylaxis_missed_if_indicated": "present",
+          "foley_catheter_duration_48h": "present"
+        }
+      },
+      {
+        "id": "signal_enrichment_pass_OUTCOME_RISKS_1",
+        "type": "pass",
+        "description": "Clear Outcome Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "hardware_failure": "present"
+        }
+      },
+      {
+        "id": "signal_enrichment_pass_READMISSION_RISKS_1",
+        "type": "pass",
+        "description": "Clear Readmission Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "nutritional_failure": "present"
+        }
+      },
+      {
+        "id": "clinical_review_plan_pass_OUTCOME_RISKS_1",
+        "type": "pass",
+        "description": "Clear Outcome Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "hardware_failure": "present"
+        }
+      },
+      {
+        "id": "clinical_review_plan_pass_READMISSION_RISKS_1",
+        "type": "pass",
+        "description": "Clear Readmission Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "nutritional_failure": "present"
+        }
+      },
+      {
+        "id": "clinical_review_plan_fail_INFECTION_RISKS_1",
+        "type": "fail",
+        "description": "Missing Infection Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "antibiotic_prophylaxis_not_given_within_": "absent",
+          "inappropriate_antibiotic_selection": "absent",
+          "prolonged_operative_time": "absent",
+          "implanthardware_present": "absent",
+          "history_of_prior_infection": "absent",
+          "immunosuppression": "absent",
+          "wound_drainageerythema": "absent",
+          "positive_culture": "absent"
+        }
+      },
+      {
+        "id": "clinical_review_plan_fail_BUNDLE_COMPLIANCE_1",
+        "type": "fail",
+        "description": "Missing Bundle Compliance - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "preop_warming_not_documented": "absent",
+          "chlorhexidine_prep_not_useddocumented": "absent",
+          "antibiotic_redosing_missed_in_long_case": "absent",
+          "traffic_in_or_excessive": "absent",
+          "glucose_control_if_diabetic": "absent",
+          "postop_dressing_protocol_deviation": "absent",
+          "dvt_prophylaxis_missed_if_indicated": "absent",
+          "foley_catheter_duration_48h": "absent"
+        }
+      },
+      {
+        "id": "clinical_review_plan_fail_OUTCOME_RISKS_1",
+        "type": "fail",
+        "description": "Missing Outcome Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "hardware_failure": "absent"
+        }
+      },
+      {
+        "id": "clinical_review_plan_fail_READMISSION_RISKS_1",
+        "type": "fail",
+        "description": "Missing Readmission Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "nutritional_failure": "absent"
+        }
+      },
+      {
+        "id": "clinical_review_plan_doubt_unclear_prevention_bundle_fusion_1",
+        "type": "doubt",
+        "description": "Review question: Was the full SSI prevention bundle documented for AIS fusion?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Was the full SSI prevention bundle documented for AIS fusion?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_escalate": true,
+          "expected_concern_keywords": [
+            "prevention",
+            "bundle",
+            "fusion"
+          ]
+        }
+      },
+      {
+        "id": "clinical_review_plan_doubt_unclear_reason_readmission_return_1",
+        "type": "doubt",
+        "description": "Review question: Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_escalate": true,
+          "expected_concern_keywords": [
+            "reason",
+            "readmission",
+            "return",
+            "categorized",
+            "(infection"
+          ]
+        }
+      },
+      {
+        "id": "clinical_review_plan_doubt_unclear_return_planned_unplanned_1",
+        "type": "doubt",
+        "description": "Review question: Was this return to OR documented as planned vs unplanned?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Was this return to OR documented as planned vs unplanned?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_escalate": true,
+          "expected_concern_keywords": [
+            "return",
+            "planned",
+            "unplanned"
+          ]
+        }
+      },
+      {
+        "id": "clinical_review_plan_doubt_unclear_discharge_instructions_followup_1",
+        "type": "doubt",
+        "description": "Review question: Were discharge instructions and follow-up appointments clearly documented?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Were discharge instructions and follow-up appointments clearly documented?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_escalate": true,
+          "expected_concern_keywords": [
+            "discharge",
+            "instructions",
+            "follow-up",
+            "appointments"
+          ]
+        }
+      },
+      {
+        "id": "clinical_review_plan_doubt_conflicting_wound_assessments_1",
+        "type": "doubt",
+        "description": "Wound assessment notes show conflicting findings",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Wound assessments show conflicting findings. Which is accurate?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_escalate": true,
+          "expected_concern_keywords": [
+            "wound",
+            "incision",
+            "erythema",
+            "healing",
+            "drainage"
+          ]
+        }
+      },
+      {
+        "id": "clinical_review_plan_doubt_borderline_readmission_timing_1",
+        "type": "doubt",
+        "description": "Readmission occurred close to 30-day boundary",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
+          }
+        ],
+        "doubt_recognition": {
+          "should_escalate": true,
+          "expected_concern_keywords": [
+            "readmit",
+            "return",
+            "presented",
+            "day 30",
+            "one month"
+          ]
+        }
+      },
+      {
+        "id": "clinical_review_plan_doubt_incomplete_discharge_documentation_1",
+        "type": "doubt",
+        "description": "Discharge instructions partially documented or unclear",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
+          }
+        ],
+        "doubt_recognition": {
+          "should_escalate": true,
+          "expected_concern_keywords": [
+            "discharge",
+            "instructions",
+            "education",
+            "follow-up",
+            "pain management",
+            "activity"
+          ]
+        }
+      },
+      {
+        "id": "clinical_review_plan_doubt_neurological_change_unclear_etiology_1",
+        "type": "doubt",
+        "description": "New neurological findings with unclear cause",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
+          }
+        ],
+        "doubt_recognition": {
+          "should_escalate": true,
+          "expected_concern_keywords": [
+            "paresthesia",
+            "weakness",
+            "numbness",
+            "neurological",
+            "sensation",
+            "motor"
+          ]
+        }
+      },
+      {
+        "id": "signal_enrichment_fail_INFECTION_RISKS_1",
+        "type": "fail",
+        "description": "Missing Infection Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "antibiotic_prophylaxis_not_given_within_": "absent",
+          "inappropriate_antibiotic_selection": "absent",
+          "prolonged_operative_time": "absent",
+          "implanthardware_present": "absent",
+          "history_of_prior_infection": "absent",
+          "immunosuppression": "absent",
+          "wound_drainageerythema": "absent",
+          "positive_culture": "absent"
+        }
+      },
+      {
+        "id": "signal_enrichment_fail_BUNDLE_COMPLIANCE_1",
+        "type": "fail",
+        "description": "Missing Bundle Compliance - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "preop_warming_not_documented": "absent",
+          "chlorhexidine_prep_not_useddocumented": "absent",
+          "antibiotic_redosing_missed_in_long_case": "absent",
+          "traffic_in_or_excessive": "absent",
+          "glucose_control_if_diabetic": "absent",
+          "postop_dressing_protocol_deviation": "absent",
+          "dvt_prophylaxis_missed_if_indicated": "absent",
+          "foley_catheter_duration_48h": "absent"
+        }
+      },
+      {
+        "id": "signal_enrichment_fail_OUTCOME_RISKS_1",
+        "type": "fail",
+        "description": "Missing Outcome Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "hardware_failure": "absent"
+        }
+      },
+      {
+        "id": "signal_enrichment_fail_READMISSION_RISKS_1",
+        "type": "fail",
+        "description": "Missing Readmission Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "nutritional_failure": "absent"
+        }
+      },
+      {
+        "id": "signal_enrichment_doubt_unclear_prevention_bundle_fusion_1",
+        "type": "doubt",
+        "description": "Review question: Was the full SSI prevention bundle documented for AIS fusion?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Was the full SSI prevention bundle documented for AIS fusion?"
+          }
+        ],
+        "doubt_recognition": {
+          "expected_signal_gap": true,
+          "uncertainty_keywords": [
+            "unclear",
+            "unspecified",
+            "not documented",
+            "prevention",
+            "bundle",
+            "fusion"
+          ]
+        }
+      },
+      {
+        "id": "signal_enrichment_doubt_unclear_reason_readmission_return_1",
+        "type": "doubt",
+        "description": "Review question: Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?"
+          }
+        ],
+        "doubt_recognition": {
+          "expected_signal_gap": true,
+          "uncertainty_keywords": [
+            "unclear",
+            "unspecified",
+            "not documented",
+            "reason",
+            "readmission",
+            "return",
+            "categorized",
+            "(infection"
+          ]
+        }
+      },
+      {
+        "id": "signal_enrichment_doubt_unclear_return_planned_unplanned_1",
+        "type": "doubt",
+        "description": "Review question: Was this return to OR documented as planned vs unplanned?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Was this return to OR documented as planned vs unplanned?"
+          }
+        ],
+        "doubt_recognition": {
+          "expected_signal_gap": true,
+          "uncertainty_keywords": [
+            "unclear",
+            "unspecified",
+            "not documented",
+            "return",
+            "planned",
+            "unplanned"
+          ]
+        }
+      },
+      {
+        "id": "signal_enrichment_doubt_unclear_discharge_instructions_followup_1",
+        "type": "doubt",
+        "description": "Review question: Were discharge instructions and follow-up appointments clearly documented?",
+        "archetype": "Preventability_Detective",
+        "doubt": [
+          {
+            "type": "ambiguity",
+            "instruction": "Were discharge instructions and follow-up appointments clearly documented?"
+          }
+        ],
+        "doubt_recognition": {
+          "expected_signal_gap": true,
+          "uncertainty_keywords": [
+            "unclear",
+            "unspecified",
+            "not documented",
+            "discharge",
+            "instructions",
+            "follow-up",
+            "appointments"
+          ]
+        }
+      },
+      {
+        "id": "event_summary_pass_INFECTION_RISKS_1",
+        "type": "pass",
+        "description": "Clear Infection Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "antibiotic_prophylaxis_not_given_within_": "present",
+          "inappropriate_antibiotic_selection": "present",
+          "prolonged_operative_time": "present",
+          "implanthardware_present": "present",
+          "history_of_prior_infection": "present",
+          "immunosuppression": "present",
+          "wound_drainageerythema": "present",
+          "positive_culture": "present"
+        }
+      },
+      {
+        "id": "event_summary_pass_BUNDLE_COMPLIANCE_1",
+        "type": "pass",
+        "description": "Clear Bundle Compliance documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "preop_warming_not_documented": "present",
+          "chlorhexidine_prep_not_useddocumented": "present",
+          "antibiotic_redosing_missed_in_long_case": "present",
+          "traffic_in_or_excessive": "present",
+          "glucose_control_if_diabetic": "present",
+          "postop_dressing_protocol_deviation": "present",
+          "dvt_prophylaxis_missed_if_indicated": "present",
+          "foley_catheter_duration_48h": "present"
+        }
+      },
+      {
+        "id": "event_summary_pass_OUTCOME_RISKS_1",
+        "type": "pass",
+        "description": "Clear Outcome Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "hardware_failure": "present"
+        }
+      },
+      {
+        "id": "event_summary_pass_READMISSION_RISKS_1",
+        "type": "pass",
+        "description": "Clear Readmission Risks documentation - all required signals present",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "nutritional_failure": "present"
+        }
+      },
+      {
+        "id": "event_summary_fail_INFECTION_RISKS_1",
+        "type": "fail",
+        "description": "Missing Infection Risks - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "antibiotic_prophylaxis_not_given_within_": "absent",
+          "inappropriate_antibiotic_selection": "absent",
+          "prolonged_operative_time": "absent",
+          "implanthardware_present": "absent",
+          "history_of_prior_infection": "absent",
+          "immunosuppression": "absent",
+          "wound_drainageerythema": "absent",
+          "positive_culture": "absent"
+        }
+      },
+      {
+        "id": "event_summary_fail_BUNDLE_COMPLIANCE_1",
+        "type": "fail",
+        "description": "Missing Bundle Compliance - required signals absent or problematic",
+        "archetype": "Preventability_Detective",
+        "signals": {
+          "preop_warming_not_documented": "absent",
+          "chlorhexidine_prep_not_useddocumented": "absent",
+          "antibiotic_redosing_missed_in_long_case": "absent",
+          "traffic_in_or_excessive": "absent",
+          "glucose_control_if_diabetic": "absent",
+          "postop_dressing_protocol_deviation": "absent",
+          "dvt_prophylaxis_missed_if_indicated": "absent",
+          "foley_catheter_duration_48h": "absent"
+        }
+      }
+    ]
+  },
+  "test_cases": [
+    {
+      "test_id": "I32a-BATCH1-001",
+      "concern_id": "I32a",
+      "description": "Patient with documented infection risks post-surgery.",
+      "patient_payload": "A 15-year-old female presented for surgical correction of idiopathic scoliosis. Post-operatively, her surgical site revealed erythema and purulent drainage. Despite appropriate antibiotic prophylaxis administered within 60 minutes, a wound culture returned positive for MRSA. The team recognized that prolonged operative time exceeded 4 hours without adequate redosing. Discharge instructions were unclear regarding signs of infection, leading to a 15-day post-op admission for surgical site infection. Neurovascular exam was documented pre-op but lacked post-op details. The patient's clinical stability was compromised due to infection risks, emphasizing the necessity for improved discharge education and timely antibiotic management.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Antibiotic prophylaxis administered within 60 minutes",
+            "Wound culture returned positive for MRSA",
+            "Prolonged operative time exceeded 4 hours without adequate redosing"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection",
+            "discharge instructions unclear",
+            "neurovascular exam was documented pre-op but lacked post-op details"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection prevention",
+            "discharge planning"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH1-002",
+      "concern_id": "I32a",
+      "description": "Patient with documented bundle compliance but complications arose.",
+      "patient_payload": "An 18-year-old male underwent posterior spinal fusion for idiopathic scoliosis. Pre-operatively, the patient was warmed, and chlorhexidine prep was documented. However, antibiotic redosing was missed due to excessive traffic in the OR during a prolonged procedure lasting over 5 hours. Post-operative, the patient experienced uncontrolled pain and required readmission for hardware-related issues that could have been mitigated by adherence to the DVT prophylaxis protocol. Documentation showed that the surgical pause was performed, yet the timing for antibiotic dosing was not documented, highlighting a gap in compliance with best practices for surgical care.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "antibiotic redosing was missed",
+            "excessive traffic in the OR during a prolonged procedure",
+            "documentation showed that the surgical pause was performed"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "uncontrolled pain",
+            "readmission for hardware-related issues",
+            "gaps in compliance with best practices for surgical care"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "bundle compliance",
+            "surgical protocol adherence"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH10-001",
+      "concern_id": "I32a",
+      "description": "Unplanned admission due to missing outcome risks.",
+      "patient_payload": "A 15-year-old female patient with adolescent idiopathic scoliosis underwent spinal fusion surgery. Post-operatively, there was no documentation of neurovascular status or perfusion checks. Three days post-discharge, she presented to the ER with signs of infection and loss of reduction requiring re-operation. The absence of a neurovascular exam and failure to monitor for infection contributed to her unplanned admission. Her condition was exacerbated by the lack of clear discharge instructions and inadequate follow-up planning.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "no documentation of neurovascular status",
+            "absence of perfusion checks",
+            "loss of reduction requiring re-operation"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "infection",
+            "unplanned admission",
+            "lack of clear discharge instructions"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation practices",
+            "discharge planning"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH10-002",
+      "concern_id": "I32a",
+      "description": "Unplanned admission due to missing readmission risks.",
+      "patient_payload": "A 17-year-old male with adolescent idiopathic scoliosis had spinal instrumentation and fusion. After discharge, he developed uncontrolled pain and gastrointestinal complications that were not addressed before discharge. The surgical team failed to document pain management plans and bowel regimen recommendations. He returned to the OR within two weeks due to severe abdominal distension and a suspected ileus. This readmission could have been prevented with better preoperative education and pain control measures.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain",
+            "gastrointestinal complications",
+            "failure to document pain management plans"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "unplanned admission",
+            "return to the OR",
+            "better preoperative education"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "pain management",
+            "patient education"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH11-001",
+      "concern_id": "I32a",
+      "description": "Review of SSI prevention bundle documentation for AIS fusion.",
+      "patient_payload": "A 15-year-old female underwent anterior instrumentation and fusion for idiopathic scoliosis. On post-operative day 3, she displayed signs of infection with fever and purulent drainage at the surgical site. Review of the surgical notes revealed that the full SSI prevention bundle was not documented. Specifically, the timing of antibiotic prophylaxis was unclear and there was no record of chlorhexidine prep used prior to incision. These omissions raise concerns regarding adherence to the SSI prevention bundle and highlight potential gaps in perioperative care.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "the full SSI prevention bundle was not documented",
+            "timing of antibiotic prophylaxis was unclear",
+            "no record of chlorhexidine prep used prior to incision"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "SSI prevention bundle",
+            "antibiotic prophylaxis",
+            "chlorhexidine prep"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation compliance",
+            "infection prevention strategies"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH11-002",
+      "concern_id": "I32a",
+      "description": "Categorization of readmission reason after AIS surgery.",
+      "patient_payload": "A 17-year-old male was readmitted on post-operative day 10 after AIS fusion due to severe abdominal pain and nausea. Upon review, it was determined that he had developed an ileus, but the reason for readmission was not clearly documented in the medical records. The surgical report only mentioned 'complications' without specifying infection, GI issues, hardware concerns, or pain. This lack of clarity in categorization complicates the assessment of the readmission and hampers prevention efforts for future cases.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "the reason for readmission was not clearly documented",
+            "development of an ileus",
+            "lack of clarity in categorization"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "readmission reason",
+            "abdominal pain",
+            "ileus"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "readmission categorization",
+            "GI complications management"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH12-001",
+      "concern_id": "I32a",
+      "description": "Return to OR for hardware revision documented as unplanned.",
+      "patient_payload": "A 15-year-old female with idiopathic scoliosis underwent posterior spinal fusion. Post-operative day 3, she experienced unexpected pain out of proportion to her recovery, and a neurological deficit was noted with paresthesia in her left leg. Imaging revealed hardware failure, resulting in an unplanned return to the OR for revision. The documentation ambiguously indicated whether this return was planned or unplanned, leading to confusion about the event's preventability. Discharge instructions were also unclear regarding signs of complications, contributing to the unplanned admission.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "pain out of proportion to recovery",
+            "neurological deficit was noted",
+            "documentation ambiguously indicated whether this return was planned or unplanned"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "return to the OR for revision",
+            "hardware failure",
+            "unplanned return"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation clarity",
+            "preventative measures"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH12-002",
+      "concern_id": "I32a",
+      "description": "Discharge instructions and follow-up appointments poorly documented.",
+      "patient_payload": "An 18-year-old male with adolescent idiopathic scoliosis underwent anterior spinal fusion. He was discharged on post-operative day 2 but the discharge instructions were vaguely documented, lacking clarity on follow-up appointments and signs of potential complications. After experiencing gastrointestinal complications, he was readmitted within 10 days. The ambiguity in the discharge instructions contributed to his unplanned admission, as the patient did not recognize the severity of his symptoms due to unclear guidance.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "discharge instructions were vaguely documented",
+            "lack of clarity on follow-up appointments",
+            "ambiguity in the discharge instructions contributed to his unplanned admission"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "discharge instructions poorly documented",
+            "unplanned admission",
+            "gastrointestinal complications"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation standards",
+            "patient education"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH13-001",
+      "concern_id": "I32a",
+      "description": "Patient with documented infection risks during surgery.",
+      "patient_payload": "A 16-year-old female diagnosed with idiopathic scoliosis underwent corrective surgery. Preoperatively, she was given appropriate antibiotic prophylaxis within 60 minutes of incision, and her surgical site was meticulously prepared with chlorhexidine. Intraoperatively, the surgical team noted no signs of infection and performed a thorough wound inspection. Postoperative care included monitoring for infection, with all relevant documentation confirming no evidence of prolonged operative time or inappropriate antibiotic selection. Discharge instructions clearly outlined signs of infection to monitor.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Antibiotic prophylaxis not given within 60 min",
+            "Inappropriate antibiotic selection",
+            "Wound drainage/erythema"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "antibiotic prophylaxis not given within 60 min",
+            "wound drainage/erythema",
+            "inappropriate antibiotic selection"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection monitoring",
+            "antibiotic protocol adherence"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH13-002",
+      "concern_id": "I32a",
+      "description": "Patient with documented bundle compliance during surgery.",
+      "patient_payload": "An 18-year-old male with adolescent idiopathic scoliosis was admitted for spinal fusion surgery. All preoperative warming protocols were documented, and the surgical timeout was completed without discrepancies. The surgical team confirmed antibiotic redosing in line with the prolonged operative time. There was strict adherence to the post-op dressing protocol, and DVT prophylaxis was initiated as per guidelines. Discharge instructions were explicit regarding follow-up care and signs of complications, ensuring comprehensive education was provided.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Pre-op warming not documented",
+            "Antibiotic redosing missed in long case",
+            "Post-op dressing protocol deviation"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Antibiotic redosing missed in long case",
+            "Post-op dressing protocol deviation",
+            "Pre-op warming not documented"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "bundle compliance",
+            "patient education"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH14-001",
+      "concern_id": "I32a",
+      "description": "Clear documentation of outcome risks post-surgery.",
+      "patient_payload": "A 15-year-old female with idiopathic scoliosis underwent posterior spinal fusion. Post-operatively, she exhibited signs of compartment syndrome with pain out of proportion to injury, and her neurovascular exam documented pallor and delayed capillary refill. The surgical team noted the need for fasciotomy due to increasing tension in the compartment and unexpected ICU admission for monitoring. All documentation was thorough, capturing the perfusion status as pink and warm pre-op and post-op, ensuring no gaps in the neurovascular assessment. The case highlights the importance of monitoring and timely intervention to prevent complications.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "pain out of proportion to injury",
+            "pallor and delayed capillary refill",
+            "fasciotomy performed"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "compartment syndrome suspicion",
+            "unexpected ICU admission",
+            "neurovascular exam not documented pre-op"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "outcome monitoring",
+            "patient education"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH14-002",
+      "concern_id": "I32a",
+      "description": "Clear documentation of readmission risks post-surgery.",
+      "patient_payload": "A 17-year-old male with adolescent idiopathic scoliosis was discharged after spinal fusion surgery. He returned to the ER within 10 days due to uncontrolled pain, and the surgical site was found to be infected, indicating a surgical site infection (SSI). Documentation indicated that antibiotic prophylaxis was not administered within 60 minutes of incision, and the patient had a history of prior infection. The case underlines the critical need for strict adherence to infection control protocols and thorough discharge instructions to prevent readmissions.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain",
+            "surgical site infection",
+            "antibiotic prophylaxis not given within 60 min"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "readmission risks",
+            "inappropriate antibiotic selection",
+            "discharge instructions unclear"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection control",
+            "discharge planning"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH15-001",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to surgical site infection after scoliosis surgery.",
+      "patient_payload": "A 15-year-old female with idiopathic scoliosis underwent posterior spinal fusion. Despite the operation being performed without antibiotic prophylaxis within 60 minutes, she was discharged with vague instructions. One week post-discharge, she presented with erythema and purulent drainage at the surgical site. The absence of proper documentation regarding antibiotic timing and the patient's clear discharge instructions contributed to her readmission for surgical site infection management.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Antibiotic prophylaxis not given within 60 min",
+            "Wound drainage/erythema",
+            "Discharge instructions unclear"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection",
+            "antibiotic timing not documented",
+            "vague instructions"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection management",
+            "discharge planning"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH15-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to complications from missed bundle compliance.",
+      "patient_payload": "A 17-year-old male with adolescent idiopathic scoliosis underwent an extensive spinal correction surgery. During the operation, the surgical team failed to perform pre-op warming and did not adhere to the antibiotic re-dosing protocol as the procedure exceeded the expected duration. Following discharge, he experienced severe pain and developed a deep vein thrombosis, resulting in a readmission. The lack of compliance with the bundle protocols was a critical factor in his complications.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Pre-op warming not documented",
+            "Antibiotic redosing missed in long case",
+            "DVT prophylaxis missed (if indicated)"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "deep vein thrombosis",
+            "lack of compliance with the bundle protocols",
+            "severe pain"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "post-operative complications",
+            "preoperative protocols"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH16-001",
+      "concern_id": "I32a",
+      "description": "Unplanned admission due to missing outcome risks.",
+      "patient_payload": "A 15-year-old female with a diagnosis of idiopathic scoliosis underwent surgery to correct her curvature. Post-operatively, she experienced significant pain that was not adequately controlled despite increasing analgesic requirements. A neurovascular exam was not documented pre-op, and her perfusion status was described only as 'normal' in the post-op notes. She was readmitted on day 10 with severe pain and suspicion of infection; however, no signs of neurological deficits or compartment syndrome were assessed. The lack of timely assessments may have contributed to her unplanned admission and return to operating room.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "significant pain that was not adequately controlled",
+            "neurovascular exam was not documented pre-op",
+            "suspicion of infection"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "increasing analgesic requirements",
+            "no signs of neurological deficits",
+            "lack of timely assessments"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "pain management",
+            "post-operative assessments"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH16-002",
+      "concern_id": "I32a",
+      "description": "Unplanned admission due to missing readmission risks.",
+      "patient_payload": "A 16-year-old male with adolescent idiopathic scoliosis underwent spinal fusion surgery. Post-operative discharge instructions were unclear, leading to inadequate follow-up care. He returned to the ER within two weeks with uncontrolled pain and a possible surgical site infection. Upon reevaluation, it was discovered that antibiotic prophylaxis was not documented within the required timeframe, and the discharge instructions lacked details regarding signs of infection. This gap in communication and follow-up planning ultimately led to his unplanned admission for further treatment.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain and a possible surgical site infection",
+            "antibiotic prophylaxis was not documented within the required timeframe",
+            "discharge instructions lacked details"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "gaps in communication",
+            "unplanned admission for further treatment",
+            "inadequate follow-up care"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "discharge planning",
+            "infection prevention"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH17-001",
+      "concern_id": "I32a",
+      "description": "SSI prevention bundle documentation ambiguity in AIS fusion.",
+      "patient_payload": "A 15-year-old female with adolescent idiopathic scoliosis underwent spinal fusion surgery. On review, it was noted that the full surgical site infection (SSI) prevention bundle was not documented. The preoperative checklist failed to indicate the use of chlorhexidine prep and antibiotic prophylaxis was administered over 60 minutes prior to incision. Post-operatively, the patient developed a wound infection requiring readmission within 30 days. The lack of documentation and adherence to the SSI prevention bundle raises concerns about potential preventability of this complication.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "full surgical site infection (SSI) prevention bundle was not documented",
+            "chlorhexidine prep and antibiotic prophylaxis was administered over 60 minutes",
+            "lack of documentation and adherence to the SSI prevention bundle raises concerns"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "SSI prevention bundle not documented",
+            "wound infection requiring readmission",
+            "potential preventability of this complication"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation practices",
+            "SSI prevention adherence"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH17-002",
+      "concern_id": "I32a",
+      "description": "Readmission reason categorization ambiguity post AIS surgery.",
+      "patient_payload": "A 17-year-old male with adolescent idiopathic scoliosis underwent corrective surgery. He was readmitted within 30 days due to severe abdominal pain and nausea. Upon review, the reason for readmission was not clearly categorized; it was initially thought to be related to a gastrointestinal complication but further evaluation suggested it may also be linked to inadequate pain control. The documentation lacked clarity on the exact cause, highlighting a gap in categorizing readmission reasons effectively.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "reason for readmission was not clearly categorized",
+            "severe abdominal pain and nausea",
+            "gap in categorizing readmission reasons effectively"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "readmitted within 30 days",
+            "initially thought to be related to a gastrointestinal complication",
+            "inadequate pain control"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "categorization of complications",
+            "pain management strategies"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH18-001",
+      "concern_id": "I32a",
+      "description": "Analysis of unplanned return to OR documentation.",
+      "patient_payload": "A 16-year-old female with adolescent idiopathic scoliosis underwent posterior spinal fusion. Postoperative day 3, she returned to the OR due to hardware failure, but the documentation was unclear whether it was planned or unplanned. The surgical team noted 'return to OR' but failed to specify the nature of the return. Further review indicated inadequate preoperative assessments and a lack of clear communication regarding the expectation for hardware integrity. This ambiguity in the documentation raises concerns over prevention strategies and the effectiveness of discharge planning.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "return to OR due to hardware failure",
+            "documentation was unclear whether it was planned or unplanned",
+            "inadequate preoperative assessments"
+          ]
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "return to OR",
+            "lack of clear communication",
+            "prevention strategies"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation clarity",
+            "communication effectiveness"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH18-002",
+      "concern_id": "I32a",
+      "description": "Assessment of discharge instructions and follow-up documentation.",
+      "patient_payload": "An 18-year-old male with adolescent idiopathic scoliosis was discharged post-surgery after a successful spinal fusion. However, upon review, it was discovered that the discharge instructions were not clearly documented, leading to confusion regarding follow-up appointments. The patient presented to the emergency department with uncontrolled pain and was readmitted due to a surgical site infection. The lack of clear discharge instructions and follow-up plans could have contributed to the readmission, highlighting a vital gap in patient education and continuity of care.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "discharge instructions were not clearly documented",
+            "confusion regarding follow-up appointments",
+            "lack of clear discharge instructions"
+          ]
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "uncontrolled pain",
+            "surgical site infection",
+            "patient education"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "patient education",
+            "continuity of care"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH19-001",
+      "concern_id": "I32a",
+      "description": "Documented infection risk management in a patient with idiopathic scoliosis.",
+      "patient_payload": "A 15-year-old female with a diagnosis of idiopathic scoliosis underwent posterior spinal fusion. Preoperative antibiotic prophylaxis was administered within 60 minutes of incision, and appropriate antibiotic selection was documented. The surgical site was stained with chlorhexidine prep, and no signs of infection were observed at the surgical site postoperatively. Neurovascular exams were conducted pre-op and post-op, confirming perfusion status was pink and warm. The patient was discharged with clear instructions for wound care, and follow-up appointments were scheduled to monitor recovery. No infection risks were identified during the perioperative period.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Antibiotic prophylaxis was administered within 60 minutes of incision",
+            "Neurovascular exams were conducted pre-op and post-op",
+            "No signs of infection were observed at the surgical site postoperatively"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Infection risks were identified during the perioperative period",
+            "Clear instructions for wound care",
+            "Perfusion status was pink and warm"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection prevention",
+            "postoperative care"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH19-002",
+      "concern_id": "I32a",
+      "description": "Verified compliance with surgical bundle requirements for a scoliosis patient.",
+      "patient_payload": "A 14-year-old male diagnosed with idiopathic scoliosis was scheduled for corrective surgery. Bundle compliance was thoroughly documented, including pre-op warming and appropriate antibiotic redosing during surgery due to prolonged operative time. The surgical team confirmed the use of chlorhexidine prep, and post-op dressing protocol was followed without deviation. The patient received DVT prophylaxis as indicated, and the surgical timeout was effectively completed. Clear discharge instructions were provided, including signs of complications to monitor at home. No issues related to bundle compliance were noted during the perioperative phase.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Bundle compliance was thoroughly documented",
+            "Pre-op warming and appropriate antibiotic redosing",
+            "Surgical timeout was effectively completed"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "Clear discharge instructions were provided",
+            "No issues related to bundle compliance were noted",
+            "Post-op dressing protocol was followed without deviation"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "bundle compliance",
+            "surgical process"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH2-001",
+      "concern_id": "I32a",
+      "description": "Patient experienced unplanned admission due to infection after scoliosis surgery.",
+      "patient_payload": "A 15-year-old female with idiopathic scoliosis underwent spinal fusion surgery. Post-operatively, she was discharged with clear instructions. However, she returned to the hospital 10 days later with increasing fever and wound drainage. The surgical site infection (SSI) was documented, and her antibiotic prophylaxis was not given within 60 minutes prior to incision, indicating a gap in compliance. She also exhibited pallor and delayed capillary refill, raising concerns for underlying infection. The documentation lacked precise details on her neurovascular status pre-operatively and post-operatively, suggesting missed checks. Recommendations include ensuring timely antibiotic administration and thorough discharge education to prevent future complications.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "surgical site infection (SSI)",
+            "antibiotic prophylaxis was not given within 60 minutes",
+            "pallor and delayed capillary refill"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection (SSI)",
+            "antibiotic prophylaxis was not given within 60 minutes",
+            "pallor and delayed capillary refill"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection prevention",
+            "discharge planning"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH2-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted for uncontrolled pain following scoliosis surgery.",
+      "patient_payload": "A 16-year-old male diagnosed with idiopathic scoliosis underwent corrective surgery. He was discharged but returned 7 days later with uncontrolled pain and signs of compartment syndrome. Documentation indicated that his pain was out of proportion to injury, and analgesic requirements increased significantly post-discharge. A neurovascular examination was not documented post-operatively, which could have highlighted the need for closer monitoring. The lack of a sufficient bowel regimen contributed to gastrointestinal complications, underscoring the need for better pain management and follow-up care protocols. To prevent similar readmissions, it’s vital to ensure comprehensive discharge instructions and pain control strategies.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain",
+            "pain was out of proportion to injury",
+            "neurovascular examination was not documented post-operatively"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "uncontrolled pain",
+            "pain was out of proportion to injury",
+            "neurovascular examination was not documented post-operatively"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "pain management",
+            "post-operative care"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH20-001",
+      "concern_id": "I32a",
+      "description": "Clear documentation of outcome risks after scoliosis surgery.",
+      "patient_payload": "A 15-year-old female underwent posterior spinal fusion for idiopathic scoliosis. Post-surgery, she exhibited signs of infection with increasing wound erythema and discharge. The neurovascular exam documented post-op showed warm perfusion and normal sensation. However, the surgical site infection (SSI) risk was not adequately addressed as antibiotic prophylaxis was given 90 minutes after incision. The patient required unplanned admission for IV antibiotics and wound care, highlighting the need for improved antibiotic timing and infection monitoring.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "increasing wound erythema and discharge",
+            "surgical site infection (SSI) risk was not adequately addressed",
+            "antibiotic prophylaxis was given 90 minutes after incision"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection (SSI)",
+            "antibiotic timing not documented",
+            "infection monitoring needed"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection prevention",
+            "antibiotic protocol adherence"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH20-002",
+      "concern_id": "I32a",
+      "description": "Clear documentation of readmission risks after scoliosis surgery.",
+      "patient_payload": "A 17-year-old male patient was discharged after an anterior spinal fusion for adolescent idiopathic scoliosis. Post-operative, he presented with uncontrolled pain and nausea, leading to an unplanned admission due to GI complications. The discharge instructions were vague regarding pain management and bowel regimen, contributing to the readmission. The patient also exhibited signs of ileus and required further evaluation and treatment to manage his symptoms effectively, indicating a need for better discharge education and follow-up planning.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain and nausea",
+            "discharge instructions were vague",
+            "signs of ileus"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "GI complications",
+            "better discharge education",
+            "follow-up planning"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "pain management",
+            "discharge education"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH21-001",
+      "concern_id": "I32a",
+      "description": "Unplanned admission due to infection risks not addressed preoperatively.",
+      "patient_payload": "A 15-year-old female with adolescent idiopathic scoliosis underwent posterior spinal fusion surgery. Postoperatively, she developed fever and increased pain at the surgical site. Upon review, it was noted that antibiotic prophylaxis was not administered within 60 minutes prior to incision, as required. Additionally, there was no documentation regarding the selection of antibiotics. These factors raised concerns for potential surgical site infection (SSI), leading to her unplanned admission 20 days post-surgery. The lack of proactive measures and documentation gaps were identified as contributing factors to her readmission.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Antibiotic prophylaxis was not administered within 60 minutes prior to incision",
+            "no documentation regarding the selection of antibiotics",
+            "potential surgical site infection (SSI)"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection (SSI)",
+            "documentation gaps",
+            "unplanned admission"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection prevention",
+            "antibiotic protocol adherence"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH21-002",
+      "concern_id": "I32a",
+      "description": "Unplanned return to OR due to missing bundle compliance.",
+      "patient_payload": "A 17-year-old male underwent surgery for idiopathic scoliosis correction. Postoperatively, he exhibited worsening pain and was readmitted after 15 days with a hematoma requiring reoperation. Review of his surgical notes revealed that pre-op warming was not documented, and the antibiotic redosing was missed during the prolonged operative time. These oversights resulted in complications that could have been avoided through better adherence to the SSI prevention bundle. The combination of these compliance failures was significant in leading to his unplanned return to the OR.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "pre-op warming was not documented",
+            "antibiotic redosing was missed during the prolonged operative time",
+            "hematoma requiring reoperation"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "unplanned return to OR",
+            "SSi prevention bundle",
+            "compliance failures"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "surgical protocol adherence",
+            "postoperative care"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH22-001",
+      "concern_id": "I32a",
+      "description": "Unplanned readmission due to missing infection signals.",
+      "patient_payload": "A 16-year-old female patient with idiopathic scoliosis underwent posterior spinal fusion surgery. Post-operative notes indicated increasing pain and a temperature of 101°F, but the neurovascular exam was not documented pre-op or post-op. No mention of perfusion status was made, leading to concerns about surgical site infection (SSI). The patient's family reported a high pain requirement with no clear discharge instructions, which could have contributed to her 30-day readmission for suspected infection.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "neurovascular exam not documented pre-op",
+            "neurovascular exam not documented post-op",
+            "surgical site infection (SSI)"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "increasing pain",
+            "temperature of 101°F",
+            "concerns about surgical site infection (SSI)"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation practices",
+            "post-operative monitoring"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH22-002",
+      "concern_id": "I32a",
+      "description": "Unplanned readmission due to missing signals of uncontrolled pain.",
+      "patient_payload": "A 15-year-old male patient with idiopathic scoliosis was discharged after spinal surgery. On follow-up, he presented with severe abdominal pain and nausea. The surgical site was noted to be intact, but there were no documented assessments regarding gastrointestinal complications or pain control strategies. The lack of a bowel regimen was evident. This oversight led to an emergency admission for gastrointestinal obstruction, highlighting gaps in post-operative care and patient education.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain",
+            "no documented assessments regarding gastrointestinal complications",
+            "lack of a bowel regimen"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "severe abdominal pain",
+            "nausea",
+            "emergency admission for gastrointestinal obstruction"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "pain management protocols",
+            "discharge education"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH23-001",
+      "concern_id": "I32a",
+      "description": "Assessment of SSI prevention bundle documentation for AIS fusion.",
+      "patient_payload": "A 15-year-old female underwent anterior spinal fusion for idiopathic scoliosis. Despite a well-planned operative procedure, there was a significant delay in administering the full SSI prevention bundle. The pre-operative checklist indicated that antibiotic prophylaxis was not documented within the required 60 minutes prior to incision. Post-operatively, the patient developed signs of infection, including wound erythema and drainage. A review of the surgical notes revealed no documentation of the neurovascular exam pre-op and post-op, which raises concerns about compliance with infection prevention protocols. This situation underscores the need for thorough documentation and adherence to the SSI prevention bundle to mitigate future complications.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "antibiotic prophylaxis was not documented within the required 60 minutes",
+            "no documentation of the neurovascular exam pre-op and post-op",
+            "wound erythema and drainage"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "SSI prevention bundle",
+            "neurovascular exam not documented",
+            "signs of infection"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation",
+            "infection prevention"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH23-002",
+      "concern_id": "I32a",
+      "description": "Categorization of readmission reason after AIS surgery.",
+      "patient_payload": "A 17-year-old male was readmitted within 30 days following his scoliosis surgery due to severe uncontrolled pain and signs pointing to a possible hardware failure. The initial discharge summary lacked clarity, failing to categorize the readmission reason as related to hardware issues, which complicates the determination of preventability. The patient reported increasing analgesic requirements and pain that was out of proportion to his recovery. A follow-up assessment noted palpable tenderness over the surgical site, suggesting a potential complication requiring early return to the OR. This case highlights the importance of clear documentation and categorization of readmission reasons to improve future surgical outcomes.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain and signs pointing to a possible hardware failure",
+            "increasing analgesic requirements",
+            "pain that was out of proportion to his recovery"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "reason for readmission",
+            "hardware failure",
+            "uncontrolled pain"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation",
+            "pain management"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH24-001",
+      "concern_id": "I32a",
+      "description": "Assessment of unplanned return to OR due to infection management.",
+      "patient_payload": "A 15-year-old female underwent surgery for idiopathic scoliosis but returned to the OR within 30 days due to surgical site infection (SSI). The infection was not documented in the initial post-op notes, raising concerns about the clarity of the return being planned versus unplanned. The patient had increasing pain and erythema at the site, which were signs of infection. A surgical pause was not performed, and the antibiotic timing was not documented properly, leading to potential preventability issues. This incident highlights the need for better documentation and adherence to infection control protocols.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "surgical site infection (SSI)",
+            "antibiotic timing not documented",
+            "surgical pause was not performed"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "return to the OR",
+            "documented in the initial post-op notes",
+            "potential preventability issues"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation clarity",
+            "infection prevention strategies"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH24-002",
+      "concern_id": "I32a",
+      "description": "Evaluation of discharge instructions and follow-up adherence.",
+      "patient_payload": "A 17-year-old male with idiopathic scoliosis had a successful surgical procedure but was readmitted within 30 days due to uncontrolled pain and gastrointestinal complications. Upon review, it was found that the discharge instructions were unclear and lacked specific follow-up appointment details. The neurovascular exam documentation was also deficient, missing the perfusion status description. This inadequacy in communication may have contributed to the patient's inability to manage his symptoms effectively at home, leading to his readmission.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "discharge instructions were unclear",
+            "missing the perfusion status description",
+            "neurovascular exam documentation was deficient"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "uncontrolled pain",
+            "gastrointestinal complications",
+            "readmitted within 30 days"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "clarity of discharge instructions",
+            "patient education effectiveness"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH25-001",
+      "concern_id": "I32a",
+      "description": "Conflicting wound assessment findings leading to readmission.",
+      "patient_payload": "A 15-year-old female underwent posterior spinal fusion for idiopathic scoliosis. On post-op day 10, her surgical site was assessed, showing signs of erythema and slight drainage. However, subsequent assessments indicated no erythema or drainage, leading to confusion among the care team. On day 20, she presented with fever and increased drainage, requiring readmission for suspected surgical site infection (SSI). The conflicting findings in the wound assessments raise concerns about the adequacy of documentation and communication among the team. Proper wound assessment protocols might prevent similar issues in the future.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "conflicting findings in the wound assessments",
+            "surgical site infection (SSI)",
+            "increased drainage requiring readmission"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "15-year-old female",
+            "posterior spinal fusion",
+            "suspected surgical site infection"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "Was there a standardized protocol for wound assessment?",
+            "How was communication handled among the care team?"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH25-002",
+      "concern_id": "I32a",
+      "description": "Readmission close to the 30-day boundary due to pain control issues.",
+      "patient_payload": "A 16-year-old male who had undergone surgery for idiopathic scoliosis returned to the hospital on post-op day 28 with uncontrolled pain and nausea. His discharge instructions indicated a pain management regimen, but the patient reported not receiving adequate follow-up support. The readmission occurred just two days before the 30-day mark, raising questions about the effectiveness of his post-operative pain control plan and the timing of follow-up appointments. A review of his discharge summary showed no specific recommendations for pain management adjustments, which could have prevented his readmission.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain and nausea",
+            "discharge instructions indicated a pain management regimen",
+            "readmission occurred just two days before the 30-day mark"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "16-year-old male",
+            "uncontrolled pain",
+            "effectiveness of his post-operative pain control plan"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "What follow-up care was arranged post-discharge?",
+            "How can pain management plans be improved?"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH26-001",
+      "concern_id": "I32a",
+      "description": "Discharge instructions were unclear leading to complications.",
+      "patient_payload": "A 15-year-old female with adolescent idiopathic scoliosis underwent spinal fusion surgery. Upon discharge, the nursing staff provided verbal instructions but failed to document essential aspects regarding pain management and signs of infection. The patient returned to the emergency department within 25 days due to uncontrolled pain and a surgical site infection. The unclear discharge instructions contributed to the patient's inability to recognize early warning signs, leading to her readmission. A review revealed the importance of clear, written discharge instructions to prevent such complications in future cases.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "discharge instructions unclear",
+            "uncontrolled pain",
+            "surgical site infection"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "verbal instructions provided",
+            "failure to document essential aspects"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "How can discharge instructions be improved?",
+            "What education was provided to the patient?"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH26-002",
+      "concern_id": "I32a",
+      "description": "New neurological findings observed post-surgery with no clear cause.",
+      "patient_payload": "A 17-year-old male patient underwent surgery for adolescent idiopathic scoliosis. Post-operatively, he developed new neurological findings, including weakness in the right hand and altered sensation. The etiology of these changes was unclear, raising concerns about possible nerve compression or surgical complications. Despite thorough imaging and evaluations, no definitive cause was found. The patient's condition prompted a return to the operating room for exploration to rule out hardware issues. This incident highlights the need for more vigilant monitoring and assessment of neurological status post-surgery to identify complications early.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "new neurological findings",
+            "weakness in the right hand",
+            "altered sensation"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "etiology of these changes was unclear",
+            "return to the operating room for exploration"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "What monitoring protocols were in place post-operatively?",
+            "How were neurological assessments documented?"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH3-001",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to surgical site infection after scoliosis surgery.",
+      "patient_payload": "A 15-year-old female underwent posterior spinal fusion for idiopathic scoliosis. Despite the operation being performed, antibiotic prophylaxis was not documented within 60 minutes prior to incision, which raised concerns about infection risks. Post-operatively, the patient developed redness and drainage from the surgical site, indicating a potential surgical site infection (SSI). The surgeon was unavailable for follow-up due to scheduling conflicts, which delayed addressing the complications. With no clear documentation of the patient's perfusion status or neurovascular checks, the risk of further complications increased significantly. The lack of a proper antibiotic regimen and follow-up assessment highlighted gaps in perioperative care that could be prevented in future cases.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Antibiotic prophylaxis not given within 60 min",
+            "Wound drainage/erythema",
+            "Neurovascular exam not documented post-op"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection",
+            "redness and drainage from the surgical site",
+            "gaps in perioperative care"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection management",
+            "surgical follow-up"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH3-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to hardware complications after scoliosis surgery.",
+      "patient_payload": "An 18-year-old male underwent an anterior/posterior spinal fusion for adolescent idiopathic scoliosis. The operative time extended significantly, but no documentation of antibiotic redosing was provided during the lengthy procedure. After discharge, the patient returned to the emergency department with severe back pain and signs of hardware failure. The documentation revealed that the pre-op warming and antibiotic prophylaxis protocols were not followed, contributing to the patient's complications. The surgeon's unavailability for a timely follow-up further complicated the patient's care. This situation illustrates the need for improved adherence to surgical bundles and thorough documentation to prevent hardware-related issues.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Antibiotic redosing missed in long case",
+            "Hardware failure",
+            "Pre-op warming not documented"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "severe back pain and signs of hardware failure",
+            "improved adherence to surgical bundles",
+            "thorough documentation"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "surgical protocol adherence",
+            "post-operative monitoring"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH4-001",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to unmonitored infection post-surgery.",
+      "patient_payload": "A 15-year-old female patient underwent surgery for idiopathic scoliosis. She was discharged on postoperative day 2 without clear discharge instructions regarding wound care. On day 5 post-op, she presented to the ER with fever and increasing pain at the surgical site. The surgical site showed erythema and drainage, but no neurovascular exam was documented post-op. The absence of proper infection risk assessment led to an unplanned admission for surgical site infection management. The lack of clear follow-up instructions may have contributed to her readmission.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "surgical site showed erythema and drainage",
+            "no neurovascular exam was documented post-op",
+            "absence of proper infection risk assessment"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection",
+            "unplanned admission",
+            "lack of clear follow-up instructions"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "discharge instructions",
+            "infection prevention"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH4-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to uncontrolled pain and documentation gaps.",
+      "patient_payload": "A 16-year-old male patient had corrective surgery for his idiopathic scoliosis. Postoperative pain management was inadequate, leading to escalating pain levels not documented in the medical record. On day 4 after discharge, the patient returned to the hospital with severe pain and nausea, ultimately diagnosed with a possible GI complication related to inadequate analgesia and bowel regimen. The documentation did not capture the frequency of neurovascular checks, and there was no record of the pain assessment post-operatively, emphasizing the need for better perioperative pain management strategies.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "escalating pain levels not documented in the medical record",
+            "no record of the pain assessment post-operatively",
+            "inadequate analgesia and bowel regimen"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "uncontrolled pain",
+            "GI complication",
+            "documentation did not capture the frequency of neurovascular checks"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "pain management",
+            "documentation practices"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH5-001",
+      "concern_id": "I32a",
+      "description": "Assessment of SSI prevention bundle documentation for AIS fusion.",
+      "patient_payload": "A 15-year-old female with adolescent idiopathic scoliosis underwent a spinal fusion procedure. Post-operatively, the patient developed a surgical site infection (SSI) after being discharged home. Upon review, it was found that the full SSI prevention bundle was not documented, raising concerns about the effectiveness of infection prevention strategies. Antibiotic prophylaxis was initiated but not within the recommended 60 minutes prior to incision. There was no documentation of pre-op warming or chlorhexidine prep. These oversights could have contributed to the infection and subsequent readmission. A thorough review of the surgical pause and timeout also revealed missing elements, indicating incomplete compliance with the prevention bundle.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "full SSI prevention bundle was not documented",
+            "antibiotic prophylaxis was initiated but not within the recommended 60 minutes",
+            "no documentation of pre-op warming or chlorhexidine prep"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection (SSI)",
+            "missing elements",
+            "incomplete compliance with the prevention bundle"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "documentation compliance",
+            "infection prevention"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH5-002",
+      "concern_id": "I32a",
+      "description": "Categorization of reason for readmission after AIS surgery.",
+      "patient_payload": "A 17-year-old male patient was readmitted within 30 days post-adolescent idiopathic scoliosis surgery due to severe uncontrolled pain. Review of the case revealed that the source of pain was linked to hardware failure, specifically a broken rod. However, documentation lacked clarity categorizing the reason for readmission, leading to confusion about whether it was solely due to pain or if the hardware issue also contributed. The patient had increasing analgesic requirements and was experiencing pain out of proportion to his injury, which were significant safety signals. The lack of precise categorization could hinder targeted interventions to prevent future occurrences.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain",
+            "hardware failure, specifically a broken rod",
+            "lack of clarity categorizing the reason for readmission"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "increasing analgesic requirements",
+            "pain out of proportion to his injury",
+            "precise categorization"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "readmission causes",
+            "pain management"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH6-001",
+      "concern_id": "I32a",
+      "description": "Patient returned to OR for complications after scoliosis surgery.",
+      "patient_payload": "A 15-year-old female underwent posterior spinal fusion for idiopathic scoliosis. Post-op, she developed significant pain and was found to have a hematoma that required surgical intervention. The return to the OR was documented as unplanned, but the clinical team noted that the original discharge instructions did not emphasize signs of hematoma formation. Further review revealed that the surgical pause/timeout was missing from the documentation, raising questions about the quality of discharge teaching and awareness of potential complications. This oversight could be linked to inadequate follow-up planning, as the follow-up appointment was scheduled for three weeks post-surgery, potentially delaying timely intervention for complications.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "return to the OR was documented as unplanned",
+            "original discharge instructions did not emphasize signs of hematoma formation",
+            "surgical pause/timeout was missing from the documentation"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "unplanned admission",
+            "inadequate follow-up planning",
+            "discharge instructions unclear"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "discharge planning",
+            "documentation quality"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH6-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to unclear discharge instructions.",
+      "patient_payload": "An 18-year-old male was discharged after scoliosis correction surgery but returned within a week due to uncontrolled pain and signs of superficial surgical site infection. The medical record showed that discharge instructions were provided verbally but lacked written documentation and clarity regarding pain management and signs of infection. A review of the case indicated that the patient did not receive adequate information on recognizing symptoms that might require immediate medical attention, leading to an unplanned readmission. The absence of a structured follow-up appointment plan contributed to his delayed response to these complications.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "discharge instructions were provided verbally but lacked written documentation",
+            "lack of clarity regarding pain management",
+            "absence of a structured follow-up appointment plan"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "uncontrolled pain",
+            "surgical site infection",
+            "discharge instructions unclear"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "patient education",
+            "follow-up care"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH7-001",
+      "concern_id": "I32a",
+      "description": "Patient presented with clear signs of infection post-surgery.",
+      "patient_payload": "A 14-year-old female with idiopathic scoliosis underwent spinal fusion surgery. Postoperatively, she developed a surgical site infection (SSI) evidenced by wound erythema and drainage. Antibiotic prophylaxis was administered within 60 minutes prior to incision, and appropriate antibiotics were selected. The surgical time was within acceptable limits, and there was no history of prior infection. However, documentation gaps were noted regarding the neurovascular exam post-op, which could have highlighted potential risks earlier. To prevent similar events, emphasis on thorough post-operative monitoring and documentation is essential.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "surgical site infection (SSI)",
+            "Antibiotic prophylaxis was administered within 60 minutes",
+            "wound erythema and drainage"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection (SSI)",
+            "wound erythema and drainage",
+            "documentation gaps were noted"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "post-operative monitoring",
+            "documentation practices"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH7-002",
+      "concern_id": "I32a",
+      "description": "Patient's compliance with the surgical bundle was documented clearly.",
+      "patient_payload": "A 15-year-old male with idiopathic scoliosis underwent corrective surgery. The surgical team adhered to the bundle compliance checklist: pre-op warming was documented, chlorhexidine prep was applied, and DVT prophylaxis was administered. Antibiotics were redosed appropriately during the lengthy procedure, and excessive traffic in the OR was minimized. Despite these measures, the patient experienced significant postoperative pain and required increased analgesics. This highlights the need for better pain management strategies post-surgery to prevent readmission due to uncontrolled pain.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "pre-op warming was documented",
+            "chlorhexidine prep was applied",
+            "DVT prophylaxis was administered"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "pre-op warming was documented",
+            "DVT prophylaxis was administered",
+            "significant postoperative pain"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "pain management",
+            "bundle compliance"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH8-001",
+      "concern_id": "I32a",
+      "description": "Patient developed infection after scoliosis surgery.",
+      "patient_payload": "A 15-year-old female with idiopathic scoliosis underwent posterior spinal fusion. Post-operatively, she developed a surgical site infection (SSI) with increasing pain out of proportion to injury and had a fever. Antibiotic prophylaxis was not given within 60 minutes prior to incision, and the surgical pause was not documented. She was readmitted on day 10 with signs of infection confirmed by a positive culture. The neurovascular exam was not documented post-op, leading to inadequate monitoring of her recovery. Proper pre-op warming was not documented, contributing to the infection risk.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "surgical site infection (SSI)",
+            "Antibiotic prophylaxis was not given within 60 minutes prior to incision",
+            "neurovascular exam was not documented post-op"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "pain out of proportion to injury",
+            "positive culture",
+            "surgical pause was not documented"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection control",
+            "patient monitoring"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH8-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to uncontrolled pain and GI complications.",
+      "patient_payload": "A 17-year-old male with idiopathic scoliosis underwent corrective surgery but was readmitted after 15 days due to uncontrolled pain and signs of gastrointestinal obstruction. He had an inadequate bowel regimen post-operation, leading to severe abdominal distension and vomiting. Documentation gaps included a lack of clear discharge instructions related to pain management and bowel care. He also experienced increasing analgesic requirement and had not been educated on signs of gastrointestinal complications before discharge. This oversight prompted his unplanned return to the OR for bowel decompression.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "uncontrolled pain",
+            "increasing analgesic requirement",
+            "lack of clear discharge instructions"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "gastrointestinal obstruction",
+            "severe abdominal distension",
+            "unplanned return to the OR"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "pain management",
+            "discharge planning"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH9-001",
+      "concern_id": "I32a",
+      "description": "Unplanned admission due to surgical site infection following idiopathic scoliosis surgery.",
+      "patient_payload": "A 15-year-old female, diagnosed with idiopathic scoliosis, underwent posterior spinal fusion surgery. Post-operatively, the patient exhibited increasing redness and drainage from the surgical site, indicating a possible infection. However, antibiotic prophylaxis was not documented as being administered within 60 minutes of incision, and the operative time exceeded 6 hours without redosing antibiotics. The discharge instructions were unclear regarding signs of infection, leading to a 10-day post-operative readmission for management of surgical site infection (SSI). The lack of pre-operative and post-operative neurovascular exams further complicated her case, as perfusion status was not documented, raising concerns about her care.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Antibiotic prophylaxis not given within 60 min",
+            "Surgical site infection",
+            "Perfusion status not documented (pink/warm)"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "surgical site infection",
+            "increasing redness and drainage",
+            "unclear discharge instructions"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "infection prevention",
+            "discharge planning"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "I32a-BATCH9-002",
+      "concern_id": "I32a",
+      "description": "Unplanned return to OR due to missed compliance with surgical bundles after scoliosis surgery.",
+      "patient_payload": "A 17-year-old male with idiopathic scoliosis underwent corrective spinal surgery. Post-operation, the patient presented with uncontrolled pain and required multiple doses of analgesics. A review of the surgical notes revealed that pre-op warming was not documented, and the chlorhexidine prep was either not performed or not recorded. Additionally, the antibiotic redosing was missed during the prolonged operative time, leading to complications that necessitated a return to the OR for washout of suspected infection. The documentation lacked a proper surgical timeout, raising further concerns about the compliance with safety protocols.",
+      "expectations": {
+        "signal_generation": {
+          "must_find_signals": [
+            "Pre-op warming not documented",
+            "Antibiotic redosing missed in long case",
+            "Surgical pause/timeout missing"
+          ],
+          "min_signal_count": 3
+        },
+        "event_summary": {
+          "must_contain_phrases": [
+            "uncontrolled pain",
+            "return to the OR",
+            "suspected infection"
+          ]
+        },
+        "followup_questions": {
+          "required_themes": [
+            "surgical compliance",
+            "pain management"
+          ],
+          "forbidden_terms": [
+            "policy",
+            "guideline"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import { runI25Engine, sampleCases, getEvalConfig, EvalConfig } from './engine';
 import {
   validateStructural,
   validateSignals,
-  // validateSummary,
+  validateSummary,
   // validateFollowups,
   // validateEnrichment
 } from './checks';
@@ -28,8 +28,8 @@ function getFiles(dir: string, pattern: RegExp): string[] {
 }
 
 function extractArchetype(description: string): Archetype {
-  const match = description.match(/\`\[(.*?)\]\`");
-  return match ? match[1] : 'Unknown';
+  const match = description.match(/`\[(.*?)\]`/);
+  return match ? (match[1] as Archetype) : 'Unknown';
 }
 
 export class BatchRunner {
@@ -37,6 +37,8 @@ export class BatchRunner {
   private planPath: string;
   private testDataDir: string;
   private evalConfig: EvalConfig;
+  private customPattern: string | null = null; // Filter for specific files
+  public quiet: boolean = false; // Added for lean logging
 
   constructor(concernId: string, planPath: string, testDataDir: string, evalConfig?: EvalConfig) {
     this.concernId = concernId;
@@ -45,53 +47,64 @@ export class BatchRunner {
     this.evalConfig = evalConfig || getEvalConfig();
   }
 
+  setPattern(pattern: string): void {
+    this.customPattern = pattern;
+  }
+
   async run(systemPrompt?: string): Promise<AggregateReport> {
     // 1. Load Plan (Verification only)
     if (!fs.existsSync(this.planPath)) throw new Error(`Plan not found: ${this.planPath}`);
-    // const plan = JSON.parse(fs.readFileSync(this.planPath, 'utf-8'));
 
     // 2. Load Batch Files
-    // Match {concernId}_batch_*.json OR golden_set.json (if generic)
-    // We create a regex dynamically based on concernId
-    // Escaping special characters in concernId is generally good practice but assume simple alphanum for now.
-    const pattern = new RegExp(`(${this.concernId}_batch_\d+|golden_set)\.json$`);
+    // Match {concernId}_batch_*.json OR batch_1.json OR golden_set.json
+    let patternStr = `(${this.concernId}_batch_\\d+|batch_1|golden_set)\\.json$`;
+    if (this.customPattern && this.customPattern !== '.*') {
+        patternStr = `${this.customPattern}\\.json$`;
+    }
+    const pattern = new RegExp(patternStr);
     
     const batchFiles = getFiles(this.testDataDir, pattern);
-    console.log(`Found ${batchFiles.length} batch files in ${this.testDataDir} matching ${pattern}`);
-    console.log(`  📊 C11 Eval Config: maxTokens=${this.evalConfig.maxTokens}, sampleSize=${this.evalConfig.sampleSize}, fullMode=${this.evalConfig.fullMode}`);
+    if (!this.quiet) {
+        console.log(`Found ${batchFiles.length} batch files in ${this.testDataDir} matching ${pattern}`);
+        console.log(`  📊 C11 Eval Config: maxTokens=${this.evalConfig.maxTokens}, sampleSize=${this.evalConfig.sampleSize}, fullMode=${this.evalConfig.fullMode}`);
+    }
 
     const results: ValidationResult[] = [];
 
     // 3. Process each batch
     for (const file of batchFiles) {
       const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
-      const batchPlan = data.batch_plan;
+      const batchPlan = data.batch_plan || data.batch_strategy; // Handle both naming conventions
       const allTestCases: TestCase[] = data.test_cases;
 
       // C11: Apply sampling for fast iteration mode
       const testCases = sampleCases(allTestCases, this.evalConfig);
-      console.log(`Processing ${file} (${testCases.length}/${allTestCases.length} cases)...`);
+      if (!this.quiet) {
+          console.log(`Processing ${file} (${testCases.length}/${allTestCases.length} cases)...`);
+      } else {
+          // process.stdout.write(`   🏃 Validating ${testCases.length} cases: `);
+      }
 
       for (let i = 0; i < testCases.length; i++) {
         const tc = testCases[i];
-        const scenarioLabel = batchPlan?.scenarios?.[i];
+        const scenario = batchPlan?.scenarios?.[i];
         
-        // Scenario label might be an object now (GenerationScenario) or string
-        let scenarioDescription = "";
-        if (typeof scenarioLabel === 'string') {
-            scenarioDescription = scenarioLabel;
-        } else if (scenarioLabel && typeof scenarioLabel === 'object') {
-            scenarioDescription = scenarioLabel.description;
-        }
+        // Extract scenario metadata
+        const type = (scenario?.type || 'unknown').toUpperCase();
+        const doubtType = (scenario?.doubt?.[0]?.type || 'NONE').toUpperCase();
+        
+        let scenarioDescription = (scenario as any)?.description || tc.description || "";
 
-        let archetype = extractArchetype(tc.description);
-        if (archetype === 'Unknown' && scenarioDescription) {
-          archetype = extractArchetype(scenarioDescription);
+        let archetype = (scenario as any)?.archetype || extractArchetype(tc.description);
+
+        if (this.quiet) {
+            console.log(`   [${tc.test_id}] | ${archetype.padEnd(25)} | ${type.padEnd(7)} | Doubt: ${doubtType}`);
+            console.log(`   INTENT: "${scenarioDescription.slice(0, 100)}..."`);
+            const snippet = tc.patient_payload.slice(0, 120).replace(/\n/g, ' ');
+            console.log(`   DATA:   "${snippet}..."`);
         }
 
         // Run Engine
-        // NOTE: runI25Engine is misnamed but likely generic enough? 
-        // Let's check engine.ts next. For now assume it works for any concernId passed in options.
         const output = await runI25Engine({
           concern_id: this.concernId,
           patient_payload: tc.patient_payload,
@@ -99,40 +112,49 @@ export class BatchRunner {
           systemPrompt // Pass the prompt if provided
         });
 
-        // Validate
+        // Capture Engine Errors
+        if (output.summary === "ENGINE_ERROR") {
+            const errKey = output.error_message?.includes('json') ? 'ERROR_400_JSON_FORMAT' : 'LLM_ENGINE_ERROR';
+            const vResult: any = {
+                test_id: tc.test_id,
+                error_type: errKey,
+                structural: { passed: false, errors: [errKey] },
+                semantic: { errors: [output.error_message || 'Unknown error'] },
+                scores: { signals_recall: 0 }
+            };
+            results.push(vResult);
+            continue;
+        }
+
         const structural = validateStructural(output);
-        let semantic = {
-          signals_ok: false,
-          summary_ok: false,
-          followups_ok: false,
-          enrichment_ok: false,
-          errors: [] as string[]
-        };
-        let scores = {
-          signals_recall: 0 as number | null,
-          summary_coverage: 0 as number | null,
-          followup_coverage: 0 as number | null
-        };
+        let semantic = { signals_ok: false, summary_ok: false, followups_ok: false, enrichment_ok: false, errors: [] as string[] };
+        let scores = { signals_recall: 0 as number | null, summary_coverage: 0 as number | null, followup_coverage: 0 as number | null };
 
         if (structural.passed) {
           const sigVal = validateSignals(tc, output);
-          // Skip other validators for now as requested
-          // const sumVal = validateSummary(tc, output);
-          // const folVal = validateFollowups(tc, output);
-          // const enrVal = validateEnrichment(tc, output);
+          const sumVal = validateSummary(tc, output);
+          
+          semantic = { 
+              signals_ok: sigVal.ok, 
+              summary_ok: sumVal.ok, 
+              followups_ok: true, 
+              enrichment_ok: true, 
+              errors: [...sigVal.errors, ...sumVal.errors] 
+          };
+          scores = { 
+              signals_recall: sigVal.recall, 
+              summary_coverage: sumVal.coverage, 
+              followup_coverage: null 
+          };
+        }
 
-          semantic = {
-            signals_ok: sigVal.ok,
-            summary_ok: true, // Skipped
-            followups_ok: true, // Skipped
-            enrichment_ok: true, // Skipped
-            errors: [...sigVal.errors]
-          };
-          scores = {
-            signals_recall: sigVal.recall,
-            summary_coverage: null, // Skipped
-            followup_coverage: null // Skipped
-          };
+        if (this.quiet) {
+            const metricKey = this.concernId === 'I32a' && output.summary !== 'ENGINE_ERROR' ? 'Summary' : 'Recall';
+            const scoreVal = (metricKey === 'Summary' ? scores.summary_coverage : scores.signals_recall);
+            const scoreDisplay = (structural.passed && scoreVal !== null ? (scoreVal * 100).toFixed(0) : '0');
+            const status = structural.passed ? '✓' : '❌';
+            console.log(`   OUT:  ${status} ${metricKey}: ${scoreDisplay}% | Summary: ${output.summary.slice(0, 60)}...`);
+            console.log('   ' + '─'.repeat(70));
         }
 
         results.push({
@@ -147,6 +169,7 @@ export class BatchRunner {
           engine_output: output
         });
       }
+      if (this.quiet) process.stdout.write(' Done.\n');
     }
 
     return this.aggregate(results);

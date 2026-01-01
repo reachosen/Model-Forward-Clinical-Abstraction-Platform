@@ -27,7 +27,17 @@
     "missions": "ts-node MissionControl/browse-and-run.ts",
     "missions:browse": "ts-node MissionControl/browse-and-run.ts",
     "missions:process": "ts-node MissionControl/process-case.ts",
-    "test:semantic": "ts-node tests/semantic/semantic-contracts.test.ts"
+    "test:semantic": "ts-node tests/semantic/semantic-contracts.test.ts",
+    "context:load": "ts-node tools/init-llm-context.ts load",
+    "context:list": "ts-node tools/init-llm-context.ts list",
+    "context:summary": "ts-node tools/init-llm-context.ts summary",
+    "context:validate": "ts-node tools/validate-context.ts",
+    "context:scan": "ts-node tools/consolidate-context.ts scan",
+    "plan:derive-definitions": "ts-node tools/derive-definitions.ts",
+    "plan:derive": "ts-node tools/derive-definitions.ts",
+    "plan:scaffold": "ts-node tools/scaffold.ts",
+    "plan:optimize": "ts-node tools/optimize.ts",
+    "plan:golden": "ts-node tools/create-golden.ts"
   },
   "keywords": [
     "healthcare",

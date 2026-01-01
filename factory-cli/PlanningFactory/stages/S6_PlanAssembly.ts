@@ -16,6 +16,7 @@ import {
   DomainContext,
   ValidationResult,
   TaskExecutionResults,
+  PromptPlan,
 } from '../types';
 import { PlannerPlanV2, PlanningInput } from '../../models/PlannerPlan';
 import { buildSystemPrompt } from '../utils/promptBuilder';
@@ -28,7 +29,8 @@ export class S6_PlanAssemblyStage {
     skeleton: StructuralSkeleton,
     taskResults: TaskExecutionResults,
     domainContext: DomainContext,
-    input: PlanningInput
+    input: PlanningInput,
+    promptPlan?: PromptPlan // Added parameter
   ): Promise<PlannerPlanV2> {
     const { domain, primary_archetype } = domainContext;
     const archetype = primary_archetype;
@@ -60,6 +62,44 @@ export class S6_PlanAssemblyStage {
 
     const metricContext = this.buildMetricContext(domainContext);
     const systemPrompt = buildSystemPrompt(metricContext);
+
+    // Build Config Metadata (V9.1 Requirement)
+    const configMetadata = {
+      config_id: `conf_${skeleton.plan_metadata.concern.concern_id}_${Date.now()}`,
+      name: `${skeleton.plan_metadata.concern.concern_id} Clinical Configuration`,
+      concern_id: skeleton.plan_metadata.concern.concern_id,
+      version: '1.0',
+      archetype: archetype, // Use resolved primary archetype
+      domain: domain,
+      created_at: timestamp,
+      status: 'draft'
+    };
+
+    // Build task_prompts from S4 PromptPlan if available, otherwise fallback to legacy logic
+    const taskPrompts: Record<string, any> = {};
+    if (promptPlan) {
+      promptPlan.nodes.forEach(node => {
+        taskPrompts[node.type] = {
+           template_ref: node.prompt_config.template_ref,
+           // Keep context keys default for now as S4 doesn't specify them yet
+           // But template_ref from S4 includes path and version
+           output_schema_ref: this.getOutputSchemaRef(node.type)
+        };
+        
+        // Ensure context_keys are added if missing from S4
+        if (taskPrompts[node.type].template_ref && !taskPrompts[node.type].template_ref.context_keys) {
+             taskPrompts[node.type].template_ref.context_keys = ['metric_context', 'patient_payload'];
+        }
+      });
+    } else {
+        // Fallback (Legacy)
+        taskPrompts['event_summary'] = { template_ref: this.getTemplateRef(domain, 'event_summary'), output_schema_ref: 'Schema_PatientEventSummary' };
+        taskPrompts['followup_questions'] = { template_ref: this.getTemplateRef(domain, 'followup_questions'), output_schema_ref: 'Schema_FollowupQuestions' };
+        taskPrompts['signal_generation'] = { template_ref: this.getTemplateRef(domain, 'signal_enrichment'), output_schema_ref: 'Schema_ClinicalSignals' };
+        taskPrompts['20_80_display_fields'] = { template_ref: this.getTemplateRef(domain, '20_80_display_fields'), output_schema_ref: 'Schema_Summary20_80' };
+        taskPrompts['clinical_reviewer'] = { template_ref: this.getTemplateRef(domain, 'clinical_review_plan'), output_schema_ref: 'Schema_ClinicalReviewer' };
+    }
+
 
     // Assemble plan from validated components (V9.1 schema)
     const plan: PlannerPlanV2 = {
@@ -111,6 +151,7 @@ export class S6_PlanAssemblyStage {
 
       clinical_config: {
         ...skeleton.clinical_config,
+        config_metadata: configMetadata,
         metric_context: metricContext,
         signals: {
           ...skeleton.clinical_config.signals,
@@ -119,28 +160,7 @@ export class S6_PlanAssemblyStage {
         clinical_tools: finalTools,
         prompts: {
           system_prompt: systemPrompt,
-          task_prompts: {
-            event_summary: {
-              template_ref: this.getTemplateRef(domain, 'event_summary'),
-              output_schema_ref: 'Schema_PatientEventSummary'
-            },
-            followup_questions: {
-              template_ref: this.getTemplateRef(domain, 'followup_questions'),
-              output_schema_ref: 'Schema_FollowupQuestions'
-            },
-            signal_generation: {
-              template_ref: this.getTemplateRef(domain, 'signal_enrichment'),
-              output_schema_ref: 'Schema_ClinicalSignals'
-            },
-            '20_80_display_fields': {
-              template_ref: this.getTemplateRef(domain, '20_80_display_fields'),
-              output_schema_ref: 'Schema_Summary20_80'
-            },
-            clinical_reviewer: {
-              template_ref: this.getTemplateRef(domain, 'clinical_review_plan'),
-              output_schema_ref: 'Schema_ClinicalReviewer'
-            }
-          }
+          task_prompts: taskPrompts
         }
       } as any,
 
@@ -171,6 +191,17 @@ export class S6_PlanAssemblyStage {
     console.log(`    Event summary length: ${finalSummary.length} chars`);
 
     return plan;
+  }
+
+  private getOutputSchemaRef(taskType: string): string {
+    const map: Record<string, string> = {
+        'event_summary': 'Schema_PatientEventSummary',
+        'followup_questions': 'Schema_FollowupQuestions',
+        'signal_enrichment': 'Schema_ClinicalSignals',
+        '20_80_display_fields': 'Schema_Summary20_80',
+        'clinical_review_plan': 'Schema_ClinicalReviewer'
+    };
+    return map[taskType] || 'Schema_Generic';
   }
 
   private getTemplateRef(domain: string, taskType: string): { path: string; context_keys: string[] } {
@@ -339,7 +370,7 @@ export class S6_PlanAssemblyStage {
     for (const [taskId, prompt] of Object.entries(prompts)) {
       if (prompt.template_ref) {
         // Resolve path relative to factory-cli
-        const fullPath = path.resolve(__dirname, '../../../', prompt.template_ref.path);
+        const fullPath = path.resolve(__dirname, '../../', prompt.template_ref.path);
         if (!fs.existsSync(fullPath)) {
           errors.push(`⭐ CRITICAL: Broken template reference for ${taskId}: ${prompt.template_ref.path}`);
         }

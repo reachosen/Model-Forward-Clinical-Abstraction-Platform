@@ -35,7 +35,7 @@ export function detectDomain(concernId: string): DomainType {
   const orthoPatterns = [
     'ORTHO', 'HIP', 'KNEE', 'JOINT', 'FRACTURE',
     'THA', 'TKA', 'ARTHROPLASTY', 'I06', 'I07', 'I08',
-    'I25', 'I26', 'I27', 'I32A', 'I32B'
+    'I25', 'I26', 'I27', 'I32'
   ];
   if (orthoPatterns.some(pattern => concernUpper.includes(pattern))) {
     return 'Orthopedics';

@@ -155,6 +155,10 @@ export interface TaskGraph {
 
 export interface PromptConfig {
   template_id: string;
+  template_ref?: {
+    path: string;
+    version?: string;
+  };
   model: string;
   temperature: number;
   response_format: 'json' | 'json_schema' | 'text';

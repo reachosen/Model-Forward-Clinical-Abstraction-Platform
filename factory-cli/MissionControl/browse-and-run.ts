@@ -123,7 +123,7 @@ function showMission(id: string | undefined) {
 function runMission(args: string[]) {
   const id = args[0];
   if (!id) {
-    console.error('Usage: run <mission-id> [--example <name>]');
+    console.error('Usage: run <mission-id> [options] [--example <name>]');
     return;
   }
 
@@ -135,7 +135,7 @@ function runMission(args: string[]) {
 
   // Check for --example flag
   const exampleIdx = args.indexOf('--example');
-  let argsToUse = mission.args;
+  let argsToUse = [...mission.args]; // Clone to avoid mutation
 
   if (exampleIdx >= 0 && mission.examples) {
     const exampleName = args[exampleIdx + 1];
@@ -152,22 +152,40 @@ function runMission(args: string[]) {
     }
   }
 
-  // Check for placeholder args
-  const hasPlaceholders = argsToUse.some(a => a.includes('{{'));
-  if (hasPlaceholders) {
-    console.log(`\n  ${mission.id} requires parameters:\n`);
-    console.log(`  ${mission.command} ${argsToUse.join(' ')}\n`);
-    if (mission.examples && mission.examples.length > 0) {
-      console.log('  Use --example to run with predefined args:');
-      mission.examples.forEach(e => console.log(`    --example "${e.name}"`));
+  // Dynamic Argument Substitution
+  // Iterate through argsToUse and replace {{key}} with value from CLI args --key value
+  const finalArgs: string[] = [];
+  const missingParams: string[] = [];
+
+  for (let i = 0; i < argsToUse.length; i++) {
+    const arg = argsToUse[i];
+    if (arg.startsWith('{{') && arg.endsWith('}}')) {
+      const key = arg.slice(2, -2); // Remove {{ and }}
+      const flag = `--${key}`;
+      
+      const cliFlagIdx = args.indexOf(flag);
+      if (cliFlagIdx >= 0 && cliFlagIdx + 1 < args.length) {
+        finalArgs.push(args[cliFlagIdx + 1]);
+      } else {
+        missingParams.push(flag);
+      }
+    } else {
+      finalArgs.push(arg);
     }
+  }
+
+  if (missingParams.length > 0) {
+    console.error(`\n❌ Missing required parameters for ${mission.id}:`);
+    missingParams.forEach(p => console.error(`   ${p} <value>`));
+    console.log(`\nUsage example:`);
+    console.log(`   npm run missions -- run ${mission.id} ${missingParams.map(p => `${p} value`).join(' ')}`);
     return;
   }
 
   console.log(`\n  Running: ${mission.id}\n`);
-  console.log(`  ${mission.command} ${argsToUse.join(' ')}\n`);
+  console.log(`  ${mission.command} ${finalArgs.join(' ')}\n`);
 
-  const child = spawn(mission.command, argsToUse, {
+  const child = spawn(mission.command, finalArgs, {
     stdio: 'inherit',
     shell: process.platform === 'win32',
   });

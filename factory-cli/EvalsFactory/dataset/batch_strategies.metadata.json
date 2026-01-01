@@ -76,6 +76,818 @@
           ]
         }
       ]
+    },
+    {
+      "metric_id": "I32a",
+      "domain": "Orthopedics",
+      "task_scenarios": {
+        "signal_enrichment": {
+          "description": "Scenarios for signal_enrichment task",
+          "output_schema": "signal_enrichment_output.schema.json",
+          "scenarios": [
+            {
+              "id": "signal_enrichment_pass_INFECTION_PREVENTION_1",
+              "type": "pass",
+              "description": "Clear Infection Prevention documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "prophylactic_antibiotic_timing": "present",
+                "antibiotic_redosing": "present",
+                "wound_assessment": "present"
+              }
+            },
+            {
+              "id": "signal_enrichment_pass_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "type": "pass",
+              "description": "Clear Surgical Bundle Compliance documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "surgical_timeout": "present",
+                "dvt_prophylaxis": "present",
+                "procedure_duration": "present"
+              }
+            },
+            {
+              "id": "signal_enrichment_pass_OUTCOME_MONITORING_1",
+              "type": "pass",
+              "description": "Clear Outcome Monitoring documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "neurovascular_checks": "present",
+                "pain_assessment": "present"
+              }
+            },
+            {
+              "id": "signal_enrichment_pass_READMISSION_PREVENTION_1",
+              "type": "pass",
+              "description": "Clear Readmission Prevention documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "discharge_instructions": "present",
+                "followup_scheduled": "present"
+              }
+            },
+            {
+              "id": "signal_enrichment_fail_INFECTION_PREVENTION_1",
+              "type": "fail",
+              "description": "Missing Infection Prevention - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "prophylactic_antibiotic_timing": "absent",
+                "antibiotic_redosing": "absent",
+                "wound_assessment": "absent"
+              }
+            },
+            {
+              "id": "signal_enrichment_fail_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "type": "fail",
+              "description": "Missing Surgical Bundle Compliance - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "surgical_timeout": "absent",
+                "dvt_prophylaxis": "absent",
+                "procedure_duration": "absent"
+              }
+            },
+            {
+              "id": "signal_enrichment_fail_OUTCOME_MONITORING_1",
+              "type": "fail",
+              "description": "Missing Outcome Monitoring - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "neurovascular_checks": "absent",
+                "pain_assessment": "absent"
+              }
+            },
+            {
+              "id": "signal_enrichment_fail_READMISSION_PREVENTION_1",
+              "type": "fail",
+              "description": "Missing Readmission Prevention - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "discharge_instructions": "absent",
+                "followup_scheduled": "absent"
+              }
+            },
+            {
+              "id": "signal_enrichment_doubt_unclear_antibiotic_timing_1",
+              "type": "doubt",
+              "description": "Antibiotic timing not clearly documented or conflicting times",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Please verify antibiotic administration timing relative to incision"
+                }
+              ],
+              "doubt_recognition": {
+                "expected_signal_gap": true,
+                "uncertainty_keywords": [
+                  "unclear",
+                  "unspecified",
+                  "not documented",
+                  "antibiotic",
+                  "cefazolin",
+                  "ancef",
+                  "prophylaxis",
+                  "administered",
+                  "given"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_doubt_conflicting_wound_assessments_1",
+              "type": "doubt",
+              "description": "Wound assessment notes show conflicting findings",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Wound assessments show conflicting findings. Which is accurate?"
+                }
+              ],
+              "doubt_recognition": {
+                "expected_signal_gap": true,
+                "uncertainty_keywords": [
+                  "unclear",
+                  "unspecified",
+                  "not documented",
+                  "wound",
+                  "incision",
+                  "erythema",
+                  "healing",
+                  "drainage"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_doubt_borderline_readmission_timing_1",
+              "type": "doubt",
+              "description": "Readmission occurred close to 30-day boundary",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
+                }
+              ],
+              "doubt_recognition": {
+                "expected_signal_gap": true,
+                "uncertainty_keywords": [
+                  "unclear",
+                  "unspecified",
+                  "not documented",
+                  "readmit",
+                  "return",
+                  "presented",
+                  "day 30",
+                  "one month"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_doubt_incomplete_discharge_documentation_1",
+              "type": "doubt",
+              "description": "Discharge instructions partially documented or unclear",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
+                }
+              ],
+              "doubt_recognition": {
+                "expected_signal_gap": true,
+                "uncertainty_keywords": [
+                  "unclear",
+                  "unspecified",
+                  "not documented",
+                  "discharge",
+                  "instructions",
+                  "education",
+                  "follow-up",
+                  "pain management",
+                  "activity"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_doubt_neurological_change_unclear_etiology_1",
+              "type": "doubt",
+              "description": "New neurological findings with unclear cause",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
+                }
+              ],
+              "doubt_recognition": {
+                "expected_signal_gap": true,
+                "uncertainty_keywords": [
+                  "unclear",
+                  "unspecified",
+                  "not documented",
+                  "paresthesia",
+                  "weakness",
+                  "numbness",
+                  "neurological",
+                  "sensation",
+                  "motor"
+                ]
+              }
+            }
+          ]
+        },
+        "event_summary": {
+          "description": "Scenarios for event_summary task",
+          "output_schema": "event_summary_output.schema.json",
+          "scenarios": [
+            {
+              "id": "event_summary_pass_INFECTION_PREVENTION_1",
+              "type": "pass",
+              "description": "Clear Infection Prevention documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "prophylactic_antibiotic_timing": "present",
+                "antibiotic_redosing": "present",
+                "wound_assessment": "present"
+              }
+            },
+            {
+              "id": "event_summary_pass_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "type": "pass",
+              "description": "Clear Surgical Bundle Compliance documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "surgical_timeout": "present",
+                "dvt_prophylaxis": "present",
+                "procedure_duration": "present"
+              }
+            },
+            {
+              "id": "event_summary_pass_OUTCOME_MONITORING_1",
+              "type": "pass",
+              "description": "Clear Outcome Monitoring documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "neurovascular_checks": "present",
+                "pain_assessment": "present"
+              }
+            },
+            {
+              "id": "event_summary_pass_READMISSION_PREVENTION_1",
+              "type": "pass",
+              "description": "Clear Readmission Prevention documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "discharge_instructions": "present",
+                "followup_scheduled": "present"
+              }
+            },
+            {
+              "id": "event_summary_fail_INFECTION_PREVENTION_1",
+              "type": "fail",
+              "description": "Missing Infection Prevention - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "prophylactic_antibiotic_timing": "absent",
+                "antibiotic_redosing": "absent",
+                "wound_assessment": "absent"
+              }
+            },
+            {
+              "id": "event_summary_fail_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "type": "fail",
+              "description": "Missing Surgical Bundle Compliance - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "surgical_timeout": "absent",
+                "dvt_prophylaxis": "absent",
+                "procedure_duration": "absent"
+              }
+            },
+            {
+              "id": "event_summary_fail_OUTCOME_MONITORING_1",
+              "type": "fail",
+              "description": "Missing Outcome Monitoring - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "neurovascular_checks": "absent",
+                "pain_assessment": "absent"
+              }
+            },
+            {
+              "id": "event_summary_fail_READMISSION_PREVENTION_1",
+              "type": "fail",
+              "description": "Missing Readmission Prevention - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "discharge_instructions": "absent",
+                "followup_scheduled": "absent"
+              }
+            },
+            {
+              "id": "event_summary_doubt_unclear_antibiotic_timing_1",
+              "type": "doubt",
+              "description": "Antibiotic timing not clearly documented or conflicting times",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Please verify antibiotic administration timing relative to incision"
+                }
+              ],
+              "doubt_recognition": {
+                "should_flag_incomplete": true
+              }
+            },
+            {
+              "id": "event_summary_doubt_conflicting_wound_assessments_1",
+              "type": "doubt",
+              "description": "Wound assessment notes show conflicting findings",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Wound assessments show conflicting findings. Which is accurate?"
+                }
+              ],
+              "doubt_recognition": {
+                "should_flag_incomplete": true
+              }
+            },
+            {
+              "id": "event_summary_doubt_borderline_readmission_timing_1",
+              "type": "doubt",
+              "description": "Readmission occurred close to 30-day boundary",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
+                }
+              ],
+              "doubt_recognition": {
+                "should_flag_incomplete": true
+              }
+            },
+            {
+              "id": "event_summary_doubt_incomplete_discharge_documentation_1",
+              "type": "doubt",
+              "description": "Discharge instructions partially documented or unclear",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
+                }
+              ],
+              "doubt_recognition": {
+                "should_flag_incomplete": true
+              }
+            },
+            {
+              "id": "event_summary_doubt_neurological_change_unclear_etiology_1",
+              "type": "doubt",
+              "description": "New neurological findings with unclear cause",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
+                }
+              ],
+              "doubt_recognition": {
+                "should_flag_incomplete": true
+              }
+            }
+          ]
+        },
+        "followup_questions": {
+          "description": "Scenarios for followup_questions task",
+          "output_schema": "followup_questions_output.schema.json",
+          "scenarios": [
+            {
+              "id": "followup_questions_pass_INFECTION_PREVENTION_1",
+              "type": "pass",
+              "description": "Clear Infection Prevention documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "prophylactic_antibiotic_timing": "present",
+                "antibiotic_redosing": "present",
+                "wound_assessment": "present"
+              }
+            },
+            {
+              "id": "followup_questions_pass_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "type": "pass",
+              "description": "Clear Surgical Bundle Compliance documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "surgical_timeout": "present",
+                "dvt_prophylaxis": "present",
+                "procedure_duration": "present"
+              }
+            },
+            {
+              "id": "followup_questions_pass_OUTCOME_MONITORING_1",
+              "type": "pass",
+              "description": "Clear Outcome Monitoring documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "neurovascular_checks": "present",
+                "pain_assessment": "present"
+              }
+            },
+            {
+              "id": "followup_questions_pass_READMISSION_PREVENTION_1",
+              "type": "pass",
+              "description": "Clear Readmission Prevention documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "discharge_instructions": "present",
+                "followup_scheduled": "present"
+              }
+            },
+            {
+              "id": "followup_questions_fail_INFECTION_PREVENTION_1",
+              "type": "fail",
+              "description": "Missing Infection Prevention - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "prophylactic_antibiotic_timing": "absent",
+                "antibiotic_redosing": "absent",
+                "wound_assessment": "absent"
+              }
+            },
+            {
+              "id": "followup_questions_fail_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "type": "fail",
+              "description": "Missing Surgical Bundle Compliance - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "surgical_timeout": "absent",
+                "dvt_prophylaxis": "absent",
+                "procedure_duration": "absent"
+              }
+            },
+            {
+              "id": "followup_questions_fail_OUTCOME_MONITORING_1",
+              "type": "fail",
+              "description": "Missing Outcome Monitoring - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "neurovascular_checks": "absent",
+                "pain_assessment": "absent"
+              }
+            },
+            {
+              "id": "followup_questions_fail_READMISSION_PREVENTION_1",
+              "type": "fail",
+              "description": "Missing Readmission Prevention - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "discharge_instructions": "absent",
+                "followup_scheduled": "absent"
+              }
+            },
+            {
+              "id": "followup_questions_doubt_unclear_antibiotic_timing_1",
+              "type": "doubt",
+              "description": "Antibiotic timing not clearly documented or conflicting times",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Please verify antibiotic administration timing relative to incision"
+                }
+              ],
+              "doubt_recognition": {
+                "should_probe_ambiguity": true,
+                "probe_keywords": [
+                  "antibiotic",
+                  "cefazolin",
+                  "ancef",
+                  "prophylaxis",
+                  "administered",
+                  "given"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_doubt_conflicting_wound_assessments_1",
+              "type": "doubt",
+              "description": "Wound assessment notes show conflicting findings",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Wound assessments show conflicting findings. Which is accurate?"
+                }
+              ],
+              "doubt_recognition": {
+                "should_probe_ambiguity": true,
+                "probe_keywords": [
+                  "wound",
+                  "incision",
+                  "erythema",
+                  "healing",
+                  "drainage"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_doubt_borderline_readmission_timing_1",
+              "type": "doubt",
+              "description": "Readmission occurred close to 30-day boundary",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
+                }
+              ],
+              "doubt_recognition": {
+                "should_probe_ambiguity": true,
+                "probe_keywords": [
+                  "readmit",
+                  "return",
+                  "presented",
+                  "day 30",
+                  "one month"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_doubt_incomplete_discharge_documentation_1",
+              "type": "doubt",
+              "description": "Discharge instructions partially documented or unclear",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
+                }
+              ],
+              "doubt_recognition": {
+                "should_probe_ambiguity": true,
+                "probe_keywords": [
+                  "discharge",
+                  "instructions",
+                  "education",
+                  "follow-up",
+                  "pain management",
+                  "activity"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_doubt_neurological_change_unclear_etiology_1",
+              "type": "doubt",
+              "description": "New neurological findings with unclear cause",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
+                }
+              ],
+              "doubt_recognition": {
+                "should_probe_ambiguity": true,
+                "probe_keywords": [
+                  "paresthesia",
+                  "weakness",
+                  "numbness",
+                  "neurological",
+                  "sensation",
+                  "motor"
+                ]
+              }
+            }
+          ]
+        },
+        "clinical_review_plan": {
+          "description": "Scenarios for clinical_review_plan task",
+          "output_schema": "clinical_review_plan_output.schema.json",
+          "scenarios": [
+            {
+              "id": "clinical_review_plan_pass_INFECTION_PREVENTION_1",
+              "type": "pass",
+              "description": "Clear Infection Prevention documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "prophylactic_antibiotic_timing": "present",
+                "antibiotic_redosing": "present",
+                "wound_assessment": "present"
+              }
+            },
+            {
+              "id": "clinical_review_plan_pass_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "type": "pass",
+              "description": "Clear Surgical Bundle Compliance documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "surgical_timeout": "present",
+                "dvt_prophylaxis": "present",
+                "procedure_duration": "present"
+              }
+            },
+            {
+              "id": "clinical_review_plan_pass_OUTCOME_MONITORING_1",
+              "type": "pass",
+              "description": "Clear Outcome Monitoring documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "neurovascular_checks": "present",
+                "pain_assessment": "present"
+              }
+            },
+            {
+              "id": "clinical_review_plan_pass_READMISSION_PREVENTION_1",
+              "type": "pass",
+              "description": "Clear Readmission Prevention documentation - all required signals present",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "discharge_instructions": "present",
+                "followup_scheduled": "present"
+              }
+            },
+            {
+              "id": "clinical_review_plan_fail_INFECTION_PREVENTION_1",
+              "type": "fail",
+              "description": "Missing Infection Prevention - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "prophylactic_antibiotic_timing": "absent",
+                "antibiotic_redosing": "absent",
+                "wound_assessment": "absent"
+              }
+            },
+            {
+              "id": "clinical_review_plan_fail_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "type": "fail",
+              "description": "Missing Surgical Bundle Compliance - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "surgical_timeout": "absent",
+                "dvt_prophylaxis": "absent",
+                "procedure_duration": "absent"
+              }
+            },
+            {
+              "id": "clinical_review_plan_fail_OUTCOME_MONITORING_1",
+              "type": "fail",
+              "description": "Missing Outcome Monitoring - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "neurovascular_checks": "absent",
+                "pain_assessment": "absent"
+              }
+            },
+            {
+              "id": "clinical_review_plan_fail_READMISSION_PREVENTION_1",
+              "type": "fail",
+              "description": "Missing Readmission Prevention - required signals absent or problematic",
+              "archetype": "Preventability_Detective",
+              "signals": {
+                "discharge_instructions": "absent",
+                "followup_scheduled": "absent"
+              }
+            },
+            {
+              "id": "clinical_review_plan_doubt_unclear_antibiotic_timing_1",
+              "type": "doubt",
+              "description": "Antibiotic timing not clearly documented or conflicting times",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Please verify antibiotic administration timing relative to incision"
+                }
+              ],
+              "doubt_recognition": {
+                "should_escalate": true,
+                "expected_concern_keywords": [
+                  "antibiotic",
+                  "cefazolin",
+                  "ancef",
+                  "prophylaxis",
+                  "administered",
+                  "given"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_doubt_conflicting_wound_assessments_1",
+              "type": "doubt",
+              "description": "Wound assessment notes show conflicting findings",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Wound assessments show conflicting findings. Which is accurate?"
+                }
+              ],
+              "doubt_recognition": {
+                "should_escalate": true,
+                "expected_concern_keywords": [
+                  "wound",
+                  "incision",
+                  "erythema",
+                  "healing",
+                  "drainage"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_doubt_borderline_readmission_timing_1",
+              "type": "doubt",
+              "description": "Readmission occurred close to 30-day boundary",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
+                }
+              ],
+              "doubt_recognition": {
+                "should_escalate": true,
+                "expected_concern_keywords": [
+                  "readmit",
+                  "return",
+                  "presented",
+                  "day 30",
+                  "one month"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_doubt_incomplete_discharge_documentation_1",
+              "type": "doubt",
+              "description": "Discharge instructions partially documented or unclear",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
+                }
+              ],
+              "doubt_recognition": {
+                "should_escalate": true,
+                "expected_concern_keywords": [
+                  "discharge",
+                  "instructions",
+                  "education",
+                  "follow-up",
+                  "pain management",
+                  "activity"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_doubt_neurological_change_unclear_etiology_1",
+              "type": "doubt",
+              "description": "New neurological findings with unclear cause",
+              "archetype": "Preventability_Detective",
+              "doubt": [
+                {
+                  "type": "ambiguity",
+                  "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
+                }
+              ],
+              "doubt_recognition": {
+                "should_escalate": true,
+                "expected_concern_keywords": [
+                  "paresthesia",
+                  "weakness",
+                  "numbness",
+                  "neurological",
+                  "sensation",
+                  "motor"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "auto_derive": {
+        "enabled": true,
+        "pass_per_signal_group": 1,
+        "fail_per_signal_group": 1,
+        "doubt_per_ambiguity_trigger": 1,
+        "minimum_doubt_ratio": 0.2
+      },
+      "coverage_goals": {
+        "signal_groups": 4,
+        "min_scenarios": 52,
+        "doubt_ratio": 0.38461538461538464,
+        "doubt_mix": [
+          "ambiguity",
+          "missing_data",
+          "conflict"
+        ]
+      }
     }
   ]
 }

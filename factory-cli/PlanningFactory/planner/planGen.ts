@@ -81,7 +81,7 @@ export async function executePromptPlan(
 
   // S6
   const s6 = new S6_PlanAssemblyStage();
-  const plan = await s6.execute(skeleton, taskResults, domain, input as any);
+  const plan = await s6.execute(skeleton, taskResults, domain, input as any, promptPlan);
 
   return plan;
 }

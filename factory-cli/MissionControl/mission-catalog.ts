@@ -56,13 +56,12 @@ export const MISSIONS: Mission[] = [
   {
     id: 'plan:scaffold',
     owner: 'Planning',
-    title: 'Scaffold New Domain',
-    purpose: 'Initialize a new domain workspace in the registry',
+    title: 'Scaffold Metric (Inception)',
+    purpose: 'One-click inception roundtrip: Init Prompts -> Derive Definitions -> Plan -> Simulate -> Score',
     command: 'npx',
-    args: ['ts-node', 'tools/scaffold-domain.ts', '--domain', '{{domain}}', '--source', 'Orthopedics'],
+    args: ['ts-node', 'tools/scaffold.ts', '--domain', '{{domain}}', '--metric', '{{metric}}'],
     examples: [
-      { name: 'Cardiology', args: ['ts-node', 'tools/scaffold-domain.ts', '--domain', 'Cardiology', '--source', 'Orthopedics'] },
-      { name: 'Neurology', args: ['ts-node', 'tools/scaffold-domain.ts', '--domain', 'Neurology', '--source', 'Orthopedics'] },
+      { name: 'Cardiology C01', args: ['ts-node', 'tools/scaffold.ts', '--domain', 'Cardiology', '--metric', 'C01'] },
     ],
   },
   {
@@ -81,6 +80,32 @@ export const MISSIONS: Mission[] = [
   // ===========================================================================
   // EvalsFactory: Refinement
   // ===========================================================================
+  {
+    id: 'eval:status',
+    owner: 'Evals',
+    title: 'QA Scorecard',
+    purpose: 'Show workflow state for a metric - what exists, where to resume',
+    command: 'npx',
+    args: ['ts-node', 'bin/planner.ts', 'eval:status', '--metric', '{{metric}}'],
+    examples: [
+      { name: 'I25', args: ['ts-node', 'bin/planner.ts', 'eval:status', '--metric', 'I25'] },
+      { name: 'I32a', args: ['ts-node', 'bin/planner.ts', 'eval:status', '--metric', 'I32a'] },
+      { name: 'All', args: ['ts-node', 'bin/planner.ts', 'eval:status', '--all'] },
+    ],
+  },
+  {
+    id: 'eval:score',
+    owner: 'Evals',
+    title: 'SAFE Evaluation',
+    purpose: 'Run SAFE v0 scoring on test batches with live pattern detection',
+    command: 'npx',
+    args: ['ts-node', 'bin/planner.ts', 'safe:score', '-c', '{{concern}}', '-b', '{{batch}}'],
+    examples: [
+      { name: 'I25 All', args: ['ts-node', 'bin/planner.ts', 'safe:score', '-c', 'I25', '-b', 'I25_batch_*'] },
+      { name: 'I32a All', args: ['ts-node', 'bin/planner.ts', 'safe:score', '-c', 'I32a', '-b', 'I32a_batch_*'] },
+      { name: 'I25 Subset', args: ['ts-node', 'bin/planner.ts', 'safe:score', '-c', 'I25', '-b', 'batch_1', '--cases', 'test-001,test-002'] },
+    ],
+  },
   {
     id: 'eval:strategize',
     owner: 'Evals',

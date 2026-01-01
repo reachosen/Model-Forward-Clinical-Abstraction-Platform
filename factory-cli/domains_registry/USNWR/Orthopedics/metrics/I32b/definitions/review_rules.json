@@ -1,0 +1,175 @@
+{
+  "$schema": "../../../_shared/definitions/review_rules.schema.json",
+  "metric_id": "I32b",
+  "version": "1.0",
+  "description": "Rule-in/rule-out decision criteria for Neuromuscular scoliosis – 30-day readmit and 90-day return to OR",
+  "decision_framework": {
+    "possible_outcomes": [
+      "pass",
+      "fail",
+      "needs_review",
+      "excluded"
+    ],
+    "default_if_unclear": "needs_review"
+  },
+  "rule_in_criteria": [
+    {
+      "rule_id": "clear_pass",
+      "description": "All documentation complete, no complications, no adverse outcomes",
+      "conditions": [
+        {
+          "field": "documentation_complete",
+          "operator": "==",
+          "value": true
+        },
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "high"
+    },
+    {
+      "rule_id": "pass_with_minor_gaps",
+      "description": "Minor documentation gaps but no adverse outcomes",
+      "conditions": [
+        {
+          "field": "has_complication",
+          "operator": "==",
+          "value": false
+        },
+        {
+          "field": "has_documentation_gap",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "pass",
+      "confidence": "medium",
+      "requires_documentation": [
+        "gap_type",
+        "mitigation_documented"
+      ]
+    }
+  ],
+  "rule_out_criteria": [
+    {
+      "rule_id": "risk_1",
+      "description": "Malnutrition or poor pre-operative nutritional optimization",
+      "conditions": [
+        {
+          "field": "malnutrition_or_poor_preopera",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_2",
+      "description": "Poor pulmonary reserve without documented pulmonary optimization plan",
+      "conditions": [
+        {
+          "field": "poor_pulmonary_reserve_without",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_3",
+      "description": "Neurogenic bladder or bowel without clear infection-prevention strategy",
+      "conditions": [
+        {
+          "field": "neurogenic_bladder_or_bowel_wi",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    },
+    {
+      "rule_id": "risk_4",
+      "description": "Complex spine constructs with higher hardware complication risk",
+      "conditions": [
+        {
+          "field": "complex_spine_constructs_with_",
+          "operator": "==",
+          "value": true
+        }
+      ],
+      "outcome": "fail",
+      "confidence": "medium"
+    }
+  ],
+  "ambiguity_triggers": [
+    {
+      "trigger_id": "unclear_nutritional_pulmonary_risks",
+      "description": "Review question: Were nutritional and pulmonary risks assessed and optimized before surgery?",
+      "detection": {
+        "field": "nutritional",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Were nutritional and pulmonary risks assessed and optimized before surgery?",
+      "search_hints": [
+        "nutritional",
+        "pulmonary",
+        "risks",
+        "assessed",
+        "optimized"
+      ]
+    },
+    {
+      "trigger_id": "unclear_bladderbowel_management_infectionprevention",
+      "description": "Review question: Is a bladder/bowel management and infection-prevention plan documented?",
+      "detection": {
+        "field": "bladderbowel",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Is a bladder/bowel management and infection-prevention plan documented?",
+      "search_hints": [
+        "bladder/bowel",
+        "management",
+        "infection-prevention"
+      ]
+    },
+    {
+      "trigger_id": "unclear_readmission_cause_categorized",
+      "description": "Review question: Is each readmission cause clearly categorized (pulmonary, GI, infection, hardware, other)?",
+      "detection": {
+        "field": "readmission",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Is each readmission cause clearly categorized (pulmonary, GI, infection, hardware, other)?",
+      "search_hints": [
+        "readmission",
+        "cause",
+        "categorized",
+        "(pulmonary",
+        "infection"
+      ]
+    },
+    {
+      "trigger_id": "unclear_returns_labeled_planned",
+      "description": "Review question: Are returns to OR clearly labeled as planned lengthening vs complication-driven revision?",
+      "detection": {
+        "field": "returns",
+        "operator": "is_null"
+      },
+      "reviewer_prompt": "Are returns to OR clearly labeled as planned lengthening vs complication-driven revision?",
+      "search_hints": [
+        "returns",
+        "labeled",
+        "planned",
+        "lengthening",
+        "complication-driven"
+      ]
+    }
+  ]
+}
