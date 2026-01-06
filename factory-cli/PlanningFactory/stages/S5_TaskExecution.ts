@@ -23,7 +23,6 @@ import * as path from 'path';
 import * as promptsConfig from '../config/prompts.json';
 import { getSignalEnrichmentVariables } from '../../shared/context_builders/signalEnrichment';
 import { getEventSummaryVariables } from '../../shared/context_builders/eventSummary';
-import { getSummary2080Variables } from '../../shared/context_builders/summary2080';
 import { getFollowupQuestionsVariables } from '../../shared/context_builders/followupQuestions';
 import { getClinicalReviewPlanVariables } from '../../shared/context_builders/clinicalReviewPlan';
 import { getExclusionCheckVariables } from '../../shared/context_builders/exclusionCheck';
@@ -34,7 +33,6 @@ import { signalEnrichmentJsonSchema, SignalEnrichmentResult } from '../schemas/s
 import { eventSummaryJsonSchema, EventSummaryResult } from '../schemas/eventSummarySchema';
 import { followupQuestionsJsonSchema, FollowupQuestionsResult } from '../schemas/followupQuestionsSchema';
 import { clinicalReviewPlanJsonSchema, ClinicalReviewPlanResult } from '../schemas/clinicalReviewPlanSchema';
-import { displayFieldsJsonSchema, DisplayFieldsResult } from '../schemas/20_80_display_fields';
 import { buildMetricFramedPrompt, buildDynamicRoleName, buildMetricContextString } from '../utils/promptBuilder';
 import { loadPromptFromRegistry } from '../utils/promptLoader';
 
@@ -45,7 +43,6 @@ const TASK_SCHEMAS: Partial<Record<string, object>> = {
   event_summary: eventSummaryJsonSchema,
   followup_questions: followupQuestionsJsonSchema,
   clinical_review_plan: clinicalReviewPlanJsonSchema,
-  '20_80_display_fields': displayFieldsJsonSchema,
   exclusion_check: exclusionCheckJsonSchema,
   clinical_review_helper: clinicalReviewHelperJsonSchema,
 };
@@ -174,27 +171,6 @@ function parseClinicalReviewPlan(raw: any): ClinicalReviewPlanResult {
   }
 
   return parsed as ClinicalReviewPlanResult;
-}
-
-function parseDisplayFields(raw: any): DisplayFieldsResult {
-  let parsed = raw;
-  if (typeof raw === 'string') {
-     try {
-       parsed = JSON.parse(raw);
-     } catch (e) {
-       throw new Error(`20_80_display_fields: invalid JSON: ${(e as Error).message}`);
-     }
-  }
-
-  if (
-    !parsed ||
-    typeof parsed !== 'object' ||
-    !Array.isArray((parsed as any).display_fields)
-  ) {
-    throw new Error('20_80_display_fields: missing display_fields array');
-  }
-
-  return parsed as DisplayFieldsResult;
 }
 
 const openai = new OpenAI({
@@ -376,8 +352,6 @@ function loadPromptTemplate(template_id: string, context: any): string {
     variables = getSignalEnrichmentVariables(promptContext);
   } else if (task_type === 'event_summary') {
     variables = getEventSummaryVariables(promptContext);
-  } else if (task_type === '20_80_display_fields') {
-    variables = getSummary2080Variables(promptContext);
   } else if (task_type === 'followup_questions') {
     variables = getFollowupQuestionsVariables(promptContext);
   } else if (task_type === 'clinical_review_plan') {
@@ -436,7 +410,10 @@ export class S5_TaskExecutionStage {
       if (!promptNode) throw new Error(`No prompt found for task: ${taskId}`);
 
       // E2: Deterministic Hand-off Fix - Fail-fast if narrative is missing for clinical tasks
-      const narrativeRequiredTasks: string[] = ['signal_enrichment', 'event_summary', '20_80_display_fields', 'followup_questions'];
+      // V2: clinical_review_plan is artifact-only (no raw text) - verdict based on extracted signals
+      const narrativeRequiredTasks: string[] = ['exclusion_check', 'signal_enrichment', 'event_summary', '20_80_display_fields', 'followup_questions'];
+      const artifactOnlyTasks: string[] = ['clinical_review_plan'];  // V2: These tasks use prior outputs only
+
       if (narrativeRequiredTasks.includes(promptNode.type) && !patient_payload) {
         throw new Error(`[S5] Critical Error: Task ${taskId} (${promptNode.type}) requires patient_payload but it is empty. Check S0 normalization.`);
       }
@@ -459,6 +436,9 @@ export class S5_TaskExecutionStage {
 
       const schema = TASK_SCHEMAS[promptNode.type];
       
+      // V2: Artifact-only tasks don't receive raw patient_payload - they use prior task outputs
+      const shouldInjectPayload = !artifactOnlyTasks.includes(promptNode.type);
+
       let output = await callLLM({
         model: config.model,
         temperature: config.temperature,
@@ -469,7 +449,7 @@ export class S5_TaskExecutionStage {
         skeleton,
         max_tokens: config.max_tokens,
         top_p: config.top_p,
-        patient_payload,
+        patient_payload: shouldInjectPayload ? patient_payload : undefined,  // V2: conditional injection
       });
       
       // Post-processing / Type-casting for known schemas
@@ -481,10 +461,31 @@ export class S5_TaskExecutionStage {
         output = parseFollowupQuestions(output);
       } else if (promptNode.type === 'clinical_review_plan') {
         output = parseClinicalReviewPlan(output);
-      } else if (promptNode.type === '20_80_display_fields') {
-        output = parseDisplayFields(output);
       } else if (promptNode.type === 'exclusion_check') {
         output = parseExclusionCheck(output);
+
+        // EARLY EXIT GATE: If case is excluded, skip all downstream tasks
+        const exclusionResult = output as ExclusionCheckResult;
+        if (exclusionResult.exclusion_check.overall_status === 'excluded') {
+          console.log(`    🚫 EXCLUSION GATE: Case excluded - "${exclusionResult.exclusion_check.final_exclusion_reason}"`);
+          console.log(`    ⏭️  Skipping downstream tasks (signal_enrichment, event_summary, etc.)`);
+
+          const taskOutput: TaskOutput = {
+            taskId: taskId,
+            output: { ...output, task_type: promptNode.type, early_exit: true },
+            validation: { passed: true, errors: [], warnings: ['Case excluded - downstream tasks skipped'] },
+          };
+          taskOutputs.set(taskId, taskOutput);
+
+          // Return early with only exclusion_check result
+          return {
+            execution_id: `exec_${Date.now()}_excluded`,
+            outputs: Array.from(taskOutputs.values()),
+            early_exit: true,
+            exclusion_reason: exclusionResult.exclusion_check.final_exclusion_reason,
+          };
+        }
+        console.log(`    ✅ Exclusion gate passed (status: ${exclusionResult.exclusion_check.overall_status})`);
       } else if (promptNode.type === 'clinical_review_helper') {
         output = parseClinicalReviewHelper(output);
       }

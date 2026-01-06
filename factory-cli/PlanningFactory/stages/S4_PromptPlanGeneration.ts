@@ -91,9 +91,9 @@ function getPromptConfig(
 
 function getResponseFormat(taskType: TaskType): 'json' | 'json_schema' | 'text' {
   const formats: Record<TaskType, 'json' | 'json_schema' | 'text'> = {
+    exclusion_check: 'json_schema',
     signal_enrichment: 'json_schema',
-    event_summary: 'json',
-    '20_80_display_fields': 'json',
+    event_summary: 'json_schema',
     followup_questions: 'json',
     clinical_review_plan: 'json_schema',
   };
@@ -103,9 +103,9 @@ function getResponseFormat(taskType: TaskType): 'json' | 'json_schema' | 'text' 
 
 function getTemperature(taskType: TaskType): number {
   const temperatures: Record<TaskType, number> = {
+    exclusion_check: 0.1,
     signal_enrichment: 0.3,
     event_summary: 0.5,
-    '20_80_display_fields': 0.6,
     followup_questions: 0.7,
     clinical_review_plan: 0.3,
   };

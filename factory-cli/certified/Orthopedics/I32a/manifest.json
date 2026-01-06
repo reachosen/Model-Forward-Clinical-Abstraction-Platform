@@ -1,0 +1,32 @@
+{
+  "certified_at": "2026-01-06T20:46:17.602Z",
+  "metric_id": "I32a",
+  "domain": "Orthopedics",
+  "tasks": {
+    "exclusion_check": {
+      "prompt_path": "exclusion_check/prompt.md",
+      "contract_path": "exclusion_check/contract.ts",
+      "schema_hash": "TODO: SHA256"
+    },
+    "signal_enrichment": {
+      "prompt_path": "signal_enrichment/prompt.md",
+      "contract_path": "signal_enrichment/contract.ts",
+      "schema_hash": "TODO: SHA256"
+    },
+    "event_summary": {
+      "prompt_path": "event_summary/prompt.md",
+      "contract_path": "event_summary/contract.ts",
+      "schema_hash": "TODO: SHA256"
+    },
+    "followup_questions": {
+      "prompt_path": "followup_questions/prompt.md",
+      "contract_path": "followup_questions/contract.ts",
+      "schema_hash": "TODO: SHA256"
+    },
+    "clinical_review_plan": {
+      "prompt_path": "clinical_review_plan/prompt.md",
+      "contract_path": "clinical_review_plan/contract.ts",
+      "schema_hash": "TODO: SHA256"
+    }
+  }
+}

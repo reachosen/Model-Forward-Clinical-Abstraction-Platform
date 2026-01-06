@@ -1,0 +1,51 @@
+{
+  "mappings": [
+    {
+      "exact_phrase": "Antibiotic prophylaxis not given within 60 min",
+      "canonical_id": "antibiotic_timing_compliance",
+      "polarity": "negative",
+      "legacy_id": "antibiotic_prophylaxis_not_given_within_"
+    },
+    {
+      "exact_phrase": "Pre-op warming not documented",
+      "canonical_id": "pre_op_warming_documentation",
+      "polarity": "negative",
+      "legacy_id": "pre_op_warming_not_documented"
+    },
+    {
+      "exact_phrase": "Chlorhexidine prep not used/documented",
+      "canonical_id": "chlorhexidine_prep_compliance",
+      "polarity": "negative",
+      "legacy_id": "chlorhexidine_prep_not_useddocumented"
+    },
+    {
+      "exact_phrase": "Neurovascular exam not documented pre-op",
+      "canonical_id": "neurovascular_exam_pre_op",
+      "polarity": "negative",
+      "legacy_id": "neurovascular_exam_not_documented_pre_op"
+    },
+    {
+      "exact_phrase": "Neurovascular exam not documented post-op",
+      "canonical_id": "neurovascular_exam_post_op",
+      "polarity": "negative",
+      "legacy_id": "neurovascular_exam_not_documented_post_op"
+    }
+  ],
+  "patterns": [
+    {
+      "match": "not documented",
+      "suffix": "_documentation",
+      "polarity": "negative"
+    },
+    {
+      "match": "not given",
+      "suffix": "_compliance",
+      "polarity": "negative"
+    },
+    {
+      "match": "absence of",
+      "prefix": "presence_of_",
+      "polarity": "negative"
+    }
+  ]
+}

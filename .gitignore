@@ -94,3 +94,6 @@ temp_strategy*.json.context/
 factory-cli/.context/ 
 factory-cli/.context/ 
 CLAUDE.md 
+notebooklm_inputs/
+notebooklm_inputs/ 
+factory-cli/data/*.json 

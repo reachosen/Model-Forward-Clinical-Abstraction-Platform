@@ -15,10 +15,15 @@ export interface SemanticMetric {
   archetypes?: string[];
   expected_signal_groups?: string[];
   expected_signal_group_count?: number;
+  rule_in_criteria?: any[];
+  rule_out_criteria?: any[];
+  ambiguity_triggers?: any[];
+  exclusion_criteria?: any[];
+  exception_criteria?: any[];
 }
 
 export interface SemanticSignals {
-  [group_id: string]: string[];
+  [group_id: string]: (string | any)[];
 }
 
 export interface SemanticPriority {
@@ -31,6 +36,18 @@ export interface SemanticPacket {
   signals: SemanticSignals;
   priorities: SemanticPriority;
   domain: string;
+}
+
+function detectNegatedSignalIds(signals: SemanticSignals): string[] {
+  const bad: string[] = [];
+  const pattern = /(no_|not_|without|absence|negativ)/i;
+  Object.values(signals || {}).forEach(group => {
+    (group as any[]).forEach(sig => {
+      const id = typeof sig === 'string' ? sig : (sig.id || sig.signal_id || sig.name || '');
+      if (id && pattern.test(id)) bad.push(id);
+    });
+  });
+  return bad;
 }
 
 export class SemanticPacketLoader {
@@ -98,11 +115,16 @@ export class SemanticPacketLoader {
       }
 
       // 2. Metric Definition Overlay (The senior architect's required fix)
-      if (metricId) {
-        return this.applyMetricOverlay(basePacket, registryRoot, domain, metricId);
+      const packetToReturn = metricId
+        ? this.applyMetricOverlay(basePacket, registryRoot, domain, metricId)
+        : basePacket;
+
+      const negated = detectNegatedSignalIds(packetToReturn.signals);
+      if (negated.length > 0) {
+        throw new Error(`Negated signal IDs are forbidden in registry definitions: ${negated.join(', ')}`);
       }
-      
-      return basePacket;
+
+      return packetToReturn;
     } catch (error: any) {
       console.error(`❌ Failed to load Semantic Packet for ${domain}: ${error.message}`);
       return null;
@@ -154,7 +176,12 @@ export class SemanticPacketLoader {
               ...overlaidPacket.metrics[metricId],
               metric_name: defRules.description || overlaidPacket.metrics[metricId]?.metric_name,
               review_questions: questions.length > 0 ? questions : overlaidPacket.metrics[metricId]?.review_questions,
-              signal_groups: overlaidPacket.metrics[metricId]?.signal_groups // Keep base groups if missing
+              signal_groups: overlaidPacket.metrics[metricId]?.signal_groups, // Keep base groups if missing
+              rule_in_criteria: defRules.rule_in_criteria,
+              rule_out_criteria: defRules.rule_out_criteria,
+              ambiguity_triggers: defRules.ambiguity_triggers,
+              exclusion_criteria: defRules.exclusion_criteria,
+              exception_criteria: defRules.exception_criteria
           };
           console.log(`   → Overlaid metric metadata from review_rules.json (${questions.length} questions)`);
       }
@@ -176,7 +203,8 @@ export class SemanticPacketLoader {
             const rawId = group.group_id.toLowerCase();
             const targetId = groupIdMap[rawId] || rawId;
             
-            const specializedSignals = group.signals?.map((s: any) => s.description) || [];
+            // Preserve full objects, do not flatten to description
+            const specializedSignals = group.signals || [];
             
             if (specializedSignals.length > 0) {
                 overlaidPacket.signals[targetId] = specializedSignals;

@@ -6,8 +6,7 @@ import {
   GenerationScenario,
   TaskScenarioConfig,
   TaskScenario,
-  AutoDeriveConfig,
-  DRExpectation
+  Intent
 } from '../EvalsFactory/dataset/BatchStrategy';
 
 const argv = process.argv.slice(2);
@@ -97,126 +96,43 @@ function loadSemanticDefinitions(domain: string, metricId: string): SemanticDefi
 }
 
 /**
- * Generate task-specific DR expectation for doubt scenarios
- */
-function generateDRExpectation(task: string, trigger: AmbiguityTrigger): DRExpectation {
-  const keywords = trigger.search_hints || [trigger.trigger_id.replace(/_/g, ' ')];
-
-  switch (task) {
-    case 'clinical_review_plan':
-      return {
-        should_escalate: true,
-        expected_concern_keywords: keywords
-      };
-    case 'event_summary':
-      return {
-        should_flag_incomplete: true
-      };
-    case 'signal_enrichment':
-      return {
-        expected_signal_gap: true,
-        uncertainty_keywords: ['unclear', 'unspecified', 'not documented', ...keywords]
-      };
-    case 'followup_questions':
-      return {
-        should_probe_ambiguity: true,
-        probe_keywords: keywords
-      };
-    default:
-      return { should_escalate: true };
-  }
-}
-
-/**
- * Auto-derive scenarios from semantic definitions using DuetDoubt formula
+ * Auto-derive scenarios from semantic definitions using Balanced 50 matrix
  */
 function deriveTaskScenarios(
   semantics: SemanticDefinitions,
-  archetype: string,
-  config: AutoDeriveConfig
+  archetype: string
 ): Record<string, TaskScenarioConfig> {
   const taskScenarios: Record<string, TaskScenarioConfig> = {};
+
+  // Slice distribution for "Balanced 50"
+  const slices = [
+    { intent: 'KNOWLEDGE', count: 20, description: "Registry Coverage: specific signal detection" },
+    { intent: 'AMBIGUITY', count: 15, description: "Dissonance: conflicting notes (Affirm/Deny)" },
+    { intent: 'SAFETY', count: 10, description: "Hard Negatives: distractor symptoms and out-of-window cases" },
+    { intent: 'SYNTHESIS', count: 5, description: "Timeline: POD calculation and primary/return linking" }
+  ];
 
   for (const taskId of TASK_IDS) {
     const scenarios: TaskScenario[] = [];
 
-    // Pass scenarios: one per signal group
-    semantics.signal_groups.forEach((group, idx) => {
-      for (let i = 0; i < config.pass_per_signal_group; i++) {
+    slices.forEach(slice => {
+      for (let i = 0; i < slice.count; i++) {
+        const signal = semantics.signal_groups[i % semantics.signal_groups.length];
+
         scenarios.push({
-          id: `${taskId}_pass_${group.group_id}_${i + 1}`,
-          type: 'pass',
-          description: `Clear ${group.display_name} documentation - all required signals present`,
+          id: `${taskId}_${slice.intent.toLowerCase()}_${i + 1}`,
+          type: slice.intent === 'AMBIGUITY' ? 'doubt' : (i % 2 === 0 ? 'pass' : 'fail'),
+          description: `${slice.description} using ${signal?.display_name || 'core'} definitions.`,
           archetype,
-          signals: Object.fromEntries(
-            group.signals.filter(s => s.required).map(s => [s.signal_id, 'present'])
-          )
+          contract: {
+            intents: [slice.intent as Intent]
+          } as any
         });
       }
     });
-
-    // Fail scenarios: one per signal group (missing required signals)
-    semantics.signal_groups.forEach((group, idx) => {
-      for (let i = 0; i < config.fail_per_signal_group; i++) {
-        scenarios.push({
-          id: `${taskId}_fail_${group.group_id}_${i + 1}`,
-          type: 'fail',
-          description: `Missing ${group.display_name} - required signals absent or problematic`,
-          archetype,
-          signals: Object.fromEntries(
-            group.signals.filter(s => s.required).map(s => [s.signal_id, 'absent'])
-          )
-        });
-      }
-    });
-
-    // Doubt scenarios: one per ambiguity trigger
-    semantics.ambiguity_triggers.forEach((trigger, idx) => {
-      for (let i = 0; i < config.doubt_per_ambiguity_trigger; i++) {
-        scenarios.push({
-          id: `${taskId}_doubt_${trigger.trigger_id}_${i + 1}`,
-          type: 'doubt',
-          description: trigger.description,
-          archetype,
-          doubt: [{
-            type: 'ambiguity',
-            instruction: trigger.reviewer_prompt || trigger.description
-          }],
-          doubt_recognition: generateDRExpectation(taskId, trigger)
-        });
-      }
-    });
-
-    // Ensure minimum doubt ratio
-    const totalScenarios = scenarios.length;
-    const doubtScenarios = scenarios.filter(s => s.type === 'doubt').length;
-    const currentRatio = doubtScenarios / totalScenarios;
-
-    if (currentRatio < config.minimum_doubt_ratio && totalScenarios > 0) {
-      const targetDoubt = Math.ceil(totalScenarios * config.minimum_doubt_ratio);
-      const additionalDoubt = targetDoubt - doubtScenarios;
-
-      // Add additional doubt scenarios by cycling through triggers
-      for (let i = 0; i < additionalDoubt; i++) {
-        const trigger = semantics.ambiguity_triggers[i % semantics.ambiguity_triggers.length];
-        if (trigger) {
-          scenarios.push({
-            id: `${taskId}_doubt_extra_${i + 1}`,
-            type: 'doubt',
-            description: `Edge case: ${trigger.description}`,
-            archetype,
-            doubt: [{
-              type: 'ambiguity',
-              instruction: trigger.reviewer_prompt || trigger.description
-            }],
-            doubt_recognition: generateDRExpectation(taskId, trigger)
-          });
-        }
-      }
-    }
 
     taskScenarios[taskId] = {
-      description: `Scenarios for ${taskId} task`,
+      description: `Balanced 50 suite for ${taskId}`,
       output_schema: `${taskId}_output.schema.json`,
       scenarios
     };
@@ -285,15 +201,7 @@ try {
     // Auto-derive mode: use semantic definitions
     console.log(`   Auto-deriving from ${semantics.signal_groups.length} signal groups and ${semantics.ambiguity_triggers.length} ambiguity triggers`);
 
-    const autoConfig: AutoDeriveConfig = {
-      enabled: true,
-      pass_per_signal_group: 1,
-      fail_per_signal_group: 1,
-      doubt_per_ambiguity_trigger: 1,
-      minimum_doubt_ratio: 0.20
-    };
-
-    const taskScenarios = deriveTaskScenarios(semantics, primaryArchetype, autoConfig);
+    const taskScenarios = deriveTaskScenarios(semantics, primaryArchetype);
 
     // Count total scenarios
     const flattened = Object.values(taskScenarios).flatMap(ts => ts.scenarios);
@@ -304,7 +212,6 @@ try {
       metric_id: METRIC_ID,
       domain: domain,
       task_scenarios: taskScenarios,
-      auto_derive: autoConfig,
       coverage_goals: {
         signal_groups: semantics.signal_groups.length,
         min_scenarios: totalScenarios,

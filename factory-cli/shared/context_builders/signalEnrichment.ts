@@ -1,39 +1,35 @@
 // Source: factory-cli/PlanningFactory/prompts/signalEnrichment.ts
-// Migrated to Shared Library for use by Planning, Evals, and Schema Factories.
+// Migrated to Shared Library
 
 export function getSignalEnrichmentVariables(context: any): Record<string, string> {
   const { ortho_context, archetypes } = context;
   const metric = ortho_context?.metric;
-  
-  // Use 'archetypes' (plural) from context, fallback to primary if only one exists
   const activeArchetypes = Array.isArray(archetypes) ? archetypes : [context.archetype];
-
   const signalGroupIds = metric?.signal_groups || ['delay_drivers', 'outcome_risks', 'safety_signals', 'documentation_gaps'];
 
-  // Enhanced Signal Definitions: Expand group IDs into detailed lists of signals
   const expandedSignalGroups = signalGroupIds.map((gid: string) => {
       const groupSignals = ortho_context?.signals?.[gid] || [];
-      const signalList = groupSignals.map((s: any) => 
-          typeof s === 'string' ? s : (s.description || s.name || s.signal_id)
-      ).join('\n  - ');
+      const signalList = groupSignals.map((s: any) => {
+          if (typeof s === 'string') return s;
+          const desc = s.description || s.name || s.signal_id;
+          const id = s.id || s.signal_id;
+          return id ? `[${id}] ${desc}` : desc;
+      }).join('\n  - ');
       return `${gid}:\n  - ${signalList}`;
-  });
+  }).join('\n- ');
 
   const riskFactorInstructions = (metric?.risk_factors || []).map((rf: string, idx: number) =>
     `${idx + 1}. Look for evidence related to: ${rf}`
-  ).join('\n');
+  ).join('\n') || '1. Key clinical events';
 
   const reviewQuestionGuidance = (metric?.review_questions || []).map((rq: string) =>
     `- Extract signals that help answer: "${rq}"`
-  ).join('\n');
+  ).join('\n') || '- Extract signals';
 
   const metricName = metric?.metric_name || 'the specified clinical metric';
   const clinicalFocus = metric?.clinical_focus || 'clinical quality and safety';
 
-  // Build aggregate archetype priorities for all active archetypes
   const priorityBlocks: string[] = [];
-  
-  // Tagging instruction for the LLM
   const taggingInstruction = `
 ### CRITICAL: TAGGING RULE (For UI Filtering)
 - You MUST populate the "tags" array for EVERY signal you extract.
@@ -65,7 +61,19 @@ PREVENTABILITY SIGNALS (Archetype: Preventability_Detective):
 - Bundle compliance and protocol adherence evidence
 - Infection prevention measures and gaps
 - Root cause indicators for adverse events
-- Modifiable risk factors present or addressed`);
+- Modifiable risk factors present or addressed
+
+SIGNS VS DIAGNOSIS:
+1. **Prefer Signs:** Focus on symptoms and findings. Never output diagnosis signals (e.g., [surgical_site_infection]) unless the source text explicitly states the diagnosis.
+2. **Mandatory ID Mapping:** Even if a sign appears benign or non-infectious, you MUST still emit the canonical signal ID if the finding is present.
+   - *Exemplar:* If "redness" or "serous drainage" is noted, emit [wound_drainage_erythema] even if the note says "healing well".
+3. **Clinical Mapping Rules:**
+   - Map ANY mention of "readmitted", "back in ED", "return to hospital", or "presented to ER" to [unplanned_admission].
+   - **MANDATORY:** If the narrative describes any return to care (ED, OR, or Admitted), you MUST output the [unplanned_admission] signal.
+   - Map ANY mention of "preoperative antibiotics", "Ancef", "Cefazolin", or "Vanco" timing to [antibiotic_prophylaxis_timing].
+4. **ZERO-PARAPHRASE RULE:** Provenance must be an EXACT substring copy. If you summarize (e.g., "no signs of infection" instead of quoting "incision clean"), the clinical audit will FAIL.
+5. **GRANULARITY RULE:** Every signal entry MUST represent exactly ONE clinical finding. Do NOT combine findings (e.g., "fever and redness") into a single signal entry. Create separate entries for each.
+6. **Tie-Breaker:** If both a sign-signal and diagnosis-signal seem applicable, choose the **more specific sign** signal.`);
     } else if (arch === 'Exclusion_Hunter') {
       priorityBlocks.push(`
 EXCLUSION CRITERIA SIGNALS (Archetype: Exclusion_Hunter):
@@ -76,14 +84,22 @@ EXCLUSION CRITERIA SIGNALS (Archetype: Exclusion_Hunter):
   }
 
   const archetypePriorities = priorityBlocks.join('\n');
+  const duetPersona = `You are acting as a ${context.primary_archetype || 'Clinical_Reviewer'} for ${context.domain || 'Medical'} reviews.`;
+  const ambiguityHandling = `If you encounter conflicting data (e.g., Physician Note says "Infection", Nursing Note says "No Infection"):
+  1. Extract BOTH findings as separate signals.
+  2. Preserve the provenance for each.
+  3. Do NOT attempt to synthesize or resolve the conflict unless one note explicitly corrects the other (e.g. "Correction: previous note error").
+  4. Tag these signals with "Ambiguity_Trigger".`;
 
   return {
-    riskFactorInstructions: riskFactorInstructions || '1. Key clinical events and their timing\n2. Risk indicators and safety signals\n3. Documentation completeness\n4. Outcome-relevant findings',
-    signalGroupIds: expandedSignalGroups.join('\n- '), // Now contains full details
+    riskFactorInstructions,
+    signalGroupIds: expandedSignalGroups,
     signalGroupIdsComma: signalGroupIds.join(', '),
     metricName,
     clinicalFocus,
-    reviewQuestionGuidance: reviewQuestionGuidance || '- Extract signals that help determine metric compliance\n- Identify timing-related evidence\n- Note any documentation gaps',
-    archetypePriorities
+    reviewQuestionGuidance,
+    archetypePriorities,
+    duetPersona,
+    ambiguityHandling
   };
 }

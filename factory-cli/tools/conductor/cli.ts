@@ -4,7 +4,7 @@ import * as path from 'path';
 import { spawnSync } from 'child_process';
 import { CampaignManifest, FlightContext, TrackStep } from './types';
 import { TRACKS } from './tracks';
-import { MISSIONS } from '../missions';
+import { MISSIONS } from './missions';
 
 const argv = process.argv.slice(2);
 const command = argv[0];
@@ -109,6 +109,21 @@ function executeStep(step: TrackStep, flight: FlightContext) {
     '{{input_plan}}': flight.artifacts.plan || ''
   };
 
+  if (process.env.DEMO_MODE === '1' && step.outputArtifact) {
+    let demoArtifactPath = step.outputArtifact;
+    Object.keys(vars).forEach(v => {
+      demoArtifactPath = demoArtifactPath.replace(v, vars[v]);
+    });
+    if (fs.existsSync(demoArtifactPath)) {
+      console.log(`   [DEMO_MODE] Using cached artifact: ${demoArtifactPath}`);
+      if (demoArtifactPath.endsWith('plan.json')) flight.artifacts.plan = demoArtifactPath;
+      if (demoArtifactPath.endsWith('strategy.json')) flight.artifacts.strategy = demoArtifactPath;
+      if (demoArtifactPath.endsWith('test_cases.json')) flight.artifacts.testCases = demoArtifactPath;
+      if (demoArtifactPath.endsWith('eval_report.json')) flight.artifacts.evalReport = demoArtifactPath;
+      return;
+    }
+  }
+
   const finalArgs = mission.args.map(arg => {
     // 1. Check if this arg is a key in step.args (e.g. "{{metric}}")
     if (step.args && step.args[arg]) {
@@ -141,7 +156,10 @@ function executeStep(step: TrackStep, flight: FlightContext) {
   }
 
   if (step.outputArtifact) {
-    const artifactPath = step.outputArtifact.replace('{{runDir}}', vars['{{runDir}}']);
+    let artifactPath = step.outputArtifact;
+    Object.keys(vars).forEach(v => {
+      artifactPath = artifactPath.replace(v, vars[v]);
+    });
     
     if (!fs.existsSync(artifactPath)) {
        throw new Error(`Expected artifact not found: ${artifactPath}`);

@@ -1,0 +1,63 @@
+{
+  "type": "object",
+  "properties": {
+    "signal_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "group_id": {
+            "type": "string",
+            "description": "One of: delay_drivers, outcome_risks, safety_signals, documentation_gaps"
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "signal_id": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "evidence_type": {
+                  "type": "string",
+                  "enum": [
+                    "verbatim_text",
+                    "structured_field"
+                  ]
+                },
+                "provenance": {
+                  "type": "string",
+                  "description": "EXACT copy-paste from chart ONLY"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Archetype tags"
+                }
+              },
+              "required": [
+                "signal_id",
+                "description",
+                "evidence_type",
+                "provenance",
+                "tags"
+              ]
+            }
+          }
+        },
+        "required": [
+          "group_id",
+          "signals"
+        ]
+      }
+    }
+  },
+  "required": [
+    "signal_groups"
+  ]
+}

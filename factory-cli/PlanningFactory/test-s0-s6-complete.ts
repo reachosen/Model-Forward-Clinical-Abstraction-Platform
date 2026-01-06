@@ -86,7 +86,7 @@ async function testCompletePipeline(testCase: { name: string; input: PlanningInp
     // S6: Plan Assembly & Global Validation
     console.log('\n🔹 Stage 6: Plan Assembly & Global Validation');
     const s6 = new S6_PlanAssemblyStage();
-    const plan = await s6.execute(skeleton, taskResults, domainContext);
+    const plan = await s6.execute(skeleton, taskResults, domainContext, testCase.input, promptPlan);
     const s6Validation = s6.validate(plan, domainContext);
     const s6Gate = ValidationFramework.enforceGate('S6', s6Validation);
     console.log(s6Gate.message);
@@ -104,7 +104,7 @@ async function testCompletePipeline(testCase: { name: string; input: PlanningInp
     console.log(`  All Archetypes: ${domainContext.archetypes.join(', ')}`);
     console.log(`  Signal Groups: ${plan.clinical_config.signals.signal_groups.length}`);
     console.log(`  Total Signals: ${plan.clinical_config.signals.signal_groups.reduce((sum, g) => sum + (g.signals?.length || 0), 0)}`);
-    console.log(`  Clinical Tools: ${plan.clinical_config.clinical_tools.length}`);
+    console.log(`  Clinical Tools: ${plan.clinical_config.clinical_tools?.length || 0}`);
     // Event summary is no longer pre-generated, so we don't log it here
     console.log(`  Event Summary: (Runtime Generated)`);
     

@@ -17,6 +17,15 @@ export interface TaskLLMConfig {
  * These are observation-friendly and do not change behavior when unset.
  */
 export const TASK_LLM_CONFIGS: Record<string, TaskLLMConfig> = {
+  exclusion_check: {
+    task_id: 'exclusion_check',
+    model: 'gpt-4o-mini',
+    temperature: 0.1,  // Low temp for deterministic exclusion decision
+    max_tokens: 800,
+    context_policy: 'exclusion_first',
+    prompt_template_id: 'exclusion_check',
+    description: 'Early gate: determine if case should be excluded from denominator',
+  },
   signal_enrichment: {
     task_id: 'signal_enrichment',
     model: 'gpt-4o-mini',

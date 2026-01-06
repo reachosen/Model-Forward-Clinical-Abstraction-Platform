@@ -2,12 +2,12 @@
   "$schema": "../../../_shared/definitions/signal_groups.schema.json",
   "metric_id": "I32a",
   "version": "1.0",
-  "description": "Signal groups for I32a Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+  "description": "Signal groups for I32a Idiopathic scoliosis \u00e2\u20ac\u201c 30-day unplanned admission and return to OR",
   "signal_groups": [
     {
       "group_id": "INFECTION_RISKS",
       "display_name": "Infection Risks",
-      "description": "Signals related to infection risks for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+      "description": "Signals related to infection risks for Idiopathic scoliosis \u00e2\u20ac\u201c 30-day unplanned admission and return to OR",
       "priority": 1,
       "signals": [
         {
@@ -63,7 +63,7 @@
     {
       "group_id": "BUNDLE_COMPLIANCE",
       "display_name": "Bundle Compliance",
-      "description": "Signals related to bundle compliance for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+      "description": "Signals related to bundle compliance for Idiopathic scoliosis \u00e2\u20ac\u201c 30-day unplanned admission and return to OR",
       "priority": 2,
       "signals": [
         {
@@ -119,7 +119,7 @@
     {
       "group_id": "OUTCOME_RISKS",
       "display_name": "Outcome Risks",
-      "description": "Signals related to outcome risks for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+      "description": "Signals related to outcome risks for Idiopathic scoliosis \u00e2\u20ac\u201c 30-day unplanned admission and return to OR",
       "priority": 3,
       "signals": [
         {
@@ -175,7 +175,7 @@
     {
       "group_id": "READMISSION_RISKS",
       "display_name": "Readmission Risks",
-      "description": "Signals related to readmission risks for Idiopathic scoliosis – 30-day unplanned admission and return to OR",
+      "description": "Signals related to readmission risks for Idiopathic scoliosis \u00e2\u20ac\u201c 30-day unplanned admission and return to OR",
       "priority": 4,
       "signals": [
         {
@@ -241,7 +241,10 @@
           "id": "surgical_site_infection",
           "name": "Surgical Site Infection (SSI)",
           "description": "SSIs are a critical outcome measure for surgical quality and must be tracked for preventability analysis.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "found to be due to a viral upper respiratory infection, not related to the surgical site"
+          ]
         },
         {
           "id": "pre_op_warming_documented",
@@ -253,19 +256,36 @@
           "id": "antibiotic_prophylaxis_timing",
           "name": "Antibiotic Prophylaxis Administered Within 60 Minutes",
           "description": "Timely administration of antibiotic prophylaxis is crucial for SSI prevention, aligning with NHSN and surgical best practices.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "Antibiotic prophylaxis was not administered within the recommended time frame prior to incision.",
+            "antibiotic prophylaxis was not administered timely",
+            "potential delay in antibiotic prophylaxis timing during the initial surgery",
+            "found it was delayed, potentially contributing to the infection.",
+            "Antibiotics were administered within the appropriate timeframe before the procedure."
+          ]
         },
         {
           "id": "unplanned_admission",
           "name": "Unplanned Admission",
           "description": "Unplanned admissions can indicate complications or preventability issues, important for quality assessment.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "developed wheezing and shortness of breath, likely due to underlying asthma exacerbation",
+            "complaining of a headache, which was determined to be secondary to dehydration",
+            "rather than any surgical complications",
+            "unrelated to her orthopedic procedure",
+            "not related to her scoliosis surgery"
+          ]
         },
         {
           "id": "discharge_instructions_clarity",
           "name": "Discharge Instructions Unclear",
           "description": "Clear discharge instructions are essential for patient safety and reducing readmissions, as per quality care standards.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "Patient states they did not receive clear discharge instructions on wound care"
+          ]
         },
         {
           "id": "absence_of_perfusion_checks",
@@ -277,7 +297,10 @@
           "id": "loss_of_reduction_requiring_reoperation",
           "name": "Loss of Reduction Requiring Re-operation",
           "description": "Loss of reduction is a significant complication that may necessitate re-operation, impacting patient outcomes.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "does not need reoperation"
+          ]
         },
         {
           "id": "neurovascular_exam_pre_op_post_op",
@@ -301,7 +324,11 @@
           "id": "pain_management_plan_documentation",
           "name": "Pain Management Plan Documentation",
           "description": "Documenting pain management plans is critical for patient comfort and recovery, and is a standard care practice.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "pain management plan was not adequately communicated during discharge",
+            "The pain management plan was inadequate, lacking sufficient opioid prescriptions."
+          ]
         },
         {
           "id": "neurovascular_exam_post_op",
@@ -336,19 +363,36 @@
           "id": "surgical_pause_documented",
           "name": "Surgical Pause Documented",
           "description": "Documenting the surgical pause is crucial for ensuring all safety checks are completed before surgery, reducing preventable errors.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "intraoperative checks were insufficient and not properly logged in the surgical notes."
+          ]
         },
         {
           "id": "discharge_instructions_unclear",
           "name": "Discharge Instructions Unclear",
           "description": "Clear discharge instructions are essential for patient recovery and preventing readmissions or complications.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "discharge plan did not adequately address respiratory exercises",
+            "Discharge instructions were vague, leading to confusion about medication regimen",
+            "ready for discharge; all discharge instructions have been provided",
+            "inadequate bowel regimen instructions prior to discharge",
+            "unclear instructions about respiratory exercises and ambulation"
+          ]
         },
         {
           "id": "antibiotic_prophylaxis_timing",
           "name": "Antibiotic Prophylaxis Administered Within 60 Minutes",
           "description": "Timely administration of antibiotic prophylaxis is crucial for preventing SSIs, aligning with best practice guidelines.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "Antibiotic prophylaxis was not administered within the recommended time frame prior to incision.",
+            "antibiotic prophylaxis was not administered timely",
+            "potential delay in antibiotic prophylaxis timing during the initial surgery",
+            "found it was delayed, potentially contributing to the infection.",
+            "Antibiotics were administered within the appropriate timeframe before the procedure."
+          ]
         }
       ]
     },
@@ -359,12 +403,34 @@
           "id": "unplanned_admission",
           "name": "Unplanned Admission",
           "description": "Unplanned admissions post-surgery can indicate complications or preventable issues that need to be addressed.",
-          "evidence_type": "L2"
+          "evidence_type": "L2",
+          "deny_templates": [
+            "developed wheezing and shortness of breath, likely due to underlying asthma exacerbation",
+            "complaining of a headache, which was determined to be secondary to dehydration",
+            "rather than any surgical complications",
+            "unrelated to her orthopedic procedure",
+            "not related to her scoliosis surgery"
+          ]
         },
         {
           "id": "surgical_site_infection",
           "name": "Surgical Site Infection (SSI)",
           "description": "Identifying SSIs is crucial for assessing surgical outcomes and preventability.",
+          "evidence_type": "L2",
+          "deny_templates": [
+            "found to be due to a viral upper respiratory infection, not related to the surgical site"
+          ]
+        },
+        {
+          "id": "gi_complication",
+          "name": "GI Complication (alias)",
+          "description": "Alias for GI complication ileus/obstruction.",
+          "evidence_type": "L2"
+        },
+        {
+          "id": "GI_complication",
+          "name": "GI Complication (alias)",
+          "description": "Alias for GI complication ileus/obstruction.",
           "evidence_type": "L2"
         }
       ]

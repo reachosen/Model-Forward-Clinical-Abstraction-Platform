@@ -1,3 +1,5 @@
+import { CaseContract } from '../dataset/BatchStrategy';
+
 export type Archetype =
   | 'Process_Auditor'
   | 'Preventability_Detective'
@@ -7,11 +9,21 @@ export type Archetype =
   | 'Documentation_Gap'
   | string; // future extensions
 
+export interface ExtractedSignal {
+  signal_id?: string;
+  name?: string;
+  description?: string;
+  provenance: string;
+  tags?: string[];
+  polarity?: string;
+}
+
 export interface TestCase {
   test_id: string;
   concern_id: string;
   description: string;
   patient_payload: string;
+  contract?: CaseContract; // New rigorous contract
   expectations: {
     signal_generation: {
       must_find_signals: string[];
@@ -35,6 +47,7 @@ export interface EngineOutput {
   raw_input: string;
   summary: string;
   signals: string[];
+  signal_objects?: ExtractedSignal[]; // Structured output
   followup_questions: string[];
   enrichment_20_80?: any;
   model_name?: string;

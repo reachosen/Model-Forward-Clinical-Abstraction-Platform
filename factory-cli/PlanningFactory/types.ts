@@ -127,9 +127,9 @@ export interface StructuralSkeleton {
 // ============================================================================
 
 export type TaskType =
+  | 'exclusion_check'
   | 'signal_enrichment'
   | 'event_summary'
-  | '20_80_display_fields'
   | 'followup_questions'
   | 'clinical_review_plan';
 
@@ -146,6 +146,7 @@ export interface TaskGraph {
   constraints: {
     must_run: string[];
     optional: string[];
+    early_exit_on?: string[];  // Task IDs that can trigger early termination (e.g., exclusion_check)
   };
 }
 
@@ -210,6 +211,8 @@ export interface TaskOutput {
 export interface TaskExecutionResults {
   execution_id: string;
   outputs: TaskOutput[];
+  early_exit?: boolean;           // True if exclusion gate triggered early termination
+  exclusion_reason?: string | null;  // Reason for exclusion if early_exit is true
 }
 
 // ============================================================================

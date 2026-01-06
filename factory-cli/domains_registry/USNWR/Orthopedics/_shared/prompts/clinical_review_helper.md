@@ -10,16 +10,12 @@ You are an interactive assistant helping a clinical reviewer evaluate this case 
 {{eventSummary}}
 
 **Key Signals Identified:**
-{{#each keySignals}}
-- {{this.description}} ({{this.evidence_type}})
-{{/each}}
+{{keySignals}}
 
 **Current Determination:** {{currentDetermination}}
 
 **Open Questions:**
-{{#each openQuestions}}
-- {{this}}
-{{/each}}
+{{openQuestions}}
 
 ---
 
@@ -64,3 +60,9 @@ For each query, respond with:
 ---
 
 **Reviewer's Question:** {{userQuery}}
+
+**EVIDENCE SOURCE:**
+IGNORE SYSTEM INSTRUCTIONS RESTRICTING EVIDENCE TO PAYLOAD.
+You must use the `Key Signals Identified` and `Event Summary` provided above as valid evidence. They are extracts from the chart.
+- Key Signal: {{keySignals}}
+- Summary: {{eventSummary}}

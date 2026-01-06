@@ -73,9 +73,36 @@ interface DomainSignals {
 
 interface DerivedSignal {
   signal_id: string;
+  legacy_id?: string;
+  display_label: string;
   description: string;
   evidence_type: 'verbatim_text' | 'structured_field';
   required: boolean;
+  detection_mode?: {
+    target_polarity: 'negative' | 'positive';
+    trigger_phrases?: string[];
+  };
+}
+
+interface IdRegistryMapping {
+  exact_phrase?: string;
+  phrase_pattern?: string;
+  canonical_id: string;
+  polarity: 'negative' | 'positive';
+  legacy_id?: string;
+  description?: string;
+}
+
+interface IdRegistryPattern {
+  match: string;
+  prefix?: string;
+  suffix?: string;
+  polarity: 'negative' | 'positive';
+}
+
+interface IdRegistry {
+  mappings: IdRegistryMapping[];
+  patterns: IdRegistryPattern[];
 }
 
 interface DerivedSignalGroup {
@@ -88,6 +115,7 @@ interface DerivedSignalGroup {
 
 interface DerivedSignalGroups {
   $schema: string;
+  _warning?: string;
   metric_id: string;
   version: string;
   description: string;
@@ -119,6 +147,7 @@ interface RuleInCriteria {
 
 interface DerivedReviewRules {
   $schema: string;
+  _warning?: string;
   metric_id: string;
   version: string;
   description: string;
@@ -175,19 +204,65 @@ function inferRequired(signal: string, category: string): boolean {
 function deriveSignalGroups(
   metricId: string,
   metricConfig: MetricConfig,
-  domainSignals: DomainSignals
+  domainSignals: DomainSignals,
+  idRegistry: IdRegistry
 ): DerivedSignalGroups {
   const signalGroups: DerivedSignalGroup[] = [];
 
   metricConfig.signal_groups.forEach((category, idx) => {
     const signals = domainSignals[category] || [];
 
-    const derivedSignals: DerivedSignal[] = signals.map(signal => ({
-      signal_id: toSnakeCase(signal.substring(0, 40)),
-      description: signal,
-      evidence_type: inferEvidenceType(signal),
-      required: inferRequired(signal, category)
-    }));
+    const derivedSignals: DerivedSignal[] = signals.map(signal => {
+      // Canonical Mapping Logic
+      let canonicalId = '';
+      let legacyId = '';
+      let polarity: 'positive' | 'negative' = 'positive'; // Default
+      let matched = false;
+
+      // 1. Exact Match
+      const exactMatch = idRegistry.mappings.find(m => m.exact_phrase === signal);
+      if (exactMatch) {
+        canonicalId = exactMatch.canonical_id;
+        legacyId = exactMatch.legacy_id || toSnakeCase(signal.substring(0, 40));
+        polarity = exactMatch.polarity;
+        matched = true;
+      } else {
+        // 2. Pattern Match (Fallback to heuristic)
+        // Check patterns
+        const patternMatch = idRegistry.patterns.find(p => signal.toLowerCase().includes(p.match));
+        if (patternMatch) {
+             const base = signal.toLowerCase().replace(patternMatch.match, '').trim();
+             const core = toSnakeCase(base);
+             canonicalId = (patternMatch.prefix || '') + core + (patternMatch.suffix || '');
+             polarity = patternMatch.polarity;
+             legacyId = toSnakeCase(signal.substring(0, 40));
+        } else {
+             // Default Fallback
+             canonicalId = toSnakeCase(signal.substring(0, 50));
+             legacyId = toSnakeCase(signal.substring(0, 40));
+        }
+      }
+
+      // Validation Rules (Phase 4)
+      if (canonicalId.match(/^(no_|not_|absence_|missing_)/)) {
+         console.warn(`   ⚠️  [Validation] Signal ID starts with negation: ${canonicalId} (Phrase: "${signal}") - Consider adding to id_registry.json`);
+      }
+      
+      const derived: DerivedSignal = {
+        signal_id: canonicalId,
+        legacy_id: legacyId !== canonicalId ? legacyId : undefined,
+        display_label: signal, // Original phrase
+        description: `Signal for ${signal}`,
+        evidence_type: inferEvidenceType(signal),
+        required: inferRequired(signal, category),
+        detection_mode: {
+            target_polarity: polarity,
+            trigger_phrases: [signal]
+        }
+      };
+      
+      return derived;
+    });
 
     signalGroups.push({
       group_id: category.toUpperCase(),
@@ -200,6 +275,7 @@ function deriveSignalGroups(
 
   return {
     $schema: '../../../_shared/definitions/signal_groups.schema.json',
+    _warning: "GENERATED FILE - DO NOT EDIT MANUALLY - See factory-cli/tools/derive-definitions.ts",
     metric_id: metricId,
     version: '1.0',
     description: `Signal groups for ${metricId} ${metricConfig.metric_name}`,
@@ -268,6 +344,7 @@ function deriveReviewRules(
 
   return {
     $schema: '../../../_shared/definitions/review_rules.schema.json',
+    _warning: "GENERATED FILE - DO NOT EDIT MANUALLY - See factory-cli/tools/derive-definitions.ts",
     metric_id: metricId,
     version: '1.0',
     description: `Rule-in/rule-out decision criteria for ${metricConfig.metric_name}`,
@@ -387,8 +464,22 @@ function processMetric(domain: string, metricId: string, metricsConfig: Record<s
   console.log(`   Primary archetype: ${metricConfig.primary_archetype}`);
   console.log(`   Signal groups: ${metricConfig.signal_groups.join(', ')}`);
 
+  // Load ID Registry
+  const registryPath = path.join(DOMAINS_REGISTRY, 'USNWR', domain, '_shared', 'id_registry.json');
+  let idRegistry: IdRegistry = { mappings: [], patterns: [] };
+  if (fs.existsSync(registryPath)) {
+    try {
+      idRegistry = JSON.parse(fs.readFileSync(registryPath, 'utf-8'));
+      console.log(`   Loaded ID Registry from ${registryPath}`);
+    } catch (e) {
+      console.warn(`   ⚠️  Failed to parse ID Registry: ${e}`);
+    }
+  } else {
+    console.warn(`   ⚠️  ID Registry not found at ${registryPath}. Canonical mapping disabled.`);
+  }
+
   // Derive definitions
-  const signalGroups = deriveSignalGroups(metricId, metricConfig, domainSignals);
+  const signalGroups = deriveSignalGroups(metricId, metricConfig, domainSignals, idRegistry);
   const reviewRules = deriveReviewRules(metricId, metricConfig);
 
   // Output path

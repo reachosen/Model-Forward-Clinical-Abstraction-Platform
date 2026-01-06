@@ -111,6 +111,32 @@ export function formatConsole(report: SAFEv0BatchReport, verbose: boolean = fals
   lines.push(`  Composite: ${colorize(formatScore(summary.mean_scores.composite), 'bright')}`);
   lines.push('');
 
+  // Intent-Based Scorecard (New)
+  if (report.by_intent && Object.keys(report.by_intent).length > 0) {
+    lines.push(colorize('Clinical Intent Scorecard:', 'bright'));
+    lines.push(colorize('-'.repeat(100), 'dim'));
+    lines.push(`  ${padRight('Intent', 12)} | ${padRight('Concept(CR)', 12)} | ${padRight('Evidence(AH)', 12)} | ${padRight('Calib(DR)', 12)} | ${padRight('Context(AC)', 12)} | Action`);
+    lines.push(colorize('-'.repeat(100), 'dim'));
+
+    for (const [name, stats] of Object.entries(report.by_intent)) {
+      const ahText = stats.ah_gate === 'PASS' ? colorize('PASS', 'green') : colorize(`FAIL (${(stats.evidence_fidelity_ah * 100).toFixed(0)}%)`, 'red');
+      const drText = stats.dr_gate === 'PASS' ? colorize('PASS', 'green') : colorize('FAIL', 'red');
+      const crColor = stats.concept_accuracy_cr >= 0.8 ? 'green' : 'yellow';
+      const acColor = stats.context_coverage_ac >= 0.8 ? 'green' : 'yellow';
+
+      lines.push(
+        `  ${padRight(name, 12)} | ` +
+        `${padRight(colorize((stats.concept_accuracy_cr * 100).toFixed(0) + '%', crColor), 12)} | ` +
+        `${padRight(ahText, 12)} | ` +
+        `${padRight(drText, 12)} | ` +
+        `${padRight(colorize((stats.context_coverage_ac * 100).toFixed(0) + '%', acColor), 12)} | ` +
+        `${stats.recommended_action}`
+      );
+    }
+    lines.push(colorize('-'.repeat(100), 'dim'));
+    lines.push('');
+  }
+
   // Per-case breakdown table
   lines.push(colorize('Per-Case Breakdown:', 'bright'));
   lines.push(colorize('-'.repeat(70), 'dim'));

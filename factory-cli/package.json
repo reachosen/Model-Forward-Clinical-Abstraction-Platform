@@ -27,6 +27,7 @@
     "missions": "ts-node MissionControl/browse-and-run.ts",
     "missions:browse": "ts-node MissionControl/browse-and-run.ts",
     "missions:process": "ts-node MissionControl/process-case.ts",
+    "demo:reset": "ts-node tools/demo-reset.ts",
     "test:semantic": "ts-node tests/semantic/semantic-contracts.test.ts",
     "context:load": "ts-node tools/init-llm-context.ts load",
     "context:list": "ts-node tools/init-llm-context.ts list",

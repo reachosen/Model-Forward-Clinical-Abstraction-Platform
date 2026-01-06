@@ -81,9 +81,31 @@ export const MISSIONS: Mission[] = [
   // EvalsFactory: Refinement
   // ===========================================================================
   {
+    id: 'eval:roundtrip',
+    owner: 'Evals',
+    title: 'Balanced 50 Roundtrip',
+    purpose: 'Full automated cycle: Derive Strategy -> Generate (S1) -> Audit (S2) -> Materialize Golden Set',
+    command: 'npx',
+    args: ['ts-node', 'tools/eval-roundtrip.ts', '{{metric}}'],
+    examples: [
+      { name: 'I32a Full Cycle', args: ['ts-node', 'tools/eval-roundtrip.ts', 'I32a'] },
+    ],
+  },
+  {
+    id: 'eval:task-check',
+    owner: 'Evals',
+    title: 'Eval Task Checklist',
+    purpose: 'Verify EvalTaskIndex steps are present (plan, prompts, strategy, batches/golden, SAFE, cert)',
+    command: 'npx',
+    args: ['ts-node', 'tools/eval-task-check.ts', '{{metric}}'],
+    examples: [
+      { name: 'I32a', args: ['ts-node', 'tools/eval-task-check.ts', 'I32a'] },
+    ],
+  },
+  {
     id: 'eval:status',
     owner: 'Evals',
-    title: 'QA Scorecard',
+    title: 'QA Status Overview',
     purpose: 'Show workflow state for a metric - what exists, where to resume',
     command: 'npx',
     args: ['ts-node', 'bin/planner.ts', 'eval:status', '--metric', '{{metric}}'],
@@ -91,6 +113,18 @@ export const MISSIONS: Mission[] = [
       { name: 'I25', args: ['ts-node', 'bin/planner.ts', 'eval:status', '--metric', 'I25'] },
       { name: 'I32a', args: ['ts-node', 'bin/planner.ts', 'eval:status', '--metric', 'I32a'] },
       { name: 'All', args: ['ts-node', 'bin/planner.ts', 'eval:status', '--all'] },
+    ],
+  },
+  {
+    id: 'eval:qa-scorecard',
+    owner: 'Evals',
+    title: 'Run QA Scorecard',
+    purpose: 'Generate high-fidelity clinical scorecard using Dual-Truth (CR/AH) logic',
+    command: 'npx',
+    args: ['ts-node', 'bin/planner.ts', 'safe:score', '--concern', '{{metric}}', '--batch', '{{batch}}', '--verbose'],
+    examples: [
+      { name: 'I32a Duet/Doubt', args: ['ts-node', 'bin/planner.ts', 'safe:score', '--concern', 'I32a', '--batch', 'duet_doubt_contract_test', '--verbose'] },
+      { name: 'I25 Golden Set', args: ['ts-node', 'bin/planner.ts', 'safe:score', '--concern', 'I25', '--batch', 'golden_set', '--verbose'] },
     ],
   },
   {

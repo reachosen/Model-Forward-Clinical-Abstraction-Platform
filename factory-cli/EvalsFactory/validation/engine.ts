@@ -143,10 +143,11 @@ export async function runI25Engine(input: {
 
     // Adapter: Flatten 'signal_groups' -> 'signals' array if using new schema
     let flattenedSignals: string[] = [];
+    let signalObjects: any[] = []; // Store full objects
+
     if (parsed.signal_groups && Array.isArray(parsed.signal_groups)) {
-      flattenedSignals = parsed.signal_groups.flatMap((group: any) => 
-        (group.signals || []).map((s: any) => s.provenance)
-      );
+      signalObjects = parsed.signal_groups.flatMap((group: any) => group.signals || []);
+      flattenedSignals = signalObjects.map((s: any) => s.name || s.signal_id || s.description || s.provenance);
     } else if (parsed.signals && Array.isArray(parsed.signals)) {
       // Fallback to old schema
       flattenedSignals = parsed.signals;
@@ -156,6 +157,7 @@ export async function runI25Engine(input: {
       raw_input: input.patient_payload,
       summary: parsed.summary || "Summary skipped in lean mode",
       signals: flattenedSignals,
+      signal_objects: signalObjects,
       followup_questions: parsed.followup_questions || [],
       enrichment_20_80: parsed.enrichment_20_80,
       model_name: EVAL_MODEL,

@@ -44,11 +44,13 @@ async function getEngine() {
 import {
   printReport,
   writeReport,
-  ReportFormat,
 } from '../validation/safeReporter';
 import { SAFEv0Scorecard } from '../../types/safety';
 import { Paths, resolveMetricPath } from '../../utils/pathConfig';
-import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
+import {
+  pruneGeneratedArtifacts,
+  updateStatusFromRun,
+} from '../../utils/statusManager';
 
 // ============================================
 // Live Pattern Detection
@@ -149,6 +151,11 @@ class PatternTracker {
   }
 }
 
+interface CapOverride {
+  reason: string;
+  expires_at?: string;
+}
+
 // ============================================
 // Batch File Loader
 // ============================================
@@ -182,8 +189,8 @@ async function loadBatchFiles(
   concernId: string,
   batchPattern: string,
   testDir: string
-): Promise<{ batchId: string; testCases: TestCase[]; archetypeMap: Map<string, string> }[]> {
-  const batches: { batchId: string; testCases: TestCase[]; archetypeMap: Map<string, string> }[] = [];
+): Promise<{ batchId: string; testCases: TestCase[]; archetypeMap: Map<string, string>; sourcePath: string; capOverride?: CapOverride }[]> {
+  const batches: { batchId: string; testCases: TestCase[]; archetypeMap: Map<string, string>; sourcePath: string; capOverride?: CapOverride }[] = [];
 
   // Read directory and filter by pattern
   let allFiles: string[];
@@ -217,6 +224,9 @@ async function loadBatchFiles(
 
     // Extract batch ID from filename
     const batchId = path.basename(fileName, '.json');
+    const capOverride = (data as any)?.metadata?.scenario_cap_exception
+      || (data as any)?.batch_plan?.metadata?.scenario_cap_exception
+      || undefined;
 
     // Build archetype map from batch_plan OR batch_strategy if available
     const archetypeMap = new Map<string, string>();
@@ -237,11 +247,46 @@ async function loadBatchFiles(
     );
 
     if (testCases.length > 0) {
-      batches.push({ batchId, testCases, archetypeMap });
+      batches.push({ batchId, testCases, archetypeMap, sourcePath: filePath, capOverride });
     }
   }
 
   return batches;
+}
+
+const SCENARIO_CAP_PER_TASK = 24;
+
+function enforceScenarioCap(
+  concernId: string,
+  batchId: string,
+  testCases: TestCase[],
+  sourcePath: string,
+  capOverride?: CapOverride
+): void {
+  const buckets = new Map<string, number>();
+
+  for (const tc of testCases) {
+    const task = (tc as any).task_id || (tc as any).task || 'default';
+    buckets.set(task, (buckets.get(task) || 0) + 1);
+  }
+
+  const now = Date.now();
+  for (const [task, count] of buckets.entries()) {
+    if (count <= SCENARIO_CAP_PER_TASK) continue;
+    if (capOverride) {
+      if (capOverride.expires_at) {
+        const expiresAt = Date.parse(capOverride.expires_at);
+        if (!Number.isNaN(expiresAt) && expiresAt < now) {
+          throw new Error(`Scenario cap override expired (${capOverride.expires_at}) for ${concernId}/${task} in ${sourcePath}`);
+        }
+      }
+      continue;
+    }
+    throw new Error(
+      `Scenario cap exceeded for ${concernId}/${task} in batch ${batchId}: ${count} > ${SCENARIO_CAP_PER_TASK} (source: ${sourcePath}). ` +
+      `Add a time-boxed governance override (metadata.scenario_cap_exception) or reduce cases.`
+    );
+  }
 }
 
 // ============================================
@@ -288,7 +333,7 @@ async function runSafeScore(options: {
   cases?: string;
   autoHeal?: boolean;
 }): Promise<number> {
-  const { concern, batch, output, format, strictAh, verbose, testDir, cases, autoHeal } = options;
+  const { concern, batch, output, strictAh, verbose, testDir, cases } = options;
 
   // Parse case filter if provided
   const caseFilter = cases ? new Set(cases.split(',').map(c => c.trim())) : null;
@@ -328,6 +373,16 @@ async function runSafeScore(options: {
     batches = batches.filter(b => b.testCases.length > 0);
   }
 
+  // Enforce scenario caps (with optional governance override)
+  try {
+    for (const batch of batches) {
+      enforceScenarioCap(concern, batch.batchId, batch.testCases, batch.sourcePath, batch.capOverride);
+    }
+  } catch (err: any) {
+    console.error(`Error: ${err.message}`);
+    return 3;
+  }
+
   const totalCases = batches.reduce((sum, b) => sum + b.testCases.length, 0);
   console.log(`  Found ${totalCases} test cases across ${batches.length} batch file(s)\n`);
 
@@ -342,94 +397,44 @@ async function runSafeScore(options: {
   // Score all test cases
   const allScorecards: SAFEv0Scorecard[] = [];
   let processedCount = 0;
+  const CONCURRENCY = 10;
 
   for (const { batchId, testCases, archetypeMap } of batches) {
-    console.log(`Processing batch: ${batchId}`);
+    console.log(`Processing batch: ${batchId} (${testCases.length} cases)`);
     
-    let retryCount = 0;
-    const MAX_RETRIES = 2;
+    // Process in parallel chunks
+    for (let i = 0; i < testCases.length; i += CONCURRENCY) {
+      const chunk = testCases.slice(i, i + CONCURRENCY);
+      
+      await Promise.all(chunk.map(async (testCase) => {
+        // Run engine (only debug print the very first case to avoid flood)
+        const isFirstCase = processedCount === 0;
+        const engineOutput = await runEngineForTestCase(testCase, verbose && isFirstCase);
 
-    for (let i = 0; i < testCases.length; i++) {
-      const testCase = testCases[i];
-      processedCount++;
-      process.stdout.write(`  [${processedCount}/${totalCases}] ${testCase.test_id}...`);
+        // Score the case
+        const scoreOptions: ScoreCaseOptions = {
+          strictAH: strictAh,
+          batchId,
+          archetype: archetypeMap.get(testCase.test_id) || null,
+        };
 
-      // Run engine
-      const engineOutput = await runEngineForTestCase(testCase, verbose);
+        const scorecard = scoreCase(testCase, engineOutput, scoreOptions);
+        allScorecards.push(scorecard);
+        processedCount++;
 
-      // Score the case
-      const scoreOptions: ScoreCaseOptions = {
-        strictAH: strictAh,
-        batchId,
-        archetype: archetypeMap.get(testCase.test_id) || null,
-      };
+        // Output short progress line
+        const labelColor = scorecard.label === 'Pass' ? '\x1b[32m' :
+                           scorecard.label === 'Review' ? '\x1b[33m' : '\x1b[31m';
+        const reset = '\x1b[0m';
+        const crScore = scorecard.scores.CR?.score ?? 0;
+        const ahScore = scorecard.scores.AH?.score ?? 0;
+        const pct = Math.round((processedCount / totalCases) * 100);
+        
+        process.stdout.write(`  [${processedCount}/${totalCases}] (${pct}%) ${testCase.test_id}: ${labelColor}${scorecard.label}${reset} (CR=${crScore.toFixed(2)}, AH=${ahScore.toFixed(2)})\n`);
 
-      const scorecard = scoreCase(testCase, engineOutput, scoreOptions);
-      allScorecards.push(scorecard);
-
-      // Output result
-      const labelColor = scorecard.label === 'Pass' ? '\x1b[32m' :
-                         scorecard.label === 'Review' ? '\x1b[33m' : '\x1b[31m';
-      const reset = '\x1b[0m';
-
-      // Build score string with optional DR for doubt scenarios
-      const crScore = scorecard.scores.CR?.score ?? 0;
-      const ahScore = scorecard.scores.AH?.score ?? 0;
-      const acScore = scorecard.scores.AC?.score ?? 0;
-      let scoreStr = `CR=${crScore.toFixed(2)}, AH=${ahScore.toFixed(2)}, AC=${acScore.toFixed(2)}`;
-
-      if (scorecard.scenario_type === 'doubt' && scorecard.scores.DR) {
-        const drScore = scorecard.scores.DR.score;
-        const drColor = drScore >= 1.0 ? '\x1b[32m' : drScore >= 0.5 ? '\x1b[33m' : '\x1b[31m';
-        scoreStr += `, ${drColor}DR=${drScore.toFixed(2)}${reset}`;
-      }
-
-      console.log(` ${labelColor}${scorecard.label}${reset} (${scoreStr})`);
-
-      // Track patterns and emit if threshold reached
-      const newPatterns = patternTracker.trackFailure(scorecard);
-      for (const pattern of newPatterns) {
-        console.log(`         ${pattern}`);
-      }
-
-      // INCREMENTAL AUTO-HEAL (Every 10 cases)
-      if (autoHeal && processedCount % 10 === 0) {
-          const recentChunk = allScorecards.slice(-10);
-          const recentFailures = recentChunk.filter(sc => sc.label === 'Fail').length;
-          
-          if (recentFailures > 0 && retryCount < MAX_RETRIES) {
-              console.log(`\n🚑 Incremental Auto-Heal triggered (${processedCount} cases processed, ${recentFailures} recent fails)...`);
-              
-              const partialReport = generateBatchReport(`${batchId}_partial_${processedCount}`, concern, allScorecards);
-              const partialPath = path.join(process.cwd(), 'validation_report_partial.json');
-              await fs.writeFile(partialPath, JSON.stringify(partialReport, null, 2), 'utf-8');
-
-              try {
-                  const { execSync } = require('child_process');
-                  const autoHealPath = path.resolve(__dirname, '../../tools/auto-heal.ts');
-                  execSync(`npx ts-node "${autoHealPath}" "${partialPath}"`, { stdio: 'inherit' });
-                  
-                  // CLEAR CACHE so next run sees the new config
-                  SemanticPacketLoader.getInstance().clearCache();
-                  
-                  console.log(`✅ Incremental heal complete. RETRYING previous 10 cases to verify fix (Retry ${retryCount + 1}/${MAX_RETRIES})...\n`);
-                  
-                  // Reset counters to re-run the current 10-case chunk
-                  allScorecards.splice(-10); // Remove the failed scores
-                  i -= 10;                  // Rewind the loop
-                  processedCount -= 10;     // Rewind processed count
-                  retryCount++;             // Increment retry for this block
-                  
-              } catch (healErr) {
-                  console.warn(`⚠️ Incremental heal failed (continuing):`, healErr);
-              }
-          } else if (recentFailures > 0) {
-              console.log(`\n⚠️  Max retries reached for this chunk. Continuing to next batch.`);
-              retryCount = 0; // Reset for next chunk
-          } else {
-              retryCount = 0; // Reset for next chunk
-          }
-      }
+        // Track patterns
+        patternTracker.trackFailure(scorecard);
+      }));
     }
     console.log('');
   }
@@ -452,9 +457,6 @@ async function runSafeScore(options: {
   const combinedBatchId = batches.length === 1 ? batches[0].batchId : `${concern}_combined`;
   const report = generateBatchReport(combinedBatchId, concern, allScorecards);
 
-  // Output report
-  const formatLower = format.toLowerCase() as ReportFormat;
-
   // Append to eval_journal.md (Audit Trail)
   try {
     const journalPath = path.join(testDir, '../../_shared/eval_journal.md');
@@ -473,37 +475,25 @@ async function runSafeScore(options: {
     console.warn(`  ⚠️  Failed to update journal: ${err}`);
   }
 
-  if (output) {
-    // Write to file(s)
-    if (formatLower === 'all') {
-      const basePath = output.replace(/\.[^.]+$/, '');
-      await writeReport(report, `${basePath}.json`, 'json');
-      await writeReport(report, `${basePath}.md`, 'markdown');
-      printReport(report, 'console', verbose, strictAh);
-      console.log(`\nReports written to:`);
-      console.log(`  JSON: ${basePath}.json`);
-      console.log(`  Markdown: ${basePath}.md`);
-    } else if (formatLower === 'json') {
-      await writeReport(report, output, 'json');
-      console.log(`\nReport written to: ${output}`);
-    } else if (formatLower === 'markdown') {
-      await writeReport(report, output, 'markdown');
-      console.log(`\nReport written to: ${output}`);
-    } else {
-      // Console format with output path - write JSON
-      await writeReport(report, output, 'json');
-      printReport(report, 'console', verbose, strictAh);
-      console.log(`\nReport written to: ${output}`);
-    }
-  } else {
-    // Print to stdout
-    if (formatLower === 'all') {
-      printReport(report, 'console', verbose, strictAh);
-    } else if (formatLower === 'json' || formatLower === 'markdown') {
-      printReport(report, formatLower, verbose, strictAh);
-    } else {
-      printReport(report, 'console', verbose, strictAh);
-    }
+  // Print to console
+  printReport(report, 'console', verbose, strictAh);
+
+  // Save to specified output OR default location
+  const reportPath = output || path.join(Paths.cliRoot(), 'validation_report.json');
+  await writeReport(report, reportPath, 'json');
+  console.log(`✅ Report saved to: ${reportPath}`);
+
+  // NEW: Save as metric-specific 'latest' for eval:status dashboard
+  const latestPath = path.join(Paths.cliRoot(), 'output', 'eval', `${concern}_latest.json`);
+  await writeReport(report, latestPath, 'json');
+  console.log(`Metric snapshot updated: ${latestPath}\n`);
+
+  // Update authoritative pointers and prune old generated artifacts (best-effort logging only)
+  try {
+    await updateStatusFromRun({ concernId: concern, safeLatestPath: latestPath });
+    await pruneGeneratedArtifacts({ concernId: concern });
+  } catch (err: any) {
+    console.warn(`  Warning: status/prune step failed: ${err.message}`);
   }
 
   // Determine exit code
@@ -547,7 +537,7 @@ export const safeScore = new Command('safe:score')
       // Force output path if auto-heal is enabled but no output specified
       let outputPath = options.output;
       if (options.autoHeal && !outputPath) {
-         outputPath = path.join(process.cwd(), 'validation_report.json');
+         outputPath = path.join(Paths.cliRoot(), 'validation_report.json');
       }
 
       const exitCode = await runSafeScore({

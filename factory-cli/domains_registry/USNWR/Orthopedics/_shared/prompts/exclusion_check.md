@@ -4,14 +4,10 @@
 Determine whether this case should be EXCLUDED from the denominator for metric: {{metricName}}
 
 **EXCLUSION CRITERIA:**
-{{#each exclusionCriteria}}
-- **{{this.exclusion_id}}**: {{this.description}}
-{{/each}}
+{{exclusionCriteria}}
 
 **EXCEPTION CRITERIA:**
-{{#each exceptionCriteria}}
-- **{{this.exception_id}}**: {{this.description}} (Adjustment: {{this.adjustment}})
-{{/each}}
+{{exceptionCriteria}}
 
 **WHAT YOU MUST DO:**
 Using ONLY the patient_payload, check each exclusion and exception criterion:
@@ -34,26 +30,50 @@ Using ONLY the patient_payload, check each exclusion and exception criterion:
 **REQUIRED JSON SCHEMA:**
 ```json
 {
-  "exclusion_check": {
-    "overall_status": "excluded | not_excluded | needs_review",
-    "exclusions_evaluated": [
-      {
-        "exclusion_id": "...",
-        "status": "met | not_met | unclear",
-        "evidence": "verbatim text or null",
-        "notes": "optional clarification"
-      }
-    ],
-    "exceptions_evaluated": [
-      {
-        "exception_id": "...",
-        "applies": true | false | "unclear",
-        "adjustment_applied": "description of adjustment or null",
-        "evidence": "verbatim text or null"
-      }
-    ],
-    "final_exclusion_reason": "string or null if not excluded"
-  }
+  "type": "object",
+  "properties": {
+    "exclusion_check": {
+      "type": "object",
+      "properties": {
+        "overall_status": {
+          "type": "string",
+          "enum": ["excluded", "not_excluded", "needs_review"]
+        },
+        "exclusions_evaluated": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "exclusion_id": { "type": "string" },
+              "status": {
+                "type": "string",
+                "enum": ["met", "not_met", "unclear"]
+              },
+              "evidence": { "type": ["string", "null"] },
+              "notes": { "type": "string" }
+            },
+            "required": ["exclusion_id", "status", "evidence"]
+          }
+        },
+        "exceptions_evaluated": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "exception_id": { "type": "string" },
+              "applies": { "type": "string", "description": "true | false | unclear" },
+              "adjustment_applied": { "type": ["string", "null"] },
+              "evidence": { "type": ["string", "null"] }
+            },
+            "required": ["exception_id", "applies", "evidence"]
+          }
+        },
+        "final_exclusion_reason": { "type": ["string", "null"] }
+      },
+      "required": ["overall_status", "exclusions_evaluated", "exceptions_evaluated", "final_exclusion_reason"]
+    }
+  },
+  "required": ["exclusion_check"]
 }
 ```
 

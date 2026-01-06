@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "followup_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 5,
+      "maxItems": 10
+    }
+  },
+  "required": [
+    "followup_questions"
+  ]
+}

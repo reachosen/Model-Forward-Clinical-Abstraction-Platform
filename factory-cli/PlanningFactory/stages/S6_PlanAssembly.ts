@@ -96,7 +96,6 @@ export class S6_PlanAssemblyStage {
         taskPrompts['event_summary'] = { template_ref: this.getTemplateRef(domain, 'event_summary'), output_schema_ref: 'Schema_PatientEventSummary' };
         taskPrompts['followup_questions'] = { template_ref: this.getTemplateRef(domain, 'followup_questions'), output_schema_ref: 'Schema_FollowupQuestions' };
         taskPrompts['signal_generation'] = { template_ref: this.getTemplateRef(domain, 'signal_enrichment'), output_schema_ref: 'Schema_ClinicalSignals' };
-        taskPrompts['20_80_display_fields'] = { template_ref: this.getTemplateRef(domain, '20_80_display_fields'), output_schema_ref: 'Schema_Summary20_80' };
         taskPrompts['clinical_reviewer'] = { template_ref: this.getTemplateRef(domain, 'clinical_review_plan'), output_schema_ref: 'Schema_ClinicalReviewer' };
     }
 
@@ -198,7 +197,6 @@ export class S6_PlanAssemblyStage {
         'event_summary': 'Schema_PatientEventSummary',
         'followup_questions': 'Schema_FollowupQuestions',
         'signal_enrichment': 'Schema_ClinicalSignals',
-        '20_80_display_fields': 'Schema_Summary20_80',
         'clinical_review_plan': 'Schema_ClinicalReviewer'
     };
     return map[taskType] || 'Schema_Generic';

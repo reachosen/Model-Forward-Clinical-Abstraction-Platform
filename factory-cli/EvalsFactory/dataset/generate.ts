@@ -11,11 +11,15 @@ async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
   const metricId = args[1];
+  const resume = args.includes('--resume');
 
   if (command === 'list') {
     const strategies = getAllBatchStrategies();
     console.log('Available Batch Strategies:');
-    strategies.forEach(s => console.log(` - ${s.metric_id} (${s.domain}) [${s.scenarios.length} scenarios]`));
+    strategies.forEach(s => {
+        const count = s.scenarios?.length || (s.task_scenarios ? Object.values(s.task_scenarios).flatMap(ts => ts.scenarios).length : 0);
+        console.log(` - ${s.metric_id} (${s.domain}) [${count} scenarios]`);
+    });
     return;
   }
 
@@ -38,7 +42,8 @@ async function main() {
       await runGenerator({
         strategy,
         output_dir: outputDir,
-        batch_size: 5
+        batch_size: 5,
+        resume: resume
       });
     } catch (error: any) {
       console.error(`Error: ${error.message}`);

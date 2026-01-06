@@ -1,0 +1,25 @@
+{
+  "concern_id": "I32b",
+  "updated_at": "2026-01-01T23:17:00.931Z",
+  "plan": {
+    "path": "output\\i32b-orthopedics\\plan.json",
+    "hash": "2d71f9582eb4f5087ef6fc6c29b52800f39e213be68d24570701fb97b75d7e20",
+    "version": "1.0",
+    "generated_at": "2026-01-01T23:10:59.097Z"
+  },
+  "strategy": {
+    "path": "domains_registry\\USNWR\\Orthopedics\\metrics\\I32b\\tests\\testcases\\generation_strategy.json",
+    "hash": "197369376b4b4a2048c52bcec365be71d0e4d9efae34bc7edfac36fff678c562"
+  },
+  "golden": {
+    "path": "domains_registry\\USNWR\\Orthopedics\\metrics\\I32b\\tests\\testcases\\golden_set_v2.json",
+    "hash": "3aad296fa0e32d9c50fa32bf39b1b166f38322b59a94ccb49f30e8be1f8ac2db"
+  },
+  "safe": {
+    "latest": {
+      "path": "output\\eval\\I32b_latest.json",
+      "hash": "fea39168cfb97f408e0efbde47410c431444c6f604f033e5f0589da80653a123"
+    }
+  },
+  "prompts": {}
+}

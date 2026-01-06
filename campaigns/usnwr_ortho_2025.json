@@ -6,10 +6,7 @@
     "signals": "factory-cli/data/orthopedics/signals.json"
   },
   "scope": [
-    { "metricId": "I25", "track": "flywheel:standard", "label": "Supracondylar Fx" },
-    { "metricId": "I26", "track": "flywheel:standard", "label": "Femoral Shaft Fx" },
-    { "metricId": "I32a", "track": "flywheel:standard", "label": "AIS Readmission" },
-    { "metricId": "I27", "track": "flywheel:lite", "label": "Forearm Fx" }
+    { "metricId": "I32a", "track": "demo:lite", "label": "AIS Readmission" }
   ],
   "config": {
     "batchSize": 5,

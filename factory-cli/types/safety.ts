@@ -148,8 +148,21 @@ export interface SAFEv0BatchReport {
     concern_id: string;
     summary: SAFEv0Summary;
     by_archetype: Record<string, SAFEv0ArchetypeStats>;
+    by_intent?: Record<string, IntentSummary>; // New Intent-based scorecard section
     failure_analysis: SAFEv0FailureAnalysis;
     results: SAFEv0Scorecard[];
+}
+
+export interface IntentSummary {
+    intent: string;
+    case_count: number;
+    concept_accuracy_cr: number;
+    evidence_fidelity_ah: number;
+    calibration_dr: number;
+    context_coverage_ac: number;
+    ah_gate: 'PASS' | 'FAIL';
+    dr_gate: 'PASS' | 'FAIL';
+    recommended_action: string;
 }
 
 export const DEFAULT_SAFE_V0_THRESHOLDS: SAFEv0Thresholds = {

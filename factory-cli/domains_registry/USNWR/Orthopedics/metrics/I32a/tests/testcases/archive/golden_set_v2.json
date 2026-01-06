@@ -1,0 +1,3849 @@
+{
+  "metadata": {
+    "scenario_cap_exception": {
+      "reason": "governance-approved golden set size",
+      "expires_at": "2026-02-01"
+    }
+  },
+  "test_cases": [
+    {
+      "test_id": "I32a-BATCH1-001",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to surgical site infection after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:00Z]: Patient was readmitted on post-operative day 5 with increased back pain and fever. Surgical site was erythematous and warm to touch, indicating a potential surgical site infection.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "indicating a potential surgical site infection"
+            ]
+          },
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "increased back pain"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 1,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.701Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH1-003",
+      "concern_id": "I32a",
+      "description": "Patient required reoperation due to hardware complication.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T14:00Z]: Patient returned to OR within 30 days of scoliosis surgery due to loss of reduction from hardware failure. This was linked to inadequate preoperative planning.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "loss of reduction from hardware failure"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 1,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.703Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH1-004",
+      "concern_id": "I32a",
+      "description": "Patient admitted due to GI complications post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T15:30Z]: Patient was readmitted on post-operative day 8 with symptoms of ileus. Bowel regimen not adequately managed prior to discharge.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "symptoms of ileus"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Bowel regimen not adequately managed prior to discharge"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 1,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.703Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH1-005",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to a surgical site infection related to inadequate antibiotic prophylaxis timing.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T08:45Z]: Patient came back on day 6 post-operatively with redness and drainage from the incision site. Review indicated that antibiotic prophylaxis was not administered in a timely manner prior to surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY",
+          "BUNDLE_COMPLIANCE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "redness and drainage from the incision site"
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "antibiotic prophylaxis was not administered in a timely manner"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 1,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.703Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH10-001",
+      "concern_id": "I32a",
+      "description": "Patient admitted for scoliosis surgery experiences unplanned readmission due to surgical site infection.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T11:00Z]: Patient was discharged on POD 2 but returned on POD 5 with fever and increased wound drainage. Surgical site infection was diagnosed, leading to unplanned admission.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY",
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "returned on POD 5 with fever and increased wound drainage."
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "increased wound drainage"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 10,
+        "intent": "SYNTHESIS",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.704Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH10-003",
+      "concern_id": "I32a",
+      "description": "Patient with hardware complications leading to return to OR within 30 days post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-07T14:00Z]: On POD 12, patient presented with increased back pain and loss of reduction. Imaging confirmed hardware failure, necessitating return to OR on POD 15.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "increased back pain and loss of reduction"
+            ]
+          },
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "necessitating return to OR"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 10,
+        "intent": "SYNTHESIS",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.704Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH10-004",
+      "concern_id": "I32a",
+      "description": "Patient discharged without clear follow-up plan, leading to complications.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-09T09:00Z]: Patient was discharged on POD 4 without a clear follow-up plan. Returned on POD 10 with GI complications, indicating lack of pre-discharge education.",
+      "contract": {
+        "intents": [
+          "DOCUMENTATION_GAP",
+          "READMISSION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "discharged on POD 4 without a clear follow-up plan"
+            ]
+          },
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Returned on POD 10 with GI complications"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 10,
+        "intent": "SYNTHESIS",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.704Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH10-005",
+      "concern_id": "I32a",
+      "description": "Patient requires unexpected ICU admission post-surgery due to respiratory distress.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-11T15:30Z]: On POD 2, patient exhibited respiratory distress, leading to unexpected ICU admission for further management.",
+      "contract": {
+        "intents": [
+          "SAFETY",
+          "READMISSION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Unexpected ICU admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "unexpected ICU admission for further management"
+            ]
+          },
+          {
+            "signal_id": "Pneumonia/respiratory distress",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "patient exhibited respiratory distress"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 10,
+        "intent": "SYNTHESIS",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH11-001",
+      "concern_id": "I32a",
+      "description": "Unplanned admission due to surgical site infection post-AIS surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T12:00Z]: Patient presents with increased back pain and fever 8 days post-operative for adolescent idiopathic scoliosis. Surgical site shows erythema and drainage. Admitted for observation and IV antibiotics.",
+      "contract": {
+        "intents": [
+          "SAFETY",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Surgical site shows erythema and drainage."
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Admitted for observation and IV antibiotics."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 11,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH12-002",
+      "concern_id": "I32a",
+      "description": "Patient developed surgical site infection after discharge.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T09:30Z]: The patient, a 17-year-old male, returned to the clinic with erythema and purulent drainage from the surgical site. He underwent scoliosis correction surgery three weeks ago. The antibiotic prophylaxis timing was not documented, and the wound drainage was noted, indicating a potential surgical site infection. The patient was advised on proper wound care but had unclear instructions at discharge.",
+      "contract": {
+        "intents": [
+          "INFECTION_RISKS",
+          "BUNDLE_COMPLIANCE",
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "erythema and purulent drainage from the surgical site"
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "The antibiotic prophylaxis timing was not documented"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "had unclear instructions at discharge"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 12,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH12-003",
+      "concern_id": "I32a",
+      "description": "Patient required return to OR for hardware complication.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T11:15Z]: The patient, a 16-year-old female, was readmitted with acute onset of back pain and impaired mobility. Imaging revealed a loss of reduction of the spinal hardware. The initial procedure was lengthy, and there was no documentation of the surgical pause. The patient was taken back to the OR for hardware revision.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "loss of reduction of the spinal hardware"
+            ]
+          },
+          {
+            "signal_id": "surgical_pause_documented",
+            "polarity": "DENY",
+            "required_provenance": [
+              "there was no documentation of the surgical pause"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 12,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH13-002",
+      "concern_id": "I32a",
+      "description": "Patient developed surgical site infection due to delayed antibiotic prophylaxis.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T14:00Z]: The patient, a 17-year-old male with idiopathic scoliosis, underwent surgery where antibiotic prophylaxis was not administered within the recommended timeframe. Post-operatively, he developed a surgical site infection, necessitating further intervention. This raises concerns about compliance with antibiotic protocols.",
+      "contract": {
+        "intents": [
+          "OUTCOME_RISKS",
+          "BUNDLE_COMPLIANCE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "developed a surgical site infection"
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "antibiotic prophylaxis was not administered within the recommended timeframe"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 13,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH13-003",
+      "concern_id": "I32a",
+      "description": "Delayed discharge due to inadequate discharge instructions leading to readmission.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T16:30Z]: The patient, a 16-year-old girl post-surgery for idiopathic scoliosis, was readmitted 10 days after discharge due to confusion about post-operative care instructions. The discharge instructions were unclear, leading to medication errors and subsequent complications that required hospitalization.",
+      "contract": {
+        "intents": [
+          "OUTCOME_RISKS",
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "readmitted 10 days after discharge"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "DENY",
+            "required_provenance": [
+              "discharge instructions were unclear"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 13,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH13-004",
+      "concern_id": "I32a",
+      "description": "Patient required reoperation due to hardware complication.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T11:00Z]: A 14-year-old boy with idiopathic scoliosis presented with worsening back pain and signs of hardware failure. Imaging revealed loss of reduction, leading to an urgent reoperation. This situation highlights the importance of regular follow-ups and monitoring for hardware integrity post-surgery.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "loss of reduction, leading to an urgent reoperation"
+            ]
+          },
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "worsening back pain"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 13,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH13-005",
+      "concern_id": "I32a",
+      "description": "Post-operative ileus leading to unplanned admission.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T08:00Z]: The patient, a 15-year-old female with a history of idiopathic scoliosis, was discharged post-surgery but readmitted 5 days later due to gastrointestinal complications, specifically an ileus. This suggests a lack of adequate bowel regimen post-operatively, which could have been prevented.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "readmitted 5 days later due to gastrointestinal complications, specifically an ileus"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "DENY",
+            "required_provenance": [
+              "a lack of adequate bowel regimen post-operatively"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 13,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH14-002",
+      "concern_id": "I32a",
+      "description": "Patient developed a surgical site infection post scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T09:00Z]: The patient, a 17-year-old male, was readmitted 10 days after spinal fusion for idiopathic scoliosis. Examination revealed erythema and drainage at the surgical site, indicating a possible surgical site infection (SSI). It was noted that the antibiotic prophylaxis was not administered timely during the initial procedure.",
+      "contract": {
+        "intents": [
+          "SAFETY",
+          "BUNDLE_COMPLIANCE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "surgical site infection (SSI)"
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "antibiotic prophylaxis was not administered timely"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 14,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH14-003",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to GI complications after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T14:00Z]: A 16-year-old female was readmitted 7 days post-operation for severe abdominal pain and vomiting. Imaging indicated signs of ileus. The documentation lacked details on the bowel regimen prescribed at discharge, which may have contributed to the patient's GI complications.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "severe abdominal pain and vomiting"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "The documentation lacked details on the bowel regimen prescribed"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 14,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH14-004",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to hardware complications after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T11:00Z]: The patient, a 15-year-old male, was readmitted 14 days following surgery for idiopathic scoliosis. The patient reported increased back pain and limited mobility. Imaging confirmed a loss of reduction due to hardware failure. It was noted that the loss of reduction was not adequately addressed in the post-operative plan.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "loss of reduction due to hardware failure"
+            ]
+          },
+          {
+            "signal_id": "pain_management_plan_documentation",
+            "polarity": "DENY",
+            "required_provenance": [
+              "not adequately addressed in the post-operative plan"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 14,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH15-002",
+      "concern_id": "I32a",
+      "description": "Conflicting notes about the presence of surgical site infection indicators.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:00Z]: Wound examination shows erythema and drainage from the surgical site, indicating possible infection.\n\n[Nurse 2025-01-02T11:00Z]: Surgical site appears clean and dry with no signs of infection.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "erythema and drainage from the surgical site"
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "DENY",
+            "required_provenance": [
+              "no signs of infection"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 15,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH15-004",
+      "concern_id": "I32a",
+      "description": "Conflicting documentation regarding the timing of antibiotic prophylaxis.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[Surgeon 2025-01-04T07:15Z]: Antibiotic prophylaxis administered 30 minutes prior to incision.\n\n[Anesthesiologist 2025-01-04T07:00Z]: Antibiotic given just before induction, which was less than the recommended timing.",
+      "contract": {
+        "intents": [
+          "BUNDLE_COMPLIANCE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "administered 30 minutes prior to incision"
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "less than the recommended timing"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 15,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH15-005",
+      "concern_id": "I32a",
+      "description": "Conflicting notes regarding discharge instructions clarity.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T15:00Z]: Discharge instructions were thoroughly reviewed and understood by the patient.\n\n[Nurse 2025-01-05T16:00Z]: Patient expressed confusion over medication schedule and follow-up appointments.",
+      "contract": {
+        "intents": [
+          "BUNDLE_COMPLIANCE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "discharge_instructions_clarity",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "thoroughly reviewed and understood"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "DENY",
+            "required_provenance": [
+              "expressed confusion over medication schedule"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 15,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH16-003",
+      "concern_id": "I32a",
+      "description": "Contradictory assessments on surgical site condition.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[Surgeon 2025-01-04T14:00Z]: Surgical site appears clean with no signs of infection.\n\n[Nurse 2025-01-04T15:00Z]: Observation of wound drainage and erythema noted at the site.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Surgical site appears clean with no signs of infection."
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Observation of wound drainage and erythema noted at the site."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 16,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH16-004",
+      "concern_id": "I32a",
+      "description": "Inconsistent reporting of post-operative symptoms.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T08:00Z]: Patient exhibits increasing analgesic requirement indicating potential complications.\n\n[Physician Assistant 2025-01-05T09:00Z]: Patient reports stable pain levels and does not require additional medication.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Increasing analgesic requirement",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient exhibits increasing analgesic requirement indicating potential complications."
+            ]
+          },
+          {
+            "signal_id": "Increasing analgesic requirement",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Patient reports stable pain levels and does not require additional medication."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 16,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH16-005",
+      "concern_id": "I32a",
+      "description": "Contradictory findings in neurovascular assessments.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T10:00Z]: Neurovascular exam shows no signs of compromise; perfusion is intact.\n\n[Nurse 2025-01-06T11:00Z]: Neurovascular assessment indicates paresthesia in the left foot.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "neurovascular_exam_post_op",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Neurovascular exam shows no signs of compromise; perfusion is intact."
+            ]
+          },
+          {
+            "signal_id": "Paresthesia/numbness",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Neurovascular assessment indicates paresthesia in the left foot."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 16,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH17-003",
+      "concern_id": "I32a",
+      "description": "Conflicting documentation regarding the presence of a surgical site infection.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T14:00Z]: Patient's surgical site shows no signs of infection and is healing well.\n\n[MD 2025-01-07T13:00Z]: Patient exhibits signs of surgical site infection with purulent drainage and fever.",
+      "contract": {
+        "intents": [
+          "SAFETY_SIGNAL"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "DENY",
+            "required_provenance": [
+              "shows no signs of infection"
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "exhibits signs of surgical site infection"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 17,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH18-001",
+      "concern_id": "I32a",
+      "description": "Patient with pre-existing conditions leading to unplanned admission outside the 30-day window.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T12:00Z]: The patient, a 16-year-old female with a known history of asthma, presented with wheezing and difficulty breathing. After evaluation, it was determined that her symptoms were due to an asthma exacerbation rather than complications from her recent scoliosis surgery, which had occurred 45 days prior.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "The patient, a 16-year-old female with a known history of asthma, presented with wheezing and difficulty breathing."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 18,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH18-002",
+      "concern_id": "I32a",
+      "description": "Patient presenting with unrelated GI symptoms post-surgery indicating a different complication.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:30Z]: A 15-year-old male came in with abdominal pain and nausea, feeling unwell. Upon examination, it was found that he had an unrelated gastrointestinal obstruction, which was not a complication of his scoliosis surgery 32 days ago.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "A 15-year-old male came in with abdominal pain and nausea, feeling unwell."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 18,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH19-002",
+      "concern_id": "I32a",
+      "description": "Patient experiences pain unrelated to surgical site due to a pre-existing condition.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T14:30Z]: The 17-year-old male patient who had scoliosis surgery reported severe back pain radiating to the legs. Evaluation showed that this pain was due to an underlying herniated disc, not related to the surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "DENY",
+            "required_provenance": [
+              "reported severe back pain radiating to the legs."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 19,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH19-003",
+      "concern_id": "I32a",
+      "description": "Patient readmitted for a non-surgical reason after successful scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T09:15Z]: The 15-year-old patient was readmitted with respiratory distress due to asthma exacerbation unrelated to her recent scoliosis surgery. There were no signs of surgical complications, and she was treated accordingly.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Pneumonia/respiratory distress",
+            "polarity": "DENY",
+            "required_provenance": [
+              "readmitted with respiratory distress due to asthma exacerbation unrelated to her recent scoliosis surgery."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 19,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH19-005",
+      "concern_id": "I32a",
+      "description": "Patient with leg swelling due to unrelated DVT after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T16:45Z]: The patient, a 17-year-old male, was readmitted for leg swelling and pain. Doppler ultrasound confirmed a deep vein thrombosis unrelated to his recent scoliosis surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Pneumonia/respiratory distress",
+            "polarity": "DENY",
+            "required_provenance": [
+              "was readmitted for leg swelling and pain."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 19,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH2-001",
+      "concern_id": "I32a",
+      "description": "Patient with increased back pain and fever post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T14:30Z]: The patient was admitted for idiopathic scoliosis surgery on December 29, 2024. Post-operatively, the patient has experienced increasing back pain and a temperature of 101°F. The surgical site appears intact with no visible drainage. A full blood count is ordered to assess for signs of infection.",
+      "contract": {
+        "intents": [
+          "SAFETY",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "increasing back pain"
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "a temperature of 101°F"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 2,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH2-002",
+      "concern_id": "I32a",
+      "description": "Patient with wound erythema and delayed discharge instructions.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T09:00Z]: During the post-operative visit, the patient exhibited erythema around the surgical site. The discharge instructions provided were unclear, leading to confusion regarding medication management at home.",
+      "contract": {
+        "intents": [
+          "INFECTION_RISKS",
+          "DOCUMENTATION_GAPS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "exhibited erythema around the surgical site"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "The discharge instructions provided were unclear"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 2,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.705Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH2-003",
+      "concern_id": "I32a",
+      "description": "Patient readmitted with GI complications post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T11:15Z]: The patient was readmitted 10 days after scoliosis surgery with complaints of severe abdominal pain and nausea. An abdominal X-ray shows signs of ileus. The initial bowel regimen was inadequate, contributing to this complication.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "DOCUMENTATION_GAPS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "severe abdominal pain and nausea"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "The initial bowel regimen was inadequate"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 2,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH2-004",
+      "concern_id": "I32a",
+      "description": "Patient with hardware complication requiring reoperation.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T16:45Z]: The patient presents with worsening back pain and is found to have hardware failure noted on imaging. The decision was made for reoperation to address the hardware complication.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "INFECTION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Hardware complication",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "hardware failure noted on imaging"
+            ]
+          },
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "decision was made for reoperation"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 2,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH2-005",
+      "concern_id": "I32a",
+      "description": "Patient with unexpected ICU admission after surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T08:00Z]: Post-operative complications led to unexpected ICU admission for the patient due to respiratory distress and uncontrolled pain. The pain management plan was not adequately documented.",
+      "contract": {
+        "intents": [
+          "SAFETY_SIGNAL",
+          "DOCUMENTATION_GAPS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Unexpected ICU admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "unexpected ICU admission for the patient due to respiratory distress"
+            ]
+          },
+          {
+            "signal_id": "pain_management_plan_documentation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "The pain management plan was not adequately documented"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 2,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH20-001",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to severe pain and infection after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:00Z]: Patient was discharged 7 days post-operation but returned with severe back pain and fever. Surgical site appears erythematous with purulent drainage. Immediate evaluation suggests possible surgical site infection.",
+      "contract": {
+        "intents": [
+          "SAFETY",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Surgical site appears erythematous with purulent drainage."
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "returned with severe back pain and fever."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 20,
+        "intent": "SYNTHESIS",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH20-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to hardware complication after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T10:00Z]: Patient returned to the OR 10 days post-discharge due to hardware failure. Reports increased pain and instability. Imaging reveals loss of reduction.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Imaging reveals loss of reduction."
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "returned to the OR 10 days post-discharge"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 20,
+        "intent": "SYNTHESIS",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH20-003",
+      "concern_id": "I32a",
+      "description": "Patient readmitted with gastrointestinal complications after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T11:00Z]: Patient presented with abdominal distension and vomiting 5 days post-op. Evaluation indicates a possible ileus. Surgical intervention required to resolve.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Evaluation indicates a possible ileus."
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient presented with abdominal distension and vomiting"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 20,
+        "intent": "SYNTHESIS",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH20-005",
+      "concern_id": "I32a",
+      "description": "Patient readmitted for respiratory distress after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T08:00Z]: Patient presented with shortness of breath and decreased oxygen saturation 6 days post-op. Evaluation suggests pneumonia, requiring immediate intervention.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Pneumonia/respiratory distress",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Evaluation suggests pneumonia, requiring immediate intervention."
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient presented with shortness of breath and decreased oxygen saturation"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 20,
+        "intent": "SYNTHESIS",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH21-003",
+      "concern_id": "I32a",
+      "description": "Patient readmitted for gastrointestinal complications following scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T08:30Z]: Post-discharge, the patient presented with abdominal pain and nausea. On examination, signs of ileus were noted, leading to an unplanned admission for management of gastrointestinal complications.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "signs of ileus were noted"
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "unplanned admission for management"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 21,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH21-004",
+      "concern_id": "I32a",
+      "description": "Patient required early revision surgery due to hardware complication.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T14:15Z]: The patient experienced significant discomfort and was found to have hardware malfunction on imaging. This necessitated an early return to the operating room for revision surgery.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Hardware complication",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "hardware malfunction on imaging"
+            ]
+          },
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "necessitated an early return to the operating room"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 21,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH21-005",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to uncontrolled pain and unclear discharge instructions.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T15:45Z]: After discharge, the patient reported excessive pain not managed by prescribed medications. On review, discharge instructions were found to be unclear, contributing to the readmission.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS",
+          "DOCUMENTATION_GAPS",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Uncontrolled pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "excessive pain not managed by prescribed medications"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "discharge instructions were found to be unclear"
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "contributing to the readmission"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 21,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH22-001",
+      "concern_id": "I32a",
+      "description": "Patient with unplanned admission due to surgical site infection post-AIS surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:00Z]: The patient presented with fever and increased wound drainage three weeks post-operative. Surgical site examination revealed erythema and purulent discharge. The patient was admitted for IV antibiotics and debridement of the wound.",
+      "contract": {
+        "intents": [
+          "SAFETY",
+          "OUTCOME_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "increased wound drainage three weeks post-operative. Surgical site examination revealed erythema"
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "The patient was admitted for IV antibiotics and debridement of the wound."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 22,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH23-001",
+      "concern_id": "I32a",
+      "description": "Patient readmitted for surgical site infection after AIS surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T10:00Z]: The patient, a 15-year-old female with a diagnosis of idiopathic scoliosis, was discharged post-surgery on day 3. She returned to the ER on day 10 with increasing erythema and drainage from the surgical site. Cultures confirmed a surgical site infection, indicating a need for further intervention.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "returned to the ER on day 10 with increasing erythema and drainage from the surgical site."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 23,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH23-002",
+      "concern_id": "I32a",
+      "description": "Patient with uncontrolled pain requiring readmission after AIS surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:30Z]: The patient, a 14-year-old male, was discharged after scoliosis correction surgery. He presented to the clinic on day 5 post-op with reports of uncontrolled pain that was out of proportion to the expected recovery. He was readmitted for pain management and evaluation.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Uncontrolled pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "uncontrolled pain that was out of proportion to the expected recovery."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 23,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH23-003",
+      "concern_id": "I32a",
+      "description": "Readmission due to GI complications after AIS surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T13:00Z]: A 16-year-old female was readmitted on day 8 following her scoliosis surgery with symptoms of nausea and abdominal pain. A CT scan revealed an ileus. It was noted that the patient had inadequate bowel regimen instructions at discharge, which likely contributed to the complication.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "readmitted on day 8 following her scoliosis surgery with symptoms of nausea and abdominal pain."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 23,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH23-004",
+      "concern_id": "I32a",
+      "description": "Patient with hardware complications necessitating return to OR.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T15:45Z]: The patient, a 17-year-old male who underwent scoliosis correction, returned on day 12 post-op with complaints of increased back pain and hardware prominence. Imaging indicated a loss of reduction requiring an early reoperation to address the hardware issue.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "returned on day 12 post-op with complaints of increased back pain and hardware prominence."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 23,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH23-005",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to pneumonia after AIS surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T11:15Z]: A 15-year-old female was discharged post-surgery and readmitted on day 7 with respiratory distress. Chest X-ray showed pneumonia, likely due to inadequate postoperative mobilization and breathing exercises at discharge. A review of discharge instructions revealed a lack of clarity regarding these activities.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Pneumonia/respiratory distress",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "readmitted on day 7 with respiratory distress."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 23,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH24-001",
+      "concern_id": "I32a",
+      "description": "Post-operative infection in a 15-year-old girl with idiopathic scoliosis.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T11:00Z]: The patient, a 15-year-old female, underwent surgery for idiopathic scoliosis on January 1, 2025. Post-operatively, she developed wound drainage and erythema around the incision site, which prompted a return to the OR for evaluation. Infection was confirmed, necessitating further intervention.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "wound drainage and erythema around the incision site"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 24,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH24-003",
+      "concern_id": "I32a",
+      "description": "Delayed surgical intervention due to lack of OR availability in a 14-year-old girl.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T15:00Z]: The patient, a 14-year-old female, was admitted with severe back pain post-surgery on January 3, 2025. A return to the OR was delayed due to lack of OR availability, leading to a worsening condition that could have been prevented with timely intervention.",
+      "contract": {
+        "intents": [
+          "DELAY_DRIVERS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Lack of OR availability",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "delayed due to lack of OR availability"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 24,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH24-004",
+      "concern_id": "I32a",
+      "description": "Return to OR due to hardware complication in a 17-year-old male.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T12:45Z]: The patient, a 17-year-old male with idiopathic scoliosis, experienced significant back pain and instability post-surgery on January 4, 2025. A CT scan revealed a hardware complication requiring a return to the OR for revision surgery.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Hardware complication",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "hardware complication requiring a return to the OR"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 24,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH24-005",
+      "concern_id": "I32a",
+      "description": "GI complication leading to readmission in a 15-year-old girl.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T08:15Z]: The patient, a 15-year-old female, presented with nausea and abdominal pain on January 5, 2025, following scoliosis surgery. An assessment revealed an ileus, necessitating readmission for conservative management and monitoring.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "revealed an ileus, necessitating readmission"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 24,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH25-002",
+      "concern_id": "I32a",
+      "description": "Conflicting reports on infection status post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T09:00Z]: Surgical site appears clean and dry with no signs of infection. Patient advised to monitor for any changes.\n\n[Nurse 2025-01-03T10:00Z]: Patient reports some drainage from the surgical site and erythema. Possible early signs of infection.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "DENY",
+            "required_provenance": [
+              "no signs of infection"
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "some drainage from the surgical site and erythema"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 25,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH25-003",
+      "concern_id": "I32a",
+      "description": "Discrepancy in patient mobility status post-discharge.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[PT 2025-01-04T11:00Z]: Patient demonstrated adequate mobility and was cleared for discharge with instructions to continue rehabilitation.\n\n[MD 2025-01-04T12:00Z]: Patient returned with difficulty walking and complaints of increased back pain. Mobility status should be reassessed.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "DENY",
+            "required_provenance": [
+              "adequate mobility"
+            ]
+          },
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "difficulty walking and complaints of increased back pain"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 25,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH25-004",
+      "concern_id": "I32a",
+      "description": "Conflicting notes on patient's antibiotic prophylaxis timing.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[OR Nurse 2025-01-05T15:00Z]: Antibiotic prophylaxis was administered 30 minutes prior to incision as per protocol.\n\n[MD 2025-01-05T16:00Z]: Documentation shows antibiotic was given during surgery, not prior to incision.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "administered 30 minutes prior to incision"
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "antibiotic was given during surgery"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 25,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH25-005",
+      "concern_id": "I32a",
+      "description": "Contradictory notes regarding patient's follow-up care planning.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T10:00Z]: Patient was provided with a follow-up appointment scheduled for 2 weeks post-op, with instructions clearly outlined.\n\n[Nurse 2025-01-06T11:00Z]: Patient states they did not receive any follow-up instructions and are unsure about their next steps.",
+      "contract": {
+        "intents": [
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "DENY",
+            "required_provenance": [
+              "instructions clearly outlined"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "did not receive any follow-up instructions"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 25,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH26-001",
+      "concern_id": "I32a",
+      "description": "Patient admitted with symptoms of infection post scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T10:00Z]: The patient presents with increasing wound drainage and erythema around the surgical site. Signs of an infection are evident.\n\n[MD 2025-01-02T10:00Z]: Upon further review, there is no evidence of surgical site infection. The drainage is considered normal post-operative seroma.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "increasing wound drainage and erythema around the surgical site."
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "DENY",
+            "required_provenance": [
+              "no evidence of surgical site infection."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 26,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH27-002",
+      "concern_id": "I32a",
+      "description": "Dissonance in surgical site infection documentation.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T09:00Z]: Surgical site shows erythema and drainage, indicating possible infection.\n\n[PA 2025-01-02T10:00Z]: No signs of infection noted at the surgical site during follow-up examination.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "shows erythema and drainage, indicating possible infection"
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "DENY",
+            "required_provenance": [
+              "No signs of infection noted at the surgical site"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 27,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH27-003",
+      "concern_id": "I32a",
+      "description": "Conflicting notes on neurovascular status post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T11:00Z]: Patient exhibits numbness and paresthesia in the left leg.\n\n[RN 2025-01-02T09:00Z]: Patient has intact neurovascular status with no signs of numbness.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Paresthesia/numbness",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "exhibits numbness and paresthesia in the left leg"
+            ]
+          },
+          {
+            "signal_id": "neurovascular_exam_post_op",
+            "polarity": "DENY",
+            "required_provenance": [
+              "has intact neurovascular status with no signs of numbness"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 27,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH27-004",
+      "concern_id": "I32a",
+      "description": "Inconsistent documentation of pain management plan.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T12:00Z]: Pain management plan includes scheduled analgesics and PRN medications.\n\n[NP 2025-01-02T10:30Z]: Patient is only on PRN medications with no scheduled analgesics documented.",
+      "contract": {
+        "intents": [
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "pain_management_plan_documentation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "includes scheduled analgesics and PRN medications"
+            ]
+          },
+          {
+            "signal_id": "pain_management_plan_documentation",
+            "polarity": "DENY",
+            "required_provenance": [
+              "only on PRN medications with no scheduled analgesics documented"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 27,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.706Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH28-001",
+      "concern_id": "I32a",
+      "description": "Patient with unrelated abdominal pain post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T11:00Z]: Patient presented with abdominal pain two weeks post scoliosis surgery. Symptoms are consistent with pre-existing gastritis, not related to the surgical site.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "not related to the surgical site."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 28,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH28-002",
+      "concern_id": "I32a",
+      "description": "Patient with chronic pain exacerbation unrelated to surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:30Z]: The patient is experiencing chronic pain exacerbation due to fibromyalgia, which is unrelated to the recent scoliosis correction surgery.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "unrelated to the recent scoliosis correction surgery."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 28,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH28-004",
+      "concern_id": "I32a",
+      "description": "Patient with an allergic reaction unrelated to surgical procedure.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T16:00Z]: The patient developed an allergic reaction to a medication post-discharge, which is not related to the surgical intervention for scoliosis.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "not related to the surgical intervention for scoliosis."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 28,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH28-005",
+      "concern_id": "I32a",
+      "description": "Patient with a respiratory issue unrelated to surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T08:45Z]: Patient was admitted for respiratory distress due to asthma exacerbation, which is unrelated to recent scoliosis surgery.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "unrelated to recent scoliosis surgery."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 28,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH29-005",
+      "concern_id": "I32a",
+      "description": "Patient with pain due to hardware removal unrelated to initial scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T08:45Z]: The patient complains of pain after hardware removal following a prior surgery for a different condition, which is unrelated to the scoliosis procedure performed two months ago.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "pain after hardware removal following a prior surgery for a different condition"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 29,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH3-001",
+      "concern_id": "I32a",
+      "description": "Patient with post-operative infection leading to unplanned admission.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T11:00Z]: Patient was discharged on post-operative day 3 after scoliosis surgery. On day 5, the patient presented with fever and wound erythema. The patient was admitted for IV antibiotics and further evaluation.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "wound erythema"
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "admitted for IV antibiotics"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 3,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH3-003",
+      "concern_id": "I32a",
+      "description": "Patient developed complications due to hardware issues.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T14:20Z]: The patient presented with increasing back pain and was found to have hardware displacement on imaging. This necessitated a return to the OR within 30 days of the initial surgery.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "increasing back pain"
+            ]
+          },
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "hardware displacement"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 3,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH31-001",
+      "concern_id": "I32a",
+      "description": "Teenage patient readmitted due to surgical site infection after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T08:30Z]: Patient, a 15-year-old female diagnosed with idiopathic scoliosis, was discharged on postoperative day 3. She presented to the ED today with increased back pain and erythema around the surgical site. Upon examination, there was significant wound drainage noted.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "increased back pain and erythema around the surgical site"
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "significant wound drainage noted"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 31,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH31-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to hardware complication after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-10T14:15Z]: A 16-year-old male with a history of idiopathic scoliosis underwent posterior spinal fusion last month. He returned today with complaints of severe back pain and numbness in the legs. Imaging shows a broken rod at the surgical site.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Hardware complication",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Imaging shows a broken rod at the surgical site"
+            ]
+          },
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "severe back pain and numbness in the legs"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 31,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH31-003",
+      "concern_id": "I32a",
+      "description": "Teenage patient readmitted for GI complications after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-15T09:00Z]: The patient is a 17-year-old female who had scoliosis surgery. She presents with abdominal pain, constipation, and nausea. A bowel obstruction was confirmed via imaging.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "A bowel obstruction was confirmed via imaging"
+            ]
+          },
+          {
+            "signal_id": "Uncontrolled pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "abdominal pain, constipation, and nausea"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 31,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH31-004",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to uncontrolled pain after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-20T11:45Z]: A 14-year-old male with a recent history of scoliosis surgery returns with complaints of pain rated 8/10, significantly worsened over the past 2 days. The pain management regimen appears inadequate.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Uncontrolled pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "pain rated 8/10, significantly worsened over the past 2 days"
+            ]
+          },
+          {
+            "signal_id": "Increasing analgesic requirement",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "The pain management regimen appears inadequate"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 31,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH31-005",
+      "concern_id": "I32a",
+      "description": "Patient readmitted for pneumonia after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-25T13:30Z]: The patient is a 15-year-old female who had undergone spinal fusion for idiopathic scoliosis. She presents with fever, cough, and difficulty breathing. Chest X-ray confirms pneumonia.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Pneumonia/respiratory distress",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Chest X-ray confirms pneumonia"
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "presents with fever, cough, and difficulty breathing"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 31,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH32-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted with surgical site infection post scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T11:30Z]: Patient John Smith, a 14-year-old male, presented for unplanned readmission on January 3rd with fever and wound erythema. Evaluation confirmed a surgical site infection, likely due to inadequate antibiotic prophylaxis timing during the initial surgery.",
+      "contract": {
+        "intents": [
+          "OUTCOME_RISKS",
+          "INFECTION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "surgical site infection"
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "likely due to inadequate antibiotic prophylaxis timing"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 32,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH32-005",
+      "concern_id": "I32a",
+      "description": "Patient readmitted with complications due to lack of follow-up planning.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T16:00Z]: Patient Sarah Davis, a 17-year-old female, presented for readmission on January 6th. The clinical review indicated complications that arose from insufficient discharge planning and follow-up instructions.",
+      "contract": {
+        "intents": [
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "insufficient discharge planning and follow-up instructions"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 32,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH33-001",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to surgical site infection following idiopathic scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:00Z]: Patient was discharged on post-operative day 4 after successful correction of scoliosis. They returned to the ER with fever and increasing pain at the surgical site. Wound examination revealed erythema and purulent drainage, indicating a surgical site infection.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Wound examination revealed erythema and purulent drainage, indicating a surgical site infection."
+            ]
+          },
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "They returned to the ER with fever and increasing pain at the surgical site."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 33,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH33-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted due to uncontrolled pain after discharge following spinal surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T14:00Z]: The patient was discharged after a successful scoliosis correction surgery. Upon return, they reported pain levels that continued to escalate despite medications. A review of discharge instructions revealed unclear pain management guidelines.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Upon return, they reported pain levels that continued to escalate despite medications."
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "A review of discharge instructions revealed unclear pain management guidelines."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 33,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH33-003",
+      "concern_id": "I32a",
+      "description": "Patient experienced hardware complications necessitating return to OR post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T11:30Z]: The patient was discharged on post-operative day 6. They returned with severe back pain and imaging confirmed hardware failure at the surgical site. The surgical team did not adequately assess potential hardware issues during the discharge planning.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "They returned with severe back pain and imaging confirmed hardware failure at the surgical site."
+            ]
+          },
+          {
+            "signal_id": "loss_of_reduction_requiring_reoperation",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "imaging confirmed hardware failure at the surgical site."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 33,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH33-005",
+      "concern_id": "I32a",
+      "description": "Patient returned to OR for additional intervention due to unexpected complications.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T08:30Z]: After discharge following scoliosis surgery, the patient experienced increasing pain and was found to have a hematoma requiring surgical intervention. The pre-operative assessment did not adequately address potential bleeding risks.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY_DETECTIVE"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "the patient experienced increasing pain and was found to have a hematoma requiring surgical intervention."
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "DENY",
+            "required_provenance": [
+              "The pre-operative assessment did not adequately address potential bleeding risks."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 33,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH34-001",
+      "concern_id": "I32a",
+      "description": "A 15-year-old girl with idiopathic scoliosis develops a surgical site infection post-operatively due to inadequate antibiotic timing.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T08:30Z]: Patient presented for scoliosis surgery at 14:00. Antibiotics were administered at 14:30, which was 30 minutes after incision start. Post-operative day 3, the patient showed signs of redness and drainage from the surgical site.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Antibiotics were administered at 14:30, which was 30 minutes after incision start."
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "the patient showed signs of redness and drainage from the surgical site."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 34,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH34-003",
+      "concern_id": "I32a",
+      "description": "A 14-year-old girl is readmitted with GI complications after scoliosis surgery due to lack of bowel regimen.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T11:00Z]: Post-operative day 6, the patient was readmitted with nausea and abdominal distension. Review of discharge instructions revealed no bowel regimen was prescribed.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "the patient was readmitted with nausea and abdominal distension."
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "no bowel regimen was prescribed."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 34,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH34-004",
+      "concern_id": "I32a",
+      "description": "A 15-year-old boy requires a return to OR due to hardware complication from inadequate discharge planning.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T13:00Z]: Patient underwent scoliosis correction surgery on 12/28. On post-operative day 10, he returned to OR for hardware adjustment due to shifting reported by family, which was never addressed in discharge instructions.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Hardware complication",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "returned to OR for hardware adjustment due to shifting"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "which was never addressed in discharge instructions."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 34,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH34-005",
+      "concern_id": "I32a",
+      "description": "A 17-year-old girl is readmitted with pneumonia after scoliosis surgery due to poor follow-up planning.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T14:00Z]: Patient had scoliosis surgery on 12/29. On post-operative day 8, she presented with fever and cough. The review indicated inadequate follow-up planning as no appointments were scheduled for post-discharge.",
+      "contract": {
+        "intents": [
+          "PREVENTABILITY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Pneumonia/respiratory distress",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "presented with fever and cough."
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "inadequate follow-up planning as no appointments were scheduled for post-discharge."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 34,
+        "intent": "KNOWLEDGE",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH35-001",
+      "concern_id": "I32a",
+      "description": "Conflicting notes regarding post-operative pain management and patient comfort.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T11:00Z]: Patient reports significant pain post-surgery, requiring increased analgesics beyond the prescribed regimen.\n\n[Nurse 2025-01-02T13:00Z]: Patient states pain is manageable and denies any need for additional pain medication.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Increasing analgesic requirement",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "requiring increased analgesics beyond the prescribed regimen"
+            ]
+          },
+          {
+            "signal_id": "Uncontrolled pain",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Patient states pain is manageable and denies any need for additional pain medication."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 35,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH35-003",
+      "concern_id": "I32a",
+      "description": "Conflicting notes regarding antibiotic prophylaxis timing.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[Surgeon 2025-01-04T14:00Z]: Antibiotic prophylaxis administered 30 minutes prior to incision as per protocol.\n\n[Pharmacist 2025-01-04T14:30Z]: Antibiotic not administered until after incision due to surgeon's directive.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Antibiotic prophylaxis administered 30 minutes prior to incision as per protocol."
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Antibiotic not administered until after incision due to surgeon's directive."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 35,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH35-004",
+      "concern_id": "I32a",
+      "description": "Conflicting notes regarding patient discharge instructions clarity.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T10:00Z]: Discharge instructions provided verbally and in writing; patient understood the follow-up care.\n\n[Nurse 2025-01-05T11:00Z]: Patient expressed confusion about post-operative care and follow-up appointments.",
+      "contract": {
+        "intents": [
+          "SAFETY",
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "discharge_instructions_clarity",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Discharge instructions provided verbally and in writing; patient understood the follow-up care."
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Patient expressed confusion about post-operative care and follow-up appointments."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 35,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH35-005",
+      "concern_id": "I32a",
+      "description": "Conflicting notes regarding surgical site infection (SSI) indicators.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T08:00Z]: Wound appears clean with no signs of infection; patient stable.\n\n[Nurse 2025-01-06T09:00Z]: Wound drainage noted with erythema around the incision site.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Wound appears clean with no signs of infection; patient stable."
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Wound drainage noted with erythema around the incision site."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 35,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH36-001",
+      "concern_id": "I32a",
+      "description": "Conflicting notes on post-operative pain management.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:00Z]: Patient reports pain at a level 8 out of 10, requiring increased analgesics. Pain management plan needs adjustment.\n\n[RN 2025-01-02T14:00Z]: Patient is comfortable and denies any pain. Current analgesics are adequate.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Increasing analgesic requirement",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient reports pain at a level 8 out of 10, requiring increased analgesics."
+            ]
+          },
+          {
+            "signal_id": "Increasing analgesic requirement",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Patient is comfortable and denies any pain."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 36,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH36-002",
+      "concern_id": "I32a",
+      "description": "Contradictory notes on discharge instructions clarity.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T10:00Z]: Discharge instructions given clearly, patient understands medication regime.\n\n[RN 2025-01-03T12:00Z]: Patient appears confused about discharge instructions regarding medication and follow-up.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "discharge_instructions_clarity",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Discharge instructions given clearly, patient understands medication regime."
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_clarity",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Patient appears confused about discharge instructions regarding medication and follow-up."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 36,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.707Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH36-003",
+      "concern_id": "I32a",
+      "description": "Inconsistent notes regarding post-operative infection signs.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T11:00Z]: Wound site appears clean with no signs of infection.\n\n[RN 2025-01-04T15:00Z]: Noticed erythema and drainage from the wound site, possible signs of infection.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Wound site appears clean with no signs of infection."
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Noticed erythema and drainage from the wound site, possible signs of infection."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 36,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH36-004",
+      "concern_id": "I32a",
+      "description": "Conflicting assessments on neurovascular status.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T09:30Z]: Neurovascular exam shows intact sensation and good perfusion.\n\n[RN 2025-01-05T10:30Z]: Patient exhibits signs of paresthesia, and perfusion status is not described as pink/warm.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "neurovascular_exam_post_op",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Neurovascular exam shows intact sensation and good perfusion."
+            ]
+          },
+          {
+            "signal_id": "neurovascular_exam_post_op",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Patient exhibits signs of paresthesia, and perfusion status is not described as pink/warm."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 36,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH36-005",
+      "concern_id": "I32a",
+      "description": "Dissonance in documentation of complications post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T08:00Z]: Patient is stable with no signs of complications post-surgery.\n\n[RN 2025-01-06T09:00Z]: Patient is experiencing increasing back pain, indicating a possible complication.",
+      "contract": {
+        "intents": [
+          "READMISSION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "DENY",
+            "required_provenance": [
+              "Patient is stable with no signs of complications post-surgery."
+            ]
+          },
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient is experiencing increasing back pain, indicating a possible complication."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 36,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH37-002",
+      "concern_id": "I32a",
+      "description": "Conflicting notes on the patient's postoperative condition leading to readmission.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T09:30Z]: Postoperative assessment indicated the patient was stable with no signs of infection at the surgical site. However, the patient's mother expressed concerns about increasing redness and drainage.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "the patient was stable with no signs of infection"
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "DENY",
+            "required_provenance": [
+              "increasing redness and drainage"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 37,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH38-001",
+      "concern_id": "I32a",
+      "description": "Patient with fever and abdominal pain post-surgery, unrelated to scoliosis procedure.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T12:00Z]: The patient presented with a fever of 101°F and complaints of abdominal pain. A thorough assessment was conducted and it was determined that these symptoms were consistent with a viral gastroenteritis, unrelated to the surgical site or the recent scoliosis surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "unrelated to the surgical site or the recent scoliosis surgery."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 38,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH38-003",
+      "concern_id": "I32a",
+      "description": "Patient presenting with headaches post-surgery, diagnosed with migraine.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-07T09:15Z]: The patient reported severe headaches following the scoliosis surgery. After further investigation, it was confirmed that these were migraine headaches, not indicative of any post-operative complications.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "not indicative of any post-operative complications."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 38,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH38-004",
+      "concern_id": "I32a",
+      "description": "Patient with transient numbness in the extremities post-surgery, diagnosed as transient ischemic attack.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-08T11:45Z]: Upon assessment, the patient experienced transient numbness in the extremities. Neurological consult revealed this to be a transient ischemic attack, which is unrelated to the scoliosis surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "unrelated to the scoliosis surgery."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 38,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH38-005",
+      "concern_id": "I32a",
+      "description": "Patient with nausea and vomiting post-surgery, diagnosed with gastroesophageal reflux.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-09T16:00Z]: The patient reported nausea and vomiting after discharge. Gastroenterology evaluation indicated that these symptoms were due to gastroesophageal reflux and not linked to the recent scoliosis surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "DENY",
+            "required_provenance": [
+              "not linked to the recent scoliosis surgery."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 38,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH39-001",
+      "concern_id": "I32a",
+      "description": "Patient presented with unrelated viral infection post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T11:00Z]: Patient was readmitted with fever and malaise. Workup revealed a viral upper respiratory infection, unrelated to the recent spinal surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient was readmitted with fever and malaise."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 39,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH39-002",
+      "concern_id": "I32a",
+      "description": "Patient with chronic back pain exacerbated, unrelated to surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T12:30Z]: Upon follow-up, the patient reported increased back pain due to chronic arthritis flares, not related to surgical site.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "increased_back_pain",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "the patient reported increased back pain due to chronic arthritis flares"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 39,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH39-003",
+      "concern_id": "I32a",
+      "description": "Readmission due to unrelated gastrointestinal issue.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T09:00Z]: The patient was readmitted for an unrelated GI obstruction, which was noted to be a pre-existing condition.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "GI complication (ileus/obstruction)",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "The patient was readmitted for an unrelated GI obstruction"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 39,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH39-004",
+      "concern_id": "I32a",
+      "description": "Post-operative admission due to unrelated urinary retention.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T14:15Z]: Patient was admitted for urinary retention attributed to pre-existing benign prostatic hyperplasia, not related to the surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "UTI/urinary retention",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "admitted for urinary retention attributed to pre-existing benign prostatic hyperplasia"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 39,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH39-005",
+      "concern_id": "I32a",
+      "description": "Readmission due to respiratory distress unrelated to surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T16:45Z]: Patient presented with respiratory distress due to asthma exacerbation, which was unrelated to the recent spinal surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "Pneumonia/respiratory distress",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "presented with respiratory distress due to asthma exacerbation"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 39,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH5-003",
+      "concern_id": "I32a",
+      "description": "Conflicting assessments about the patient's infection status.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T08:00Z]: Wound shows signs of erythema and drainage; possible surgical site infection.\n\n[RN 2025-01-04T11:00Z]: Wound is clean and dry, no signs of infection noted.",
+      "contract": {
+        "intents": [
+          "INFECTION_RISKS"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "possible surgical site infection"
+            ]
+          },
+          {
+            "signal_id": "surgical_site_infection",
+            "polarity": "DENY",
+            "required_provenance": [
+              "no signs of infection noted"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 5,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH5-004",
+      "concern_id": "I32a",
+      "description": "Conflicting notes on the patient's discharge instructions clarity.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T14:00Z]: Discharge instructions provided; patient understands medication and follow-up.\n\n[RN 2025-01-05T15:00Z]: Patient seems confused about medication dosing and follow-up appointments.",
+      "contract": {
+        "intents": [
+          "DOCUMENTATION_GAP"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "discharge_instructions_clarity",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "patient understands medication and follow-up"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "DENY",
+            "required_provenance": [
+              "seems confused about medication dosing"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 5,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH6-002",
+      "concern_id": "I32a",
+      "description": "Conflicting notes on surgical site infection signs post-op.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T09:00Z]: Wound shows erythema and purulent drainage, indicating possible infection.\n\n[Nurse 2025-01-03T11:00Z]: Wound appears clean with no signs of infection; no erythema observed.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "indicating possible infection."
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "DENY",
+            "required_provenance": [
+              "no signs of infection; no erythema observed."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 6,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH7-002",
+      "concern_id": "I32a",
+      "description": "Conflicting documentation about the patient's neurovascular status.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T12:00Z]: Neurovascular exam reveals intact sensation and strong pulses.\n\n[RN 2025-01-01T12:30Z]: Patient exhibits decreased sensation in the left foot and weak pulses.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "neurovascular_exam_post_op",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "intact sensation and strong pulses"
+            ]
+          },
+          {
+            "signal_id": "neurovascular_exam_post_op",
+            "polarity": "DENY",
+            "required_provenance": [
+              "decreased sensation in the left foot and weak pulses"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 7,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH7-003",
+      "concern_id": "I32a",
+      "description": "Conflicting notes on the presence of wound drainage.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T13:00Z]: Wound examination shows no signs of drainage or erythema.\n\n[PA 2025-01-01T13:15Z]: Wound drainage noted with mild erythema around the incision site.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "DENY",
+            "required_provenance": [
+              "no signs of drainage or erythema"
+            ]
+          },
+          {
+            "signal_id": "wound_drainage_erythema",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Wound drainage noted with mild erythema"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 7,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH7-004",
+      "concern_id": "I32a",
+      "description": "Contradicting notes about the timing of antibiotic prophylaxis.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[SURGEON 2025-01-01T14:00Z]: Antibiotic prophylaxis given 30 minutes prior to incision.\n\n[CRNA 2025-01-01T14:05Z]: Antibiotic administration occurred after the incision was made.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "given 30 minutes prior to incision"
+            ]
+          },
+          {
+            "signal_id": "antibiotic_prophylaxis_timing",
+            "polarity": "DENY",
+            "required_provenance": [
+              "after the incision was made"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 7,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH7-005",
+      "concern_id": "I32a",
+      "description": "Dissonance regarding discharge instructions clarity.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T15:00Z]: Discharge instructions provided were clear and comprehensive.\n\n[RN 2025-01-01T15:05Z]: Patient reports confusion regarding discharge instructions.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "discharge_instructions_clarity",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "clear and comprehensive"
+            ]
+          },
+          {
+            "signal_id": "discharge_instructions_unclear",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "confusion regarding discharge instructions"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 7,
+        "intent": "AMBIGUITY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH8-001",
+      "concern_id": "I32a",
+      "description": "Patient presented with unrelated symptoms post-surgery leading to unnecessary admission.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:00Z]: The patient was admitted for back pain post-surgery. After evaluation, it was determined that the pain was due to muscle strain unrelated to the surgical site. No signs of infection or hardware issues were noted.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "admitted for back pain post-surgery"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 8,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH8-003",
+      "concern_id": "I32a",
+      "description": "Patient's symptoms of anxiety and panic unrelated to surgical recovery led to unplanned admission.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T13:00Z]: Following scoliosis surgery, the patient exhibited symptoms of anxiety and panic attacks. Evaluation revealed that these symptoms were not related to the surgical procedure, and the surgical recovery was progressing without issues.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "symptoms of anxiety and panic attacks"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 8,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH8-004",
+      "concern_id": "I32a",
+      "description": "Patient presented with a pre-existing condition that required admission unrelated to scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-05T15:00Z]: Post-operative evaluation showed the patient was experiencing chest pain due to a known history of asthma exacerbation. The surgical site was stable, and there were no complications from the scoliosis procedure.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "experiencing chest pain due to a known history of asthma exacerbation"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 8,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH8-005",
+      "concern_id": "I32a",
+      "description": "Patient's unrelated skin rash led to an unnecessary hospital admission post-surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-06T10:30Z]: The patient developed a rash on the abdomen which was determined to be an allergic reaction to medication. Evaluation confirmed the surgical site was clean, with no signs of infection or complications.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "developed a rash on the abdomen which was determined to be an allergic reaction"
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 8,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH9-001",
+      "concern_id": "I32a",
+      "description": "Patient with abdominal pain unrelated to surgical site after scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-01T11:00Z]: Patient presented with severe abdominal pain and was admitted for evaluation. Surgical site is clean with no signs of infection. Patient's pain is localized to the abdomen, unrelated to the back surgery.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient presented with severe abdominal pain and was admitted for evaluation."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 9,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH9-002",
+      "concern_id": "I32a",
+      "description": "Patient readmitted with respiratory distress unrelated to surgical complications.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-02T09:30Z]: Patient was readmitted with respiratory distress. Evaluation reveals pneumonia, completely unrelated to recent scoliosis surgery. Surgical site remains intact and healing well.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient was readmitted with respiratory distress."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 9,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH9-003",
+      "concern_id": "I32a",
+      "description": "Patient develops urinary retention unrelated to surgical intervention post scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-03T14:15Z]: Post-operative patient developed urinary retention. Imaging and bladder scan show no complications related to back surgery. Patient had pre-existing bladder issues.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Post-operative patient developed urinary retention."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 9,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    },
+    {
+      "test_id": "I32a-BATCH9-004",
+      "concern_id": "I32a",
+      "description": "Patient admitted for an unrelated GI complication following scoliosis surgery.",
+      "archetype": "Preventability_Detective",
+      "patient_payload": "[MD 2025-01-04T08:45Z]: Patient presents with abdominal distension and was found to have an ileus. No signs of infection or issues at surgical site. This complication is unrelated to the recent scoliosis procedure.",
+      "contract": {
+        "intents": [
+          "SAFETY"
+        ],
+        "expected_signals": [
+          {
+            "signal_id": "unplanned_admission",
+            "polarity": "AFFIRM",
+            "required_provenance": [
+              "Patient presents with abdominal distension and was found to have an ileus."
+            ]
+          }
+        ],
+        "expected_behavior_flags": []
+      },
+      "metadata": {
+        "batch_index": 9,
+        "intent": "SAFETY",
+        "accountant_verified": true,
+        "generated_at": "2026-01-01T06:52:31.708Z"
+      }
+    }
+  ]
+}

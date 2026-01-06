@@ -82,806 +82,4474 @@
       "domain": "Orthopedics",
       "task_scenarios": {
         "signal_enrichment": {
-          "description": "Scenarios for signal_enrichment task",
+          "description": "Balanced 50 suite for signal_enrichment",
           "output_schema": "signal_enrichment_output.schema.json",
           "scenarios": [
             {
-              "id": "signal_enrichment_pass_INFECTION_PREVENTION_1",
+              "id": "signal_enrichment_knowledge_1",
               "type": "pass",
-              "description": "Clear Infection Prevention documentation - all required signals present",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "prophylactic_antibiotic_timing": "present",
-                "antibiotic_redosing": "present",
-                "wound_assessment": "present"
-              }
-            },
-            {
-              "id": "signal_enrichment_pass_SURGICAL_BUNDLE_COMPLIANCE_1",
-              "type": "pass",
-              "description": "Clear Surgical Bundle Compliance documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "surgical_timeout": "present",
-                "dvt_prophylaxis": "present",
-                "procedure_duration": "present"
-              }
-            },
-            {
-              "id": "signal_enrichment_pass_OUTCOME_MONITORING_1",
-              "type": "pass",
-              "description": "Clear Outcome Monitoring documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "neurovascular_checks": "present",
-                "pain_assessment": "present"
-              }
-            },
-            {
-              "id": "signal_enrichment_pass_READMISSION_PREVENTION_1",
-              "type": "pass",
-              "description": "Clear Readmission Prevention documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "discharge_instructions": "present",
-                "followup_scheduled": "present"
-              }
-            },
-            {
-              "id": "signal_enrichment_fail_INFECTION_PREVENTION_1",
-              "type": "fail",
-              "description": "Missing Infection Prevention - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "prophylactic_antibiotic_timing": "absent",
-                "antibiotic_redosing": "absent",
-                "wound_assessment": "absent"
-              }
-            },
-            {
-              "id": "signal_enrichment_fail_SURGICAL_BUNDLE_COMPLIANCE_1",
-              "type": "fail",
-              "description": "Missing Surgical Bundle Compliance - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "surgical_timeout": "absent",
-                "dvt_prophylaxis": "absent",
-                "procedure_duration": "absent"
-              }
-            },
-            {
-              "id": "signal_enrichment_fail_OUTCOME_MONITORING_1",
-              "type": "fail",
-              "description": "Missing Outcome Monitoring - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "neurovascular_checks": "absent",
-                "pain_assessment": "absent"
-              }
-            },
-            {
-              "id": "signal_enrichment_fail_READMISSION_PREVENTION_1",
-              "type": "fail",
-              "description": "Missing Readmission Prevention - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "discharge_instructions": "absent",
-                "followup_scheduled": "absent"
-              }
-            },
-            {
-              "id": "signal_enrichment_doubt_unclear_antibiotic_timing_1",
-              "type": "doubt",
-              "description": "Antibiotic timing not clearly documented or conflicting times",
-              "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Please verify antibiotic administration timing relative to incision"
-                }
-              ],
-              "doubt_recognition": {
-                "expected_signal_gap": true,
-                "uncertainty_keywords": [
-                  "unclear",
-                  "unspecified",
-                  "not documented",
-                  "antibiotic",
-                  "cefazolin",
-                  "ancef",
-                  "prophylaxis",
-                  "administered",
-                  "given"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "signal_enrichment_doubt_conflicting_wound_assessments_1",
-              "type": "doubt",
-              "description": "Wound assessment notes show conflicting findings",
+              "id": "signal_enrichment_knowledge_2",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Wound assessments show conflicting findings. Which is accurate?"
-                }
-              ],
-              "doubt_recognition": {
-                "expected_signal_gap": true,
-                "uncertainty_keywords": [
-                  "unclear",
-                  "unspecified",
-                  "not documented",
-                  "wound",
-                  "incision",
-                  "erythema",
-                  "healing",
-                  "drainage"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "signal_enrichment_doubt_borderline_readmission_timing_1",
-              "type": "doubt",
-              "description": "Readmission occurred close to 30-day boundary",
+              "id": "signal_enrichment_knowledge_3",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
-                }
-              ],
-              "doubt_recognition": {
-                "expected_signal_gap": true,
-                "uncertainty_keywords": [
-                  "unclear",
-                  "unspecified",
-                  "not documented",
-                  "readmit",
-                  "return",
-                  "presented",
-                  "day 30",
-                  "one month"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "signal_enrichment_doubt_incomplete_discharge_documentation_1",
-              "type": "doubt",
-              "description": "Discharge instructions partially documented or unclear",
+              "id": "signal_enrichment_knowledge_4",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
-                }
-              ],
-              "doubt_recognition": {
-                "expected_signal_gap": true,
-                "uncertainty_keywords": [
-                  "unclear",
-                  "unspecified",
-                  "not documented",
-                  "discharge",
-                  "instructions",
-                  "education",
-                  "follow-up",
-                  "pain management",
-                  "activity"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "signal_enrichment_doubt_neurological_change_unclear_etiology_1",
-              "type": "doubt",
-              "description": "New neurological findings with unclear cause",
+              "id": "signal_enrichment_knowledge_5",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
-                }
-              ],
-              "doubt_recognition": {
-                "expected_signal_gap": true,
-                "uncertainty_keywords": [
-                  "unclear",
-                  "unspecified",
-                  "not documented",
-                  "paresthesia",
-                  "weakness",
-                  "numbness",
-                  "neurological",
-                  "sensation",
-                  "motor"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_6",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_7",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_8",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_9",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_10",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_11",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_12",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_13",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_14",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_15",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_16",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_17",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_18",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_19",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_20",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_1",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_2",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_3",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_4",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_5",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_6",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_7",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_8",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_9",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_10",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_11",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_12",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_13",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_14",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_15",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_1",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_2",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_3",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_4",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_5",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_6",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_7",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_8",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_9",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_10",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_1",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_2",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_3",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_4",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_5",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
                 ]
               }
             }
           ]
         },
         "event_summary": {
-          "description": "Scenarios for event_summary task",
+          "description": "Balanced 50 suite for event_summary",
           "output_schema": "event_summary_output.schema.json",
           "scenarios": [
             {
-              "id": "event_summary_pass_INFECTION_PREVENTION_1",
+              "id": "event_summary_knowledge_1",
               "type": "pass",
-              "description": "Clear Infection Prevention documentation - all required signals present",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "prophylactic_antibiotic_timing": "present",
-                "antibiotic_redosing": "present",
-                "wound_assessment": "present"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_pass_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "id": "event_summary_knowledge_2",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_3",
               "type": "pass",
-              "description": "Clear Surgical Bundle Compliance documentation - all required signals present",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "surgical_timeout": "present",
-                "dvt_prophylaxis": "present",
-                "procedure_duration": "present"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_pass_OUTCOME_MONITORING_1",
+              "id": "event_summary_knowledge_4",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_5",
               "type": "pass",
-              "description": "Clear Outcome Monitoring documentation - all required signals present",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "neurovascular_checks": "present",
-                "pain_assessment": "present"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_pass_READMISSION_PREVENTION_1",
+              "id": "event_summary_knowledge_6",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_7",
               "type": "pass",
-              "description": "Clear Readmission Prevention documentation - all required signals present",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "discharge_instructions": "present",
-                "followup_scheduled": "present"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_fail_INFECTION_PREVENTION_1",
+              "id": "event_summary_knowledge_8",
               "type": "fail",
-              "description": "Missing Infection Prevention - required signals absent or problematic",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "prophylactic_antibiotic_timing": "absent",
-                "antibiotic_redosing": "absent",
-                "wound_assessment": "absent"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_fail_SURGICAL_BUNDLE_COMPLIANCE_1",
+              "id": "event_summary_knowledge_9",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_10",
               "type": "fail",
-              "description": "Missing Surgical Bundle Compliance - required signals absent or problematic",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "surgical_timeout": "absent",
-                "dvt_prophylaxis": "absent",
-                "procedure_duration": "absent"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_fail_OUTCOME_MONITORING_1",
+              "id": "event_summary_knowledge_11",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_12",
               "type": "fail",
-              "description": "Missing Outcome Monitoring - required signals absent or problematic",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "neurovascular_checks": "absent",
-                "pain_assessment": "absent"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_fail_READMISSION_PREVENTION_1",
+              "id": "event_summary_knowledge_13",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_14",
               "type": "fail",
-              "description": "Missing Readmission Prevention - required signals absent or problematic",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "discharge_instructions": "absent",
-                "followup_scheduled": "absent"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_doubt_unclear_antibiotic_timing_1",
-              "type": "doubt",
-              "description": "Antibiotic timing not clearly documented or conflicting times",
+              "id": "event_summary_knowledge_15",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Please verify antibiotic administration timing relative to incision"
-                }
-              ],
-              "doubt_recognition": {
-                "should_flag_incomplete": true
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_doubt_conflicting_wound_assessments_1",
-              "type": "doubt",
-              "description": "Wound assessment notes show conflicting findings",
+              "id": "event_summary_knowledge_16",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Wound assessments show conflicting findings. Which is accurate?"
-                }
-              ],
-              "doubt_recognition": {
-                "should_flag_incomplete": true
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_doubt_borderline_readmission_timing_1",
-              "type": "doubt",
-              "description": "Readmission occurred close to 30-day boundary",
+              "id": "event_summary_knowledge_17",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
-                }
-              ],
-              "doubt_recognition": {
-                "should_flag_incomplete": true
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_doubt_incomplete_discharge_documentation_1",
-              "type": "doubt",
-              "description": "Discharge instructions partially documented or unclear",
+              "id": "event_summary_knowledge_18",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
-                }
-              ],
-              "doubt_recognition": {
-                "should_flag_incomplete": true
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
               }
             },
             {
-              "id": "event_summary_doubt_neurological_change_unclear_etiology_1",
-              "type": "doubt",
-              "description": "New neurological findings with unclear cause",
+              "id": "event_summary_knowledge_19",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
-                }
-              ],
-              "doubt_recognition": {
-                "should_flag_incomplete": true
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_20",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_1",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_2",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_3",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_4",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_5",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_6",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_7",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_8",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_9",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_10",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_11",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_12",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_13",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_14",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_15",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_1",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_2",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_3",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_4",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_5",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_6",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_7",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_8",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_9",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_10",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_1",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_2",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_3",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_4",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_5",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
               }
             }
           ]
         },
         "followup_questions": {
-          "description": "Scenarios for followup_questions task",
+          "description": "Balanced 50 suite for followup_questions",
           "output_schema": "followup_questions_output.schema.json",
           "scenarios": [
             {
-              "id": "followup_questions_pass_INFECTION_PREVENTION_1",
+              "id": "followup_questions_knowledge_1",
               "type": "pass",
-              "description": "Clear Infection Prevention documentation - all required signals present",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "prophylactic_antibiotic_timing": "present",
-                "antibiotic_redosing": "present",
-                "wound_assessment": "present"
-              }
-            },
-            {
-              "id": "followup_questions_pass_SURGICAL_BUNDLE_COMPLIANCE_1",
-              "type": "pass",
-              "description": "Clear Surgical Bundle Compliance documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "surgical_timeout": "present",
-                "dvt_prophylaxis": "present",
-                "procedure_duration": "present"
-              }
-            },
-            {
-              "id": "followup_questions_pass_OUTCOME_MONITORING_1",
-              "type": "pass",
-              "description": "Clear Outcome Monitoring documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "neurovascular_checks": "present",
-                "pain_assessment": "present"
-              }
-            },
-            {
-              "id": "followup_questions_pass_READMISSION_PREVENTION_1",
-              "type": "pass",
-              "description": "Clear Readmission Prevention documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "discharge_instructions": "present",
-                "followup_scheduled": "present"
-              }
-            },
-            {
-              "id": "followup_questions_fail_INFECTION_PREVENTION_1",
-              "type": "fail",
-              "description": "Missing Infection Prevention - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "prophylactic_antibiotic_timing": "absent",
-                "antibiotic_redosing": "absent",
-                "wound_assessment": "absent"
-              }
-            },
-            {
-              "id": "followup_questions_fail_SURGICAL_BUNDLE_COMPLIANCE_1",
-              "type": "fail",
-              "description": "Missing Surgical Bundle Compliance - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "surgical_timeout": "absent",
-                "dvt_prophylaxis": "absent",
-                "procedure_duration": "absent"
-              }
-            },
-            {
-              "id": "followup_questions_fail_OUTCOME_MONITORING_1",
-              "type": "fail",
-              "description": "Missing Outcome Monitoring - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "neurovascular_checks": "absent",
-                "pain_assessment": "absent"
-              }
-            },
-            {
-              "id": "followup_questions_fail_READMISSION_PREVENTION_1",
-              "type": "fail",
-              "description": "Missing Readmission Prevention - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "discharge_instructions": "absent",
-                "followup_scheduled": "absent"
-              }
-            },
-            {
-              "id": "followup_questions_doubt_unclear_antibiotic_timing_1",
-              "type": "doubt",
-              "description": "Antibiotic timing not clearly documented or conflicting times",
-              "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Please verify antibiotic administration timing relative to incision"
-                }
-              ],
-              "doubt_recognition": {
-                "should_probe_ambiguity": true,
-                "probe_keywords": [
-                  "antibiotic",
-                  "cefazolin",
-                  "ancef",
-                  "prophylaxis",
-                  "administered",
-                  "given"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "followup_questions_doubt_conflicting_wound_assessments_1",
-              "type": "doubt",
-              "description": "Wound assessment notes show conflicting findings",
+              "id": "followup_questions_knowledge_2",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Wound assessments show conflicting findings. Which is accurate?"
-                }
-              ],
-              "doubt_recognition": {
-                "should_probe_ambiguity": true,
-                "probe_keywords": [
-                  "wound",
-                  "incision",
-                  "erythema",
-                  "healing",
-                  "drainage"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "followup_questions_doubt_borderline_readmission_timing_1",
-              "type": "doubt",
-              "description": "Readmission occurred close to 30-day boundary",
+              "id": "followup_questions_knowledge_3",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
-                }
-              ],
-              "doubt_recognition": {
-                "should_probe_ambiguity": true,
-                "probe_keywords": [
-                  "readmit",
-                  "return",
-                  "presented",
-                  "day 30",
-                  "one month"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "followup_questions_doubt_incomplete_discharge_documentation_1",
-              "type": "doubt",
-              "description": "Discharge instructions partially documented or unclear",
+              "id": "followup_questions_knowledge_4",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
-                }
-              ],
-              "doubt_recognition": {
-                "should_probe_ambiguity": true,
-                "probe_keywords": [
-                  "discharge",
-                  "instructions",
-                  "education",
-                  "follow-up",
-                  "pain management",
-                  "activity"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "followup_questions_doubt_neurological_change_unclear_etiology_1",
-              "type": "doubt",
-              "description": "New neurological findings with unclear cause",
+              "id": "followup_questions_knowledge_5",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
-                }
-              ],
-              "doubt_recognition": {
-                "should_probe_ambiguity": true,
-                "probe_keywords": [
-                  "paresthesia",
-                  "weakness",
-                  "numbness",
-                  "neurological",
-                  "sensation",
-                  "motor"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_6",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_7",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_8",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_9",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_10",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_11",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_12",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_13",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_14",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_15",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_16",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_17",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_18",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_19",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_20",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_1",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_2",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_3",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_4",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_5",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_6",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_7",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_8",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_9",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_10",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_11",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_12",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_13",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_14",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_15",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_1",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_2",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_3",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_4",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_5",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_6",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_7",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_8",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_9",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_10",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_1",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_2",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_3",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_4",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_5",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
                 ]
               }
             }
           ]
         },
         "clinical_review_plan": {
-          "description": "Scenarios for clinical_review_plan task",
+          "description": "Balanced 50 suite for clinical_review_plan",
           "output_schema": "clinical_review_plan_output.schema.json",
           "scenarios": [
             {
-              "id": "clinical_review_plan_pass_INFECTION_PREVENTION_1",
+              "id": "clinical_review_plan_knowledge_1",
               "type": "pass",
-              "description": "Clear Infection Prevention documentation - all required signals present",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "signals": {
-                "prophylactic_antibiotic_timing": "present",
-                "antibiotic_redosing": "present",
-                "wound_assessment": "present"
-              }
-            },
-            {
-              "id": "clinical_review_plan_pass_SURGICAL_BUNDLE_COMPLIANCE_1",
-              "type": "pass",
-              "description": "Clear Surgical Bundle Compliance documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "surgical_timeout": "present",
-                "dvt_prophylaxis": "present",
-                "procedure_duration": "present"
-              }
-            },
-            {
-              "id": "clinical_review_plan_pass_OUTCOME_MONITORING_1",
-              "type": "pass",
-              "description": "Clear Outcome Monitoring documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "neurovascular_checks": "present",
-                "pain_assessment": "present"
-              }
-            },
-            {
-              "id": "clinical_review_plan_pass_READMISSION_PREVENTION_1",
-              "type": "pass",
-              "description": "Clear Readmission Prevention documentation - all required signals present",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "discharge_instructions": "present",
-                "followup_scheduled": "present"
-              }
-            },
-            {
-              "id": "clinical_review_plan_fail_INFECTION_PREVENTION_1",
-              "type": "fail",
-              "description": "Missing Infection Prevention - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "prophylactic_antibiotic_timing": "absent",
-                "antibiotic_redosing": "absent",
-                "wound_assessment": "absent"
-              }
-            },
-            {
-              "id": "clinical_review_plan_fail_SURGICAL_BUNDLE_COMPLIANCE_1",
-              "type": "fail",
-              "description": "Missing Surgical Bundle Compliance - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "surgical_timeout": "absent",
-                "dvt_prophylaxis": "absent",
-                "procedure_duration": "absent"
-              }
-            },
-            {
-              "id": "clinical_review_plan_fail_OUTCOME_MONITORING_1",
-              "type": "fail",
-              "description": "Missing Outcome Monitoring - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "neurovascular_checks": "absent",
-                "pain_assessment": "absent"
-              }
-            },
-            {
-              "id": "clinical_review_plan_fail_READMISSION_PREVENTION_1",
-              "type": "fail",
-              "description": "Missing Readmission Prevention - required signals absent or problematic",
-              "archetype": "Preventability_Detective",
-              "signals": {
-                "discharge_instructions": "absent",
-                "followup_scheduled": "absent"
-              }
-            },
-            {
-              "id": "clinical_review_plan_doubt_unclear_antibiotic_timing_1",
-              "type": "doubt",
-              "description": "Antibiotic timing not clearly documented or conflicting times",
-              "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Please verify antibiotic administration timing relative to incision"
-                }
-              ],
-              "doubt_recognition": {
-                "should_escalate": true,
-                "expected_concern_keywords": [
-                  "antibiotic",
-                  "cefazolin",
-                  "ancef",
-                  "prophylaxis",
-                  "administered",
-                  "given"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "clinical_review_plan_doubt_conflicting_wound_assessments_1",
-              "type": "doubt",
-              "description": "Wound assessment notes show conflicting findings",
+              "id": "clinical_review_plan_knowledge_2",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Wound assessments show conflicting findings. Which is accurate?"
-                }
-              ],
-              "doubt_recognition": {
-                "should_escalate": true,
-                "expected_concern_keywords": [
-                  "wound",
-                  "incision",
-                  "erythema",
-                  "healing",
-                  "drainage"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "clinical_review_plan_doubt_borderline_readmission_timing_1",
-              "type": "doubt",
-              "description": "Readmission occurred close to 30-day boundary",
+              "id": "clinical_review_plan_knowledge_3",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Readmission timing is close to 30-day threshold. Verify exact dates."
-                }
-              ],
-              "doubt_recognition": {
-                "should_escalate": true,
-                "expected_concern_keywords": [
-                  "readmit",
-                  "return",
-                  "presented",
-                  "day 30",
-                  "one month"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "clinical_review_plan_doubt_incomplete_discharge_documentation_1",
-              "type": "doubt",
-              "description": "Discharge instructions partially documented or unclear",
+              "id": "clinical_review_plan_knowledge_4",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Discharge instructions appear incomplete. Verify patient education documented."
-                }
-              ],
-              "doubt_recognition": {
-                "should_escalate": true,
-                "expected_concern_keywords": [
-                  "discharge",
-                  "instructions",
-                  "education",
-                  "follow-up",
-                  "pain management",
-                  "activity"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
                 ]
               }
             },
             {
-              "id": "clinical_review_plan_doubt_neurological_change_unclear_etiology_1",
-              "type": "doubt",
-              "description": "New neurological findings with unclear cause",
+              "id": "clinical_review_plan_knowledge_5",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
-              "doubt": [
-                {
-                  "type": "ambiguity",
-                  "instruction": "Neurological changes noted but etiology unclear. Is this related to procedure?"
-                }
-              ],
-              "doubt_recognition": {
-                "should_escalate": true,
-                "expected_concern_keywords": [
-                  "paresthesia",
-                  "weakness",
-                  "numbness",
-                  "neurological",
-                  "sensation",
-                  "motor"
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_6",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_7",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_8",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_9",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_10",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_11",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_12",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_13",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_14",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_15",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_16",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_17",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_18",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_19",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_20",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_1",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_2",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_3",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_4",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_5",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_6",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_7",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_8",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_9",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_10",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_11",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_12",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_13",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_14",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_15",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_1",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_2",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_3",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_4",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_5",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_6",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_7",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_8",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_9",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_10",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_1",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_2",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_3",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_4",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_5",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
                 ]
               }
             }
           ]
         }
       },
-      "auto_derive": {
-        "enabled": true,
-        "pass_per_signal_group": 1,
-        "fail_per_signal_group": 1,
-        "doubt_per_ambiguity_trigger": 1,
-        "minimum_doubt_ratio": 0.2
+      "coverage_goals": {
+        "signal_groups": 3,
+        "min_scenarios": 200,
+        "doubt_ratio": 0.3,
+        "doubt_mix": [
+          "ambiguity",
+          "missing_data",
+          "conflict"
+        ]
+      }
+    },
+    {
+      "metric_id": "I32b",
+      "domain": "Orthopedics",
+      "task_scenarios": {
+        "signal_enrichment": {
+          "description": "Balanced 50 suite for signal_enrichment",
+          "output_schema": "signal_enrichment_output.schema.json",
+          "scenarios": [
+            {
+              "id": "signal_enrichment_knowledge_1",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_2",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_3",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_4",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_5",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_6",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_7",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_8",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_9",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_10",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_11",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_12",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_13",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_14",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_15",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_16",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_17",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_18",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_19",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_20",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_1",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_2",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_3",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_4",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_5",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_6",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_7",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_8",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_9",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_10",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_11",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_12",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_13",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_14",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_15",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_1",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_2",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_3",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_4",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_5",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_6",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_7",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_8",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_9",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_10",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_1",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_2",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_3",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_4",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_5",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            }
+          ]
+        },
+        "event_summary": {
+          "description": "Balanced 50 suite for event_summary",
+          "output_schema": "event_summary_output.schema.json",
+          "scenarios": [
+            {
+              "id": "event_summary_knowledge_1",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_2",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_3",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_4",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_5",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_6",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_7",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_8",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_9",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_10",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_11",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_12",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_13",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_14",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_15",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_16",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_17",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_18",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_19",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_20",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_1",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_2",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_3",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_4",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_5",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_6",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_7",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_8",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_9",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_10",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_11",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_12",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_13",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_14",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_15",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_1",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_2",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_3",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_4",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_5",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_6",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_7",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_8",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_9",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_10",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_1",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_2",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_3",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_4",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_5",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            }
+          ]
+        },
+        "followup_questions": {
+          "description": "Balanced 50 suite for followup_questions",
+          "output_schema": "followup_questions_output.schema.json",
+          "scenarios": [
+            {
+              "id": "followup_questions_knowledge_1",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_2",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_3",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_4",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_5",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_6",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_7",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_8",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_9",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_10",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_11",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_12",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_13",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_14",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_15",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_16",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_17",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_18",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_19",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_20",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_1",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_2",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_3",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_4",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_5",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_6",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_7",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_8",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_9",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_10",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_11",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_12",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_13",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_14",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_15",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_1",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_2",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_3",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_4",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_5",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_6",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_7",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_8",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_9",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_10",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_1",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_2",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_3",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_4",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_5",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            }
+          ]
+        },
+        "clinical_review_plan": {
+          "description": "Balanced 50 suite for clinical_review_plan",
+          "output_schema": "clinical_review_plan_output.schema.json",
+          "scenarios": [
+            {
+              "id": "clinical_review_plan_knowledge_1",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_2",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_3",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_4",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_5",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_6",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_7",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_8",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_9",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_10",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_11",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_12",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_13",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_14",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_15",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_16",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_17",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_18",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_19",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_20",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_1",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_2",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_3",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_4",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_5",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_6",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_7",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_8",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_9",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_10",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_11",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_12",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_13",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_14",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_15",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_1",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_2",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_3",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_4",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_5",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_6",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_7",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_8",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_9",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_10",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_1",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_2",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_3",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_4",
+              "type": "fail",
+              "description": "Timeline: POD calculation and primary/return linking using Safety Signals definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_5",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            }
+          ]
+        }
       },
       "coverage_goals": {
         "signal_groups": 4,
-        "min_scenarios": 52,
-        "doubt_ratio": 0.38461538461538464,
+        "min_scenarios": 200,
+        "doubt_ratio": 0.3,
         "doubt_mix": [
           "ambiguity",
           "missing_data",

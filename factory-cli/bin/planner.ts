@@ -134,6 +134,8 @@ import { flywheel } from '../EvalsFactory/cli/flywheel';
 import { safeScore } from '../EvalsFactory/cli/safeScore';
 import { evalCommand } from '../EvalsFactory/cli/eval';
 import { evalStatus } from '../EvalsFactory/cli/evalStatus';
+import { evalRoundtrip } from '../EvalsFactory/cli/evalRoundtrip';
+import { exportUiPayload } from '../tools/ui-export';
 
 // ============================================
 // FLYWHEEL COMMAND (Prompt Refinery)
@@ -154,6 +156,33 @@ program.addCommand(evalCommand);
 // EVAL:STATUS COMMAND (QA Scorecard)
 // ============================================
 program.addCommand(evalStatus);
+
+// ============================================
+// EVAL:ROUNDTRIP COMMAND (Automated Cycle)
+// ============================================
+program.addCommand(evalRoundtrip);
+
+// ============================================
+// UI:EXPORT COMMAND (UI Factory Demo Payload)
+// ============================================
+program
+  .command('ui:export')
+  .description('Export UI payload for a metric + case')
+  .requiredOption('-m, --metric <id>', 'Metric ID (e.g., I32a)')
+  .requiredOption('-c, --case <id>', 'Case ID (e.g., emily)')
+  .requiredOption('-o, --out <dir>', 'Output directory')
+  .action(async (options) => {
+    try {
+      await exportUiPayload({
+        metricId: options.metric,
+        caseId: options.case,
+        outDir: options.out
+      });
+    } catch (error: any) {
+      console.error(`\nƒ?O Error: ${error.message}\n`);
+      process.exit(1);
+    }
+  });
 
 // ============================================
 // PARSE AND EXECUTE

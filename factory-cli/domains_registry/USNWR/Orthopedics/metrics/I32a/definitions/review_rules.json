@@ -12,6 +12,12 @@
     ],
     "default_if_unclear": "needs_review"
   },
+  "exclusion_criteria": [
+    {
+      "exclusion_id": "age_limit",
+      "description": "Patient age > 18 years at time of surgery"
+    }
+  ],
   "rule_in_criteria": [
     {
       "rule_id": "clear_pass",

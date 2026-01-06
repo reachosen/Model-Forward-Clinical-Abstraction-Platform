@@ -26,6 +26,12 @@ export interface GenerationScenario {
   signals?: Record<string, SignalPresence>; // e.g., { "infection_risks": "present" }
   duet?: DuetProfile;
   doubt?: DoubtModifier[];
+  // Drift/gap controls
+  confounder_tag?: string;       // Used for novelty/dedup keys
+  new_failure_mode?: string;     // Human-readable novelty tag
+  is_ambiguity_case?: boolean;   // Explicitly mark conflict scenarios
+  conflict_type?: string;        // e.g., "affirm_vs_deny", "timeline_conflict"
+  resolution_policy?: string;    // e.g., "none_allowed", "latest_note_wins"
 }
 
 export interface CoverageGoals {
@@ -74,13 +80,32 @@ export interface DRExpectation {
   probe_keywords?: string[];           // Keywords that should appear in questions
 }
 
+export type Intent = 'KNOWLEDGE' | 'AMBIGUITY' | 'SAFETY' | 'SYNTHESIS';
+export type Polarity = 'AFFIRM' | 'DENY' | 'AMBIGUOUS';
+export type BehaviorFlag = 'AMBIGUITY_TRIGGER' | 'DATA_GAP' | 'DUET_CONSULTED';
+
+export interface ExpectedSignal {
+  signal_id: string;          // The Concept (CR)
+  polarity?: Polarity;        // Default: AFFIRM
+  required_provenance?: string[]; // The Evidence (AH) - Exact substring match
+}
+
+export interface CaseContract {
+  intents: Intent[];
+  expected_signals?: ExpectedSignal[];
+  expected_behavior_flags?: BehaviorFlag[];
+  expected_summary_phrases?: string[];
+  forbidden_behaviors?: string[]; // Safety regressions
+}
+
 /**
  * Task-specific scenario with expected output for evaluation
  */
 export interface TaskScenario extends GenerationScenario {
   type?: 'pass' | 'fail' | 'doubt';
-  expected?: Record<string, unknown>; // Task-specific expected output
-  doubt_recognition?: DRExpectation;  // DR expectations for doubt scenarios
+  expected?: Record<string, unknown>; // Legacy expectation
+  doubt_recognition?: DRExpectation;  // Legacy DR expectation
+  contract?: CaseContract;            // New rigorous contract
 }
 
 /**
@@ -92,6 +117,22 @@ export interface TaskScenarioConfig {
   scenarios: TaskScenario[];
 }
 
+/**
+ * Batch Strategy Configuration
+ * 
+ * ASPIRATIONS:
+ * 1. Clinical Realism: Cases must mimic real EHR narratives (notes, vitals, flowsheets).
+ * 2. Coverage (Archetype Lenses):
+ *    - Pass: Clear Rule-In
+ *    - Fail: Clear Rule-Out
+ *    - Doubt (Ambiguity): Conflicting data or edge cases (Critical for DR Score)
+ *    - Duet (Persona): Specific knowledge source requirements
+ * 3. Signal Density: Realistic noise-to-signal ratio.
+ * 4. Explicit Ground Truth:
+ *    - Must support Auto-Heal (Machine Verifyable).
+ *    - Signal Expectations: Canonical ID + Verbatim Provenance.
+ *    - Summary Expectations: Key phrases + Temporal logic.
+ */
 export interface BatchStrategy {
   metric_id: string;
   domain: string;

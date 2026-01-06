@@ -135,6 +135,17 @@ export const Paths = {
   harness: () => path.join(Paths.crossDomain(), 'harness'),
 
   // -------------------------------------------------------------------------
+  // Status and archives
+  // -------------------------------------------------------------------------
+  statusDir: () => path.join(CLI_ROOT, 'status'),
+  statusFile: () => path.join(Paths.statusDir(), 'current.json'),
+  archiveRoot: () => path.join(CLI_ROOT, '_archive'),
+  archiveBucket: (concernId: string, date: Date = new Date()) => {
+    const bucket = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    return path.join(Paths.archiveRoot(), bucket, concernId);
+  },
+
+  // -------------------------------------------------------------------------
   // Runs (ephemeral, git-ignored)
   // -------------------------------------------------------------------------
   runs: () => path.join(CLI_ROOT, process.env.RUNS_DIR || 'runs'),

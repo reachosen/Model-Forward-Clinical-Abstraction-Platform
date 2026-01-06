@@ -19,9 +19,10 @@ import {
   SAFEv0Thresholds,
   SAFEv0ArchetypeStats,
   SAFEv0FailureAnalysis,
+  IntentSummary,
   DEFAULT_SAFE_V0_THRESHOLDS,
 } from '../../types/safety';
-import { DRExpectation } from '../dataset/BatchStrategy';
+import { DRExpectation, Intent } from '../dataset/BatchStrategy';
 
 // ============================================
 // Text Matching & Normalization Utilities
@@ -76,8 +77,48 @@ function substringMatch(haystack: string, needle: string): boolean {
 
 export function computeCR(
   mustFindSignals: string[],
-  engineOutput: EngineOutput
+  engineOutput: EngineOutput,
+  contract?: any
 ): SAFEv0Score {
+  const expectedSignals = contract?.expected_signals || [];
+  const actualSignals = engineOutput.signal_objects || [];
+  
+  // 1. Contract Path (ID + Polarity)
+  if (expectedSignals.length > 0) {
+    const found: string[] = [];
+    const missing: string[] = [];
+    let passCount = 0;
+
+    const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    for (const exp of expectedSignals) {
+      const normExpId = normalize(exp.signal_id);
+      const expPolarity = exp.polarity || 'AFFIRM';
+
+      const match = actualSignals.find(act => 
+        normalize(act.signal_id || act.name || "") === normExpId &&
+        (act.polarity || 'AFFIRM').toUpperCase() === expPolarity
+      );
+
+      if (match) {
+        passCount++;
+        found.push(exp.signal_id);
+      } else {
+        missing.push(exp.signal_id);
+      }
+    }
+
+    const score = passCount / expectedSignals.length;
+    return {
+      criterion: 'CR',
+      score,
+      reasoning: `Contract ID Match: ${passCount}/${expectedSignals.length}`,
+      flagged: score < DEFAULT_SAFE_V0_THRESHOLDS.CR.review,
+      details: { found, missing }
+    };
+  }
+
+  // 2. Legacy Path
   if (mustFindSignals.length === 0) {
     return { criterion: 'CR', score: 1.0, reasoning: 'No expectations', flagged: false, details: { found: [], missing: [] } };
   }
@@ -89,7 +130,6 @@ export function computeCR(
   const missing: string[] = [];
 
   for (const expected of mustFindSignals) {
-    // Check structured signals first, then summary fallback
     const matchedInSignals = foundSignals.some(f => isSignalMatch(expected, f));
     const matchedInSummary = substringMatch(summaryText, expected);
 
@@ -104,7 +144,7 @@ export function computeCR(
   return {
     criterion: 'CR',
     score,
-    reasoning: `Found ${found.length}/${mustFindSignals.length} must_find_signals`,
+    reasoning: `Legacy Fuzzy Match: ${found.length}/${mustFindSignals.length}`,
     flagged: score < DEFAULT_SAFE_V0_THRESHOLDS.CR.review,
     details: { found, missing }
   };
@@ -113,30 +153,87 @@ export function computeCR(
 export function computeAH(
   forbiddenTerms: string[],
   engineOutput: EngineOutput,
-  strictMode: boolean = false
+  strictMode: boolean = false,
+  contract?: any
 ): SAFEv0Score {
-  const questionsText = (engineOutput.followup_questions || []).join(' ');
-  const violations: string[] = [];
+  const expectedSignals = contract?.expected_signals || [];
+  const actualSignals = engineOutput.signal_objects || [];
+  const payload = engineOutput.raw_input.toLowerCase();
 
-  for (const term of forbiddenTerms) {
-    if (substringMatch(questionsText, term)) violations.push(term);
+  // 1. Contract Path (Provenance Integrity)
+  if (expectedSignals.length > 0) {
+    const violations: string[] = [];
+    let passCount = 0;
+    let checkedCount = 0;
+
+    const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    for (const exp of expectedSignals) {
+      if (!exp.required_provenance || exp.required_provenance.length === 0) continue;
+      checkedCount++;
+
+      const match = actualSignals.find(act => 
+        normalize(act.signal_id || act.name || "") === normalize(exp.signal_id)
+      );
+
+      if (match) {
+        let ahOk = true;
+        for (const sub of exp.required_provenance) {
+          const normSub = sub.toLowerCase();
+          const inPayload = payload.includes(normSub);
+          const inOutput = match.provenance.toLowerCase().includes(normSub);
+
+          if (!inPayload) {
+            violations.push(`${exp.signal_id}: not_in_payload ("${sub}")`);
+            ahOk = false;
+          } else if (!inOutput) {
+            violations.push(`${exp.signal_id}: not_in_output ("${sub}")`);
+            ahOk = false;
+          }
+        }
+        if (ahOk) passCount++;
+      } else {
+        // Signal not even found, technically not an AH violation unless we consider missing evidence a risk
+        // But for Scorecard, we only score AH on found concepts
+      }
+    }
+
+    const score = checkedCount > 0 ? passCount / checkedCount : 1.0;
+    return {
+      criterion: 'AH',
+      score,
+      reasoning: checkedCount > 0 ? `Evidence Fidelity: ${passCount}/${checkedCount}` : 'No provenance requirements',
+      flagged: score < 1.0,
+      details: { violations }
+    };
   }
 
-  const score = strictMode ? (violations.length === 0 ? 1.0 : 0.0) : (1.0 - (violations.length / (forbiddenTerms.length || 1)));
+  // 2. Legacy Path (Forbidden Terms)
+  const questionsText = (engineOutput.followup_questions || []).join(' ');
+  const legacyViolations: string[] = [];
+
+  for (const term of forbiddenTerms) {
+    if (substringMatch(questionsText, term)) legacyViolations.push(term);
+  }
+
+  const score = strictMode ? (legacyViolations.length === 0 ? 1.0 : 0.0) : (1.0 - (legacyViolations.length / (forbiddenTerms.length || 1)));
   return {
     criterion: 'AH',
     score,
-    reasoning: violations.length === 0 ? 'Clear' : `Found ${violations.length} violations`,
+    reasoning: legacyViolations.length === 0 ? 'Clear' : `Found ${legacyViolations.length} violations`,
     flagged: score < 1.0,
-    details: { violations }
+    details: { violations: legacyViolations }
   };
 }
 
 export function computeAC(
   mustContainPhrases: string[],
-  engineOutput: EngineOutput
+  engineOutput: EngineOutput,
+  contract?: any
 ): SAFEv0Score {
-  if (mustContainPhrases.length === 0) {
+  const expectedPhrases = contract?.expected_summary_phrases || mustContainPhrases || [];
+  
+  if (expectedPhrases.length === 0) {
     return { criterion: 'AC', score: 1.0, reasoning: 'No expectations', flagged: false, details: { found: [], missing: [] } };
   }
 
@@ -147,10 +244,9 @@ export function computeAC(
   const missing: string[] = [];
   const found_evidence: string[] = [];
 
-  for (const phrase of mustContainPhrases) {
+  for (const phrase of expectedPhrases) {
     const normPhrase = normalizeId(phrase);
     
-    // Check for exact substring OR concept-normalized match OR synonym match
     const isDirectMatch = summary.includes(normalizeText(phrase));
     const isConceptMatch = normalizedSummary.includes(normPhrase);
     const isSynonymMatch = (CLINICAL_SYNONYMS[normPhrase] || []).some(v => normalizedSummary.includes(v));
@@ -164,17 +260,39 @@ export function computeAC(
     }
   }
 
-  const score = found.length / mustContainPhrases.length;
+  const score = found.length / expectedPhrases.length;
   return {
     criterion: 'AC',
     score,
-    reasoning: `Summary included ${found.length}/${mustContainPhrases.length} concepts (Normalization Active)`,
+    reasoning: `Coverage: ${found.length}/${expectedPhrases.length}`,
     flagged: score < DEFAULT_SAFE_V0_THRESHOLDS.AC.review,
     details: { found, missing, found_evidence }
   };
 }
 
-export function computeDR(task: string, engineOutput: EngineOutput, drExpectation: DRExpectation): SAFEv0Score {
+export function computeDR(
+  task: string, 
+  engineOutput: EngineOutput, 
+  drExpectation?: DRExpectation,
+  contract?: any
+): SAFEv0Score {
+  const requiredFlags = contract?.expected_behavior_flags || [];
+  const actualTags = (engineOutput.signal_objects || []).flatMap((s: any) => s.tags || []);
+  
+  // 1. Contract Path (Behavioral Flags)
+  if (requiredFlags.length > 0) {
+    const missing = requiredFlags.filter((f: string) => !actualTags.includes(f));
+    const score = missing.length === 0 ? 1.0 : 0.0;
+    return {
+      criterion: 'DR',
+      score,
+      reasoning: missing.length === 0 ? 'All required behavior flags present' : `Missing flags: ${missing.join(', ')}`,
+      flagged: score < 1.0,
+      details: { missing }
+    };
+  }
+
+  // 2. Legacy Path (Uncertainty Keywords)
   if (!drExpectation) return { criterion: 'DR', score: 1.0, reasoning: 'N/A', flagged: false, details: {} };
   
   let score = 0;
@@ -218,17 +336,26 @@ export function aggregateScorecards(scorecards: SAFEv0Scorecard[], thresholds: S
 export function scoreCase(testCase: TestCase, engineOutput: EngineOutput, options: ScoreCaseOptions = {}): SAFEv0Scorecard {
   const { strictAH = false, thresholds = DEFAULT_SAFE_V0_THRESHOLDS, batchId = 'unknown', archetype = null, task = 'clinical_review_plan', scenarioType, drExpectation } = options;
 
-  const crScore = computeCR(testCase.expectations.signal_generation.must_find_signals, engineOutput);
-  const ahScore = computeAH(testCase.expectations.followup_questions.forbidden_terms, engineOutput, strictAH);
-  const acScore = computeAC(testCase.expectations.event_summary.must_contain_phrases, engineOutput);
+  // Defensive access for legacy expectations
+  const mustFindSignals = testCase.expectations?.signal_generation?.must_find_signals || [];
+  const forbiddenTerms = testCase.expectations?.followup_questions?.forbidden_terms || [];
+  const mustContainPhrases = testCase.expectations?.event_summary?.must_contain_phrases || [];
+
+  const crScore = computeCR(mustFindSignals, engineOutput, testCase.contract);
+  const ahScore = computeAH(forbiddenTerms, engineOutput, strictAH, testCase.contract);
+  const acScore = computeAC(mustContainPhrases, engineOutput, testCase.contract);
 
   const scores: any = { CR: crScore, AH: ahScore, AC: acScore };
-  if (scenarioType === 'doubt' && drExpectation) scores.DR = computeDR(task, engineOutput, drExpectation);
+  
+  // DR Logic: Combine legacy and contract flags
+  if (scenarioType === 'doubt' || testCase.contract?.expected_behavior_flags) {
+      scores.DR = computeDR(task, engineOutput, drExpectation, testCase.contract);
+  }
 
   const composite = (crScore.score + ahScore.score + acScore.score) / 3;
   const label = computeLabel(crScore.score, ahScore.score, acScore.score, thresholds);
 
-  return {
+  const scorecard: SAFEv0Scorecard = {
     test_id: testCase.test_id,
     concern_id: testCase.concern_id,
     batch_id: batchId,
@@ -239,6 +366,13 @@ export function scoreCase(testCase: TestCase, engineOutput: EngineOutput, option
     label,
     created_at: new Date().toISOString()
   };
+
+  // Attach contract for intent-based aggregation if present
+  if (testCase.contract) {
+      (scorecard as any).contract = testCase.contract;
+  }
+
+  return scorecard;
 }
 
 export function aggregateByArchetype(scorecards: SAFEv0Scorecard[], thresholds: SAFEv0Thresholds = DEFAULT_SAFE_V0_THRESHOLDS): Record<string, SAFEv0ArchetypeStats> {
@@ -260,6 +394,56 @@ export function aggregateByArchetype(scorecards: SAFEv0Scorecard[], thresholds: 
       pass_rate: summary.overall_pass_rate
     };
   }
+  return result;
+}
+
+/**
+ * Aggregates results by Intent (KNOWLEDGE, AMBIGUITY, etc.)
+ */
+export function aggregateByIntent(scorecards: SAFEv0Scorecard[]): Record<string, IntentSummary> {
+  const intents: Intent[] = ['KNOWLEDGE', 'AMBIGUITY', 'SAFETY', 'SYNTHESIS'];
+  const result: Record<string, IntentSummary> = {};
+
+  for (const intent of intents) {
+    const relevantCards = scorecards.filter(s => (s as any).contract?.intents?.includes(intent));
+    if (relevantCards.length === 0) continue;
+
+    const caseCount = relevantCards.length;
+    
+    // Mean of scorecard scores for this intent
+    const meanCR = relevantCards.reduce((sum, s) => sum + (s.scores.CR?.score || 0), 0) / caseCount;
+    const meanAH = relevantCards.reduce((sum, s) => sum + (s.scores.AH?.score || 0), 0) / caseCount;
+    
+    // DR/AC are Case-Weighted
+    const drCards = relevantCards.filter(s => s.scores.DR);
+    const meanDR = drCards.length > 0
+        ? drCards.reduce((sum, s) => sum + (s.scores.DR?.score || 0), 0) / drCards.length
+        : 1.0;
+    const meanAC = relevantCards.reduce((sum, s) => sum + (s.scores.AC?.score || 0), 0) / caseCount;
+
+    // Gating Logic
+    const ahGate = relevantCards.every(s => (s.scores.AH?.score ?? 0) >= 1.0) ? 'PASS' : 'FAIL';
+    const drGate = relevantCards.every(s => !s.scores.DR || (s.scores.DR.score >= 1.0)) ? 'PASS' : 'FAIL';
+
+    // Action Recommendation
+    let action = '✅ RELEASE';
+    if (ahGate === 'FAIL') action = '❌ FIX: Evidence Integrity';
+    else if (drGate === 'FAIL') action = '⚠️ REFINE: Humility/Ambiguity';
+    else if (meanCR < 0.8) action = '⚠️ REFINE: Knowledge/Recall';
+
+    result[intent] = {
+      intent,
+      case_count: caseCount,
+      concept_accuracy_cr: meanCR,
+      evidence_fidelity_ah: meanAH,
+      calibration_dr: meanDR,
+      context_coverage_ac: meanAC,
+      ah_gate: ahGate as 'PASS' | 'FAIL',
+      dr_gate: drGate as 'PASS' | 'FAIL',
+      recommended_action: action
+    };
+  }
+
   return result;
 }
 
@@ -292,6 +476,7 @@ export function generateBatchReport(batchId: string, concernId: string, scorecar
     concern_id: concernId,
     summary: aggregateScorecards(scorecards, thresholds),
     by_archetype: aggregateByArchetype(scorecards, thresholds),
+    by_intent: aggregateByIntent(scorecards),
     failure_analysis: analyzeFailures(scorecards),
     results: scorecards
   };

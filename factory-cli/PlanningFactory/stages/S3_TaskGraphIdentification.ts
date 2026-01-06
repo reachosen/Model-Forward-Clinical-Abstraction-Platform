@@ -36,28 +36,29 @@ export class S3_TaskGraphIdentificationStage {
 [S3] Task Graph Identification (Unified Control Plane)`);
     console.log(`  Archetypes: ${archetypes.join(', ')}`);
 
-    // Unified Graph Structure
-    // Instead of parallel lanes, we define a single linear flow.
+    // Unified Graph Structure (V2: Exclusion-First Gate)
+    // exclusion_check runs first as early gate - if excluded, downstream tasks skip.
     // The active 'archetypes' will be passed as context to these tasks in S4/S5.
-    
+
     const combinedGraph: TaskGraph = {
       graph_id: `graph_${randomUUID()}`,
       nodes: [
+        { id: 'exclusion_check', type: 'exclusion_check', description: 'Early gate: check if case should be excluded from denominator' },
         { id: 'signal_enrichment', type: 'signal_enrichment', description: 'Enrich signals for all active archetypes' },
         { id: 'event_summary', type: 'event_summary', description: 'Generate unified event narrative' },
-        { id: '20_80_display_fields', type: '20_80_display_fields', description: 'Generate 20/80 summary fields' },
         { id: 'followup_questions', type: 'followup_questions', description: 'Generate unified followup questions' },
         { id: 'clinical_review_plan', type: 'clinical_review_plan', description: 'Generate final review plan and determination' },
       ],
       edges: [
+        ['exclusion_check', 'signal_enrichment'],  // Gate: exclusion must pass before signals
         ['signal_enrichment', 'event_summary'],
-        ['event_summary', '20_80_display_fields'],
-        ['event_summary', 'followup_questions'],
+        ['signal_enrichment', 'followup_questions'],  // V2: followup depends on signals, not summary
         ['event_summary', 'clinical_review_plan'],
       ],
       constraints: {
-        must_run: ['signal_enrichment', 'event_summary', 'clinical_review_plan'],
-        optional: ['20_80_display_fields', 'followup_questions']
+        must_run: ['exclusion_check', 'signal_enrichment', 'event_summary', 'clinical_review_plan'],
+        optional: ['followup_questions'],
+        early_exit_on: ['exclusion_check']  // S5 checks this for early termination
       }
     };
 
@@ -72,9 +73,9 @@ export class S3_TaskGraphIdentificationStage {
   validate(taskGraph: TaskGraph, archetype: ArchetypeType): ValidationResult {
     const errors: string[] = [];
     if (taskGraph.nodes.length === 0) errors.push('Graph must have nodes');
-    
-    // Synthesis task is no longer required in the Unified Control Plane model
-    const requiredTasks = ['signal_enrichment', 'event_summary', 'clinical_review_plan'];
+
+    // V2: exclusion_check is now a required gate task
+    const requiredTasks = ['exclusion_check', 'signal_enrichment', 'event_summary', 'clinical_review_plan'];
     for (const req of requiredTasks) {
       if (!taskGraph.nodes.some(n => n.type === req)) {
         errors.push(`Graph missing required task: ${req}`);

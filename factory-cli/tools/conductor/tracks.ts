@@ -1,6 +1,32 @@
 import { TrackDefinition } from './types';
 
 export const TRACKS: Record<string, TrackDefinition> = {
+  'demo:lite': {
+    id: 'demo:lite',
+    description: 'Plan generation -> Schema certify (single-metric demo track).',
+    steps: [
+      {
+        id: 'step_plan',
+        missionId: 'plan:generate-run',
+        name: 'Generate Plan',
+        args: {
+          '{{metric}}': '{{metricId}}',
+          '{{out}}': '{{runDir}}/plan.json'
+        },
+        outputArtifact: '{{runDir}}/plan.json'
+      },
+      {
+        id: 'step_certify',
+        missionId: 'schema:certify',
+        name: 'Certify Artifacts',
+        args: {
+          '{{plan}}': '{{runDir}}/plan.json'
+        },
+        inputArtifact: '{{runDir}}/plan.json',
+        outputArtifact: 'certified/Orthopedics/{{metricId}}/manifest.json'
+      }
+    ]
+  },
   'flywheel:standard': {
     id: 'flywheel:standard',
     description: 'Standard Ingest -> Strategy -> Generate -> Eval -> Certify flow.',

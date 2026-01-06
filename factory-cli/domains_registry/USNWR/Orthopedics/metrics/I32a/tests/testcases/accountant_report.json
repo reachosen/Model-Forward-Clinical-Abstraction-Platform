@@ -1,0 +1,1548 @@
+{
+  "total_cases_processed": 400,
+  "valid_cases": 131,
+  "violations": [
+    {
+      "test_id": "I32a-BATCH12-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH14-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH14-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH15-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH15-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH15-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH16-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH16-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH17-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal Unexpected ICU admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal Diagnosis of supracondylar fracture deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal surgical_site_infection deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH20-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI_complication(ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH23-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH23-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal pain_management_plan_documentation deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH23-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH23-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH25-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH25-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal loss_of_reduction_requiring_reoperation deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH25-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH25-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal neurovascular_exam_not_documented_post_op deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH26-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH27-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH27-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH28-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH28-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH28-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH28-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH3-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH3-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal pain_management_plan_documentation deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH3-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal surgical_pause_documented deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH35-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal paresthesia/numbness deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH35-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH36-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH36-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_clarity deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH36-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal paresthesia/numbness deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH37-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH37-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal paresthesia/numbness deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH37-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH37-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH38-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH38-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH38-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH4-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication (ileus/obstruction) not found in registry (no free-text allowed)."
+    },
+    {
+      "test_id": "I32a-BATCH5-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH5-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH5-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH5-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal Paresthesia/numbness deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH6-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH6-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH6-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH7-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH9-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH1-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|signal_enrichment_knowledge_1"
+    },
+    {
+      "test_id": "I32a-BATCH1-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|signal_enrichment_knowledge_2"
+    },
+    {
+      "test_id": "I32a-BATCH1-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|signal_enrichment_knowledge_3"
+    },
+    {
+      "test_id": "I32a-BATCH1-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Hardware complication:AFFIRM|signal_enrichment_knowledge_4"
+    },
+    {
+      "test_id": "I32a-BATCH1-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Unexpected ICU admission:AFFIRM|signal_enrichment_knowledge_5"
+    },
+    {
+      "test_id": "I32a-BATCH10-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|GI complication (ileus/obstruction):AFFIRM|signal_enrichment_synthesis_2"
+    },
+    {
+      "test_id": "I32a-BATCH10-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): loss_of_reduction_requiring_reoperation:AFFIRM|uncontrolled_pain:AFFIRM|signal_enrichment_synthesis_3"
+    },
+    {
+      "test_id": "I32a-BATCH10-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|uncontrolled_pain:AFFIRM|signal_enrichment_synthesis_4"
+    },
+    {
+      "test_id": "I32a-BATCH10-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Pneumonia/respiratory distress:AFFIRM|neurovascular_exam_documentation_gap_pre_op:AFFIRM|signal_enrichment_synthesis_5"
+    },
+    {
+      "test_id": "I32a-BATCH11-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|uncontrolled_pain:AFFIRM|unplanned_admission:AFFIRM|event_summary_knowledge_1"
+    },
+    {
+      "test_id": "I32a-BATCH11-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): increased_back_pain:AFFIRM|loss_of_reduction_requiring_reoperation:AFFIRM|event_summary_knowledge_2"
+    },
+    {
+      "test_id": "I32a-BATCH11-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|wound_drainage_erythema:AFFIRM|event_summary_knowledge_3"
+    },
+    {
+      "test_id": "I32a-BATCH11-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|unplanned_admission:AFFIRM|event_summary_knowledge_4"
+    },
+    {
+      "test_id": "I32a-BATCH11-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|uncontrolled_pain:AFFIRM|unplanned_admission:AFFIRM|event_summary_knowledge_5"
+    },
+    {
+      "test_id": "I32a-BATCH12-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH12-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|uncontrolled_pain:AFFIRM|event_summary_knowledge_7"
+    },
+    {
+      "test_id": "I32a-BATCH12-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): increased_back_pain:AFFIRM|event_summary_knowledge_8"
+    },
+    {
+      "test_id": "I32a-BATCH12-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|event_summary_knowledge_9"
+    },
+    {
+      "test_id": "I32a-BATCH12-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): hardware_complication:AFFIRM|event_summary_knowledge_10"
+    },
+    {
+      "test_id": "I32a-BATCH13-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|wound_drainage_erythema:AFFIRM|event_summary_knowledge_11"
+    },
+    {
+      "test_id": "I32a-BATCH13-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|unplanned_admission:AFFIRM|event_summary_knowledge_12"
+    },
+    {
+      "test_id": "I32a-BATCH13-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|discharge_instructions_unclear:AFFIRM|event_summary_knowledge_13"
+    },
+    {
+      "test_id": "I32a-BATCH13-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): neurovascular_exam_pre_op_post_op:AFFIRM|unexpected_ICU_admission:AFFIRM|event_summary_knowledge_15"
+    },
+    {
+      "test_id": "I32a-BATCH14-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|event_summary_knowledge_16"
+    },
+    {
+      "test_id": "I32a-BATCH14-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH14-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|event_summary_knowledge_18"
+    },
+    {
+      "test_id": "I32a-BATCH14-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): hardware_complication:AFFIRM|event_summary_knowledge_19"
+    },
+    {
+      "test_id": "I32a-BATCH14-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH15-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:DENY|wound_drainage_erythema:AFFIRM|event_summary_ambiguity_1"
+    },
+    {
+      "test_id": "I32a-BATCH15-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH15-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH15-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Hardware complication:AFFIRM|Hardware complication:DENY|event_summary_ambiguity_4"
+    },
+    {
+      "test_id": "I32a-BATCH15-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH16-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH16-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:DENY|wound_drainage_erythema:AFFIRM|event_summary_ambiguity_7"
+    },
+    {
+      "test_id": "I32a-BATCH16-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): neurovascular_exam_post_op:AFFIRM|neurovascular_exam_post_op:DENY|event_summary_ambiguity_8"
+    },
+    {
+      "test_id": "I32a-BATCH16-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|GI complication (ileus/obstruction):DENY|event_summary_ambiguity_9"
+    },
+    {
+      "test_id": "I32a-BATCH16-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH17-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:DENY|wound_drainage_erythema:AFFIRM|event_summary_ambiguity_11"
+    },
+    {
+      "test_id": "I32a-BATCH17-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|uncontrolled_pain:DENY|event_summary_ambiguity_12"
+    },
+    {
+      "test_id": "I32a-BATCH17-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): hardware_complication:AFFIRM|hardware_complication:DENY|event_summary_ambiguity_13"
+    },
+    {
+      "test_id": "I32a-BATCH17-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|GI complication (ileus/obstruction):DENY|event_summary_ambiguity_14"
+    },
+    {
+      "test_id": "I32a-BATCH17-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal Unexpected ICU admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal Diagnosis of supracondylar fracture deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH18-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal surgical_site_infection deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH19-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|event_summary_safety_6"
+    },
+    {
+      "test_id": "I32a-BATCH19-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|event_summary_safety_7"
+    },
+    {
+      "test_id": "I32a-BATCH19-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|event_summary_safety_8"
+    },
+    {
+      "test_id": "I32a-BATCH19-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|event_summary_safety_9"
+    },
+    {
+      "test_id": "I32a-BATCH19-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|event_summary_safety_10"
+    },
+    {
+      "test_id": "I32a-BATCH2-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|unplanned_admission:AFFIRM|signal_enrichment_knowledge_6"
+    },
+    {
+      "test_id": "I32a-BATCH2-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|wound_drainage_erythema:AFFIRM|signal_enrichment_knowledge_7"
+    },
+    {
+      "test_id": "I32a-BATCH2-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|unplanned_admission:AFFIRM|signal_enrichment_knowledge_8"
+    },
+    {
+      "test_id": "I32a-BATCH2-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): hardware complication:AFFIRM|unplanned_admission:AFFIRM|signal_enrichment_knowledge_9"
+    },
+    {
+      "test_id": "I32a-BATCH2-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|uncontrolled_pain:AFFIRM|unplanned_admission:AFFIRM|signal_enrichment_knowledge_10"
+    },
+    {
+      "test_id": "I32a-BATCH20-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|wound_drainage_erythema:AFFIRM|event_summary_synthesis_1"
+    },
+    {
+      "test_id": "I32a-BATCH20-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI_complication(ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH20-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): hardware_complication:AFFIRM|increased_back_pain:AFFIRM|event_summary_synthesis_4"
+    },
+    {
+      "test_id": "I32a-BATCH21-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): increased_back_pain:AFFIRM|surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|followup_questions_knowledge_1"
+    },
+    {
+      "test_id": "I32a-BATCH21-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|uncontrolled_pain:AFFIRM|followup_questions_knowledge_2"
+    },
+    {
+      "test_id": "I32a-BATCH21-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|discharge_instructions_unclear:AFFIRM|followup_questions_knowledge_3"
+    },
+    {
+      "test_id": "I32a-BATCH21-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): loss_of_reduction_requiring_reoperation:AFFIRM|unplanned_admission:AFFIRM|followup_questions_knowledge_4"
+    },
+    {
+      "test_id": "I32a-BATCH21-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): antibiotic_prophylaxis_timing:AFFIRM|surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|followup_questions_knowledge_5"
+    },
+    {
+      "test_id": "I32a-BATCH22-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|wound_drainage_erythema:AFFIRM|followup_questions_knowledge_6"
+    },
+    {
+      "test_id": "I32a-BATCH22-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): increased_back_pain:AFFIRM|loss_of_reduction_requiring_reoperation:AFFIRM|followup_questions_knowledge_7"
+    },
+    {
+      "test_id": "I32a-BATCH22-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|unplanned_admission:AFFIRM|followup_questions_knowledge_8"
+    },
+    {
+      "test_id": "I32a-BATCH22-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|increasing analgesic requirement:AFFIRM|uncontrolled_pain:AFFIRM|followup_questions_knowledge_9"
+    },
+    {
+      "test_id": "I32a-BATCH22-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Admission to incision >18 hours:AFFIRM|surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|followup_questions_knowledge_10"
+    },
+    {
+      "test_id": "I32a-BATCH23-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH23-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal pain_management_plan_documentation deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH23-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH23-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): hardware complication:AFFIRM|neurovascular_exam_post_op:DENY|followup_questions_knowledge_14"
+    },
+    {
+      "test_id": "I32a-BATCH23-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH24-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): antibiotic_prophylaxis_timing:AFFIRM|wound_drainage_erythema:AFFIRM|followup_questions_knowledge_16"
+    },
+    {
+      "test_id": "I32a-BATCH24-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Admission to incision >18 hours:AFFIRM|unplanned_admission:AFFIRM|followup_questions_knowledge_17"
+    },
+    {
+      "test_id": "I32a-BATCH24-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|uncontrolled_pain:AFFIRM|followup_questions_knowledge_18"
+    },
+    {
+      "test_id": "I32a-BATCH24-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): pre_op_warming_documentation_gap:AFFIRM|surgical_site_infection:AFFIRM|followup_questions_knowledge_19"
+    },
+    {
+      "test_id": "I32a-BATCH24-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|discharge_instructions_unclear:AFFIRM|unplanned_admission:AFFIRM|followup_questions_knowledge_20"
+    },
+    {
+      "test_id": "I32a-BATCH25-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH25-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:DENY|wound_drainage_erythema:AFFIRM|followup_questions_ambiguity_2"
+    },
+    {
+      "test_id": "I32a-BATCH25-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal loss_of_reduction_requiring_reoperation deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH25-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH25-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal neurovascular_exam_not_documented_post_op deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH26-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|uncontrolled_pain:DENY|followup_questions_ambiguity_6"
+    },
+    {
+      "test_id": "I32a-BATCH26-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): wound_drainage_erythema:AFFIRM|wound_drainage_erythema:DENY|followup_questions_ambiguity_7"
+    },
+    {
+      "test_id": "I32a-BATCH26-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_clarity:AFFIRM|discharge_instructions_unclear:AFFIRM|followup_questions_ambiguity_8"
+    },
+    {
+      "test_id": "I32a-BATCH26-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|unplanned_admission:DENY|followup_questions_ambiguity_9"
+    },
+    {
+      "test_id": "I32a-BATCH26-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH27-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|surgical_site_infection:DENY|followup_questions_ambiguity_11"
+    },
+    {
+      "test_id": "I32a-BATCH27-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH27-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH27-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): neurovascular_exam_post_op:AFFIRM|neurovascular_exam_post_op:DENY|followup_questions_ambiguity_14"
+    },
+    {
+      "test_id": "I32a-BATCH27-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Hardware complication:AFFIRM|Hardware complication:DENY|followup_questions_ambiguity_15"
+    },
+    {
+      "test_id": "I32a-BATCH28-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:DENY|followup_questions_safety_1"
+    },
+    {
+      "test_id": "I32a-BATCH28-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH28-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH28-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH28-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH29-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|followup_questions_safety_6"
+    },
+    {
+      "test_id": "I32a-BATCH29-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|followup_questions_safety_7"
+    },
+    {
+      "test_id": "I32a-BATCH29-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|followup_questions_safety_8"
+    },
+    {
+      "test_id": "I32a-BATCH29-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|followup_questions_safety_9"
+    },
+    {
+      "test_id": "I32a-BATCH29-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:AFFIRM|followup_questions_safety_10"
+    },
+    {
+      "test_id": "I32a-BATCH3-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH3-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal pain_management_plan_documentation deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH3-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal surgical_pause_documented deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH3-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Pneumonia/respiratory distress:AFFIRM|discharge_instructions_unclear:DENY|signal_enrichment_knowledge_15"
+    },
+    {
+      "test_id": "I32a-BATCH30-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): increasing_analgesic_requirement:AFFIRM|surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|followup_questions_synthesis_1"
+    },
+    {
+      "test_id": "I32a-BATCH30-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|gi_complication_ileus_obstruction:AFFIRM|unplanned_admission:AFFIRM|followup_questions_synthesis_2"
+    },
+    {
+      "test_id": "I32a-BATCH30-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): loss_of_reduction_requiring_reoperation:AFFIRM|pain_out_of_proportion_to_injury:AFFIRM|unplanned_admission:AFFIRM|followup_questions_synthesis_3"
+    },
+    {
+      "test_id": "I32a-BATCH30-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|wound_drainage_erythema:AFFIRM|followup_questions_synthesis_4"
+    },
+    {
+      "test_id": "I32a-BATCH30-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Pneumonia/respiratory_distress:AFFIRM|discharge_instructions_unclear:AFFIRM|unplanned_admission:AFFIRM|followup_questions_synthesis_5"
+    },
+    {
+      "test_id": "I32a-BATCH31-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): pain_management_plan_documentation:AFFIRM|uncontrolled_pain:AFFIRM|clinical_review_plan_knowledge_1"
+    },
+    {
+      "test_id": "I32a-BATCH31-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): antibiotic_prophylaxis_timing:AFFIRM|wound_drainage_erythema:AFFIRM|clinical_review_plan_knowledge_2"
+    },
+    {
+      "test_id": "I32a-BATCH31-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|discharge_instructions_unclear:AFFIRM|clinical_review_plan_knowledge_3"
+    },
+    {
+      "test_id": "I32a-BATCH31-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): hardware_complication:AFFIRM|imaging_delay:AFFIRM|clinical_review_plan_knowledge_4"
+    },
+    {
+      "test_id": "I32a-BATCH31-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Pneumonia/respiratory distress:AFFIRM|neurovascular_exam_post_op:AFFIRM|clinical_review_plan_knowledge_5"
+    },
+    {
+      "test_id": "I32a-BATCH32-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): increased_back_pain:AFFIRM|unplanned_admission:AFFIRM|wound_drainage_erythema:AFFIRM|clinical_review_plan_knowledge_6"
+    },
+    {
+      "test_id": "I32a-BATCH32-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|unplanned_admission:AFFIRM|clinical_review_plan_knowledge_7"
+    },
+    {
+      "test_id": "I32a-BATCH32-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|unplanned_admission:AFFIRM|wound_drainage_erythema:AFFIRM|clinical_review_plan_knowledge_8"
+    },
+    {
+      "test_id": "I32a-BATCH32-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|unplanned_admission:AFFIRM|clinical_review_plan_knowledge_9"
+    },
+    {
+      "test_id": "I32a-BATCH32-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Hardware complication:AFFIRM|unplanned_admission:AFFIRM|clinical_review_plan_knowledge_10"
+    },
+    {
+      "test_id": "I32a-BATCH33-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Pain out of proportion to injury:AFFIRM|uncontrolled_pain:AFFIRM|clinical_review_plan_knowledge_11"
+    },
+    {
+      "test_id": "I32a-BATCH33-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|wound_drainage_erythema:AFFIRM|clinical_review_plan_knowledge_12"
+    },
+    {
+      "test_id": "I32a-BATCH33-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Hardware complication:AFFIRM|loss_of_reduction_requiring_reoperation:AFFIRM|clinical_review_plan_knowledge_13"
+    },
+    {
+      "test_id": "I32a-BATCH33-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|clinical_review_plan_knowledge_14"
+    },
+    {
+      "test_id": "I32a-BATCH33-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Increasing analgesic requirement:AFFIRM|uncontrolled_pain:AFFIRM|clinical_review_plan_knowledge_15"
+    },
+    {
+      "test_id": "I32a-BATCH34-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|wound_drainage_erythema:AFFIRM|clinical_review_plan_knowledge_16"
+    },
+    {
+      "test_id": "I32a-BATCH34-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): increased_back_pain:AFFIRM|uncontrolled_pain:AFFIRM|clinical_review_plan_knowledge_17"
+    },
+    {
+      "test_id": "I32a-BATCH34-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Lack of OR availability:AFFIRM|unplanned_admission:AFFIRM|clinical_review_plan_knowledge_18"
+    },
+    {
+      "test_id": "I32a-BATCH34-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|discharge_instructions_unclear:AFFIRM|clinical_review_plan_knowledge_19"
+    },
+    {
+      "test_id": "I32a-BATCH34-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|pneumonia/respiratory distress:AFFIRM|clinical_review_plan_knowledge_20"
+    },
+    {
+      "test_id": "I32a-BATCH35-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|uncontrolled_pain:DENY|clinical_review_plan_ambiguity_1"
+    },
+    {
+      "test_id": "I32a-BATCH35-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): wound_drainage_erythema:AFFIRM|wound_drainage_erythema:DENY|clinical_review_plan_ambiguity_2"
+    },
+    {
+      "test_id": "I32a-BATCH35-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal paresthesia/numbness deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH35-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|surgical_site_infection:DENY|clinical_review_plan_ambiguity_4"
+    },
+    {
+      "test_id": "I32a-BATCH35-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH36-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:AFFIRM|surgical_site_infection:DENY|clinical_review_plan_ambiguity_6"
+    },
+    {
+      "test_id": "I32a-BATCH36-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH36-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_clarity deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH36-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|GI complication (ileus/obstruction):DENY|clinical_review_plan_ambiguity_9"
+    },
+    {
+      "test_id": "I32a-BATCH36-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal paresthesia/numbness deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH37-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH37-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): wound_drainage_erythema:AFFIRM|wound_drainage_erythema:DENY|clinical_review_plan_ambiguity_12"
+    },
+    {
+      "test_id": "I32a-BATCH37-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal paresthesia/numbness deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH37-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH37-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH38-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): uncontrolled_pain:AFFIRM|unplanned_admission:DENY|clinical_review_plan_safety_2"
+    },
+    {
+      "test_id": "I32a-BATCH38-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH38-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): UTI/urinary retention:AFFIRM|unplanned_admission:DENY|clinical_review_plan_safety_4"
+    },
+    {
+      "test_id": "I32a-BATCH38-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH38-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-002",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH39-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH4-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): pain_management_plan_documentation:AFFIRM|uncontrolled_pain:AFFIRM|signal_enrichment_knowledge_16"
+    },
+    {
+      "test_id": "I32a-BATCH4-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): antibiotic_prophylaxis_timing:AFFIRM|wound_drainage_erythema:AFFIRM|signal_enrichment_knowledge_17"
+    },
+    {
+      "test_id": "I32a-BATCH4-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication (ileus/obstruction) not found in registry (no free-text allowed)."
+    },
+    {
+      "test_id": "I32a-BATCH4-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Hardware complication:AFFIRM|discharge_instructions_unclear:AFFIRM|signal_enrichment_knowledge_19"
+    },
+    {
+      "test_id": "I32a-BATCH4-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Pneumonia/respiratory distress:AFFIRM|discharge_instructions_unclear:AFFIRM|signal_enrichment_knowledge_20"
+    },
+    {
+      "test_id": "I32a-BATCH40-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_unclear:AFFIRM|increased_back_pain:AFFIRM|surgical_site_infection:AFFIRM|clinical_review_plan_synthesis_1"
+    },
+    {
+      "test_id": "I32a-BATCH40-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): loss_of_reduction_requiring_reoperation:AFFIRM|pain_management_plan_documentation:AFFIRM|uncontrolled_pain:AFFIRM|clinical_review_plan_synthesis_2"
+    },
+    {
+      "test_id": "I32a-BATCH40-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): GI complication (ileus/obstruction):AFFIRM|discharge_instructions_unclear:AFFIRM|clinical_review_plan_synthesis_3"
+    },
+    {
+      "test_id": "I32a-BATCH40-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Pneumonia/respiratory distress:AFFIRM|discharge_instructions_unclear:AFFIRM|clinical_review_plan_synthesis_4"
+    },
+    {
+      "test_id": "I32a-BATCH40-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): Hardware complication:AFFIRM|discharge_instructions_unclear:AFFIRM|clinical_review_plan_synthesis_5"
+    },
+    {
+      "test_id": "I32a-BATCH5-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH5-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): wound_drainage_erythema:AFFIRM|wound_drainage_erythema:DENY|signal_enrichment_ambiguity_2"
+    },
+    {
+      "test_id": "I32a-BATCH5-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal GI complication (ileus/obstruction) deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH5-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH5-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal Paresthesia/numbness deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH6-001",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH6-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:DENY|wound_drainage_erythema:AFFIRM|signal_enrichment_ambiguity_7"
+    },
+    {
+      "test_id": "I32a-BATCH6-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): neurovascular_exam_post_op:AFFIRM|neurovascular_exam_post_op:DENY|signal_enrichment_ambiguity_8"
+    },
+    {
+      "test_id": "I32a-BATCH6-004",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal uncontrolled_pain deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH6-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal discharge_instructions_unclear deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH7-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): pain_management_plan_documentation:AFFIRM|uncontrolled_pain:AFFIRM|signal_enrichment_ambiguity_11"
+    },
+    {
+      "test_id": "I32a-BATCH7-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:DENY|wound_drainage_erythema:AFFIRM|signal_enrichment_ambiguity_12"
+    },
+    {
+      "test_id": "I32a-BATCH7-003",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): neurovascular_exam_post_op:AFFIRM|paresthesia_numbness:AFFIRM|signal_enrichment_ambiguity_13"
+    },
+    {
+      "test_id": "I32a-BATCH7-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): discharge_instructions_clarity:AFFIRM|discharge_instructions_unclear:AFFIRM|signal_enrichment_ambiguity_14"
+    },
+    {
+      "test_id": "I32a-BATCH7-005",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal antibiotic_prophylaxis_timing deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH8-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): surgical_site_infection:DENY|signal_enrichment_safety_5"
+    },
+    {
+      "test_id": "I32a-BATCH9-001",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:DENY|signal_enrichment_safety_6"
+    },
+    {
+      "test_id": "I32a-BATCH9-002",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:DENY|signal_enrichment_safety_7"
+    },
+    {
+      "test_id": "I32a-BATCH9-003",
+      "type": "DENY_TEMPLATE_MISMATCH",
+      "message": "Signal unplanned_admission deny evidence does not match allowed templates"
+    },
+    {
+      "test_id": "I32a-BATCH9-004",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:DENY|signal_enrichment_safety_9"
+    },
+    {
+      "test_id": "I32a-BATCH9-005",
+      "type": "DUPLICATE_CASE",
+      "message": "Duplicate scenario on (signal set + confounder_tag): unplanned_admission:DENY|signal_enrichment_safety_10"
+    }
+  ],
+  "coverage_summary": {
+    "Admission to incision >18 hours": 4,
+    "OR scheduled after 22:00 (10 PM)": 0,
+    "Transfer from outside hospital": 0,
+    "NPO violation delay": 2,
+    "Medical clearance delay": 0,
+    "Lack of OR availability": 2,
+    "Surgeon unavailability": 0,
+    "Imaging delay": 0,
+    "unplanned_admission": 86,
+    "surgical_site_infection": 40,
+    "uncontrolled_pain": 72,
+    "paresthesia_numbness": 0,
+    "hardware_complication": 8,
+    "increasing_analgesic_requirement": 6,
+    "gi_complication_ileus_obstruction": 0,
+    "pneumonia_respiratory_distress": 0,
+    "neurovascular_exam_documentation_gap_pre_op": 0,
+    "neurovascular_exam_documentation_gap_post_op": 0,
+    "unexpected_icu_admission": 0,
+    "pain_out_of_proportion_to_injury": 2,
+    "imaging_delay": 2,
+    "paresthesia/numbness": 6,
+    "hardware": 0,
+    "gi_complication(ileus/obstruction)": 0,
+    "pneumonia/respiratory": 0,
+    "unexpected_ICU_admission": 2,
+    "Hardware_complication": 2,
+    "increasing": 0,
+    "Pneumonia/respiratory_distress": 2,
+    "GI_complication": 0,
+    "Pain out of proportion to injury": 2,
+    "Increasing analgesic requirement": 2,
+    "Passive stretch pain": 0,
+    "Paresthesia/numbness": 2,
+    "Pallor or delayed capillary refill": 0,
+    "Tenseness of compartment": 0,
+    "Fasciotomy performed": 0,
+    "Unexpected ICU admission": 4,
+    "Neurovascular exam not documented pre-op": 0,
+    "Neurovascular exam not documented post-op": 0,
+    "Perfusion status not described (pink/warm)": 0,
+    "Compartment check frequency not met": 0,
+    "Surgical pause/timeout missing": 0,
+    "Antibiotic timing not documented": 0,
+    "Justification for delay >18h missing": 0,
+    "Discharge instructions unclear": 0,
+    "wound_drainage_erythema": 54,
+    "pre_op_warming_documented": 0,
+    "antibiotic_prophylaxis_timing": 12,
+    "discharge_instructions_clarity": 10,
+    "perfusion_checks_documentation_gap": 0,
+    "loss_of_reduction_requiring_reoperation": 20,
+    "neurovascular_exam_pre_op_post_op": 2,
+    "inappropriate_antibiotic_selection": 0,
+    "pre_op_warming_documentation_gap": 2,
+    "pain_management_plan_documentation": 8,
+    "neurovascular_exam_post_op": 14,
+    "increased_back_pain": 18,
+    "Uncontrolled pain": 0,
+    "Surgical site infection": 0,
+    "GI complication (ileus/obstruction)": 46,
+    "Hardware complication": 14,
+    "Pneumonia/respiratory distress": 14,
+    "UTI/urinary retention": 2,
+    "Nutritional failure": 0,
+    "Social/caregiver concern": 0,
+    "surgical_pause_documented": 0,
+    "discharge_instructions_unclear": 56,
+    "Diagnosis of supracondylar fracture": 0,
+    "Diagnosis of femoral shaft fracture": 0,
+    "Diagnosis of forearm fracture": 0,
+    "Diagnosis of scoliosis (idiopathic)": 0,
+    "Diagnosis of scoliosis (neuromuscular)": 0,
+    "Age < 18 years": 0,
+    "Surgical procedure performed": 0,
+    "Polytrauma": 0,
+    "Open fracture (if metric excludes open)": 0,
+    "Pathologic fracture": 0,
+    "Prior surgery on same site": 0,
+    "Patient transferred out": 0,
+    "Non-operative management (if metric is operative only)": 0,
+    "Clinical stability required delay": 0,
+    "Parent/guardian refusal": 0,
+    "Palliative care goals": 0,
+    "Complex comorbidity priority": 0,
+    "neurovascular_exam_not_documented_pre_op": 2,
+    "hardware complication": 4,
+    "GI_complication(ileus/obstruction)": 2,
+    "increasing analgesic requirement": 2,
+    "pneumonia/respiratory distress": 4,
+    "GI_complication_(ileus/obstruction)": 2
+  },
+  "deny_mismatch_examples": {
+    "antibiotic_prophylaxis_timing": [
+      [
+        "Antibiotic prophylaxis was not administered within the recommended time frame prior to incision.",
+        2
+      ],
+      [
+        "antibiotic prophylaxis was not administered timely",
+        2
+      ],
+      [
+        "potential delay in antibiotic prophylaxis timing during the initial surgery",
+        2
+      ],
+      [
+        "found it was delayed, potentially contributing to the infection.",
+        2
+      ],
+      [
+        "Antibiotics were administered within the appropriate timeframe before the procedure.",
+        2
+      ]
+    ],
+    "discharge_instructions_unclear": [
+      [
+        "discharge plan did not adequately address respiratory exercises",
+        2
+      ],
+      [
+        "Discharge instructions were vague, leading to confusion about medication regimen",
+        2
+      ],
+      [
+        "ready for discharge; all discharge instructions have been provided",
+        2
+      ],
+      [
+        "inadequate bowel regimen instructions prior to discharge",
+        2
+      ],
+      [
+        "unclear instructions about respiratory exercises and ambulation",
+        2
+      ]
+    ],
+    "uncontrolled_pain": [
+      [
+        "pain is well controlled and rates pain as 3/10",
+        2
+      ],
+      [
+        "significant improvement in pain levels",
+        2
+      ],
+      [
+        "experiencing manageable pain, rated 4/10",
+        2
+      ],
+      [
+        "significant relief from pain after receiving prescribed medications.",
+        2
+      ],
+      [
+        "the patient reports satisfactory pain control at rest",
+        2
+      ]
+    ],
+    "GI complication (ileus/obstruction)": [
+      [
+        "Gastrointestinal examination normal; patient reports regular bowel activity",
+        2
+      ],
+      [
+        "abdominal pain that was identified as due to gastroenteritis",
+        2
+      ],
+      [
+        "reporting regular bowel movements",
+        2
+      ],
+      [
+        "viral gastroenteritis",
+        2
+      ],
+      [
+        "normal bowel function, had a bowel movement this morning",
+        2
+      ]
+    ],
+    "Unexpected ICU admission": [
+      [
+        "Patient remains stable and is recovering well",
+        2
+      ]
+    ],
+    "unplanned_admission": [
+      [
+        "developed wheezing and shortness of breath, likely due to underlying asthma exacerbation",
+        2
+      ],
+      [
+        "complaining of a headache, which was determined to be secondary to dehydration",
+        2
+      ],
+      [
+        "rather than any surgical complications",
+        2
+      ],
+      [
+        "unrelated to her orthopedic procedure",
+        2
+      ],
+      [
+        "not related to her scoliosis surgery",
+        2
+      ]
+    ],
+    "Diagnosis of supracondylar fracture": [
+      [
+        "returned to the ER after falling at home, resulting in a wrist fracture",
+        2
+      ]
+    ],
+    "surgical_site_infection": [
+      [
+        "found to be due to a viral upper respiratory infection, not related to the surgical site",
+        2
+      ]
+    ],
+    "GI_complication(ileus/obstruction)": [
+      [
+        "A CT scan showed a hematoma requiring immediate surgical intervention.",
+        2
+      ]
+    ],
+    "pain_management_plan_documentation": [
+      [
+        "pain management plan was not adequately communicated during discharge",
+        2
+      ],
+      [
+        "The pain management plan was inadequate, lacking sufficient opioid prescriptions.",
+        2
+      ]
+    ],
+    "loss_of_reduction_requiring_reoperation": [
+      [
+        "does not need reoperation",
+        2
+      ]
+    ],
+    "neurovascular_exam_not_documented_post_op": [
+      [
+        "Neurovascular exam post-op was not documented",
+        2
+      ]
+    ],
+    "surgical_pause_documented": [
+      [
+        "intraoperative checks were insufficient and not properly logged in the surgical notes.",
+        2
+      ]
+    ],
+    "paresthesia/numbness": [
+      [
+        "Neurovascular exam shows normal sensation and perfusion in all extremities.",
+        2
+      ],
+      [
+        "Paresthesia noted in the left foot, requiring follow-up assessment",
+        2
+      ],
+      [
+        "Patient has intact neurovascular function in all extremities.",
+        2
+      ]
+    ],
+    "discharge_instructions_clarity": [
+      [
+        "Patient states they did not receive clear discharge instructions on wound care",
+        2
+      ]
+    ],
+    "Paresthesia/numbness": [
+      [
+        "Neurovascular status is intact, pulses are strong and equal bilaterally",
+        2
+      ]
+    ]
+  },
+  "violation_counts": {
+    "DENY_TEMPLATE_MISMATCH": 118,
+    "INVALID_SIGNAL_ID": 2
+  }
+}

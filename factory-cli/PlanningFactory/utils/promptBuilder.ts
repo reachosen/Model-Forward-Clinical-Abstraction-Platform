@@ -1,8 +1,8 @@
 import { getEventSummaryVariables } from '../../shared/context_builders/eventSummary';
 import { getFollowupQuestionsVariables } from '../../shared/context_builders/followupQuestions';
 import { getSignalEnrichmentVariables } from '../../shared/context_builders/signalEnrichment';
-import { getSummary2080Variables } from '../../shared/context_builders/summary2080';
 import { getClinicalReviewPlanVariables } from '../../shared/context_builders/clinicalReviewPlan';
+import { getClinicalReviewHelperVariables } from '../../shared/context_builders/clinicalReviewHelper';
 import { getExclusionCheckVariables } from '../../shared/context_builders/exclusionCheck';
 import { TaskType, ArchetypeType } from '../types';
 import { loadPromptFromRegistry } from './promptLoader';
@@ -42,7 +42,6 @@ export function buildDynamicRoleName(
   const baseRoles: Record<string, string> = {
     signal_enrichment: 'Clinical Signal Extractor',
     event_summary: 'Clinical Event Summary Assistant',
-    '20_80_display_fields': 'Patient and Provider Summary Generator',
     followup_questions: 'Clinical Investigator',
     clinical_review_plan: 'Clinical Review Planner',
   };
@@ -124,7 +123,11 @@ export function buildMetricContextString(packet: any): string {
 
   const groups = (metric.signal_groups || []).map((gid: string) => {
      const sigs = signals?.[gid] || [];
-     return `${gid}: ${sigs.slice(0, 2).join(', ')}`;
+     return `${gid}: ${sigs.slice(0, 2).map((s: any) => {
+         const id = s.id || s.signal_id;
+         const text = s.description || s.name || s;
+         return id ? `[${id}] ${text}` : text;
+     }).join(', ')}`;
   }).join('; ');
 
   // Short reference line; full details live in metric_context JSON in the system prompt
@@ -138,8 +141,8 @@ export function getPromptText(taskName: string, context: any): string {
     'task_event_summary': 'event_summary',
     'task_followup_questions': 'followup_questions',
     'task_signal_generation': 'signal_enrichment',
-    'task_20_80_display_fields': '20_80_display_fields',
-    'task_clinical_reviewer': 'clinical_review_plan'
+    'task_clinical_reviewer': 'clinical_review_plan',
+    'clinical_review_helper': 'clinical_review_helper'
   };
 
   const taskType = taskMap[taskName] || taskName;
@@ -189,12 +192,19 @@ export function getPromptText(taskName: string, context: any): string {
     variables = getSignalEnrichmentVariables(promptContext);
   } else if (taskType === 'event_summary') {
     variables = getEventSummaryVariables(promptContext);
-  } else if (taskType === '20_80_display_fields') {
-    variables = getSummary2080Variables(promptContext);
   } else if (taskType === 'followup_questions') {
     variables = getFollowupQuestionsVariables(promptContext);
   } else if (taskType === 'clinical_review_plan') {
     variables = getClinicalReviewPlanVariables(promptContext);
+  } else if (taskType === 'clinical_review_helper') {
+    variables = getClinicalReviewHelperVariables({
+        ...promptContext,
+        eventSummary: context.eventSummary,
+        keySignals: context.keySignals,
+        currentDetermination: context.currentDetermination,
+        userQuery: context.userQuery,
+        openQuestions: context.openQuestions
+    });
   } else if (taskType === 'exclusion_check') {
     variables = getExclusionCheckVariables(promptContext);
   }

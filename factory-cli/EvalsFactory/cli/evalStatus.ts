@@ -44,6 +44,7 @@ interface MetricStatus {
   framework: string;
   specialty?: string;
   semantic: SemanticStatus;
+  byIntent?: any; // To store latest by_intent metrics
   stages: {
     strategy: StageStatus;
     testCases: StageStatus & { fileDetails?: string[] };
@@ -185,11 +186,22 @@ function getMetricStatus(metricId: string): MetricStatus {
       goldenCount > 0 ? `Golden sets: ${goldenCount}` : 'No golden sets found'
   ];
 
+  // Try to load latest intent metrics
+  let byIntent = undefined;
+  const latestReportPath = path.join(process.cwd(), 'output', 'eval', `${metricId}_latest.json`);
+  try {
+      if (fs.existsSync(latestReportPath)) {
+          const report = JSON.parse(fs.readFileSync(latestReportPath, 'utf-8'));
+          byIntent = report.by_intent;
+      }
+  } catch {}
+
   return {
     metric: metricId,
     framework: metricPath.framework,
     specialty: metricPath.specialty,
     semantic,
+    byIntent,
     stages: {
       strategy: { exists: !!strategy, details: [], count: strategy?.task_scenarios ? Object.keys(strategy.task_scenarios).length : 0 },
       testCases: { exists: tcCount > 0, details: tcDetails, count: tcCount, fileDetails },
@@ -385,7 +397,22 @@ function printMetricStatus(status: MetricStatus): void {
       printBoxLine(`Scores: ${safeMetrics}`);
   }
 
-  // 4. Prompt Refinery
+  // 4. Clinical Intent Breakdown
+  if (status.byIntent && Object.keys(status.byIntent).length > 0) {
+      console.log('║                                                                    ║');
+      printBoxLine('CLINICAL INTENT BREAKDOWN (Behavioral Gates)');
+      printBoxLine('───');
+      for (const [intent, stats] of Object.entries(status.byIntent)) {
+          const s = stats as any;
+          const ahGate = s.ah_gate === 'PASS' ? '✓' : '❌';
+          const drGate = s.dr_gate === 'PASS' ? '✓' : '⚠️';
+          const crPct = Math.round(s.concept_accuracy_cr * 100);
+          
+          printBoxLine(`   ${intent.padEnd(12)} [${crPct.toString().padStart(3)}%]  AH: ${ahGate} | DR: ${drGate} | ${s.recommended_action}`);
+      }
+  }
+
+  // 5. Prompt Refinery
   console.log('║                                                                    ║');
   printBoxLine('PROMPT REFINERY (Flywheel Trends)');
   printBoxLine('───');

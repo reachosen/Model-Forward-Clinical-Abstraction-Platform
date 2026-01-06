@@ -1,0 +1,652 @@
+{
+  "total_cases_processed": 200,
+  "valid_cases": 116,
+  "violations": [
+    {
+      "test_id": "I32a-BATCH1-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH10-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH11-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID increased_back_pain: Substring \"The patient reported significant worsening back pain.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH11-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID GI complication (ileus/obstruction): Substring \"admitted for ileus and severe abdominal pain.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH11-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID uncontrolled pain: Substring \"severe abdominal pain.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH11-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID surgical_site_infection: Substring \"with fever and increased pain at the surgical site.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH11-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID uncontrolled pain: Substring \"noted delay in adequate pain management.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH11-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID Paresthesia/numbness: Substring \"new onset of paresthesia in the lower extremities.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH12-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH12-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication_ileus_obstruction not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH12-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID unexpected_ICU_admission not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH12-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH13-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH14-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH14-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID neurovascular_exam_not_documented_post-op not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH15-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH15-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH15-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID pallor_or_delayed_capillary_refill not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH16-001",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID Pain out of proportion to injury: Substring \"Patient denies any pain above a 3 on a scale of 1 to 10.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH16-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID antibiotic_prophylaxis_timing: Substring \"Antibiotics were given immediately after patient was induced.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH17-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_back_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH17-001",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID discharge_instructions_clear: Substring \"Discharge instructions included monitoring for signs of infection\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH17-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID perfusion_status_not_described not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH17-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH17-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH17-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID discharge_instructions_clear not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH18-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID increased_back_pain: Substring \"reported increased back pain, which was attributed to her ongoing treatment for juvenile arthritis.\" not found in note n3."
+    },
+    {
+      "test_id": "I32a-BATCH18-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"A 14-year-old male presented with symptoms of a common cold including cough and congestion.\" not found in note n4."
+    },
+    {
+      "test_id": "I32a-BATCH18-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"was admitted with severe anxiety and depression, which were determined to be unrelated to her scoliosis surgery.\" not found in note n5."
+    },
+    {
+      "test_id": "I32a-BATCH19-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication (ileus/obstruction) not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH19-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID surgical_site_infection: Substring \"the fever was caused by a viral infection and not related to the surgical site.\" not found in note n4."
+    },
+    {
+      "test_id": "I32a-BATCH20-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH21-001",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"unplanned admission\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH21-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID imaging_delay not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH22-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH22-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID unexpected_ICU_admission not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH22-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH22-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication (ileus/obstruction) not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH22-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID hardware_complication not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH24-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH25-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH25-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH26-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID increasing_analgesic_requirement: Substring \"Pain level at 8 out of 10 despite receiving analgesics.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH26-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH26-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID neurovascular_exam_post_op: Substring \"Neurovascular exam shows normal perfusion and motor function.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH26-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID neurovascular_exam_not_documented_post_op not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH26-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID discharge_instructions_clarity: Substring \"Discharge instructions were clear and conveyed to the patient.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH26-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID discharge_instructions_unclear: Substring \"Discharge instructions unclear; patient has questions.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH26-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID antibiotic_prophylaxis_timing: Substring \"Antibiotic prophylaxis was administered 30 minutes before incision.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH26-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID antibiotic_timing_not_documented: Substring \"Antibiotic prophylaxis timing not documented.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH27-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH27-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH27-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication_ileus_obstruction not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH27-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication_ileus_obstruction not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH28-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"no correlation to the scoliosis surgery performed.\" not found in note n3."
+    },
+    {
+      "test_id": "I32a-BATCH29-001",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"unplanned admission due to severe abdominal pain, which is likely due to a prior history of gastrointestinal issues\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH29-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"developed a respiratory infection unrelated to the scoliosis procedure\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH29-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"increased back pain diagnosed as a muscle strain from physical activity\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH29-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"urinary tract infection unrelated to the scoliosis surgery\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH3-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH3-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication_(ileus/obstruction) not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH3-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID Unexpected_ICU_admission not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH3-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID Pneumonia/respiratory_distress not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH30-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH30-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID antibiotic_timing_not_documented not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH30-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID hardware_complication not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH30-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH30-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID Pneumonia/respiratory_distress not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH32-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH32-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication_(ileus/obstruction) not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH32-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID Uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH33-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID GI complication (ileus/obstruction): Substring \"An examination revealed signs of gastrointestinal obstruction.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH34-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH35-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID neurovascular_exam_not_documented_post_op not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH37-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH37-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH37-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID antibiotic_timing_not_documented not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH37-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH37-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH37-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID Nutritional_failure not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH37-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID Nutritional_failure not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH38-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"not related to any surgical complications from the scoliosis procedure.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH4-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH4-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH4-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID antibiotic_timing_not_documented: Substring \"Antibiotic prophylaxis timing was not documented.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH4-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication_ileus_obstruction not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH4-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID surgical_pause_timeout_missing: Substring \"The surgical pause was not documented during the initial surgery.\" not found in note n4."
+    },
+    {
+      "test_id": "I32a-BATCH4-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID Pneumonia_respiratory_distress not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH4-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID documentation_gap not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH40-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH40-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"presented with erythema and drainage from the surgical site.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH40-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID antibiotic_timing_not_documented not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH40-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"returned with complaints of significant back pain.\" not found in note n3."
+    },
+    {
+      "test_id": "I32a-BATCH40-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID lack_of_OR_availability not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH40-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication_ileus_obstruction not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH40-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID discharge_instructions_unclear: Substring \"The discharge instructions regarding bowel regimen were unclear.\" not found in note n4."
+    },
+    {
+      "test_id": "I32a-BATCH40-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"presented with respiratory distress.\" not found in note n5."
+    },
+    {
+      "test_id": "I32a-BATCH40-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID pneumonia_respiratory_distress not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH40-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID discharge_instructions_unclear: Substring \"The discharge instructions did not emphasize the importance of deep breathing exercises.\" not found in note n5."
+    },
+    {
+      "test_id": "I32a-BATCH5-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH5-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH5-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID hardware_complication not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH5-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID hardware_complication not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH5-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID perfusion_status_not_described (pink/warm) not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH6-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH6-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH6-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID neurovascular_exam_post_op: Substring \"normal sensation and motor function.\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH6-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID paresthesia/numbness: Substring \"reports numbness in right leg.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH6-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID discharge_instructions_unclear: Substring \"Patient appears confused about discharge instructions.\" not found in note n2."
+    },
+    {
+      "test_id": "I32a-BATCH6-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication (ileus/obstruction) not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH6-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID GI_complication (ileus/obstruction) not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH7-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID increasing_analgesic_requirement not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH7-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID uncontrolled_pain not found in registry."
+    },
+    {
+      "test_id": "I32a-BATCH8-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID unplanned_admission: Substring \"nausea and vomiting unrelated to the scoliosis surgery\" not found in note n1."
+    },
+    {
+      "test_id": "I32a-BATCH9-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID increased_back_pain: Substring \"Patient reports increased back pain but evaluation shows no hardware issues.\" not found in note n5."
+    }
+  ],
+  "coverage_summary": {
+    "Admission to incision >18 hours": 0,
+    "OR scheduled after 22:00 (10 PM)": 0,
+    "Transfer from outside hospital": 0,
+    "NPO violation delay": 0,
+    "Medical clearance delay": 0,
+    "Lack of OR availability": 1,
+    "Surgeon unavailability": 0,
+    "Imaging delay": 0,
+    "unplanned_admission": 33,
+    "surgical_site_infection": 16,
+    "Pain out of proportion to injury": 1,
+    "Increasing analgesic requirement": 2,
+    "Passive stretch pain": 0,
+    "Paresthesia/numbness": 1,
+    "Pallor or delayed capillary refill": 1,
+    "Tenseness of compartment": 0,
+    "Fasciotomy performed": 0,
+    "Unexpected ICU admission": 1,
+    "Neurovascular exam not documented pre-op": 0,
+    "Neurovascular exam not documented post-op": 0,
+    "Perfusion status not described (pink/warm)": 0,
+    "Compartment check frequency not met": 0,
+    "Surgical pause/timeout missing": 0,
+    "Antibiotic timing not documented": 0,
+    "Justification for delay >18h missing": 0,
+    "Discharge instructions unclear": 0,
+    "wound_drainage_erythema": 24,
+    "pre_op_warming_documented": 0,
+    "antibiotic_prophylaxis_timing": 7,
+    "discharge_instructions_clarity": 6,
+    "absence_of_perfusion_checks": 0,
+    "loss_of_reduction_requiring_reoperation": 17,
+    "neurovascular_exam_pre_op_post_op": 1,
+    "inappropriate_antibiotic_selection": 0,
+    "pre_op_warming_not_documented": 0,
+    "pain_management_plan_documentation": 4,
+    "neurovascular_exam_post_op": 4,
+    "increased_back_pain": 12,
+    "Uncontrolled pain": 3,
+    "Surgical site infection": 0,
+    "GI complication (ileus/obstruction)": 12,
+    "Hardware complication": 5,
+    "Pneumonia/respiratory distress": 7,
+    "UTI/urinary retention": 1,
+    "Nutritional failure": 0,
+    "Social/caregiver concern": 0,
+    "surgical_pause_documented": 0,
+    "discharge_instructions_unclear": 25,
+    "Diagnosis of supracondylar fracture": 0,
+    "Diagnosis of femoral shaft fracture": 0,
+    "Diagnosis of forearm fracture": 0,
+    "Diagnosis of scoliosis (idiopathic)": 0,
+    "Diagnosis of scoliosis (neuromuscular)": 0,
+    "Age < 18 years": 0,
+    "Surgical procedure performed": 0,
+    "Polytrauma": 0,
+    "Open fracture (if metric excludes open)": 0,
+    "Pathologic fracture": 0,
+    "Prior surgery on same site": 0,
+    "Patient transferred out": 0,
+    "Non-operative management (if metric is operative only)": 0,
+    "Clinical stability required delay": 0,
+    "Parent/guardian refusal": 0,
+    "Palliative care goals": 0,
+    "Complex comorbidity priority": 0,
+    "unexpected ICU admission": null,
+    "increasing analgesic requirement": null,
+    "paresthesia/numbness": null,
+    "uncontrolled pain": null
+  }
+}

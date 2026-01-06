@@ -1,0 +1,207 @@
+{
+  "total_cases_processed": 200,
+  "valid_cases": 177,
+  "violations": [
+    {
+      "test_id": "I32b-BATCH1-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID neurovascular_exam_not_documented_pre_op not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH1-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID discharge_instructions_unclear not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH10-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID infection_ssi not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH10-002",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID discharge_instructions_unclear not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH10-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID infection_ssi not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH16-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID antibiotic_redosing_missed_in_long_case: Substring \"Antibiotic redosing missed during the long case.\" not found in note n1."
+    },
+    {
+      "test_id": "I32b-BATCH16-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID antibiotic_redosing_missed_in_long_case: Substring \"Antibiotic redosing was performed as per protocol.\" not found in note n2."
+    },
+    {
+      "test_id": "I32b-BATCH2-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID antibiotic_prophylaxis_not_given_within_60_min not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH20-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID antibiotic_timing_not_documented not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH20-002",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID neurovascular_exam_not_documented_pre_op: Substring \"Pre-operative pulmonary optimization was not adequately documented.\" not found in note n1."
+    },
+    {
+      "test_id": "I32b-BATCH20-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID justification_for_delay_18h_missing not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH21-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID wound_drainageerythema: Substring \"The patient...presented with wound drainage and erythema.\" not found in note n5."
+    },
+    {
+      "test_id": "I32b-BATCH23-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID antibiotic_prophylaxis_not_given_within_60_min not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH24-004",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID antibiotic_timing_not_documented not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH29-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID neurological_deficit_median_ulnar_radial not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH3-005",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID dvt_prophylaxis_missed_if_indicated: Substring \"DVT prophylaxis was not initiated as indicated, leading to complications.\" not found in note n1."
+    },
+    {
+      "test_id": "I32b-BATCH30-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID implanhardware_present not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH32-001",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID discharge_instructions_unclear not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH32-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID pulmonary_optimization_plan_missing not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH34-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID uncontrolled_pain: Substring \"due to uncontrolled pain, which had not been effectively managed.\" not found in note n3."
+    },
+    {
+      "test_id": "I32b-BATCH34-004",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID antibiotic_redosing_missed_in_long_case: Substring \"the protocol for antibiotic redosing was not followed.\" not found in note n4."
+    },
+    {
+      "test_id": "I32b-BATCH38-003",
+      "type": "OFFSET_MISMATCH",
+      "message": "ID preop_warming_not_documented: Substring \"The surgical team noted that the patient did not receive preoperative warming as per protocol.\" not found in note n1."
+    },
+    {
+      "test_id": "I32b-BATCH4-005",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID compartment_check_frequency_not_met not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH6-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID neurological_deficit_(median/ulnar/radial) not found in registry."
+    },
+    {
+      "test_id": "I32b-BATCH6-003",
+      "type": "INVALID_SIGNAL_ID",
+      "message": "Signal ID neurological_deficit_(median/ulnar/radial) not found in registry."
+    }
+  ],
+  "coverage_summary": {
+    "Admission to incision >18 hours": 0,
+    "OR scheduled after 22:00 (10 PM)": 0,
+    "Transfer from outside hospital": 0,
+    "NPO violation delay": 0,
+    "Medical clearance delay": 0,
+    "Lack of OR availability": 0,
+    "Surgeon unavailability": 0,
+    "Imaging delay": 0,
+    "Hand perfusion: white/cool/pulseless": 0,
+    "Neurological deficit (median/ulnar/radial)": 1,
+    "Compartment syndrome suspicion": 0,
+    "Loss of reduction requiring re-operation": 0,
+    "Malunion": 0,
+    "Limb length discrepancy": 0,
+    "Infection (SSI)": 0,
+    "Hardware failure": 0,
+    "pain_out_of_proportion_to_injury": 11,
+    "increasing_analgesic_requirement": 9,
+    "passive_stretch_pain": 2,
+    "paresthesianumbness": 6,
+    "pallor_or_delayed_capillary_refill": 0,
+    "tenseness_of_compartment": 1,
+    "fasciotomy_performed": 0,
+    "unexpected_icu_admission": 5,
+    "Neurovascular exam not documented pre-op": 0,
+    "Neurovascular exam not documented post-op": 0,
+    "Perfusion status not described (pink/warm)": 0,
+    "Compartment check frequency not met": 1,
+    "Surgical pause/timeout missing": 0,
+    "Antibiotic timing not documented": 0,
+    "Justification for delay >18h missing": 0,
+    "Discharge instructions unclear": 0,
+    "antibiotic_prophylaxis_not_given_within_": 24,
+    "inappropriate_antibiotic_selection": 3,
+    "prolonged_operative_time": 5,
+    "implanthardware_present": 0,
+    "history_of_prior_infection": 3,
+    "immunosuppression": 0,
+    "wound_drainageerythema": 13,
+    "positive_culture": 0,
+    "uncontrolled_pain": 18,
+    "surgical_site_infection": 10,
+    "gi_complication_ileusobstruction": 4,
+    "hardware_complication": 1,
+    "pneumoniarespiratory_distress": 21,
+    "utiurinary_retention": 7,
+    "nutritional_failure": 7,
+    "socialcaregiver_concern": 0,
+    "preop_warming_not_documented": 9,
+    "chlorhexidine_prep_not_useddocumented": 0,
+    "antibiotic_redosing_missed_in_long_case": 13,
+    "traffic_in_or_excessive": 1,
+    "glucose_control_if_diabetic": 0,
+    "postop_dressing_protocol_deviation": 2,
+    "dvt_prophylaxis_missed_if_indicated": 5,
+    "foley_catheter_duration_48h": 1,
+    "Diagnosis of supracondylar fracture": 0,
+    "Diagnosis of femoral shaft fracture": 0,
+    "Diagnosis of forearm fracture": 0,
+    "Diagnosis of scoliosis (idiopathic)": 0,
+    "Diagnosis of scoliosis (neuromuscular)": 0,
+    "Age < 18 years": 0,
+    "Surgical procedure performed": 0,
+    "Polytrauma": 0,
+    "Open fracture (if metric excludes open)": 0,
+    "Pathologic fracture": 0,
+    "Prior surgery on same site": 0,
+    "Patient transferred out": 0,
+    "Non-operative management (if metric is operative only)": 0,
+    "Clinical stability required delay": 0,
+    "Parent/guardian refusal": 0,
+    "Palliative care goals": 0,
+    "Complex comorbidity priority": 0,
+    "compartment syndrome suspicion": null
+  }
+}
