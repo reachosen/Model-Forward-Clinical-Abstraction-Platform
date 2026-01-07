@@ -172,11 +172,9 @@ export const STAGE_QUALITY_CRITERIA: Record<StageId, string[]> = {
   ],
 
   S2: [
-    '⭐ CRITICAL: Exactly 5 signal groups',
-    'Signal group IDs match domain template',
-    'HAC: uses HAC_GROUP_DEFINITIONS',
-    'USNWR ranked: uses signal_emphasis from rankings',
-    'USNWR unranked: uses domain defaults',
+    'Signal groups aligned with Semantic Packet',
+    'At least one signal group present',
+    'Signal group definitions are structurally valid'
   ],
 
   S3: [
@@ -188,7 +186,7 @@ export const STAGE_QUALITY_CRITERIA: Record<StageId, string[]> = {
 
   S4: [
     'All task nodes have corresponding prompt plan nodes',
-    'Prompt template_id exists in registry',
+    'Prompt template_ref exists in registry',
     'response_format is valid (json, json_schema, text)',
     'If json_schema: schema_ref is provided',
   ],
@@ -198,19 +196,14 @@ export const STAGE_QUALITY_CRITERIA: Record<StageId, string[]> = {
     'Each task output passes local validation',
     'signal_enrichment: all signals have evidence_type (L1/L2/L3)',
     'event_summary: mentions rank if USNWR top 20',
-    '20_80_display_fields: ≤500 tokens',
     'clinical_review_plan: all tool_ids are valid',
   ],
 
   S6: [
-    '⭐ CRITICAL: All 10 sections present (Tier 1)',
-    '⭐ CRITICAL: Exactly 5 signal groups (Tier 1)',
-    '⭐ CRITICAL: All signals have evidence_type (Tier 1)',
-    '⭐ CRITICAL: No broken tool references (Tier 1)',
-    'Signal groups match domain template (Tier 2)',
-    'USNWR top 20: plan mentions rank (Tier 2)',
-    'Signals cite authoritative sources (Tier 2)',
-    'Pediatric-safe language (Tier 2)',
+    '⭐ CRITICAL: Lean Plan Artifact (lean_plan.json) generated successfully',
+    '⭐ CRITICAL: Task sequence is ordered and valid',
+    '⭐ CRITICAL: All signals have provenance and archetypes',
+    '⭐ CRITICAL: No broken prompt links (Tier 1)',
   ],
 };
 

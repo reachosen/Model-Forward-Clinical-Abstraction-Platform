@@ -248,10 +248,26 @@ async function generateBatch(client: OpenAI, concernId: string, domain: string, 
       const scenario = scenarios[i] as any;
       const intent = deriveIntentOrFail(scenario.contract, scenario.id || scenario.description || `scenario_${i + 1}`);
       const markers = deriveScenarioMarkers(scenario, i);
+
+      // MAP TRACE TO CONTRACT (Clean Line of Sight)
+      const expected_signals = tc.trace?.items?.map((item: any) => ({
+          signal_id: item.signal_id,
+          polarity: item.polarity || 'AFFIRM',
+          required_provenance: [ item.substring ]
+      })) || [];
+
+      // Flatten notes into patient_payload for compatibility
+      const patient_payload = tc.notes?.map((n: any) => `[${n.author} ${n.timestamp}]: ${n.text}`).join('\n') || tc.notes?.[0]?.text || '';
+
       return {
         ...tc,
         test_id: `${concernId}-BATCH${batchIndex + 1}-${String(i + 1).padStart(3, '0')}`,
         concern_id: concernId,
+        patient_payload,
+        contract: {
+            intents: [ intent ],
+            expected_signals: expected_signals
+        },
         metadata: {
           batch_index: batchIndex + 1,
           intent,

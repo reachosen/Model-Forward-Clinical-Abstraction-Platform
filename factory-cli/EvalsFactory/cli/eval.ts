@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { InputAdapter } from '../adapters/InputAdapter';
+import { PlanAdapter } from '../adapters/PlanAdapter';
 import { generatePlan } from '../../PlanningFactory/planner/planGen';
 import { SignalGrader } from '../graders/SignalGrader';
 import { SummaryGrader } from '../graders/SummaryGrader';
@@ -91,9 +92,16 @@ export const evalCommand = new Command('eval')
         let plan;
         let engineOutput;
         try {
-          plan = await generatePlan(input as any, {
+          let rawPlan = await generatePlan(input as any, {
             model: process.env.MODEL || 'gpt-4o-mini'
           });
+
+          // Adapt Lean Plan to Legacy Plan if necessary
+          if ((rawPlan as any).handoff_metadata) {
+             plan = PlanAdapter.adapt(rawPlan);
+          } else {
+             plan = rawPlan;
+          }
           
           const questionsConfig = plan.clinical_config?.questions as any;
           const questionsArray = questionsConfig ? (questionsConfig.usnwr_questions || questionsConfig.metric_questions || questionsConfig.followup_questions || []) : [];

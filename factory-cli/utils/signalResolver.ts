@@ -1,4 +1,3 @@
-
 export interface SignalRegistryEntry {
   id: string;
   legacy_id?: string;
@@ -24,6 +23,23 @@ const STATIC_ALIAS_MAP: Record<string, string> = {
     'increasing': 'increasing_analgesic_requirement',
     'pain_out_of_proportion_to_injury': 'pain_out_of_proportion_to_injury',
     
+    // ORTHOPEDICS SPECIFIC ALIASES
+    'readmission': 'unplanned_admission',
+    'unplanned_admission': 'unplanned_admission',
+    'hospital_readmission': 'unplanned_admission',
+    'surgical_site_infection': 'surgical_site_infection',
+    'ssi': 'surgical_site_infection',
+    'infection': 'surgical_site_infection',
+    'wound_drainage_erythema': 'wound_drainage_erythema',
+    'redness_and_drainage': 'wound_drainage_erythema',
+    'drainage': 'wound_drainage_erythema',
+    'uncontrolled_pain': 'uncontrolled_pain',
+    'severe_pain': 'uncontrolled_pain',
+    'broken_rod': 'hardware_complication',
+    'hardware_failure': 'hardware_complication',
+    'ileus': 'gi_complication_ileus_obstruction',
+    'bowel_obstruction': 'gi_complication_ileus_obstruction',
+    
     // RESTORATION MAPPINGS (Positive -> Negative Registry IDs)
     'perfusion_checks_documented': 'absence_of_perfusion_checks',
     'perfusion_checks_performed': 'absence_of_perfusion_checks',
@@ -36,23 +52,12 @@ const STATIC_ALIAS_MAP: Record<string, string> = {
 
 /**
  * Resolves a raw signal ID to its canonical form within the given registry context.
- * 
- * Strategy:
- * 1. Check Static Alias Map
- * 2. Exact Match in Registry (id)
- * 3. Legacy Match in Registry (legacy_id)
- * 4. Case-insensitive Match
  */
 export function resolveSignalId(rawId: string, registrySignals: SignalRegistryEntry[]): string | null {
   const normalizedRaw = rawId.trim();
   
   // 1. Static Alias Map
   if (STATIC_ALIAS_MAP[normalizedRaw]) {
-    // If alias points to something, check if THAT target exists in registry?
-    // Or assume alias map is authoritative?
-    // Let's return the aliased ID, but the caller should verify existence.
-    // Actually, mapping 'perfusion_checks_performed' -> 'absence_of_perfusion_checks'
-    // 'absence_of_perfusion_checks' IS the canonical ID in the current (restored) registry.
     return STATIC_ALIAS_MAP[normalizedRaw];
   }
   if (STATIC_ALIAS_MAP[normalizedRaw.toLowerCase()]) {
@@ -64,7 +69,6 @@ export function resolveSignalId(rawId: string, registrySignals: SignalRegistryEn
   if (exact) return exact.id;
 
   // 3. Legacy Match
-  // If rawId matches a legacy_id, return the NEW canonical id associated with it.
   const legacy = registrySignals.find(s => s.legacy_id === normalizedRaw);
   if (legacy) return legacy.id; 
 

@@ -95,7 +95,7 @@ program
       const outputPath = options.output || getPlanOutputPath(
         options.concern,
         domain,
-        'plan.json'
+        'lean_plan.json'
       );
 
       // Save plan to file
@@ -135,7 +135,7 @@ import { safeScore } from '../EvalsFactory/cli/safeScore';
 import { evalCommand } from '../EvalsFactory/cli/eval';
 import { evalStatus } from '../EvalsFactory/cli/evalStatus';
 import { evalRoundtrip } from '../EvalsFactory/cli/evalRoundtrip';
-import { exportUiPayload } from '../tools/ui-export';
+// import { exportUiPayload } from '../tools/ui-export';
 
 // ============================================
 // FLYWHEEL COMMAND (Prompt Refinery)
@@ -165,6 +165,7 @@ program.addCommand(evalRoundtrip);
 // ============================================
 // UI:EXPORT COMMAND (UI Factory Demo Payload)
 // ============================================
+/*
 program
   .command('ui:export')
   .description('Export UI payload for a metric + case')
@@ -183,6 +184,7 @@ program
       process.exit(1);
     }
   });
+*/
 
 // ============================================
 // PARSE AND EXECUTE

@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { PlannerPlan } from '../models/PlannerPlan';
 import {
   BatchStrategy,
   GenerationScenario,
@@ -21,7 +20,7 @@ const PLAN_PATH = getArg('--plan');
 const OUT_PATH = getArg('--out');
 const AUTO_DERIVE = argv.includes('--auto-derive');
 
-// Registry Path: factory-cli/EvalsFactory/dataset/batch_strategies.metadata.json
+// Registry Path
 const REGISTRY_PATH = path.resolve(__dirname, '../EvalsFactory/dataset/batch_strategies.metadata.json');
 const DOMAINS_REGISTRY_PATH = path.resolve(__dirname, '../domains_registry');
 
@@ -63,7 +62,6 @@ if (!METRIC_ID || !PLAN_PATH) {
  * Find and load semantic definitions from domains_registry
  */
 function loadSemanticDefinitions(domain: string, metricId: string): SemanticDefinitions | null {
-  // Try common paths in domains_registry
   const possiblePaths = [
     path.join(DOMAINS_REGISTRY_PATH, 'USNWR', domain, 'metrics', metricId, 'definitions'),
     path.join(DOMAINS_REGISTRY_PATH, domain, 'metrics', metricId, 'definitions'),
@@ -104,7 +102,6 @@ function deriveTaskScenarios(
 ): Record<string, TaskScenarioConfig> {
   const taskScenarios: Record<string, TaskScenarioConfig> = {};
 
-  // Slice distribution for "Balanced 50"
   const slices = [
     { intent: 'KNOWLEDGE', count: 20, description: "Registry Coverage: specific signal detection" },
     { intent: 'AMBIGUITY', count: 15, description: "Dissonance: conflicting notes (Affirm/Deny)" },
@@ -141,31 +138,30 @@ function deriveTaskScenarios(
   return taskScenarios;
 }
 
-/**
- * Legacy: derive shared scenarios (for backwards compatibility)
- */
 function deriveLegacyScenarios(
-  config: any,
-  meta: any,
+  leanPlan: any,
   primaryArchetype: string
 ): GenerationScenario[] {
   const scenarios: GenerationScenario[] = [];
+  const metricName = leanPlan.schema_definitions.metric_info.name;
 
   // 1. Base Scenario
   scenarios.push({
-    description: `Standard presentation of ${meta.concern.concern_id} with clear documentation.`,
+    description: `Standard presentation of ${metricName} with clear documentation.`,
     archetype: primaryArchetype
   });
 
   // 2. Signal-Driven Scenarios
-  (config.signals.signal_groups || []).forEach((group: any) => {
-    const topSignals = group.signals.slice(0, 2);
+  // Convert map to array
+  const signalCatalog = leanPlan.schema_definitions.signal_catalog || {};
+  Object.entries(signalCatalog).forEach(([groupId, signals]) => {
+    const topSignals = (signals as any[]).slice(0, 2);
     topSignals.forEach((sig: any) => {
-      const sigName = sig.name || sig.description || sig.signal_id || 'Unknown Signal';
+      const sigName = sig.id || sig.description || 'Unknown Signal';
       scenarios.push({
-        description: `Patient case involving ${sigName} (${group.display_name}).`,
+        description: `Patient case involving ${sigName} (${groupId}).`,
         archetype: primaryArchetype,
-        doubt: group.group_id === 'delay_drivers' ? [{ type: 'conflict', instruction: 'Conflicting times' }] : undefined
+        doubt: groupId === 'delay_drivers' ? [{ type: 'conflict', instruction: 'Conflicting times' }] : undefined
       });
     });
   });
@@ -174,22 +170,40 @@ function deriveLegacyScenarios(
 }
 
 try {
-  // 1. Load Plan
-  const plan: PlannerPlan = JSON.parse(fs.readFileSync(PLAN_PATH, 'utf-8'));
-  const config = plan.clinical_config;
-  const meta = plan.plan_metadata as any;
-
-  // 2. Determine archetype
-  let primaryArchetype = 'Process_Auditor';
-  if (config.config_metadata?.archetype) {
-    primaryArchetype = config.config_metadata.archetype;
-  } else if (meta.planning_input_snapshot?.archetype) {
-    primaryArchetype = meta.planning_input_snapshot.archetype;
-  } else if (meta.concern?.archetype) {
-    primaryArchetype = meta.concern.archetype;
+  // 1. Load Plan (Supports LeanPlan)
+  const fileContent = fs.readFileSync(PLAN_PATH, 'utf-8');
+  let leanPlan;
+  
+  try {
+      const json = JSON.parse(fileContent);
+      if (json.handoff_metadata) {
+          leanPlan = json; // Native Lean Plan
+      } else {
+          // Adapt Legacy Plan structure to simple structure for derivation
+          leanPlan = {
+              handoff_metadata: {
+                  metric_id: json.plan_metadata.concern.concern_id,
+                  domain: json.plan_metadata.concern.domain
+              },
+              schema_definitions: {
+                  metric_info: json.clinical_config.metric_context,
+                  signal_catalog: {} // Complex map needed, but we might skip legacy derivation for legacy plans
+              }
+          };
+      }
+  } catch (e) {
+      throw new Error("Failed to parse plan JSON");
   }
 
-  const domain = meta.concern?.domain || 'Orthopedics';
+  // 2. Determine archetype
+  let primaryArchetype = 'Preventability_Detective'; // Default
+  // Try to find it in task sequence
+  const tasks = leanPlan.execution_registry?.task_sequence || [];
+  if (tasks.length > 0 && tasks[0].archetypes_involved?.length > 0) {
+      primaryArchetype = tasks[0].archetypes_involved[0];
+  }
+
+  const domain = leanPlan.handoff_metadata.domain || 'Orthopedics';
 
   // 3. Try to load semantic definitions for auto-derive mode
   const semantics = loadSemanticDefinitions(domain, METRIC_ID);
@@ -198,12 +212,10 @@ try {
   let newStrategy: BatchStrategy;
 
   if (AUTO_DERIVE && semantics && semantics.signal_groups.length > 0) {
-    // Auto-derive mode: use semantic definitions
-    console.log(`   Auto-deriving from ${semantics.signal_groups.length} signal groups and ${semantics.ambiguity_triggers.length} ambiguity triggers`);
-
+    console.log(`   Auto-deriving from ${semantics.signal_groups.length} signal groups`);
     const taskScenarios = deriveTaskScenarios(semantics, primaryArchetype);
-
-    // Count total scenarios
+    
+    // Count stats
     const flattened = Object.values(taskScenarios).flatMap(ts => ts.scenarios);
     const totalScenarios = flattened.length;
     const doubtScenarios = flattened.filter(s => s.type === 'doubt').length;
@@ -219,14 +231,11 @@ try {
         doubt_mix: ['ambiguity', 'missing_data', 'conflict']
       }
     };
-
-    console.log(`   Generated ${totalScenarios} total scenarios (${doubtScenarios} doubt) across ${TASK_IDS.length} tasks`);
+    console.log(`   Generated ${totalScenarios} total scenarios (${doubtScenarios} doubt)`);
 
   } else {
-    // Legacy mode: use plan's signal_groups
-    console.log(`   Using legacy derivation from plan.json signal_groups`);
-
-    const scenarios = deriveLegacyScenarios(config, meta, primaryArchetype);
+    console.log(`   Using derivation from Lean Plan signal_catalog`);
+    const scenarios = deriveLegacyScenarios(leanPlan, primaryArchetype);
 
     newStrategy = {
       metric_id: METRIC_ID,
@@ -247,7 +256,6 @@ try {
     console.log(`Generated strategy at ${OUT_PATH}`);
   } else {
     console.log(`Updating registry at: ${REGISTRY_PATH}`);
-
     let registry = { strategies: [] as BatchStrategy[] };
     if (fs.existsSync(REGISTRY_PATH)) {
       registry = JSON.parse(fs.readFileSync(REGISTRY_PATH, 'utf-8'));

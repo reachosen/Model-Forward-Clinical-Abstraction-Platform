@@ -1,25 +1,20 @@
 {
-  "concern_id": "I32b",
-  "updated_at": "2026-01-01T23:17:00.931Z",
-  "plan": {
-    "path": "output\\i32b-orthopedics\\plan.json",
-    "hash": "2d71f9582eb4f5087ef6fc6c29b52800f39e213be68d24570701fb97b75d7e20",
-    "version": "1.0",
-    "generated_at": "2026-01-01T23:10:59.097Z"
-  },
+  "concern_id": "I32a",
+  "updated_at": "2026-01-07T03:59:20.193Z",
   "strategy": {
-    "path": "domains_registry\\USNWR\\Orthopedics\\metrics\\I32b\\tests\\testcases\\generation_strategy.json",
-    "hash": "197369376b4b4a2048c52bcec365be71d0e4d9efae34bc7edfac36fff678c562"
-  },
-  "golden": {
-    "path": "domains_registry\\USNWR\\Orthopedics\\metrics\\I32b\\tests\\testcases\\golden_set_v2.json",
-    "hash": "3aad296fa0e32d9c50fa32bf39b1b166f38322b59a94ccb49f30e8be1f8ac2db"
+    "path": "domains_registry\\USNWR\\Orthopedics\\metrics\\I32a\\tests\\testcases\\generation_strategy.json",
+    "hash": "087b9e889ad8f1f3c9563cca0108c9a6d17649e83491cf4565b602d7325d8427"
   },
   "safe": {
     "latest": {
-      "path": "output\\eval\\I32b_latest.json",
-      "hash": "fea39168cfb97f408e0efbde47410c431444c6f604f033e5f0589da80653a123"
+      "path": "output\\eval\\I32a_latest.json",
+      "hash": "e19c291f1194430843389cc25b207ec6fda02be3f3ee6a8771d2f9cffcda7b67"
     }
+  },
+  "certified": {
+    "path": "certified\\USNWR\\Orthopedics\\metrics\\I32a\\v1\\certification.json",
+    "hash": "f6909393d56fbcdcc48cce49b8700d30258f1da05a5cb4a4e47ea37553cbb809",
+    "version": "v1"
   },
   "prompts": {}
 }

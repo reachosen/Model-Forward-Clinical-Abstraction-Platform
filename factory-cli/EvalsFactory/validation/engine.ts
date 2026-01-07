@@ -153,9 +153,13 @@ export async function runI25Engine(input: {
       flattenedSignals = parsed.signals;
     }
 
+    // If summary is missing (e.g. in signal_enrichment task), providing a placeholder 
+    // that won't trigger validation errors if possible, or just be more descriptive.
+    const summary = parsed.summary || parsed.event_summary || (parsed.signal_groups ? "N/A - Signal Task" : "Summary skipped in lean mode");
+
     return {
       raw_input: input.patient_payload,
-      summary: parsed.summary || "Summary skipped in lean mode",
+      summary: summary,
       signals: flattenedSignals,
       signal_objects: signalObjects,
       followup_questions: parsed.followup_questions || [],

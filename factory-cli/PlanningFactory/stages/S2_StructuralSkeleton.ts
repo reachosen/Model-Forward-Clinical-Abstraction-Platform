@@ -1,27 +1,31 @@
 /**
- * S2: Structural Skeleton (V9.1)
+ * S2: Structural Skeleton (Strict Mode)
  *
- * **Quality-Guided Generation**: Build V9.1-compliant skeleton with 5 signal groups
+ * **Semantic Assembly Engine**: Pure pass-through of Registry Definitions.
+ *
+ * Replaces dynamic generation with strict loading from the Semantic Packet.
+ * If the Semantic Packet is missing, this stage FAILS.
  */
 
 import { randomUUID } from 'crypto';
 import { RoutedInput, DomainContext, StructuralSkeleton, SignalGroupSkeleton, ValidationResult } from '../types';
-import { HAC_GROUP_DEFINITIONS, ORTHO_GROUP_DEFINITIONS, ENDO_GROUP_DEFINITIONS } from '../planner/domainRouter';
 
 export class S2_StructuralSkeletonStage {
   async execute(input: RoutedInput, domainCtx: DomainContext): Promise<StructuralSkeleton> {
-    console.log('🏗️  [S2] Starting Structural Skeleton Generation');
+    console.log('🏗️  [S2] Structural Skeleton (Strict Mode)');
 
     const { concern_id } = input;
     const { domain, semantic_context } = domainCtx;
-    const ranking_context = semantic_context.ranking;
+    
+    // STRICT GATE: Semantic Packet MUST exist
+    if (!semantic_context.packet) {
+      throw new Error(`[S2] CRITICAL FAILURE: No Semantic Packet loaded for ${domain}/${concern_id}. ` + 
+        `Ensure 'domains_registry/${domain}/metrics/${concern_id}' exists and is valid.`);
+    }
 
-    console.log(`   Domain: ${domain}`);
-    console.log(`   Has ranking context: ${!!ranking_context}`);
+    const signal_groups = this.selectSignalGroups(domainCtx);
 
-    const signal_groups = this.selectSignalGroups(domain, domainCtx);
-
-    console.log(`   ✅ Selected ${signal_groups.length} signal groups:`);
+    console.log(`   ✅ Loaded ${signal_groups.length} signal groups from Registry:`);
     signal_groups.forEach((g, i) => {
       console.log(`      ${i + 1}. ${g.group_id} - ${g.display_name}`);
     });
@@ -48,164 +52,46 @@ export class S2_StructuralSkeletonStage {
     return skeleton;
   }
 
-  private selectSignalGroups(domain: string, domainCtx: DomainContext): SignalGroupSkeleton[] {
-    const { semantic_context } = domainCtx;
-    const ranking_context = semantic_context.ranking;
-    const packet = semantic_context.packet;
+  private selectSignalGroups(domainCtx: DomainContext): SignalGroupSkeleton[] {
+    const packet = domainCtx.semantic_context.packet!;
+    const metricGroups = packet.metric.signal_groups || [];
+    
+    // In strict mode, we trust the registry explicitly.
+    // We map the string IDs (from metric.signal_groups) to the full objects (from signals.json)
+    
+    // NOTE: SemanticPacketLoader might have already merged signals into 'signals' map
+    // Let's assume the packet structure is:
+    // packet.metric.signal_groups = ["infection_risks", "bundle_compliance"]
+    // packet.signals = { "infection_risks": [...signals...], ... }
 
-    if (domain === 'HAC') {
-      console.log('   Using HAC_GROUP_DEFINITIONS (infection prevention focus)');
-      return HAC_GROUP_DEFINITIONS.map((def) => ({
-        group_id: def.group_id,
-        display_name: def.display_name,
-        description: def.description,
-        signals: [],
-      }));
-    }
-
-    if (packet) {
-      console.log('   Using Semantic Packet signal groups');
-      const packetGroups = packet.metric.signal_groups;
-      // Do NOT force 5 groups for packet-based generation
-      return this.buildGroupsFromEmphasis(packetGroups, domain, false);
-    }
-
-    if (ranking_context && ranking_context.signal_emphasis) {
-      console.log('   Using ranking-informed signal_emphasis from top 20 ranking');
-      return this.buildGroupsFromEmphasis(ranking_context.signal_emphasis, domain, true);
-    }
-
-    console.log('   Using domain-specific defaults (no ranking/packet data)');
-    return this.getDomainDefaultGroups(domain);
-  }
-
-  private buildGroupsFromEmphasis(signalEmphasis: string[], domain: string, forceFive: boolean = true): SignalGroupSkeleton[] {
-    const groupDefinitions: Record<string, { display_name: string; description: string }> = {
-      bundle_compliance: { display_name: 'Bundle Compliance', description: 'Adherence to evidence-based care bundles and protocols' },
-      handoff_failures: { display_name: 'Handoff Failures', description: 'Gaps in care transitions, surgical handoffs, and discharge planning' },
-      delay_drivers: { display_name: 'Delay Drivers', description: 'Factors contributing to delays in care delivery or extended LOS' },
-      documentation_gaps: { display_name: 'Documentation Gaps', description: 'Missing or incomplete clinical documentation' },
-      complication_tracking: { display_name: 'Complication Tracking', description: 'Post-operative complications and adverse events' },
-      glycemic_gaps: { display_name: 'Glycemic Gaps', description: 'Hypoglycemia, hyperglycemia, and glycemic variability issues' },
-      device_use: { display_name: 'Device Use', description: 'Insulin pump tracking, CGM data quality, device adherence' },
-      documentation_quality: { display_name: 'Documentation Quality', description: 'A1c tracking, endocrine consultation documentation, therapy plans' },
-      care_transitions: { display_name: 'Care Transitions', description: 'Inpatient-to-outpatient handoffs, diabetes care team coordination' },
-      medication_adherence: { display_name: 'Medication Adherence', description: 'Insulin regimen compliance and medication reconciliation' },
-      infection_risk: { display_name: 'Infection Risk', description: 'Device-related infections and procedural infection risks' },
-      lab_monitoring: { display_name: 'Lab Monitoring', description: 'Laboratory test frequency and critical value follow-up' },
-      treatment_adherence: { display_name: 'Treatment Adherence', description: 'Compliance with treatment plans and therapy protocols' },
-      safety_monitoring: { display_name: 'Safety Monitoring', description: 'Patient safety assessments and risk mitigation' },
-      safety_signals: { display_name: 'Safety Signals', description: 'Pain management, rapid response, and immediate safety concerns' },
-      outcome_risks: { display_name: 'Outcome Risks', description: 'Adverse outcomes, ischemic progression, and iatrogenic injury' },
-      readmission_risks: { display_name: 'Readmission Risks', description: 'Risk factors for unplanned hospital readmission' },
-      infection_risks: { display_name: 'Infection Risks', description: 'Device-related infections and procedural infection risks' },
-      rule_in: { display_name: 'Rule In', description: 'Evidence supporting metric inclusion' },
-      rule_out: { display_name: 'Rule Out', description: 'Exclusion criteria' },
-      overrides: { display_name: 'Overrides', description: 'Manual override signals' },
-    };
-
-    const groups: SignalGroupSkeleton[] = signalEmphasis.map((group_id) => {
-      const def = groupDefinitions[group_id];
-      if (!def) {
-        console.warn(`   ⚠️  Unknown signal group ID from emphasis: ${group_id}`);
+    return metricGroups.map(groupId => {
+        const signals = packet.signals[groupId] || [];
+        // Extract display name from first signal metadata if possible, or beautify ID
+        const displayName = groupId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        
         return {
-          group_id,
-          display_name: group_id.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-          description: `${group_id} analysis`,
-          signals: [],
+            group_id: groupId,
+            display_name: displayName,
+            description: `Signals for ${displayName}`, // Placeholder, Description should come from registry
+            signals: signals
         };
-      }
-      return {
-        group_id,
-        display_name: def.display_name,
-        description: def.description,
-        signals: [],
-      };
     });
-
-    if (forceFive && groups.length !== 5) {
-      // Pad if less than 5
-      const defaults = this.getDomainDefaultGroups(domain);
-      for (const def of defaults) {
-        if (groups.length >= 5) break;
-        if (!groups.find(g => g.group_id === def.group_id)) {
-          groups.push(def);
-        }
-      }
-      return groups.slice(0, 5);
-    }
-
-    return groups;
-  }
-
-  private getDomainDefaultGroups(domain: string): SignalGroupSkeleton[] {
-    if (domain === 'Orthopedics') {
-      return ORTHO_GROUP_DEFINITIONS.map((def) => ({
-        group_id: def.group_id,
-        display_name: def.display_name,
-        description: def.description,
-        signals: [],
-      }));
-    }
-    if (domain === 'Endocrinology') {
-      return ENDO_GROUP_DEFINITIONS.map((def) => ({
-        group_id: def.group_id,
-        display_name: def.display_name,
-        description: def.description,
-        signals: [],
-      }));
-    }
-    return [
-      { group_id: 'rule_in', display_name: 'Rule In', description: 'Evidence supporting metric inclusion', signals: [] },
-      { group_id: 'rule_out', display_name: 'Rule Out', description: 'Exclusion criteria', signals: [] },
-      { group_id: 'delay_drivers', display_name: 'Delay Drivers', description: 'Factors contributing to delays in care delivery', signals: [] },
-      { group_id: 'documentation_gaps', display_name: 'Documentation Gaps', description: 'Missing or incomplete clinical documentation', signals: [] },
-      { group_id: 'complication_tracking', display_name: 'Complication Tracking', description: 'Adverse events and complications', signals: [] },
-    ];
   }
 
   validate(output: StructuralSkeleton, domainCtx?: DomainContext): ValidationResult {
     const errors: string[] = [];
-    const warnings: string[] = [];
+    const signal_groups = output.clinical_config?.signals?.signal_groups || [];
 
-    if (!output.plan_metadata?.plan_id) errors.push('plan_metadata.plan_id is required');
-    if (!output.plan_metadata?.concern?.concern_id) errors.push('plan_metadata.concern.concern_id is required');
-    
-    const signal_groups = output.clinical_config?.signals?.signal_groups;
-    if (!signal_groups) {
-      errors.push('clinical_config.signals.signal_groups is required');
-      return { passed: false, errors, warnings };
-    }
-
-    // Dynamic Validation based on Metric Packet
-    const expectedGroups = domainCtx?.semantic_context?.packet?.metric?.signal_groups;
-    
-    if (expectedGroups && expectedGroups.length > 0) {
-       // Packet-based validation
-       const planGroupIds = signal_groups.map(g => g.group_id);
-       const missingGroups = expectedGroups.filter(gid => !planGroupIds.includes(gid));
-       
-       if (missingGroups.length > 0) {
-          warnings.push(`⚠️ S2: Missing expected signal groups: ${missingGroups.join(', ')}`);
-       }
-       
-       if (signal_groups.length < 3) {
-          errors.push(`S2 CRITICAL: Too few signal groups (${signal_groups.length}), expected around ${expectedGroups.length}`);
-       }
-    } else {
-       // Legacy Fallback: Allow 4-6 groups
-       if (signal_groups.length < 4 || signal_groups.length > 6) {
-         errors.push(`S2 CRITICAL: Expected 4-6 signal groups (Legacy), found ${signal_groups.length}`);
-       }
+    if (signal_groups.length === 0) {
+      errors.push('S2 CRITICAL: Semantic Packet contained 0 signal groups.');
     }
 
     return {
       passed: errors.length === 0,
       errors,
-      warnings,
+      warnings: [],
       metadata: {
-        plan_id: output.plan_metadata?.plan_id,
-        signal_group_count: signal_groups?.length || 0,
+        signal_group_count: signal_groups.length,
       },
     };
   }

@@ -118,5 +118,73 @@
     "metrics": {
       "signal_recall": 0.13095238095238096
     }
+  },
+  {
+    "version": 19,
+    "timestamp": "2026-01-07T04:07:55.240Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics. Task: Extract verbatim clinical signals for I32a from the provided text, ensuring comprehensive capture across all critical areas, with a strict focus on capturing the exact wording of each signal. \n\n***Critical Signal Capture:*** Directly prioritize capturing the following must-find signals exactly as written: 'antibiotic timing not documented', 'neurovascular exam not documented pre-op', 'neurovascular exam not documented post-op', 'surgical pause/timeout missing', 'readmitted with imaging revealing loss of reduction', 'possible surgical site infection', and all other critical signals outlined in the reference signals. Emphasize verbatim extraction of any indicators related to increased risk or structural errors, especially those related to 'loss of reduction' and 'surgical site infection.' It is crucial that the AI captures these exact phrases without paraphrasing or omission, directly supporting resolving the extraction count issues and ensuring diagnostic accuracy. \n\n***JSON Structure:*** The output must be strictly valid JSON structured as: { 'signals': ['verbatim snippet 1', 'verbatim snippet 2', ...] }. Adherence to this structure ensures seamless integration and precise clinical signal identification to support effective clinical decision-making.",
+    "analysis": "The TOP MISSES occurred primarily because the prompt did not explicitly emphasize capturing additional contextual indicators that could signal an underlying issue, particularly regarding structural errors with signal extraction counts falling below the minimum threshold. The original prompt was too broad and did not sufficiently prioritize certain signals, such as infection risks or readmission risks, where it only provided generic categories without explicitly demanding verbatim matching of text related to them. Additionally, it seems that the prompt did not highlight the importance of correlating missed signals with potential structural errors that could impact clinical outcomes, like loss of reduction or surgical site infection. The updated prompt addresses these issues by explicitly instructing the AI to capture verbatim mentions of critical signals tied to the structural errors and to strictly adhere to these descriptors in JSON format.",
+    "changes": "Specific focus: Capture misses like 'readmitted with imaging revealing loss of reduction' and 'possible surgical site infection.'",
+    "metrics": {}
+  },
+  {
+    "version": 21,
+    "timestamp": "2026-01-07T04:18:14.111Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics. Task: Extract verbatim clinical signals for I32a from the provided text, ensuring comprehensive capture across all critical areas. Focus explicitly on the following must-find signals: 'antibiotic timing not documented', 'neurovascular exam not documented pre-op', 'neurovascular exam not documented post-op', 'surgical pause/timeout missing', 'readmitted with imaging revealing loss of reduction', 'possible surgical site infection', and all other critical signals outlined in the reference signals. Emphasize a strict requirement to capture these signals exactly as written, with no paraphrasing or omission, especially any indicators related to increased risk or structural errors, particularly concerning 'loss of reduction' and 'surgical site infection.' Ensure the output is structured as valid JSON: { 'signals': ['verbatim snippet 1', 'verbatim snippet 2', ...] }. This structure is essential for smooth integration and accurate clinical signal identification to support informed clinical decision-making.",
+    "analysis": "The TOP MISSES occurred due to the existing prompt's lack of explicit emphasis on certain critical signals that were consistently missed during extraction. The original phrasing may not have adequately prioritized the exact wording of key indicators such as 'antibiotic timing not documented' and 'surgical pause/timeout missing,' which are vital for accurate signal extraction. By refining the instructions to explicitly instruct the AI to search for these specific phrases with a stricter requirement for verbatim capture, we can overcome these shortcomings and enhance the AI's performance.",
+    "changes": "Specific focus: Capture misses like 'antibiotic timing not documented' and 'surgical pause/timeout missing.'",
+    "metrics": {
+      "signal_recall": 0
+    }
+  },
+  {
+    "version": 22,
+    "timestamp": "2026-01-07T04:20:15.877Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics. Task: Extract verbatim clinical signals for I32a from the provided text, ensuring comprehensive capture across all critical areas. Pay particular attention to the following must-find signals: 'antibiotic timing not documented', 'neurovascular exam not documented pre-op', 'neurovascular exam not documented post-op', 'surgical pause/timeout missing', 'uncontrolled pain post-surgery', and 'gaps in pain management plan.' It is critical to capture these signals exactly as they are written, with no paraphrasing or omissions. This is essential for identifying indicators related to increased risk, particularly concerning 'pain management' and discharge gaps. Ensure the output is structured as valid JSON: { 'signals': ['verbatim snippet 1', 'verbatim snippet 2', ...] }. Adherence to this JSON structure is vital for smooth integration and accurate clinical signal identification for informed clinical decision-making.",
+    "analysis": "The TOP RECALL MISSES occurred because the original prompt did not reiterate enough the importance of capturing exact verbatim phrases critical to the clinical signals, particularly the nuances of pain management gaps and discharge instructions which could lead to severe complications. The prompt also lacked specificity in emphasizing the need to extract signals with targeted attention to 'pain management plan' and discharge protocols. I refined the prompt to explicitly demand the extraction of these specific phrases while ensuring a strict adherence to verbatim capture, underscoring the significance of 'surgical pause/timeout missing' and 'antibiotic timing not documented.'",
+    "changes": "Specific focus: Capture misses like 'uncontrolled pain post-surgery' and 'gaps in pain management plan.'",
+    "metrics": {
+      "signal_recall": 0
+    }
+  },
+  {
+    "version": 24,
+    "timestamp": "2026-01-07T04:26:20.974Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics. Task: Extract verbatim clinical signals for I32a from the provided text, ensuring comprehensive capture across all critical areas. Pay particular attention to the following must-find signals: 'admission to incision >18 hours', 'surgical pause/timeout missing', 'neurovascular exam not documented pre-op', 'neurovascular exam not documented post-op', and 'antibiotic timing not documented'. It is critical to capture these signals exactly as they are written, with no paraphrasing or omissions. Ensure that all phrases are extracted verbatim from the text, especially focusing on the exact language used to describe patient concerns and procedural details. Output must be structured as valid JSON: { 'signals': ['verbatim snippet 1', 'verbatim snippet 2', ...] }. The adherence to this JSON structure is vital for seamless integration and precise clinical signal identification which supports informed clinical decision-making.",
+    "analysis": "The TOP MISSES occurred primarily because the prompt lacked direct engagement with the specific clinical phrases found in the patient records. The previous prompt was broader in focus and did not adequately emphasize the need to extract exact phrases present in the text, which are critical to identifying compliance and risk indicators. By refining the prompt to explicitly instruct the AI to capture those specific signals verbatim, we increase the likelihood of accurate extraction of these essential clinical concepts.",
+    "changes": "Specific focus: Capture misses like 'antibiotic timing not documented' and 'neurovascular exam not documented pre-op'.",
+    "metrics": {
+      "signal_recall": 0
+    }
+  },
+  {
+    "version": 25,
+    "timestamp": "2026-01-07T04:28:21.937Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics. Task: Extract verbatim clinical signals for I32a from the provided text, ensuring comprehensive capture across all critical areas. Pay particular attention to the following must-find signals: 'admission to incision >18 hours', 'surgical pause/timeout missing', 'neurovascular exam not documented pre-op', 'neurovascular exam not documented post-op', 'antibiotic timing not documented', 'increasing redness and drainage from the surgical site', and 'loss of reduction of the spinal curve'. It is imperative to capture these signals exactly as they are written, with no paraphrasing or omissions. Ensure that all phrases are extracted verbatim from the text, especially those that describe patient concerns and procedural details. Output must be structured as valid JSON: { 'signals': ['verbatim snippet 1', 'verbatim snippet 2', ...] }. The adherence to this JSON structure is vital for seamless integration and precise clinical signal identification which supports informed clinical decision-making.",
+    "analysis": "The TOP RECALL MISSES occurred because the initial prompt did not emphasize the extraction of signals tied to patient readmission and infection risks with the requisite verbatim specificity. The prompt's prior focus was primarily on compliance and documentation gaps, which led to missed crucial signals. To rectify this, the refined prompt explicitly instructs the extraction of key clinical concepts from the provided text with a requirement for strict verbatim adherence, ensuring no essential information is overlooked.",
+    "changes": "Specific focus: Capture misses like 'increasing redness and drainage from the surgical site' and 'loss of reduction of the spinal curve'.",
+    "metrics": {
+      "signal_recall": 0
+    }
+  },
+  {
+    "version": 27,
+    "timestamp": "2026-01-07T04:35:52.998Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics. Task: Extract verbatim clinical signals for I32a from the provided text, ensuring comprehensive capture across all critical areas. Pay particular attention to the following must-find signals: 'uncontrolled pain post-surgery', 'gaps in the pain management plan', 'admission to incision >18 hours', 'surgical pause/timeout missing', 'neurovascular exam not documented pre-op', 'neurovascular exam not documented post-op', 'antibiotic timing not documented', 'increasing redness and drainage from the surgical site', and 'loss of reduction of the spinal curve'. It is imperative to capture these signals exactly as they are written, with no paraphrasing or omissions. Ensure that all phrases are extracted verbatim from the text, especially those that describe patient concerns and procedural details. Output must be structured as valid JSON: { 'signals': ['verbatim snippet 1', 'verbatim snippet 2', ...] }. The adherence to this JSON structure is vital for seamless integration and precise clinical signal identification that supports informed clinical decision-making.",
+    "analysis": "The TOP RECALL MISSES occurred because the previous prompt was not explicitly focused on capturing specific clinical concepts that were crucial for signal extraction. Signals such as 'uncontrolled pain post-surgery' and 'not receiving pain management before discharge' were present in the patient records but were not identified due to a lack of specificity in the instructions. The prompt has been revised to emphasize the exact phrases to be extracted word-for-word, ensuring a clear focus on critical clinical details.",
+    "changes": "Specific focus: Capture misses like 'uncontrolled pain post-surgery' and 'gaps in the pain management plan'.",
+    "metrics": {
+      "signal_recall": 0.155
+    }
+  },
+  {
+    "version": 28,
+    "timestamp": "2026-01-07T04:37:56.576Z",
+    "prompt_text": "Role: Pediatric Clinical Signal Extractor for Orthopedics. Task: Extract verbatim clinical signals for I32a from the provided text, ensuring comprehensive capture across all critical areas. Pay particular attention to the following must-find signals: 'uncontrolled pain post-surgery', 'gaps in the pain management plan', 'admission to incision >18 hours', 'surgical pause/timeout missing', 'neurovascular exam not documented pre-op', 'neurovascular exam not documented post-op', 'antibiotic timing not documented', 'increasing redness and drainage from the surgical site', 'loss of reduction of the spinal curve', 'clear discharge instructions missing', and 'bowel regimen instructions unclear'. It is imperative to capture these signals exactly as they are written, with no paraphrasing or omissions. Ensure that all phrases are extracted verbatim from the text, especially those that describe patient concerns and procedural details. Output must be structured as valid JSON: { 'signals': ['verbatim snippet 1', 'verbatim snippet 2', ...] }. The adherence to this JSON structure is vital for seamless integration and precise clinical signal identification that supports informed clinical decision-making.",
+    "analysis": "The TOP MISSES occurred due to an unclear focus on extracting certain specific clinical signals from the text, particularly those that are critical for identifying gaps and risks post-surgery. The original prompt may have been too general and did not emphasize the necessity for capturing the precise terminology used within the clinical notes. By explicitly listing the must-find signals and reiterating the importance of verbatim text, I ensure that the AI prioritizes these signals in its extraction process.",
+    "changes": "Specific focus: Capture misses like 'discharge instructions unclear' and 'bowel regimen instructions unclear'.",
+    "metrics": {
+      "signal_recall": 0.1575
+    }
   }
 ]

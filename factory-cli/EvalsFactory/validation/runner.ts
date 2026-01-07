@@ -53,7 +53,16 @@ export class BatchRunner {
 
   async run(systemPrompt?: string): Promise<AggregateReport> {
     // 1. Load Plan (Verification only)
-    if (!fs.existsSync(this.planPath)) throw new Error(`Plan not found: ${this.planPath}`);
+    if (!fs.existsSync(this.planPath)) {
+        // FALLBACK: Try lean_plan.json
+        const leanPath = this.planPath.replace('plan.json', 'lean_plan.json');
+        if (fs.existsSync(leanPath)) {
+            console.log(`   ℹ️  BatchRunner: plan.json not found, using ${leanPath}`);
+            this.planPath = leanPath;
+        } else {
+            throw new Error(`Plan not found: ${this.planPath}`);
+        }
+    }
 
     // 2. Load Batch Files
     // Match {concernId}_batch_*.json OR batch_1.json OR golden_set.json

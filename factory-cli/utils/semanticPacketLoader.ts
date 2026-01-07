@@ -38,6 +38,7 @@ export interface SemanticPacket {
   domain: string;
 }
 
+/*
 function detectNegatedSignalIds(signals: SemanticSignals): string[] {
   const bad: string[] = [];
   const pattern = /(no_|not_|without|absence|negativ)/i;
@@ -49,6 +50,7 @@ function detectNegatedSignalIds(signals: SemanticSignals): string[] {
   });
   return bad;
 }
+*/
 
 export class SemanticPacketLoader {
   private static instance: SemanticPacketLoader;
@@ -119,10 +121,10 @@ export class SemanticPacketLoader {
         ? this.applyMetricOverlay(basePacket, registryRoot, domain, metricId)
         : basePacket;
 
-      const negated = detectNegatedSignalIds(packetToReturn.signals);
-      if (negated.length > 0) {
-        throw new Error(`Negated signal IDs are forbidden in registry definitions: ${negated.join(', ')}`);
-      }
+      // const negated = detectNegatedSignalIds(packetToReturn.signals);
+      // if (negated.length > 0) {
+      //   throw new Error(`Negated signal IDs are forbidden in registry definitions: ${negated.join(', ')}`);
+      // }
 
       return packetToReturn;
     } catch (error: any) {

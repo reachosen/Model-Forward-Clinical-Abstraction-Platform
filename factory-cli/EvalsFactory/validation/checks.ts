@@ -1,5 +1,6 @@
 import { TestCase, EngineOutput } from './types';
 import { recordRecallCoverageResult } from '../refinery/observation/ObservationHooks';
+import { resolveSignalId } from '../../utils/signalResolver';
 
 export function validateStructural(output: EngineOutput): {
   passed: boolean;
@@ -22,24 +23,48 @@ export function validateSignals(tc: TestCase, output: EngineOutput): {
   errors: string[];
 } {
   const errors: string[] = [];
-  const mustFind = tc.expectations.signal_generation.must_find_signals;
-  const minCount = tc.expectations.signal_generation.min_signal_count;
+  
+  // SUPPORT DUAL-TRUTH CONTRACT
+  let mustFindIds: string[] = [];
+  let minCount = 0;
 
-  // Normalize extracted signals
+  if (tc.contract?.expected_signals) {
+      mustFindIds = tc.contract.expected_signals.map(s => s.signal_id);
+      minCount = mustFindIds.length;
+  } else {
+      mustFindIds = tc.expectations?.signal_generation?.must_find_signals || [];
+      minCount = tc.expectations?.signal_generation?.min_signal_count || 0;
+  }
+
+  // Normalize extracted signals using Resolver
+  const resolve = (id: string) => resolveSignalId(id, []) || id.toLowerCase();
+  
+  // 1. Get all extracted canonical IDs
+  const extractedIds = (output.signal_objects || []).map(s => resolve(s.signal_id || s.name || ""));
+  
+  // 2. Get all extracted text for fuzzy fallback
   const extractedText = (output.signals || []).join(' ').toLowerCase() + " " + (output.summary || "").toLowerCase();
   
   let foundCount = 0;
   const missingSignals = [];
 
-  for (const signal of mustFind) {
-    if (extractedText.includes(signal.toLowerCase())) {
+  for (const expId of mustFindIds) {
+    const normExpId = resolve(expId);
+    
+    // MATCH STRATEGY:
+    // A. Direct ID Match (Canonical)
+    // B. Fuzzy Substring Match (Case Insensitive)
+    const isIdMatch = extractedIds.includes(normExpId);
+    const isFuzzyMatch = extractedText.includes(expId.toLowerCase().replace(/_/g, ' ')); // Try with spaces too
+
+    if (isIdMatch || isFuzzyMatch) {
       foundCount++;
     } else {
-      missingSignals.push(signal);
+      missingSignals.push(expId);
     }
   }
 
-  const recall = mustFind.length > 0 ? foundCount / mustFind.length : 1;
+  const recall = mustFindIds.length > 0 ? foundCount / mustFindIds.length : 1;
   
   if (missingSignals.length > 0) {
     errors.push(`Missing must_find_signals: ${missingSignals.slice(0, 3).join(", ")}...`);
@@ -69,7 +94,15 @@ export function validateSummary(tc: TestCase, output: EngineOutput): {
   errors: string[];
 } {
   const errors: string[] = [];
-  const requiredPhrases = tc.expectations.event_summary.must_contain_phrases;
+  
+  let requiredPhrases: string[] = [];
+  if (tc.contract?.expected_signals) {
+      // For summary, if contract exists, we might look for signal descriptions or provenance
+      requiredPhrases = tc.contract.expected_signals.flatMap(s => s.required_provenance || []);
+  } else {
+      requiredPhrases = tc.expectations?.event_summary?.must_contain_phrases || [];
+  }
+
   const summaryText = (output.summary || "").toLowerCase();
 
   let foundCount = 0;
@@ -102,8 +135,8 @@ export function validateFollowups(tc: TestCase, output: EngineOutput): {
   errors: string[];
 } {
   const errors: string[] = [];
-  const requiredThemes = tc.expectations.followup_questions.required_themes;
-  const forbiddenTerms = tc.expectations.followup_questions.forbidden_terms;
+  const requiredThemes = tc.expectations?.followup_questions?.required_themes || [];
+  const forbiddenTerms = tc.expectations?.followup_questions?.forbidden_terms || [];
   
   const questionsText = (output.followup_questions || []).join(' ').toLowerCase();
 

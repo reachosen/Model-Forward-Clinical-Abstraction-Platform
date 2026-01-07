@@ -14,6 +14,7 @@ export class InputAdapter {
   static adapt(testCase: TestCase): PlanningInput {
     return {
       planning_input_id: testCase.test_id,
+      concern_id: testCase.concern_id, // Explicitly populate for S0
       concern: testCase.concern_id,
       // Default to surveillance intent for eval cases
       intent: 'surveillance',

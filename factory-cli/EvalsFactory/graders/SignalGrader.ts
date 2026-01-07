@@ -1,5 +1,6 @@
 import { BaseGrader, GradeResult } from './BaseGrader';
 import { TestCase, EngineOutput } from '../validation/types';
+import { resolveSignalId } from '../../utils/signalResolver';
 
 /**
  * E6: SignalGrader
@@ -39,17 +40,18 @@ export class SignalGrader extends BaseGrader {
     let crPassCount = 0;
     let ahPassCount = 0;
 
-    const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+    // Use registry-aware resolver instead of simple regex normalize
+    const resolve = (id: string) => resolveSignalId(id, []) || id.toLowerCase();
 
     for (const exp of expected) {
-      const normExpId = normalize(exp.signal_id);
+      const normExpId = resolve(exp.signal_id);
       const expPolarity = exp.polarity || 'AFFIRM';
 
       // 1. CR: Concept Match (ID + Polarity)
-      const match = actual.find(act => 
-        normalize(act.signal_id || act.name || "") === normExpId &&
-        (act.polarity || 'AFFIRM').toUpperCase() === expPolarity
-      );
+      const match = actual.find(act => {
+        const normActId = resolve(act.signal_id || act.name || "");
+        return normActId === normExpId && (act.polarity || 'AFFIRM').toUpperCase() === expPolarity;
+      });
 
       if (match) {
         crPassCount++;
