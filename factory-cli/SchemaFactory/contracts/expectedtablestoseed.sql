@@ -61,9 +61,25 @@ CREATE TABLE IF NOT EXISTS TASK_PROMPT_CONFIG (
   APP_ID STRING,
   TASK_ID STRING,
   PROMPT_VERSION STRING,        -- Version of the Prompt Text
-  STATUS STRING,
-  PAYLOAD VARIANT,              -- JSON Wrapper containing 'content' (Markdown)
+  STATUS STRING,                -- CERTIFIED | ACTIVE | DEPRECATED
+  PAYLOAD VARIANT,              -- { content_md, format, hash, source_ref }
   CREATED_AT TIMESTAMP_NTZ,
   CREATED_BY STRING,
   UPDATED_AT TIMESTAMP_NTZ
+);
+
+-- 6. METRIC_ARCHETYPE_BINDING
+-- Maps metrics to archetypes (primary/secondary roles).
+CREATE TABLE IF NOT EXISTS METRIC_ARCHETYPE_BINDING (
+  APP_ID STRING,
+  METRIC_ID STRING,
+  ARCHETYPE_ID STRING,
+  ROLE STRING,                  -- primary | secondary
+  VERSION STRING,
+  STATUS STRING,                -- ACTIVE | DEPRECATED
+  PAYLOAD VARIANT,              -- { source, plan_ref } (optional)
+  CREATED_AT TIMESTAMP_NTZ,
+  CREATED_BY STRING,
+  UPDATED_AT TIMESTAMP_NTZ,
+  UPDATED_BY STRING
 );

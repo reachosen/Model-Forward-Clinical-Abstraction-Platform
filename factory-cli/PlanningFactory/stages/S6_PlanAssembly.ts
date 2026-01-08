@@ -19,6 +19,7 @@ export class S6_PlanAssemblyStage {
   ): Promise<any> {
     const { domain } = domainContext;
     console.log(`\n[S6] Plan Assembly & Global Validation (Lean Mode)`);
+    const handoffVersion = '1.0';
 
     // 1. Build Metric Context
     const metricContext = this.buildMetricContext(domainContext);
@@ -31,18 +32,20 @@ export class S6_PlanAssemblyStage {
       handoff_metadata: {
         metric_id: skeleton.plan_metadata.concern.concern_id,
         domain: domain,
-        version: '1.0',
+        version: handoffVersion,
         type: 'schema_seeding_package',
         generated_at: new Date().toISOString()
       },
       schema_definitions: {
         metric_info: {
           name: metricContext.metric_name,
+          version: handoffVersion,
           clinical_focus: metricContext.clinical_focus,
           rationale: metricContext.rationale,
           risk_factors: metricContext.risk_factors,
           review_questions: metricContext.review_questions
         },
+        metric_archetype_bindings: this.buildMetricArchetypeBindings(domainContext),
         signal_catalog: this.transformSignalsForCatalog(skeleton.clinical_config.signals.signal_groups)
       },
       execution_registry: {
@@ -59,12 +62,44 @@ export class S6_PlanAssemblyStage {
     groups.forEach(g => {
         catalog[g.group_id] = (g.signals || []).map((s: any) => ({
             id: s.id,
+            canonical_key: s.canonical_key || this.buildCanonicalKey(g.group_id, s),
             evidence_type: s.evidence_type || 'L2',
             description: s.description,
             archetypes: s.tags || []
         }));
     });
     return catalog;
+  }
+
+  private buildMetricArchetypeBindings(domainContext: DomainContext): Array<{ archetype_id: string; role: string }> {
+    const packetArchetypes = domainContext.semantic_context?.packet?.metric?.archetypes || [];
+    const unique = Array.from(new Set(packetArchetypes));
+
+    if (unique.length === 0) {
+      throw new Error('[S6] metric_archetype_bindings missing or empty (semantic packet has no archetypes)');
+    }
+
+    if (unique.length === 1) {
+      return [{ archetype_id: unique[0], role: 'primary' }];
+    }
+
+    if (!unique.includes(domainContext.primary_archetype)) {
+      throw new Error('[S6] primary_archetype not present in metric archetypes');
+    }
+
+    return unique.map((archetype_id: string) => ({
+      archetype_id,
+      role: archetype_id === domainContext.primary_archetype ? 'primary' : 'secondary'
+    }));
+  }
+
+  private buildCanonicalKey(groupId: string, signal: any): string {
+    const desc = signal?.description || signal?.name || signal?.signal_id || signal?.id || '';
+    return `${groupId}|${desc}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .replace(/_+/g, '_');
   }
 
   private buildTaskSequence(promptPlan: PromptPlan | undefined): any[] {

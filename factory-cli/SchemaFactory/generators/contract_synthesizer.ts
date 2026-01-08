@@ -2,6 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getSignalEnrichmentVariables } from '../../shared/context_builders/signalEnrichment';
 import { getExclusionCheckVariables } from '../../shared/context_builders/exclusionCheck';
+import { getEventSummaryVariables } from '../../shared/context_builders/eventSummary';
+import { getFollowupQuestionsVariables } from '../../shared/context_builders/followupQuestions';
+import { getClinicalReviewPlanVariables } from '../../shared/context_builders/clinicalReviewPlan';
+import { getClinicalReviewHelperVariables } from '../../shared/context_builders/clinicalReviewHelper';
 
 /**
  * ContractSynthesizer
@@ -46,6 +50,9 @@ export class ContractSynthesizer {
     for (const [key, value] of Object.entries(variables)) {
       template = template.split(`{{${key}}}`).join(value);
     }
+
+    // Clean up simple handlebars conditionals used in templates.
+    template = template.replace(/{{#if\s+[^}]+}}/g, '').replace(/{{\/if}}/g, '');
 
     return template;
   }
@@ -124,6 +131,14 @@ export class ContractSynthesizer {
         return getSignalEnrichmentVariables(context);
       case 'exclusion_check':
         return getExclusionCheckVariables(context);
+      case 'event_summary':
+        return getEventSummaryVariables(context);
+      case 'followup_questions':
+        return getFollowupQuestionsVariables(context);
+      case 'clinical_review_plan':
+        return getClinicalReviewPlanVariables(context);
+      case 'clinical_review_helper':
+        return getClinicalReviewHelperVariables(context);
       default:
         return {};
     }

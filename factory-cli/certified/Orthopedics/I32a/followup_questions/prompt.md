@@ -1,12 +1,12 @@
 # Follow-up Questions Task
 
 Your job is to generate 5–10 short, case-specific follow-up questions
-to help a clinician quickly review THIS specific case for: {{metricName}}.
+to help a clinician quickly review THIS specific case for: Idiopathic scoliosis – 30-day unplanned admission and return to OR.
 
 **SIGNAL-DRIVEN APPROACH (V2):**
-{{signalGapsGuidance}}
+No signals were extracted - focus on gathering basic clinical information.
 
-{{extractedSignals}}
+
 
 **STRICT RULES:**
 - Questions must address GAPS or AMBIGUITIES in the signals above.
@@ -25,11 +25,15 @@ to help a clinician quickly review THIS specific case for: {{metricName}}.
   - conflicting entries in the chart.
 
 **QUESTION THEMES TO CONSIDER:**
-Anchor questions on these signal groups: {{signalGroupList}}
+Anchor questions on these signal groups: infection_risks, bundle_compliance, outcome_risks, readmission_risks
 
-{{#if reviewQuestionHints}}
-{{reviewQuestionHints}}
-{{/if}}
+
+**METRIC-SPECIFIC HINTS:**
+- Consider asking about: Was the full SSI prevention bundle documented for AIS fusion?
+- Consider asking about: Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?
+- Consider asking about: Was this return to OR documented as planned vs unplanned?
+- Consider asking about: Were discharge instructions and follow-up appointments clearly documented?
+
 
 **BAD VS GOOD EXAMPLES:**
 
@@ -49,7 +53,7 @@ GOOD EXAMPLE (this is the style you MUST follow):
 Why good:
 - Tied to specific timing / indication that should be in the chart.
 - Focused on missing or unclear documentation for THIS case.
-- Clearly relevant to {{metricName}}.
+- Clearly relevant to Idiopathic scoliosis – 30-day unplanned admission and return to OR.
 
 **REQUIRED JSON SCHEMA:**
 ```json

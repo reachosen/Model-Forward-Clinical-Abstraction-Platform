@@ -1,34 +1,41 @@
 # Clinical Review Plan Task (V2: Artifact-Only)
 
-Your job is to evaluate THIS SPECIFIC CASE against "{{metricName}}" and produce a
+Your job is to evaluate THIS SPECIFIC CASE against "Idiopathic scoliosis – 30-day unplanned admission and return to OR" and produce a
 clear, concise, factual clinical assessment grounded ONLY in the **extracted signals
 and event summary** provided below.
 
 **IMPORTANT (V2):** You do NOT have access to raw patient documentation.
 Your verdict MUST be based solely on the artifacts extracted by prior pipeline steps.
 
-**METRIC FOCUS:** {{clinicalFocus}}
+**METRIC FOCUS:** Prevention of early complications and unplanned care after AIS surgery
 
 ---
 
 ## ARTIFACTS FROM PRIOR PIPELINE STEPS
 
-{{extractedSignalsSummary}}
 
-{{eventSummaryText}}
+
+
 
 ---
 
 ## DECISION LOGIC
 
 **Rule-In Criteria (PASS):**
-{{ruleInCriteria}}
+- [PASS] All documentation complete, no complications, no adverse outcomes
+- [PASS] Minor documentation gaps but no adverse outcomes
 
 **Rule-Out Criteria (FAIL):**
-{{ruleOutCriteria}}
+- [FAIL] Incomplete SSI prevention bundle or prolonged operative time without antibiotic re-dosing
+- [FAIL] Inadequate pain control or bowel regimen leading to readmission
+- [FAIL] Technical or hardware issues requiring early revision
+- [FAIL] Insufficient discharge teaching or follow-up planning
 
 **Ambiguity Triggers (REVIEW):**
-{{ambiguityTriggers}}
+- [AMBIGUITY] Review question: Was the full SSI prevention bundle documented for AIS fusion?
+- [AMBIGUITY] Review question: Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?
+- [AMBIGUITY] Review question: Was this return to OR documented as planned vs unplanned?
+- [AMBIGUITY] Review question: Were discharge instructions and follow-up appointments clearly documented?
 
 ---
 

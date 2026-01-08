@@ -2,10 +2,10 @@
 
 **TASK:**
 Analyze the encounter context below and extract clinical signals relevant to:
-1. Key clinical events
-
-**DUET PERSONA:**
-You are acting as a Preventability_Detective for Orthopedics reviews.
+1. Look for evidence related to: Incomplete SSI prevention bundle or prolonged operative time without antibiotic re-dosing
+2. Look for evidence related to: Inadequate pain control or bowel regimen leading to readmission
+3. Look for evidence related to: Technical or hardware issues requiring early revision
+4. Look for evidence related to: Insufficient discharge teaching or follow-up planning
 
 **AMBIGUITY HANDLING:**
 If you encounter conflicting data (e.g., Physician Note says "Infection", Nursing Note says "No Infection"):
@@ -17,14 +17,40 @@ If you encounter conflicting data (e.g., Physician Note says "Infection", Nursin
 Use ONLY the patient_payload as your factual source.
 
 **TARGET SIGNAL GROUPS (use definitions from metric_context.signal_group_definitions):**
-- delay_drivers:
-  - 
+- infection_risks:
+  - [wound_drainage_erythema] Presence of wound drainage or erythema is a critical indicator of potential surgical site infection (SSI) and should be monitored closely.
+  - [surgical_site_infection] SSIs are a critical outcome measure for surgical quality and must be tracked for preventability analysis.
+  - [pre_op_warming_documented] Pre-operative warming is a key measure to prevent hypothermia and associated complications, as recommended by surgical guidelines.
+  - [antibiotic_prophylaxis_timing] Timely administration of antibiotic prophylaxis is crucial for SSI prevention, aligning with NHSN and surgical best practices.
+  - [unplanned_admission] Unplanned admissions can indicate complications or preventability issues, important for quality assessment.
+  - [discharge_instructions_clarity] Clear discharge instructions are essential for patient safety and reducing readmissions, as per quality care standards.
+  - [absence_of_perfusion_checks] Regular perfusion checks are essential for monitoring limb viability post-surgery.
+  - [loss_of_reduction_requiring_reoperation] Loss of reduction is a significant complication that may necessitate re-operation, impacting patient outcomes.
+  - [neurovascular_exam_pre_op_post_op] Complete neurovascular exams pre- and post-operation are crucial for detecting complications early.
+  - [inappropriate_antibiotic_selection] Selecting the correct antibiotic is vital for effective infection prevention and treatment.
+  - [pre_op_warming_not_documented] Pre-operative warming is a key factor in preventing surgical site infections (SSI) and should be documented as per best practices.
+  - [pain_management_plan_documentation] Documenting pain management plans is critical for patient comfort and recovery, and is a standard care practice.
+  - [neurovascular_exam_post_op] Post-operative neurovascular exams are critical for detecting complications early, especially in orthopedic surgeries.
+  - [increased_back_pain] Increased back pain post-surgery can indicate complications such as infection or hardware issues, which are crucial for assessing preventability.
+  - [redness_and_drainage] Redness and drainage are signs of infection or poor wound healing, important for evaluating post-operative complications.
+- bundle_compliance:
+  - [pre_op_warming_not_documented] Pre-operative warming is a key preventive measure against SSIs and its documentation is essential for quality assurance.
+  - [surgical_pause_documented] Documenting the surgical pause is crucial for ensuring all safety checks are completed before surgery, reducing preventable errors.
+  - [discharge_instructions_unclear] Clear discharge instructions are essential for patient recovery and preventing readmissions or complications.
+  - [antibiotic_prophylaxis_timing] Timely administration of antibiotic prophylaxis is crucial for preventing SSIs, aligning with best practice guidelines.
 - outcome_risks:
-  - 
-- safety_signals:
-  - 
-- documentation_gaps:
-  - 
+  - [unplanned_admission] Unplanned admissions post-surgery can indicate complications or preventable issues that need to be addressed.
+  - [surgical_site_infection] Identifying SSIs is crucial for assessing surgical outcomes and preventability.
+  - [gi_complication] Alias for GI complication ileus/obstruction.
+- readmission_risks:
+  - [uncontrolled_pain] Uncontrolled pain
+  - [surgical_site_infection] Surgical site infection
+  - [gi_complication_ileusobstruction] GI complication (ileus/obstruction)
+  - [hardware_complication] Hardware complication
+  - [pneumoniarespiratory_distress] Pneumonia/respiratory distress
+  - [utiurinary_retention] UTI/urinary retention
+  - [nutritional_failure] Nutritional failure
+  - [socialcaregiver_concern] Social/caregiver concern
 
 **REQUIRED JSON SCHEMA:**
 ```json
@@ -36,7 +62,7 @@ Use ONLY the patient_payload as your factual source.
       "items": {
         "type": "object",
         "properties": {
-          "group_id": { "type": "string", "description": "One of: delay_drivers, outcome_risks, safety_signals, documentation_gaps" },
+          "group_id": { "type": "string", "description": "One of: infection_risks, bundle_compliance, outcome_risks, readmission_risks" },
           "signals": {
             "type": "array",
             "items": {
@@ -67,17 +93,20 @@ Use ONLY the patient_payload as your factual source.
   - *Negative Example:* Do NOT write "fever of 102" if text says "T 102.1". 
   - *Negative Example:* Do NOT write "Patient has drainage" if text says "Incision leaking serous fluid".
 - Every signal MUST have provenance: a verbatim text snippet from patient_payload.
-- All extracted signals MUST be directly relevant to evaluating the specified clinical metric.
+- All extracted signals MUST be directly relevant to evaluating Idiopathic scoliosis – 30-day unplanned admission and return to OR.
 - Signal cap per group: OFF (return every relevant signal); if none exist, return an explicit empty array for that group.
 
 **EXTRACTION GUIDANCE:**
-- Extract signals
+- Extract signals that help answer: "Was the full SSI prevention bundle documented for AIS fusion?"
+- Extract signals that help answer: "Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?"
+- Extract signals that help answer: "Was this return to OR documented as planned vs unplanned?"
+- Extract signals that help answer: "Were discharge instructions and follow-up appointments clearly documented?"
 
 **SIGNAL TYPE PRIORITIES:**
 
 ### CRITICAL: TAGGING RULE (For UI Filtering)
 - You MUST populate the "tags" array for EVERY signal you extract.
-- The tags MUST be chosen from this exact list: "Preventability_Detective".
+- The tags MUST be chosen from this exact list: "Preventability_Detective", "Outcome_Tracker".
 - If a signal is relevant to Process & Timing, tag it "Process_Auditor".
 - If a signal is relevant to Delay Analysis, tag it "Delay_Driver_Profiler".
 - If a signal serves both, include BOTH tags in the array: ["Process_Auditor", "Delay_Driver_Profiler"].
@@ -120,13 +149,13 @@ DOCUMENTATION GAPS (All archetypes):
 **QUALITY EXPECTATIONS:**
 - Prefer fewer high-yield signals over many low-value ones.
 - Keep descriptions short and clinical.
-- Ensure every signal helps evaluate the specified clinical metric.
+- Ensure every signal helps evaluate Idiopathic scoliosis – 30-day unplanned admission and return to OR.
 
 **REMINDER (METRIC ANCHOR):**
 All extracted signals MUST help determine whether THIS case meets:
 
-"the specified clinical metric"
+"Idiopathic scoliosis – 30-day unplanned admission and return to OR"
 
-Clinical Focus: clinical quality and safety
+Clinical Focus: Prevention of early complications and unplanned care after AIS surgery
 
 Do NOT extract unrelated findings.

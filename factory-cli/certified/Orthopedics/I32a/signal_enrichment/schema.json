@@ -8,7 +8,7 @@
         "properties": {
           "group_id": {
             "type": "string",
-            "description": "One of: delay_drivers, outcome_risks, safety_signals, documentation_gaps"
+            "description": "One of: infection_risks, bundle_compliance, outcome_risks, readmission_risks"
           },
           "signals": {
             "type": "array",

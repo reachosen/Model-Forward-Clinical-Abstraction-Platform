@@ -37,7 +37,36 @@ program
       console.log(`   Reconstructing Domain Context...`);
       const s0 = new S0_InputNormalizationStage();
       
-      const inputSnapshot = plan.plan_metadata?.planning_input_snapshot || plan.planning_input;
+      let inputSnapshot = plan.plan_metadata?.planning_input_snapshot || plan.planning_input;
+      const isLeanPlan = !!plan.handoff_metadata && !!plan.execution_registry?.task_sequence;
+      if (!inputSnapshot && isLeanPlan) {
+          const metricId = plan.handoff_metadata.metric_id;
+          const domain = plan.handoff_metadata.domain;
+          const now = Date.now();
+          inputSnapshot = {
+            planning_input_id: `input_${now}`,
+            planning_id: `input_${now}`,
+            concern_id: metricId,
+            concern: metricId,
+            domain,
+            intent: 'surveillance',
+            target_population: domain,
+            specific_requirements: [],
+            archetype: 'USNWR',
+            data_profile: {
+              sources: [{
+                source_id: 'EHR',
+                type: 'EHR',
+                available_data: ['demographics', 'vitals', 'labs', 'medications', 'procedures']
+              }]
+            },
+            clinical_context: {
+              objective: `Generate ${metricId} clinical abstraction configuration`,
+              population: domain,
+              patient_payload: 'DUMMY PAYLOAD FOR GENERATION MODE - SKIPPING EXECUTION'
+            }
+          };
+      }
       if (!inputSnapshot) {
           throw new Error("Plan is missing 'planning_input_snapshot'. Cannot re-hydrate context.");
       }
@@ -55,7 +84,16 @@ program
       // 3. Identify Tasks to Certify
       // We look at the tasks configured in the plan
       const taskPrompts = plan.clinical_config?.prompts?.task_prompts || {};
-      const taskIds = Object.keys(taskPrompts);
+      const taskSequence = plan.execution_registry?.task_sequence || [];
+      const taskIds = taskSequence.length > 0
+        ? taskSequence
+            .slice()
+            .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
+            .map((t: any) => t.task_id)
+        : Object.keys(taskPrompts);
+      if (!taskIds.includes('clinical_review_helper')) {
+        taskIds.push('clinical_review_helper');
+      }
       console.log(`   Tasks identified for certification: ${taskIds.join(', ')}`);
 
       // 4. Generate Artifacts
@@ -78,7 +116,7 @@ program
         'task_20_80_display_fields': '20_80_display_fields'
       };
 
-      for (const rawTaskType of Array.from(taskIds)) {
+      for (const rawTaskType of (Array.from(taskIds) as string[])) {
         const taskType = taskMap[rawTaskType] || rawTaskType;
         console.log(`
    Processing Task: ${taskType} (from ${rawTaskType})`);

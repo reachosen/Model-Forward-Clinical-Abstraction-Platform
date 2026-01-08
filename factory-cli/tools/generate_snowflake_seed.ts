@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { createHash } from 'crypto';
 import { ContractSynthesizer } from '../SchemaFactory/generators/contract_synthesizer';
 import { SemanticPacketLoader } from '../utils/semanticPacketLoader';
 
@@ -15,6 +16,15 @@ const DOMAIN_ID_MAPPING: Record<string, string> = {
 };
 
 const USER_ID = 'SYSTEM_SEEDER';
+const ALLOWED_ARCHETYPES = new Set([
+  'Process_Auditor',
+  'Preventability_Detective',
+  'Preventability_Detective_Metric',
+  'Exclusion_Hunter',
+  'Data_Scavenger',
+  'Delay_Driver_Profiler',
+  'Outcome_Tracker'
+]);
 
 interface LeanPlan {
   handoff_metadata: {
@@ -24,8 +34,14 @@ interface LeanPlan {
   };
   schema_definitions: {
     metric_info: any;
+    metric_archetype_bindings?: Array<{
+      archetype_id: string;
+      role: string;
+    }>;
     signal_catalog: Record<string, Array<{ 
-      id: string;
+      id?: string;
+      signal_id?: string;
+      canonical_key?: string;
       description: string;
       evidence_type: string;
       archetypes: string[];
@@ -53,6 +69,10 @@ function generateSql() {
 
   const plan: LeanPlan = JSON.parse(fs.readFileSync(planPath, 'utf-8'));
   const metadata = plan.handoff_metadata;
+  const metricVersion = plan.schema_definitions.metric_info?.version || metadata.version || '1.0';
+  const planRef = path
+    .relative(path.join(__dirname, '..'), planPath)
+    .replace(/\\/g, '/');
 
   // Resolve App Context
   const appId = APP_MAPPING[metadata.domain];
@@ -127,20 +147,64 @@ function generateSql() {
   sqlLines.push('');
 
   // ---------------------------------------------------------
-  // 3. SIGNAL_CONFIG
+  // 3. METRIC_ARCHETYPE_BINDING
   // ---------------------------------------------------------
-  sqlLines.push(`-- 3. Upsert Signal Config (Canonical)`);
+  const bindings = plan.schema_definitions.metric_archetype_bindings || [];
+  if (bindings.length === 0) {
+    console.error('❌ metric_archetype_bindings missing or empty in lean_plan.json');
+    process.exit(1);
+  }
+
+  const primaryCount = bindings.filter(b => b.role === 'primary').length;
+  if (primaryCount !== 1) {
+    console.error(`❌ metric_archetype_bindings must contain exactly 1 primary role (found ${primaryCount})`);
+    process.exit(1);
+  }
+
+  const seen = new Set<string>();
+  for (const b of bindings) {
+    if (seen.has(b.archetype_id)) {
+      console.error(`❌ duplicate archetype_id in metric_archetype_bindings: ${b.archetype_id}`);
+      process.exit(1);
+    }
+    seen.add(b.archetype_id);
+    if (!ALLOWED_ARCHETYPES.has(b.archetype_id)) {
+      console.error(`❌ unknown archetype_id in metric_archetype_bindings: ${b.archetype_id}`);
+      process.exit(1);
+    }
+  }
+
+  if (bindings.length) {
+    sqlLines.push(`-- 3. Upsert Metric Archetype Bindings`);
+    const bindingPayload = JSON.stringify({ source: 'PlanningFactory', plan_ref: planRef }).replace(/'/g, "''");
+    bindings.forEach(binding => {
+      sqlLines.push(`MERGE INTO METRIC_ARCHETYPE_BINDING AS target`);
+      sqlLines.push(`USING (SELECT '${appId}' as APP_ID, '${metadata.metric_id}' as METRIC_ID, '${binding.archetype_id}' as ARCHETYPE_ID, '${metricVersion}' as VERSION) AS source`);
+      sqlLines.push(`ON target.APP_ID = source.APP_ID AND target.METRIC_ID = source.METRIC_ID AND target.ARCHETYPE_ID = source.ARCHETYPE_ID AND target.VERSION = source.VERSION`);
+      sqlLines.push(`WHEN MATCHED THEN UPDATE SET target.ROLE = '${binding.role}', target.PAYLOAD = PARSE_JSON('${bindingPayload}'), target.UPDATED_AT = CURRENT_TIMESTAMP()`);
+      sqlLines.push(`WHEN NOT MATCHED THEN INSERT (APP_ID, METRIC_ID, ARCHETYPE_ID, ROLE, VERSION, STATUS, PAYLOAD, CREATED_AT, CREATED_BY)`);
+      sqlLines.push(`VALUES (source.APP_ID, source.METRIC_ID, source.ARCHETYPE_ID, '${binding.role}', source.VERSION, 'ACTIVE', PARSE_JSON('${bindingPayload}'), CURRENT_TIMESTAMP(), '${USER_ID}');`);
+      sqlLines.push('');
+    });
+  }
+
+  // ---------------------------------------------------------
+  // 4. SIGNAL_CONFIG
+  // ---------------------------------------------------------
+  sqlLines.push(`-- 4. Upsert Signal Config (Canonical)`);
   // Flatten signals
   for (const [groupId, signals] of Object.entries(plan.schema_definitions.signal_catalog)) {
     signals.forEach(sig => {
+      const signalId = sig.id || sig.signal_id || sig.canonical_key;
       const signalPayload = JSON.stringify({
         ...sig,
         group_id: groupId,
-        metric_id: metadata.metric_id // Linking back to metric context
+        metric_id: metadata.metric_id,
+        canonical_key: sig.canonical_key // Linking back to metric context
       }).replace(/'/g, "''");
 
       sqlLines.push(`MERGE INTO SIGNAL_CONFIG AS target`);
-      sqlLines.push(`USING (SELECT '${appId}' as APP_ID, '${sig.id}' as SIGNAL_ID) AS source`);
+      sqlLines.push(`USING (SELECT '${appId}' as APP_ID, '${signalId}' as SIGNAL_ID) AS source`);
       sqlLines.push(`ON target.APP_ID = source.APP_ID AND target.SIGNAL_ID = source.SIGNAL_ID`);
       sqlLines.push(`WHEN MATCHED THEN UPDATE SET target.PAYLOAD = PARSE_JSON('${signalPayload}'), target.UPDATED_AT = CURRENT_TIMESTAMP()`);
       sqlLines.push(`WHEN NOT MATCHED THEN INSERT (APP_ID, SIGNAL_ID, VERSION, STATUS, PAYLOAD, CREATED_AT, CREATED_BY)`);
@@ -150,9 +214,9 @@ function generateSql() {
   sqlLines.push('');
 
   // ---------------------------------------------------------
-  // 4. TASK_CONFIG & TASK_PROMPT_CONFIG
+  // 5. TASK_CONFIG & TASK_PROMPT_CONFIG
   // ---------------------------------------------------------
-  sqlLines.push(`-- 4. Upsert Task & Prompt Configs`);
+  sqlLines.push(`-- 5. Upsert Task & Prompt Configs`);
   
   plan.execution_registry.task_sequence.forEach(task => {
     // A. Task Definition
@@ -171,40 +235,62 @@ function generateSql() {
     sqlLines.push(`WHEN NOT MATCHED THEN INSERT (APP_ID, TASK_ID, VERSION, STATUS, PAYLOAD, CREATED_AT, CREATED_BY)`);
     sqlLines.push(`VALUES (source.APP_ID, source.TASK_ID, '1.0', 'ACTIVE', PARSE_JSON('${taskPayload}'), CURRENT_TIMESTAMP(), '${USER_ID}');`);
 
-    // B. Prompt Content (Hydrate!)
+    // B. Prompt Content (Certified-first)
     let promptContent = "PROMPT GENERATION FAILED";
-    
+    let promptSourceRef = task.prompt_path;
+    let promptStatus = 'ACTIVE';
+
     try {
         const registryTaskName = task.task_id === 'clinical_review_helper' ? 'clinical_review_helper' : task.task_id;
-        
-        promptContent = synthesizer.hydratePrompt(
-            metadata.domain,
-            'General', // Specialty
-            registryTaskName,
-            hydrationContext
+        const certifiedPath = path.join(
+          __dirname,
+          '..',
+          'certified',
+          metadata.domain,
+          metadata.metric_id,
+          registryTaskName,
+          'prompt.md'
         );
+
+        if (fs.existsSync(certifiedPath)) {
+            promptContent = fs.readFileSync(certifiedPath, 'utf-8');
+            promptSourceRef = path.relative(path.join(__dirname, '..'), certifiedPath).replace(/\\/g, '/');
+            promptStatus = 'CERTIFIED';
+        } else {
+            promptContent = synthesizer.hydratePrompt(
+                metadata.domain,
+                'General', // Specialty
+                registryTaskName,
+                hydrationContext
+            );
+            promptSourceRef = task.prompt_path;
+        }
     } catch (e: any) {
-        console.warn(`⚠️  Hydration warning for ${task.task_id}: ${e.message}. Falling back to raw file.`);
+        console.warn(`?s??,?  Hydration warning for ${task.task_id}: ${e.message}. Falling back to raw file.`);
         // Fallback: Read raw file
         const absolutePromptPath = path.join(__dirname, '../', task.prompt_path);
         if (fs.existsSync(absolutePromptPath)) {
             promptContent = fs.readFileSync(absolutePromptPath, 'utf-8');
+            promptSourceRef = task.prompt_path;
         }
     }
 
+    const promptHash = createHash('sha256').update(promptContent, 'utf-8').digest('hex');
+    const promptVersion = `v1-${promptHash.slice(0, 8)}`;
+
     const promptPayload = JSON.stringify({
-        content: promptContent,
-        model: "gpt-4o-mini", 
-        temperature: 0.0,
-        is_hydrated: true
+        content_md: promptContent,
+        format: 'markdown',
+        hash: promptHash,
+        source_ref: promptSourceRef
     }).replace(/'/g, "''").replace(/\\/g, "\\\\");
 
     sqlLines.push(`MERGE INTO TASK_PROMPT_CONFIG AS target`);
-    sqlLines.push(`USING (SELECT '${appId}' as APP_ID, '${task.task_id}' as TASK_ID, 'v1.0' as PROMPT_VERSION) AS source`);
+    sqlLines.push(`USING (SELECT '${appId}' as APP_ID, '${task.task_id}' as TASK_ID, '${promptVersion}' as PROMPT_VERSION) AS source`);
     sqlLines.push(`ON target.APP_ID = source.APP_ID AND target.TASK_ID = source.TASK_ID AND target.PROMPT_VERSION = source.PROMPT_VERSION`);
     sqlLines.push(`WHEN MATCHED THEN UPDATE SET target.PAYLOAD = PARSE_JSON('${promptPayload}'), target.UPDATED_AT = CURRENT_TIMESTAMP()`);
     sqlLines.push(`WHEN NOT MATCHED THEN INSERT (APP_ID, TASK_ID, PROMPT_VERSION, STATUS, PAYLOAD, CREATED_AT, CREATED_BY)`);
-    sqlLines.push(`VALUES (source.APP_ID, source.TASK_ID, source.PROMPT_VERSION, 'ACTIVE', PARSE_JSON('${promptPayload}'), CURRENT_TIMESTAMP(), '${USER_ID}');`);
+    sqlLines.push(`VALUES (source.APP_ID, source.TASK_ID, source.PROMPT_VERSION, '${promptStatus}', PARSE_JSON('${promptPayload}'), CURRENT_TIMESTAMP(), '${USER_ID}');`);
     sqlLines.push('');
   });
 

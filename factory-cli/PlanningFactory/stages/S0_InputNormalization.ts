@@ -79,13 +79,22 @@ export class S0_InputNormalizationStage {
     }
 
     // Priority 2: Extract from concern text using pattern matching
-    const concernText = input.concern?.toUpperCase() || '';
+    const concernText = input.concern || '';
 
     // USNWR patterns (I25, I26, C35, I32a, I25.1, etc.)
-    // Matches: [ICP] + 2 digits + optional letter + optional dot extension
-    const usnwrMatch = concernText.match(/\b([ICP]\d{2,3}([a-z])?(\.\d+)?)\b/);
+    // Matches: [ICP] + 2-3 digits + optional letter + optional dot extension
+    const usnwrMatch = concernText.match(/\b([ICP]\d{2,3}[a-z]?(\.\d+[a-z]?\d?)?)\b/i);
     if (usnwrMatch) {
-      return usnwrMatch[1];
+      const rawId = usnwrMatch[1];
+      const parts = rawId.match(/^([ICP])(\d{2,3})([a-z])?(\.\d+[a-z]?\d?)?$/i);
+      if (parts) {
+        const prefix = parts[1].toUpperCase();
+        const digits = parts[2];
+        const suffix = parts[3] ? parts[3].toLowerCase() : '';
+        const extension = parts[4] ? parts[4].toLowerCase() : '';
+        return `${prefix}${digits}${suffix}${extension}`;
+      }
+      return rawId;
     }
 
     // HAC patterns (CLABSI, CAUTI, VAP, SSI, PSI.09)

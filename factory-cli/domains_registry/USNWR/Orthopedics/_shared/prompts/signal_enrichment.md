@@ -4,9 +4,6 @@
 Analyze the encounter context below and extract clinical signals relevant to:
 {{riskFactorInstructions}}
 
-**DUET PERSONA:**
-{{duetPersona}}
-
 **AMBIGUITY HANDLING:**
 {{ambiguityHandling}}
 

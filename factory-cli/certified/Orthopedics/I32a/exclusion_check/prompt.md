@@ -1,10 +1,10 @@
 # Exclusion Check Task
 
 **GOAL:**
-Determine whether this case should be EXCLUDED from the denominator for metric: the specified clinical metric
+Determine whether this case should be EXCLUDED from the denominator for metric: Idiopathic scoliosis – 30-day unplanned admission and return to OR
 
 **EXCLUSION CRITERIA:**
-No exclusion criteria defined.
+- **age_limit**: Patient age > 18 years at time of surgery
 
 **EXCEPTION CRITERIA:**
 No exception criteria defined.

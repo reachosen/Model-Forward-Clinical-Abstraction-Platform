@@ -1,22 +1,22 @@
 # Event Summary Task
 
 **Context:**
-- Domain: {{domain}}
-- Archetype: {{archetype}}
-- Metric: {{metricName}}
-- Signal Groups: {{signalGroupIds}}
-- Clinical Focus: {{clinicalFocus}}
-{{#if rankingContextLine}}
-{{rankingContextLine}}
-{{/if}}
+- Domain: Orthopedics
+- Archetype: Preventability_Detective
+- Metric: Idiopathic scoliosis – 30-day unplanned admission and return to OR
+- Signal Groups: infection_risks, bundle_compliance, outcome_risks, readmission_risks
+- Clinical Focus: Prevention of early complications and unplanned care after AIS surgery
+
+
+
 
 **GOAL:**
-Produce a factual, timeline-focused summary relevant to evaluating {{metricName}}.
+Produce a factual, timeline-focused summary relevant to evaluating Idiopathic scoliosis – 30-day unplanned admission and return to OR.
 - Focus on events directly relevant to the metric definition.
 - Flag delays, gaps, or safety concerns.
 - Structure the narrative chronologically when possible.
 
-{{metricInstructions}}
+CRITICAL: You MUST explicitly state the Post-Op Day (POD) of any readmission, return to OR, or ED visit. Quote the exact procedure name (e.g. I&D).
 
 **BAD EXAMPLE (Do Not Do This):**
 "The patient arrived and standard protocols suggest early intervention. It is important to monitor..." (Too generic, lecturing).
@@ -29,7 +29,7 @@ You must ALSO extract the following specific fields for the summary card:
 
 1. **display_fields**: An array of key-value pairs (exactly 8 items).
    - **Order 1: Patient** (e.g., "Emily Carter (14F)")
-   - **Order 2: Metric** (e.g., "{{metricName}}")
+   - **Order 2: Metric** (e.g., "Idiopathic scoliosis – 30-day unplanned admission and return to OR")
    - **Order 3: Index Surgery** (e.g., "Posterior spinal fusion (T4-L1)")
    - **Order 4: Surgery Date** (e.g., "11/18/2025")
    - **Order 5: Discharge -> Readmit** (e.g., "11/22 -> 12/08")

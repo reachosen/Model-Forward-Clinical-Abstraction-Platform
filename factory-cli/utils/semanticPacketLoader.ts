@@ -38,6 +38,52 @@ export interface SemanticPacket {
   domain: string;
 }
 
+function normalizeKey(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .replace(/_+/g, '_');
+}
+
+function toSignalObject(signal: string | any): Record<string, any> {
+  if (typeof signal === 'string') {
+    return { name: signal, description: signal };
+  }
+  return { ...signal };
+}
+
+function buildCanonicalKey(groupId: string, signal: Record<string, any>): string {
+  const desc =
+    signal.description ||
+    signal.name ||
+    signal.signal_id ||
+    signal.id ||
+    '';
+  return normalizeKey(`${groupId}|${desc}`);
+}
+
+export function normalizeSignalGroups(signals: SemanticSignals): SemanticSignals {
+  const normalized: SemanticSignals = {};
+  for (const [groupId, groupSignals] of Object.entries(signals || {})) {
+    const seen = new Set<string>();
+    const deduped: any[] = [];
+    (groupSignals || []).forEach((sig) => {
+      const signalObj = toSignalObject(sig);
+      const canonicalKey = buildCanonicalKey(groupId, signalObj);
+      if (!canonicalKey) return;
+      if (seen.has(canonicalKey)) return;
+      seen.add(canonicalKey);
+      if (!signalObj.canonical_key) {
+        signalObj.canonical_key = canonicalKey;
+      }
+      deduped.push(signalObj);
+    });
+    normalized[groupId] = deduped;
+  }
+  return normalized;
+}
+
 /*
 function detectNegatedSignalIds(signals: SemanticSignals): string[] {
   const bad: string[] = [];
@@ -117,9 +163,16 @@ export class SemanticPacketLoader {
       }
 
       // 2. Metric Definition Overlay (The senior architect's required fix)
-      const packetToReturn = metricId
+      let packetToReturn = metricId
         ? this.applyMetricOverlay(basePacket, registryRoot, domain, metricId)
         : basePacket;
+      const disableNormalization = process.env.DISABLE_SIGNAL_NORMALIZATION === '1';
+      if (!disableNormalization && packetToReturn.signals) {
+        packetToReturn = {
+          ...packetToReturn,
+          signals: normalizeSignalGroups(packetToReturn.signals)
+        };
+      }
 
       // const negated = detectNegatedSignalIds(packetToReturn.signals);
       // if (negated.length > 0) {
@@ -176,7 +229,7 @@ export class SemanticPacketLoader {
           
           overlaidPacket.metrics[metricId] = {
               ...overlaidPacket.metrics[metricId],
-              metric_name: defRules.description || overlaidPacket.metrics[metricId]?.metric_name,
+              metric_name: overlaidPacket.metrics[metricId]?.metric_name || defRules.description,
               review_questions: questions.length > 0 ? questions : overlaidPacket.metrics[metricId]?.review_questions,
               signal_groups: overlaidPacket.metrics[metricId]?.signal_groups, // Keep base groups if missing
               rule_in_criteria: defRules.rule_in_criteria,

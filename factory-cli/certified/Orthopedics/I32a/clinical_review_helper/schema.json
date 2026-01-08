@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "review_helper": {
+      "type": "object",
+      "properties": {
+        "helper_notes": {
+          "type": "string"
+        },
+        "suggested_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "helper_notes",
+        "suggested_actions"
+      ]
+    }
+  },
+  "required": [
+    "review_helper"
+  ]
+}
