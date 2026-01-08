@@ -125,6 +125,7 @@ program
         // We use the primary archetype context for certification
         const promptContext = {
             ...domainContext,
+            metric_id: routed.concern_id,
             ortho_context: domainContext.semantic_context.packet,
             ranking_context: domainContext.semantic_context.ranking,
             archetype: domainContext.primary_archetype

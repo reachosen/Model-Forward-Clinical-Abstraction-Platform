@@ -28,14 +28,36 @@ export class ContractSynthesizer {
     taskType: string,
     context: any
   ): string {
-    const templatePath = path.join(
-      this.registryBase,
-      'USNWR',
-      domain,
-      '_shared',
-      'prompts',
-      `${taskType}.md`
-    );
+    let templatePath: string | null = null;
+
+    // 1. Check for Metric-Specific Override
+    // Context usually comes from SchemaFactory/cli.ts which now injects 'metric_id'
+    if (context.metric_id) {
+      const overridePath = path.join(
+        this.registryBase,
+        'USNWR',
+        domain,
+        'metrics',
+        context.metric_id,
+        'prompts',
+        `${taskType}.md`
+      );
+      if (fs.existsSync(overridePath)) {
+        templatePath = overridePath;
+      }
+    }
+
+    // 2. Fallback to Shared Path
+    if (!templatePath) {
+      templatePath = path.join(
+        this.registryBase,
+        'USNWR',
+        domain,
+        '_shared',
+        'prompts',
+        `${taskType}.md`
+      );
+    }
 
     if (!fs.existsSync(templatePath)) {
       throw new Error(`Template not found: ${templatePath}`);
