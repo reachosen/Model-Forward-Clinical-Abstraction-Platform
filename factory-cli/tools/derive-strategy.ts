@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {
   BatchStrategy,
-  GenerationScenario,
   TaskScenarioConfig,
   TaskScenario,
   Intent
@@ -141,14 +140,18 @@ function deriveTaskScenarios(
 function deriveLegacyScenarios(
   leanPlan: any,
   primaryArchetype: string
-): GenerationScenario[] {
-  const scenarios: GenerationScenario[] = [];
-  const metricName = leanPlan.schema_definitions.metric_info.name;
+): TaskScenario[] {
+  const scenarios: TaskScenario[] = [];
+  const metricInfo = leanPlan.schema_definitions.metric_info;
+  const metricName = metricInfo.metric_name || metricInfo.name || 'this metric';
 
   // 1. Base Scenario
   scenarios.push({
     description: `Standard presentation of ${metricName} with clear documentation.`,
-    archetype: primaryArchetype
+    archetype: primaryArchetype,
+    contract: {
+      intents: ['KNOWLEDGE']
+    }
   });
 
   // 2. Signal-Driven Scenarios
@@ -161,7 +164,10 @@ function deriveLegacyScenarios(
       scenarios.push({
         description: `Patient case involving ${sigName} (${groupId}).`,
         archetype: primaryArchetype,
-        doubt: groupId === 'delay_drivers' ? [{ type: 'conflict', instruction: 'Conflicting times' }] : undefined
+        doubt: groupId === 'delay_drivers' ? [{ type: 'conflict', instruction: 'Conflicting times' }] : undefined,
+        contract: {
+          intents: [groupId === 'delay_drivers' ? 'AMBIGUITY' : 'KNOWLEDGE']
+        }
       });
     });
   });
