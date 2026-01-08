@@ -1,6 +1,9 @@
 import { EngineOutput } from './types';
 import OpenAI from 'openai';
 import { loadEnv } from '../../utils/envConfig';
+import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
+import { detectDomain } from '../../utils/domainDetection';
+import { getPromptText } from '../../PlanningFactory/utils/promptBuilder'; 
 
 // Ensure env vars are loaded
 loadEnv();
