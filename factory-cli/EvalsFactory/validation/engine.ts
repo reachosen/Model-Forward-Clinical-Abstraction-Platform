@@ -1,13 +1,9 @@
 import { EngineOutput } from './types';
 import OpenAI from 'openai';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
-import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
-import { detectDomain } from '../../utils/domainDetection';
-import { getPromptText } from '../../PlanningFactory/utils/promptBuilder'; // Import S5 prompt builder
+import { loadEnv } from '../../utils/envConfig';
 
 // Ensure env vars are loaded
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+loadEnv();
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

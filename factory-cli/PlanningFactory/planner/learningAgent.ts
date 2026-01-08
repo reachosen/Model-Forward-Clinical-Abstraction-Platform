@@ -7,11 +7,10 @@
 
 import { LearningQueueItem, LearningPatch } from '../../models/LearningQueue';
 import OpenAI from 'openai';
-import * as dotenv from 'dotenv';
+import { loadEnv } from '../../utils/envConfig';
 import * as path from 'path';
 
-// Load environment variables
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+loadEnv();
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

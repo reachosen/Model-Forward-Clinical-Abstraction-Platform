@@ -19,10 +19,10 @@ import {
 } from '../types';
 import { getTaskLLMConfig } from '../config/taskConfig';
 import { Paths } from '../../utils/pathConfig';
-import * as dotenv from 'dotenv';
+import { loadEnv } from '../../utils/envConfig';
 import * as path from 'path';
 
-dotenv.config({ path: path.join(__dirname, '../../../.env') });
+loadEnv();
 
 // Load model from environment variable
 const DEFAULT_MODEL = process.env.MODEL || 'gpt-4o-mini';

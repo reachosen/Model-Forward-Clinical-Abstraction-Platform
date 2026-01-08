@@ -1,11 +1,10 @@
 import * as path from 'path';
 import { runGenerator } from './core';
 import { loadBatchStrategy, getAllBatchStrategies } from './BatchStrategy';
-import * as dotenv from 'dotenv';
-import { Paths, resolveMetricPath } from '../../utils/pathConfig';
+import { loadEnv } from '../../utils/envConfig';
 
 // Load environment variables
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+loadEnv();
 
 async function main() {
   const args = process.argv.slice(2);

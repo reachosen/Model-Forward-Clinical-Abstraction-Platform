@@ -10,11 +10,11 @@
  */
 
 // Load environment variables from root .env file
-import * as dotenv from 'dotenv';
+import { loadEnv } from '../utils/envConfig';
 import * as path from 'path';
 
 // Load from root directory (single global config)
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+loadEnv();
 
 import { Command } from 'commander';
 import * as fs from 'fs/promises';

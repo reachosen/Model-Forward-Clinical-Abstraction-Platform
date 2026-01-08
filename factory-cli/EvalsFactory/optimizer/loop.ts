@@ -1,12 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import OpenAI from 'openai';
-import * as dotenv from 'dotenv';
-import { BatchRunner } from '../validation/runner';
-import { AggregateReport } from '../validation/types';
-import { resolveMetricPath } from '../../utils/pathConfig';
+import { loadEnv } from '../../utils/envConfig';
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+loadEnv();
 
 const args = process.argv.slice(2);
 const metricFlagIdx = args.indexOf('--metric');

@@ -1,12 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as dotenv from 'dotenv';
-import OpenAI from 'openai';
-import { getConcernMetadata } from '../../config/concernRegistry';
-import { BatchStrategy, GenerationScenario, DuetProfile, TaskScenario, CaseContract } from './BatchStrategy';
-import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
+import { loadEnv } from '../../utils/envConfig';
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+loadEnv();
 
 const DATASET_MODEL = process.env.DATASET_MODEL || 'gpt-4o-mini';
 const DATASET_MAX_TOKENS = parseInt(process.env.DATASET_MAX_TOKENS || '8000', 10);
