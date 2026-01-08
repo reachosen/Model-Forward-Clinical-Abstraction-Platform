@@ -31,11 +31,17 @@ async function main() {
     // 1. Resolve Plan Path
     const metricPath = resolveMetricPath(metricId);
     const cliRoot = Paths.cliRoot();
-    const planPath = path.join(cliRoot, 'output', `${metricId.toLowerCase()}-${metricPath.specialty?.toLowerCase()}`, 'plan.json');
+    let planPath = path.join(cliRoot, 'output', `${metricId.toLowerCase()}-${metricPath.specialty?.toLowerCase()}`, 'plan.json');
     
     if (!fs.existsSync(planPath)) {
-        console.error(`❌ Plan not found: ${planPath}. Run 'plan:generate' first.`);
-        process.exit(1);
+        // Try lean_plan.json
+        const leanPath = path.join(cliRoot, 'output', `${metricId.toLowerCase()}-${metricPath.specialty?.toLowerCase()}`, 'lean_plan.json');
+        if (fs.existsSync(leanPath)) {
+            planPath = leanPath;
+        } else {
+            console.error(`❌ Plan not found: ${planPath} (or lean_plan.json). Run 'plan:generate' first.`);
+            process.exit(1);
+        }
     }
 
     try {

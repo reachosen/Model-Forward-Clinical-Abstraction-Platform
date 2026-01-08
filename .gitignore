@@ -97,3 +97,4 @@ CLAUDE.md
 notebooklm_inputs/
 notebooklm_inputs/ 
 factory-cli/data/*.json 
+factory-cli/domains_registry/USNWR/Orthopedics/metrics/I32a/tests/testcases/*.json 

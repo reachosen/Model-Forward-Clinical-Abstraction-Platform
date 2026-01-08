@@ -267,8 +267,8 @@ async function main() {
     }
 
     // G) Conflict Proof (for AMBIGUITY intent)
-    const affirmIds = rawCase.trace.items.filter(it => it.polarity === 'AFFIRM').map(it => aliasMap[it.signal_id] || it.signal_id);
-    const denyIds = rawCase.trace.items.filter(it => it.polarity === 'DENY').map(it => aliasMap[it.signal_id] || it.signal_id);
+    const affirmIds = rawCase.trace.items.filter(it => it.polarity === 'AFFIRM').map(it => resolveSignalId(it.signal_id, registrySignals) || it.signal_id);
+    const denyIds = rawCase.trace.items.filter(it => it.polarity === 'DENY').map(it => resolveSignalId(it.signal_id, registrySignals) || it.signal_id);
     const conflictMatch = affirmIds.some(id => denyIds.includes(id));
     if (conflictMatch) {
       const flags = rawCase.metadata?.flags || {};

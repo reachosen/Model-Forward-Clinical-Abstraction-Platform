@@ -2,20 +2,27 @@ import * as fs from 'fs';
 import * as path from 'path';
 import OpenAI from 'openai';
 import * as dotenv from 'dotenv';
-import { I25BatchRunner } from '../validation/runner';
+import { BatchRunner } from '../validation/runner';
 import { AggregateReport } from '../validation/types';
+import { resolveMetricPath } from '../../utils/pathConfig';
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
-// Configuration
-const CONCERN_ID = 'I25';
-// Using Golden Set for efficient testing
-const TEST_DATA_DIR = path.join(__dirname, '../../data/flywheel/testcases');
-const PLAN_PATH = path.join(TEST_DATA_DIR, 'golden_set.json');
+const args = process.argv.slice(2);
+const metricFlagIdx = args.indexOf('--metric');
+const CONCERN_ID = metricFlagIdx !== -1 ? args[metricFlagIdx + 1] : 'I32a';
+
+console.log(`🚀 Optimizer Loop for: ${CONCERN_ID}`);
+
+const metricPath = resolveMetricPath(CONCERN_ID);
+const TEST_DATA_DIR = path.join(__dirname, `../../domains_registry/${metricPath.framework}/${metricPath.specialty}/metrics/${CONCERN_ID}/tests/testcases`);
+const planDirName = `${CONCERN_ID.toLowerCase()}-${(metricPath.specialty || 'General').toLowerCase()}`;
+const PLAN_PATH = path.join(__dirname, `../../output/${planDirName}/lean_plan.json`);
+
 const REPORT_DIR = path.join(__dirname, '../../data/flywheel/reports/refinery');
 const PROMPT_HISTORY_DIR = path.join(__dirname, '../../data/flywheel/prompts');
-const HISTORY_FILE = path.join(PROMPT_HISTORY_DIR, 'prompt_history_lean.json');
-const SIGNALS_PATH = path.join(__dirname, '../../data/orthopedics/signals.json');
+const HISTORY_FILE = path.join(PROMPT_HISTORY_DIR, `prompt_history_${CONCERN_ID}.json`);
+const SIGNALS_PATH = path.join(__dirname, `../../domains_registry/${metricPath.framework}/${metricPath.specialty}/metrics/${CONCERN_ID}/definitions/signal_groups.json`);
 
 // Ensure dirs
 if (!fs.existsSync(REPORT_DIR)) fs.mkdirSync(REPORT_DIR, { recursive: true });
@@ -25,8 +32,12 @@ if (!fs.existsSync(PROMPT_HISTORY_DIR)) fs.mkdirSync(PROMPT_HISTORY_DIR, { recur
 let SIGNAL_CONTEXT = "";
 if (fs.existsSync(SIGNALS_PATH)) {
   const signals = JSON.parse(fs.readFileSync(SIGNALS_PATH, 'utf-8'));
-  SIGNAL_CONTEXT = Object.entries(signals)
-    .map(([category, items]) => `${category.toUpperCase()}:\n- ${(items as string[]).join('\n- ')}`)
+  const signalGroups = signals.signal_groups || signals;
+  SIGNAL_CONTEXT = Object.entries(signalGroups)
+    .map(([category, items]: [string, any]) => {
+        const signalList = Array.isArray(items) ? items : (items.signals || []);
+        return `${category.toUpperCase()}:\n- ${signalList.map((s: any) => s.description || s).join('\n- ')}`;
+    })
     .join('\n\n');
 } else {
   console.warn("⚠️ Signals file not found. Using empty context.");
@@ -57,64 +68,48 @@ OUTPUT FORMAT (JSON):
 
 Rules:
 - Every signal MUST have provenance.
-- Use only domain-relevant signals (I25 Supracondylar Humerus Fracture).
+- Use only domain-relevant signals.
 - No hallucinated timestamps.
 - No criteria, no plan metadata, no classification.
 `;
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// C12: Configuration from .env
 const OPTIMIZER_MODEL = process.env.OPTIMIZER_MODEL || 'gpt-4o-mini';
 const OPTIMIZER_FALLBACK_MODEL = process.env.OPTIMIZER_FALLBACK_MODEL || 'gpt-4o';
 const OPTIMIZER_MAX_TOKENS = parseInt(process.env.OPTIMIZER_MAX_TOKENS || '2000', 10);
 const MAX_EVIDENCE_TOKENS = parseInt(process.env.OPTIMIZER_MAX_EVIDENCE_TOKENS || '600', 10);
 
-/**
- * C12: Summarize failure evidence to reduce token usage
- * Keeps top 1-2 examples per failure type, capped to ~500-800 tokens
- */
 function summarizeFailureEvidence(
   topFailures: [string, { count: number; sample_test_ids: string[] }][],
   report: AggregateReport
 ): string {
   let evidenceBlock = "";
   let currentTokenEstimate = 0;
-
-  // Process only top 2 failures to keep evidence compact
   const limitedFailures = topFailures.slice(0, 2);
 
   limitedFailures.forEach(([failType, data]) => {
     if (currentTokenEstimate >= MAX_EVIDENCE_TOKENS) return;
-
     evidenceBlock += `\nFAILURE: ${failType} (x${data.count})\n`;
     currentTokenEstimate += 15;
-
-    // Only include first example, truncated
     const caseId = data.sample_test_ids[0];
     const result = report.raw_results.find(r => r.test_id === caseId);
-
     if (result) {
-      // Truncate patient text to ~150 chars for efficiency
       const truncatedText = result.engine_output.raw_input.slice(0, 150).replace(/\n/g, ' ');
       evidenceBlock += `  Case: ${caseId}\n`;
       evidenceBlock += `  Text: "...${truncatedText}..."\n`;
       currentTokenEstimate += 50;
     }
   });
-
   return evidenceBlock;
 }
 
 async function runFlywheel(maxLoops: number = 3) {
   console.log(`🏎️  Starting Prompt Refinery Flywheel for ${CONCERN_ID}`);
-  console.log(`   Max Loops: ${maxLoops}`);
-
   let currentPrompt = BASELINE_PROMPT;
   let version = 1;
-  let lastRecall = 0; // Track previous score
+  let lastRecall = 0; 
   
-  // Resume from history if exists
   let history: any[] = [];
   if (fs.existsSync(HISTORY_FILE)) {
     history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
@@ -126,7 +121,6 @@ async function runFlywheel(maxLoops: number = 3) {
       lastRecall = lastEntry.metrics?.signal_recall || 0;
     }
   } else {
-    // Seed history with baseline
     appendToHistory({
         version: 1,
         timestamp: new Date().toISOString(),
@@ -142,67 +136,51 @@ async function runFlywheel(maxLoops: number = 3) {
     console.log(`
 🔄 Loop ${loop}/${maxLoops} (Version v${currentLoopVersion})`);
     
-    console.log(`   💰 Estimated cost: $0.03. Proceeding...`);
-
-    // 2. Run Validation
-    const runner = new I25BatchRunner(CONCERN_ID, PLAN_PATH, TEST_DATA_DIR);
+    const runner = new BatchRunner(CONCERN_ID, PLAN_PATH, TEST_DATA_DIR);
     console.log(`   🏃 Running Batch Validation...`);
-    
     const report = await runner.run(currentPrompt);
     
-    // Save Report
-    const reportPath = path.join(REPORT_DIR, `report_v${currentLoopVersion}.json`);
+    const reportPath = path.join(REPORT_DIR, `report_${CONCERN_ID}_v${currentLoopVersion}.json`);
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
     console.log(`   📊 Report saved to ${reportPath}`);
 
-    // 3. Analyze Score
-    const totalSignals = report.raw_results.reduce((sum, r) => sum + (r.scores.signals_recall || 0), 0);
+    const totalSignals = report.raw_results.reduce((sum: number, r: any) => sum + (r.scores.signals_recall || 0), 0);
     const avgRecall = totalSignals / report.total_cases;
     console.log(`   🎯 Average Signal Recall: ${(avgRecall * 100).toFixed(1)}%`);
 
-    // Calculate Delta
     const scoreDelta = avgRecall - lastRecall;
     if (loop > 1 || (version > 1 && loop === 1)) {
         const direction = scoreDelta >= 0 ? "📈 Improved/Stable" : "📉 REGRESSION";
         console.log(`   ${direction} by ${(scoreDelta * 100).toFixed(1)}%`);
     }
 
-    // Update history with metrics for CURRENT prompt
     updateHistoryMetrics(currentLoopVersion, { signal_recall: avgRecall });
 
     if (avgRecall > 0.95) {
       console.log(`   🎉 Target Accuracy Reached! Stopping.`);
       break;
     }
-
     if (loop === maxLoops) {
       console.log(`   🛑 Max loops reached.`);
       break;
     }
 
-    // 4. Auto-Suggest Next Prompt (The Refinery)
     console.log(`   🧠 Analyzing failures and refining prompt...`);
-    
-    // Pass context for turbo-charged optimization
     const refinement = await optimizePrompt(currentPrompt, report, scoreDelta, lastRecall > 0);
-    
     console.log(`   💡 Analysis: ${refinement.analysis}`);
-    console.log(`   🔧 Proposed Changes: ${refinement.expected_improvements}`);
     const newPrompt = refinement.new_prompt;
 
-    // Append NEW prompt to history
     appendToHistory({
         version: currentLoopVersion + 1,
         timestamp: new Date().toISOString(),
         prompt_text: newPrompt,
         analysis: refinement.analysis,
         changes: refinement.expected_improvements,
-        metrics: {} // To be filled in next loop
+        metrics: {} 
     });
 
     currentPrompt = newPrompt;
     lastRecall = avgRecall;
-    console.log(`   💾 History updated with v${currentLoopVersion + 1}`);
   }
 }
 
@@ -225,78 +203,14 @@ function updateHistoryMetrics(version: number, metrics: any) {
     }
 }
 
-async function optimizePrompt(
-  currentPrompt: string,
-  report: AggregateReport,
-  scoreDelta: number,
-  hasHistory: boolean,
-  useFallbackModel: boolean = false
-): Promise<any> {
-
-  // C12: Extract and summarize failure examples (top 2, capped tokens)
-  const topFailures = Object.entries(report.failures_by_type)
-    .sort((a, b) => b[1].count - a[1].count)
-    .slice(0, 2); // Top 2 failure types only
-
-  // C12: Use summarized evidence to reduce token usage
+async function optimizePrompt(currentPrompt: string, report: AggregateReport, scoreDelta: number, hasHistory: boolean, useFallbackModel: boolean = false): Promise<any> {
+  const topFailures = Object.entries(report.failures_by_type).sort((a, b) => b[1].count - a[1].count).slice(0, 2);
   const evidenceBlock = summarizeFailureEvidence(topFailures, report);
-
-  // Dynamic Instructions based on Regression
   let dynamicInstruction = "";
-  if (hasHistory && scoreDelta < -0.02) { // Regression > 2%
-    dynamicInstruction = `
-🚨 REGRESSION DETECTED! 
-The previous prompt performed BETTER. The score dropped by ${(Math.abs(scoreDelta) * 100).toFixed(1)}%.
-1. CRITICALLY ANALYZE why your last change hurt performance.
-2. Revert the specific language that caused this confusion.
-3. Try a different, gentler approach to fix the remaining errors.
-`;
+  if (hasHistory && scoreDelta < -0.02) {
+    dynamicInstruction = `\n🚨 REGRESSION DETECTED! \nThe previous prompt performed BETTER.\n1. ANALYZE regression.\n2. Revert bad changes.\n3. Try new approach.\n`;
   } else {
-    dynamicInstruction = `
-1. Analyze the "FAILURE EVIDENCE" above. Look at the Text Snippet vs the Error.
-2. Why did the current prompt miss this? (Is it looking for the wrong keywords? Is the instruction too vague?)
-3. Generate a NEW System Prompt that fixes these specific gaps.
-`;
+    dynamicInstruction = `\n1. Analyze FAILURE EVIDENCE.\n2. Fix gaps.\n3. Generate NEW System Prompt.\n`;
   }
 
-  const metaPrompt = `You are an expert Prompt Engineer for Clinical AI.
-Your goal is to improve a System Prompt based on concrete failure evidence.
-
-TARGET CONCERN: I25 (Supracondylar Humerus Fracture)
-
-REFERENCE SIGNALS (Ground Truth):
-${SIGNAL_CONTEXT}
-
-CURRENT PROMPT:
-${currentPrompt}
-
-FAILURE EVIDENCE (Real cases where extraction failed):
-${evidenceBlock}
-
-INSTRUCTIONS:
-${dynamicInstruction}
-4. Output strictly valid JSON.
-
-OUTPUT JSON:
-{
-  "analysis": "Detailed thought process on why failures occurred (and why regression happened, if applicable).",
-  "new_prompt": "The full updated prompt text.",
-  "expected_improvements": "What specific errors this should fix."
-}
-`;
-
-  // C12: Use configurable model with fallback support
-  const modelToUse = useFallbackModel ? OPTIMIZER_FALLBACK_MODEL : OPTIMIZER_MODEL;
-  console.log(`    🤖 Optimizer using model: ${modelToUse}`);
-
-  const response = await client.chat.completions.create({
-    model: modelToUse,
-    messages: [{ role: 'user', content: metaPrompt }],
-    max_tokens: OPTIMIZER_MAX_TOKENS,
-    response_format: { type: 'json_object' }
-  });
-
-  return JSON.parse(response.choices[0].message.content || "{}");
-}
-
-runFlywheel(3).catch(console.error);
+  const metaPrompt = `Expert Prompt Engineer mode. Improving prompt for ${CONCERN_ID}.\n\nSIGNALS:\n${SIGNAL_CONTEXT}\n\nCURRENT:\n${currentPrompt}\n\nFAILURES:\n${evidenceBlock}\n\nGOAL: Improve signal recall.\n${dynamicInstruction}\nOutput JSON with

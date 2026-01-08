@@ -514,25 +514,23 @@ To add a new USNWR metric (e.g., I26):
 **Version:** 1.0.0
 **Last Updated:** January 2025
 
----
-
-## 🏭 Prompt Refinery Factory (New!)
+### 4. Prompt Refinery Factory (New!)
 
 The Prompt Refinery is an offline lab for engineering high-quality clinical prompts using the **SAFE CHILD CARE** framework.
 
-### Capabilities
+#### Key Missions
+| Mission | Command | Purpose |
+| :--- | :--- | :--- |
+| **Optimize** | `npm run missions -- run eval:optimize --metric I32a` | Runs agentic loop to auto-fix prompts. |
+| **Certify** | `npm run missions -- run schema:certify --plan <path>` | Freezes logic into versioned artifacts. |
+| **Seed** | `npm run missions -- run schema:seed --metric I32a` | Generates Snowflake SQL for production. |
 
-1.  **SAFE Scorecard**: Grading rubric for Safety, Recall, and Reasoning.
-2.  **Refinery Loop**: Run experiments to compare prompt candidates against Golden Sets.
-3.  **Prompt Registry**: Manage prompts as Markdown files in `domains_registry`.
-
-### Key Components
-
-- **`EvalsFactory/`**: Evaluation and Refinery engine.
-- **`PlanningFactory/`**: Plan generation and orchestration.
-- **`SchemaFactory/`**: Contract synthesis and certification.
-- **`shared/context_builders/`**: Centralized clinical logic.
+#### Metric-Specific Overrides
+The system now supports metric-level prompt overrides. To customize a prompt for a specific metric:
+1. Create a folder: `domains_registry/{FRAMEWORK}/{SPECIALTY}/metrics/{METRIC}/prompts/`
+2. Save your `.md` prompt there (e.g., `event_summary.md`).
+3. The system will automatically prioritize this over the shared domain templates.
 
 ---
 
-## 📄 License
+## 📜 License

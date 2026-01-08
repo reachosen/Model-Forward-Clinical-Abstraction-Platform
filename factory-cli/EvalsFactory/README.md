@@ -56,10 +56,14 @@ npx ts-node EvalsFactory/dataset/generate.ts list
 npx ts-node EvalsFactory/dataset/generate.ts run I25
 ```
 
-### Run Optimization Loop
+### Run Optimization Loop (Flywheel)
 
 ```bash
-npx ts-node EvalsFactory/optimizer/loop.ts
+# Official Mission Control command
+npm run missions -- run eval:optimize --metric I25
+
+# Or direct execution
+npx ts-node EvalsFactory/optimizer/loop.ts --metric I25
 ```
 
 ## Data Locations (Domain-Based)

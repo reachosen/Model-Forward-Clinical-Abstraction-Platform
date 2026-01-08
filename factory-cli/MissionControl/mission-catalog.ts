@@ -141,6 +141,17 @@ export const MISSIONS: Mission[] = [
     ],
   },
   {
+    id: 'eval:optimize',
+    owner: 'Evals',
+    title: 'Prompt Optimizer (Flywheel)',
+    purpose: 'Run agentic loop to auto-fix prompts based on failure evidence',
+    command: 'npx',
+    args: ['ts-node', 'EvalsFactory/optimizer/loop.ts', '--metric', '{{metric}}'],
+    examples: [
+      { name: 'I32a Flywheel', args: ['ts-node', 'EvalsFactory/optimizer/loop.ts', '--metric', 'I32a'] },
+    ],
+  },
+  {
     id: 'eval:strategize',
     owner: 'Evals',
     title: 'Define Test Strategy',
@@ -198,6 +209,17 @@ export const MISSIONS: Mission[] = [
     args: ['ts-node', 'SchemaFactory/cli.ts', 'certify', '--plan', '{{plan}}'],
     examples: [
       { name: 'I32a Ortho', args: ['ts-node', 'SchemaFactory/cli.ts', 'certify', '--plan', 'output/i32a-Orthopedics/plan.json'] },
+    ],
+  },
+  {
+    id: 'schema:seed',
+    owner: 'Schema',
+    title: 'Generate DB Seed',
+    purpose: 'Generate production Snowflake SQL seed with hydrated prompts',
+    command: 'npx',
+    args: ['ts-node', 'tools/generate_snowflake_seed.ts', '--metric', '{{metric}}'],
+    examples: [
+      { name: 'I32a Ortho', args: ['ts-node', 'tools/generate_snowflake_seed.ts', '--metric', 'I32a'] },
     ],
   },
 

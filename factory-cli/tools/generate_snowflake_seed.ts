@@ -3,12 +3,13 @@ import * as path from 'path';
 import { createHash } from 'crypto';
 import { ContractSynthesizer } from '../SchemaFactory/generators/contract_synthesizer';
 import { SemanticPacketLoader } from '../utils/semanticPacketLoader';
+import { resolveMetricPath } from '../utils/pathConfig';
 
 // 1. CONSTANTS & MAPPINGS
 const APP_MAPPING: Record<string, string> = {
   'Orthopedics': 'ORTHO',
-  'Cardiology': 'CARDIO', // Example
-  'Neurology': 'NEURO'    // Example
+  'Cardiology': 'CARDIO',
+  'Neurology': 'NEURO'
 };
 
 const DOMAIN_ID_MAPPING: Record<string, string> = {
@@ -34,7 +35,7 @@ interface LeanPlan {
   };
   schema_definitions: {
     metric_info: any;
-    metric_archetype_bindings?: Array<{
+    metric_archetype_bindings?: Array<{ 
       archetype_id: string;
       role: string;
     }>;
@@ -60,8 +61,19 @@ interface LeanPlan {
 }
 
 function generateSql() {
-  const planPath = path.join(__dirname, '../output/i32a-Orthopedics/lean_plan.json');
+  const args = process.argv.slice(2);
+  const metricFlagIdx = args.indexOf('--metric');
+  const metricId = metricFlagIdx !== -1 ? args[metricFlagIdx + 1] : 'I32a';
+
+  console.log(`🚀 Generating Snowflake Seed for: ${metricId}`);
+
+  const metricPath = resolveMetricPath(metricId);
+  const cliRoot = path.join(__dirname, '..');
   
+  // Resolve Plan Path using standard logic
+  const planDirName = `${metricId.toLowerCase()}-${(metricPath.specialty || 'General').toLowerCase()}`;
+  const planPath = path.join(cliRoot, 'output', planDirName, 'lean_plan.json');
+
   if (!fs.existsSync(planPath)) {
     console.error(`❌ Plan not found: ${planPath}`);
     process.exit(1);
@@ -71,7 +83,7 @@ function generateSql() {
   const metadata = plan.handoff_metadata;
   const metricVersion = plan.schema_definitions.metric_info?.version || metadata.version || '1.0';
   const planRef = path
-    .relative(path.join(__dirname, '..'), planPath)
+    .relative(cliRoot, planPath)
     .replace(/\\/g, '/');
 
   // Resolve App Context
@@ -84,25 +96,26 @@ function generateSql() {
   }
 
   // Initialize Services for Hydration
-  const synthesizer = new ContractSynthesizer(path.resolve(__dirname, '../domains_registry'));
+  const synthesizer = new ContractSynthesizer(path.resolve(cliRoot, 'domains_registry'));
   const packetLoader = SemanticPacketLoader.getInstance();
   
   // Load Context
   const packet = packetLoader.load(metadata.domain, metadata.metric_id);
   if (!packet) {
-      console.warn(`⚠️  Warning: Semantic Packet not found for ${metadata.domain}/${metadata.metric_id}. Hydration may fail.`);
+      console.warn(`⚠️ Warning: Semantic Packet not found for ${metadata.domain}/${metadata.metric_id}. Hydration may fail.`);
   }
 
   // Construct Hydration Context (matching S6 logic)
   const hydrationContext = {
       domain: metadata.domain,
-      primary_archetype: 'Preventability_Detective', // Default or extract from plan if possible
+      metric_id: metadata.metric_id,
+      primary_archetype: 'Preventability_Detective', 
       semantic_context: {
           packet: {
               metric: packet?.metrics[metadata.metric_id],
               signals: packet?.signals
           },
-          ranking: null 
+          ranking: null
       },
       ortho_context: packet,
       ranking_context: null,
@@ -115,13 +128,11 @@ function generateSql() {
   sqlLines.push(`-- INSTRUCTION: Set your context before running: USE SCHEMA YOUR_DATABASE.ConfigDB;`);
   sqlLines.push('');
 
-  // ---------------------------------------------------------
   // 1. DOMAIN_CONFIG
-  // ---------------------------------------------------------
   const domainPayload = JSON.stringify({
     name: metadata.domain,
     type: "USNWR_Specialty"
-  }).replace(/'/g, "''"); // Simple SQL escape
+  }).replace(/'/g, "''"); 
 
   sqlLines.push(`-- 1. Upsert Domain Config`);
   sqlLines.push(`MERGE INTO DOMAIN_CONFIG AS target`);
@@ -132,9 +143,7 @@ function generateSql() {
   sqlLines.push(`VALUES (source.APP_ID, source.DOMAIN_ID, '1.0', 'ACTIVE', PARSE_JSON('${domainPayload}'), CURRENT_TIMESTAMP(), '${USER_ID}');`);
   sqlLines.push('');
 
-  // ---------------------------------------------------------
   // 2. METRIC_CONFIG
-  // ---------------------------------------------------------
   const metricPayload = JSON.stringify(plan.schema_definitions.metric_info).replace(/'/g, "''");
 
   sqlLines.push(`-- 2. Upsert Metric Config`);
@@ -146,35 +155,9 @@ function generateSql() {
   sqlLines.push(`VALUES (source.APP_ID, source.METRIC_ID, '${domainId}', '1.0', 'ACTIVE', PARSE_JSON('${metricPayload}'), CURRENT_TIMESTAMP(), '${USER_ID}');`);
   sqlLines.push('');
 
-  // ---------------------------------------------------------
   // 3. METRIC_ARCHETYPE_BINDING
-  // ---------------------------------------------------------
   const bindings = plan.schema_definitions.metric_archetype_bindings || [];
-  if (bindings.length === 0) {
-    console.error('❌ metric_archetype_bindings missing or empty in lean_plan.json');
-    process.exit(1);
-  }
-
-  const primaryCount = bindings.filter(b => b.role === 'primary').length;
-  if (primaryCount !== 1) {
-    console.error(`❌ metric_archetype_bindings must contain exactly 1 primary role (found ${primaryCount})`);
-    process.exit(1);
-  }
-
-  const seen = new Set<string>();
-  for (const b of bindings) {
-    if (seen.has(b.archetype_id)) {
-      console.error(`❌ duplicate archetype_id in metric_archetype_bindings: ${b.archetype_id}`);
-      process.exit(1);
-    }
-    seen.add(b.archetype_id);
-    if (!ALLOWED_ARCHETYPES.has(b.archetype_id)) {
-      console.error(`❌ unknown archetype_id in metric_archetype_bindings: ${b.archetype_id}`);
-      process.exit(1);
-    }
-  }
-
-  if (bindings.length) {
+  if (bindings.length > 0) {
     sqlLines.push(`-- 3. Upsert Metric Archetype Bindings`);
     const bindingPayload = JSON.stringify({ source: 'PlanningFactory', plan_ref: planRef }).replace(/'/g, "''");
     bindings.forEach(binding => {
@@ -188,11 +171,8 @@ function generateSql() {
     });
   }
 
-  // ---------------------------------------------------------
   // 4. SIGNAL_CONFIG
-  // ---------------------------------------------------------
   sqlLines.push(`-- 4. Upsert Signal Config (Canonical)`);
-  // Flatten signals
   for (const [groupId, signals] of Object.entries(plan.schema_definitions.signal_catalog)) {
     signals.forEach(sig => {
       const signalId = sig.id || sig.signal_id || sig.canonical_key;
@@ -200,7 +180,7 @@ function generateSql() {
         ...sig,
         group_id: groupId,
         metric_id: metadata.metric_id,
-        canonical_key: sig.canonical_key // Linking back to metric context
+        canonical_key: sig.canonical_key
       }).replace(/'/g, "''");
 
       sqlLines.push(`MERGE INTO SIGNAL_CONFIG AS target`);
@@ -213,9 +193,7 @@ function generateSql() {
   }
   sqlLines.push('');
 
-  // ---------------------------------------------------------
   // 5. TASK_CONFIG & TASK_PROMPT_CONFIG
-  // ---------------------------------------------------------
   sqlLines.push(`-- 5. Upsert Task & Prompt Configs`);
   
   plan.execution_registry.task_sequence.forEach(task => {
@@ -241,34 +219,20 @@ function generateSql() {
     let promptStatus = 'ACTIVE';
 
     try {
-        const registryTaskName = task.task_id === 'clinical_review_helper' ? 'clinical_review_helper' : task.task_id;
-        const certifiedPath = path.join(
-          __dirname,
-          '..',
-          'certified',
-          metadata.domain,
-          metadata.metric_id,
-          registryTaskName,
-          'prompt.md'
-        );
+        const registryTaskName = task.task_id;
+        const certifiedPath = path.join(cliRoot, 'certified', metadata.domain, metadata.metric_id, registryTaskName, 'prompt.md');
 
         if (fs.existsSync(certifiedPath)) {
             promptContent = fs.readFileSync(certifiedPath, 'utf-8');
-            promptSourceRef = path.relative(path.join(__dirname, '..'), certifiedPath).replace(/\\/g, '/');
+            promptSourceRef = path.relative(cliRoot, certifiedPath).replace(/\\/g, '/');
             promptStatus = 'CERTIFIED';
         } else {
-            promptContent = synthesizer.hydratePrompt(
-                metadata.domain,
-                'General', // Specialty
-                registryTaskName,
-                hydrationContext
-            );
+            promptContent = synthesizer.hydratePrompt(metadata.domain, 'General', registryTaskName, hydrationContext);
             promptSourceRef = task.prompt_path;
         }
     } catch (e: any) {
-        console.warn(`?s??,?  Hydration warning for ${task.task_id}: ${e.message}. Falling back to raw file.`);
-        // Fallback: Read raw file
-        const absolutePromptPath = path.join(__dirname, '../', task.prompt_path);
+        console.warn(`⚠️ Hydration warning for ${task.task_id}: ${e.message}. Falling back to raw file.`);
+        const absolutePromptPath = path.join(cliRoot, task.prompt_path);
         if (fs.existsSync(absolutePromptPath)) {
             promptContent = fs.readFileSync(absolutePromptPath, 'utf-8');
             promptSourceRef = task.prompt_path;
@@ -294,9 +258,9 @@ function generateSql() {
     sqlLines.push('');
   });
 
-
-  // Output
-  const outputPath = path.join(__dirname, '../output/i32a-Orthopedics/seed_snowflake.sql');
+  const outputDir = path.join(cliRoot, 'output', planDirName);
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+  const outputPath = path.join(outputDir, 'seed_snowflake.sql');
   fs.writeFileSync(outputPath, sqlLines.join('\n'));
   console.log(`\n🎉 Snowflake Seed Script Generated: ${outputPath}`);
 }

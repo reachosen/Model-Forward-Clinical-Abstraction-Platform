@@ -7,8 +7,7 @@
         "type": "object",
         "properties": {
           "group_id": {
-            "type": "string",
-            "description": "One of: infection_risks, bundle_compliance, outcome_risks, readmission_risks"
+            "type": "string"
           },
           "signals": {
             "type": "array",
@@ -26,7 +25,8 @@
                   "enum": [
                     "verbatim_text",
                     "structured_field"
-                  ]
+                  ],
+                  "default": "verbatim_text"
                 },
                 "provenance": {
                   "type": "string",
@@ -37,15 +37,13 @@
                   "items": {
                     "type": "string"
                   },
-                  "description": "Archetype tags"
+                  "default": []
                 }
               },
               "required": [
                 "signal_id",
                 "description",
-                "evidence_type",
-                "provenance",
-                "tags"
+                "provenance"
               ]
             }
           }

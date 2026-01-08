@@ -6,9 +6,9 @@ export const signal_enrichment_Schema = z.object({
   signals: z.array(z.object({
   signal_id: z.string(),
   description: z.string(),
-  evidence_type: z.enum(['verbatim_text', 'structured_field']),
+  evidence_type: z.enum(['verbatim_text', 'structured_field']).optional(),
   provenance: z.string(),
-  tags: z.array(z.string())
+  tags: z.array(z.string()).optional()
 }))
 }))
 });

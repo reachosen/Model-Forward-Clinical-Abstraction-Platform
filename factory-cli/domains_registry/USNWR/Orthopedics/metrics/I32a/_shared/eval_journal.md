@@ -58,3 +58,5 @@
 ## 2026-01-01 23:04 | golden_set_v2 | SAFE v0 | Pass: 35, Review: 41, Fail: 61 | CR: 0.48, AH: 0.48, AC: 1.00
 
 ## 2026-01-07 03:59 | I32a_batch_1 | SAFE v0 | Pass: 1, Review: 1, Fail: 3 | CR: 0.40, AH: 0.50, AC: 1.00
+
+## 2026-01-08 21:08 | I32a_batch_1 | SAFE v0 | Pass: 0, Review: 1, Fail: 4 | CR: 0.20, AH: 0.30, AC: 1.00
