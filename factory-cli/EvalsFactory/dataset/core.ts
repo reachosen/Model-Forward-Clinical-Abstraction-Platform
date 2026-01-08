@@ -1,6 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { loadEnv } from '../../utils/envConfig';
+import OpenAI from 'openai';
+import { getConcernMetadata } from '../../config/concernRegistry';
+import { BatchStrategy, GenerationScenario, DuetProfile, TaskScenario, CaseContract } from './BatchStrategy';
+import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
 
 loadEnv();
 
@@ -20,7 +24,7 @@ const ARCHETYPE_HINTS: Record<string, string> = {
 
 function collectScenarios(strategy: BatchStrategy): TaskScenario[] {
   if (strategy.task_scenarios) {
-    return Object.values(strategy.task_scenarios).flatMap(ts => ts.scenarios as TaskScenario[]);
+    return Object.values(strategy.task_scenarios).flatMap((ts: any) => ts.scenarios as TaskScenario[]);
   }
   return (strategy.scenarios || []) as TaskScenario[];
 }
@@ -70,7 +74,7 @@ function enforceStrategyGuards(strategy: BatchStrategy) {
     scenario.confounder_tag = confounderTag;
     scenario.new_failure_mode = newFailureMode;
 
-    const expectedSignals = scenario.contract?.expected_signals?.map(s => s.signal_id).filter(Boolean).sort() || [];
+    const expectedSignals = scenario.contract?.expected_signals?.map((s: any) => s.signal_id).filter(Boolean).sort() || [];
     const dedupKey = `${expectedSignals.join('|')}|${confounderTag}`;
     if (dedupKeys.has(dedupKey)) {
       throw new Error(`Duplicate scenario detected on (signal set + confounder_tag): "${label}"`);
@@ -213,7 +217,7 @@ function buildUserPrompt(scenarios: GenerationScenario[], batchIndex: number): s
     if (s.duet) text += `\n   [Knowledge Source]: Apply logic from ${s.duet.knowledge_source_id} (${s.duet.persona}).`;
     if (s.doubt && s.doubt.length > 0) {
       text += `\n   CASE PERTURBATION RULES:`;
-      s.doubt.forEach(d => { text += `\n     - ${d.type.toUpperCase()}: ${d.instruction}`; });
+      s.doubt.forEach((d: any) => { text += `\n     - ${d.type.toUpperCase()}: ${d.instruction}`; });
     }
     return text;
   }).join('\n\n')}\n\nEnsure distinct patient details for each case.`;
@@ -299,7 +303,7 @@ export async function runGenerator(config: GeneratorConfig) {
   enforceStrategyGuards(config.strategy);
 
   let scenarios: GenerationScenario[] = [];
-  if (config.strategy.task_scenarios) scenarios = Object.values(config.strategy.task_scenarios).flatMap(ts => ts.scenarios);
+  if (config.strategy.task_scenarios) scenarios = Object.values(config.strategy.task_scenarios).flatMap((ts: any) => ts.scenarios);
   else if (config.strategy.scenarios) scenarios = config.strategy.scenarios;
 
   const concernId = config.strategy.metric_id;

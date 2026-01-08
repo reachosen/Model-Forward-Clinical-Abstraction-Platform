@@ -1,7 +1,7 @@
-import * as path from 'path';
 import { runGenerator } from './core';
 import { loadBatchStrategy, getAllBatchStrategies } from './BatchStrategy';
 import { loadEnv } from '../../utils/envConfig';
+import { Paths, resolveMetricPath } from '../../utils/pathConfig';
 
 // Load environment variables
 loadEnv();
