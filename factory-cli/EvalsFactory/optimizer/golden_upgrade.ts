@@ -1,98 +1,96 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { I25BatchRunner } from '../validation/runner';
+import { ClinicalEvalEngine } from '../validation/runner';
+import { resolveMetricPath, Paths } from '../../utils/pathConfig';
 
-// Configuration
-const CONCERN_ID = 'I25';
-const FULL_BATCH_DIR = path.join(__dirname, '../../data/flywheel/testcases/batch1_full');
-const FULL_PLAN_PATH = path.join(FULL_BATCH_DIR, 'generation_plan.json');
-const GOLDEN_SET_PATH = path.join(__dirname, '../../data/flywheel/testcases/golden_set.json');
-const HISTORY_FILE = path.join(__dirname, '../../data/flywheel/prompts/prompt_history_lean.json');
+/**
+ * eval:leap Tool (Golden Set Upgrade)
+ * 
+ * Mines failures from the full batch suite and promotes the 
+ * most difficult cases into a new 'Golden Set'.
+ */
 
 async function upgradeGoldenSet() {
-  console.log("🆙 Upgrading Golden Set to Next Difficulty Level...");
+  const args = process.argv.slice(2);
+  const metricFlagIdx = args.indexOf('--metric');
+  const metricId = metricFlagIdx !== -1 ? args[metricFlagIdx + 1] : 'I32a';
 
-  // 1. Get Latest Best Prompt
-  if (!fs.existsSync(HISTORY_FILE)) {
-    throw new Error("No prompt history found. Run the flywheel first.");
-  }
-  const history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
-  const latest = history[history.length - 1];
-  console.log(`   Using Prompt Version v${latest.version} (Score: ${(latest.metrics?.signal_recall * 100).toFixed(1)}%)`);
+  console.log(`\n🆙 Leap Forward: Upgrading Golden Set for ${metricId}...`);
 
-  // 2. Run against Full Batch (Mining Mode)
-  console.log(`   ⛏️  Mining failures from full batch (${FULL_BATCH_DIR})...`);
-  const runner = new I25BatchRunner(CONCERN_ID, FULL_PLAN_PATH, FULL_BATCH_DIR);
-  const report = await runner.run(latest.prompt_text);
-
-  // 3. Identify Failures
-  const failures = report.raw_results.filter((r: any) => 
-    !r.semantic.signals_ok || !r.semantic.summary_ok || !r.semantic.followups_ok
-  );
-
-  console.log(`   Found ${failures.length} remaining failures out of ${report.total_cases}.`);
-
-  if (failures.length === 0) {
-    console.log("   🎉 Amazing! Zero failures in the full batch. Time to generate Batch 2!");
-    return;
-  }
-
-  // 4. Select Diversity of Failures (Max 12)
-  // Prioritize different archetypes to ensure the new set is well-rounded
-  const nextGoldenIds = new Set<string>();
-  const archetypeCounts: Record<string, number> = {};
-  
-  // Sort failures by lowest recall to get the "hardest" ones first
-  failures.sort((a: any, b: any) => (a.scores.signals_recall || 0) - (b.scores.signals_recall || 0));
-
-  failures.forEach((f: any) => {
-    const arc = f.archetype || 'Unknown';
-    if (!archetypeCounts[arc]) archetypeCounts[arc] = 0;
+  try {
+    const metricPath = resolveMetricPath(metricId);
+    const cliRoot = path.join(__dirname, '../../..');
+    const testDataDir = Paths.metricTestcases(metricPath);
     
-    // Take up to 3 of each archetype to force diversity
-    if (archetypeCounts[arc] < 3 && nextGoldenIds.size < 12) {
-      nextGoldenIds.add(f.test_id);
-      archetypeCounts[arc]++;
+    const planDirName = `${metricId.toLowerCase()}-${(metricPath.specialty || 'General').toLowerCase()}`;
+    const planPath = path.join(cliRoot, 'factory-cli/output', planDirName, 'lean_plan.json');
+    const historyFile = path.join(cliRoot, 'factory-cli/data/flywheel/prompts', `prompt_history_${metricId}.json`);
+    const goldenSetPath = path.join(testDataDir, 'golden_set_v3.json');
+
+    // 1. Get Latest Best Prompt
+    if (!fs.existsSync(historyFile)) {
+      throw new Error(`No prompt history found for ${metricId}. Run the flywheel first.`);
     }
-  });
+    const history = JSON.parse(fs.readFileSync(historyFile, 'utf-8'));
+    const latest = history[history.length - 1];
+    console.log(`   Using Latest Prompt Version v${latest.version} (Score: ${(latest.metrics?.signal_recall * 100 || 0).toFixed(1)}%)`);
 
-  // Fill remaining slots if we haven't hit 12
-  if (nextGoldenIds.size < 12) {
-    failures.forEach((f: any) => {
-      if (nextGoldenIds.size < 12) nextGoldenIds.add(f.test_id);
-    });
-  }
+    // 2. Run against Full Batch Suite (Mining Mode)
+    console.log(`   ⛏️  Mining hardest cases from: ${testDataDir}...`);
+    const runner = new ClinicalEvalEngine(metricId, planPath, testDataDir);
+    runner.quiet = true;
+    const report = await runner.run(latest.prompt_text);
 
-  console.log(`   Selected ${nextGoldenIds.size} new hard cases:`, Array.from(nextGoldenIds));
+    // 3. Identify Hardest Failures
+    const failures = report.raw_results.filter((r: any) => 
+      !r.semantic.signals_ok || !r.semantic.summary_ok
+    );
 
-  // 5. Hydrate and Save New Golden Set
-  const goldenCases = [];
-  // Need to read from the actual source files
-  const batchFiles = fs.readdirSync(FULL_BATCH_DIR)
-    .filter(f => f.startsWith('I25_batch_') && f.endsWith('.json'))
-    .map(f => path.join(FULL_BATCH_DIR, f));
+    console.log(`   Found ${failures.length} challenging cases out of ${report.total_cases}.`);
 
-  for (const file of batchFiles) {
-    const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
-    for (const tc of data.test_cases) {
-      if (nextGoldenIds.has(tc.test_id)) {
-        goldenCases.push(tc);
+    if (failures.length === 0) {
+      console.log("   🎉 Amazing! Zero failures found. Current prompt is perfect for this set.");
+      return;
+    }
+
+    // 4. Select Hardest Cases (Max 20)
+    failures.sort((a: any, b: any) => (a.scores.signals_recall || 0) - (b.scores.signals_recall || 0));
+    const selectedCases = failures.slice(0, 20);
+    const selectedIds = new Set(selectedCases.map((f: any) => f.test_id));
+
+    console.log(`   Selected ${selectedCases.length} "Hard Mode" cases for the new Golden Set.`);
+
+    // 5. Materialize v3
+    const finalCases = [];
+    const batchFiles = fs.readdirSync(testDataDir).filter(f => f.includes('_batch_') && f.endsWith('.json'));
+
+    for (const file of batchFiles) {
+      const data = JSON.parse(fs.readFileSync(path.join(testDataDir, file), 'utf-8'));
+      for (const tc of data.test_cases) {
+        if (selectedIds.has(tc.test_id)) {
+          finalCases.push(tc);
+        }
       }
     }
+
+    const output = {
+      metadata: { 
+        version: "v3", 
+        source: "eval:leap mining",
+        mined_at: new Date().toISOString(),
+        parent_version: `v${latest.version}`
+      },
+      test_cases: finalCases
+    };
+
+    fs.writeFileSync(goldenSetPath, JSON.stringify(output, null, 2));
+    console.log(`\n✅ SUCCESS: New Golden Set created: golden_set_v3.json`);
+    console.log(`   🚀 Action: Run eval:optimize again with --dataset golden_set_v3 to conquer the next level!`);
+
+  } catch (error: any) {
+    console.error(`❌ Leap failed: ${error.message}`);
+    process.exit(1);
   }
-
-  const output = {
-    batch_plan: {
-      batch_index: latest.version + 1, // Symbolic level up
-      scenario_count: goldenCases.length,
-      scenarios: goldenCases.map(c => c.description)
-    },
-    test_cases: goldenCases
-  };
-
-  fs.writeFileSync(GOLDEN_SET_PATH, JSON.stringify(output, null, 2));
-  console.log(`   ✅ New Golden Set saved to ${GOLDEN_SET_PATH}`);
-  console.log(`   🚀 You are ready to run the Flywheel again to conquer Level ${latest.version + 1}!`);
 }
 
 upgradeGoldenSet().catch(console.error);

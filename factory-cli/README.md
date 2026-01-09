@@ -522,14 +522,14 @@ The Prompt Refinery is an offline lab for engineering high-quality clinical prom
 | Mission | Command | Purpose |
 | :--- | :--- | :--- |
 | **Optimize** | `npm run missions -- run eval:optimize --metric I32a` | Runs agentic loop to auto-fix prompts. |
+| **Leap** | `npm run missions -- run eval:leap --metric I32a` | Mines failures to build harder test sets. |
 | **Certify** | `npm run missions -- run schema:certify --plan <path>` | Freezes logic into versioned artifacts. |
 | **Seed** | `npm run missions -- run schema:seed --metric I32a` | Generates Snowflake SQL for production. |
 
-#### Metric-Specific Overrides
-The system now supports metric-level prompt overrides. To customize a prompt for a specific metric:
-1. Create a folder: `domains_registry/{FRAMEWORK}/{SPECIALTY}/metrics/{METRIC}/prompts/`
-2. Save your `.md` prompt there (e.g., `event_summary.md`).
-3. The system will automatically prioritize this over the shared domain templates.
+#### Unified Hydration Engine
+Evaluation and Certification are now 100% unified. This ensures that what you test in the lab is exactly what lands in production.
+- **Testing**: `ClinicalEvalEngine` hydrates prompts "just-in-time."
+- **Certification**: `SchemaFactory` hydrates prompts before "freezing" them into `/certified`.
 
 ---
 

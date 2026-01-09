@@ -26,6 +26,22 @@ const DOMAINS_REGISTRY_PATH = path.resolve(__dirname, '../domains_registry');
 // Task IDs for per-task scenario generation
 const TASK_IDS = ['signal_enrichment', 'event_summary', 'followup_questions', 'clinical_review_plan'];
 
+// Global History for Dedup
+const HISTORY_DIR = path.resolve(__dirname, '../data/evaluation');
+const GLOBAL_HISTORY_PATH = path.join(HISTORY_DIR, 'scenario_history.json');
+
+function loadGlobalHistory(): Record<string, string[]> {
+    if (!fs.existsSync(HISTORY_DIR)) fs.mkdirSync(HISTORY_DIR, { recursive: true });
+    if (!fs.existsSync(GLOBAL_HISTORY_PATH)) return {};
+    return JSON.parse(fs.readFileSync(GLOBAL_HISTORY_PATH, 'utf-8'));
+}
+
+function updateGlobalHistory(metricId: string, scenarioIds: string[]) {
+    const history = loadGlobalHistory();
+    history[metricId] = Array.from(new Set([...(history[metricId] || []), ...scenarioIds]));
+    fs.writeFileSync(GLOBAL_HISTORY_PATH, JSON.stringify(history, null, 2));
+}
+
 interface SignalGroup {
   group_id: string;
   display_name: string;
@@ -100,6 +116,8 @@ function deriveTaskScenarios(
   archetype: string
 ): Record<string, TaskScenarioConfig> {
   const taskScenarios: Record<string, TaskScenarioConfig> = {};
+  const globalHistory = loadGlobalHistory();
+  const seenInMetric = new Set(globalHistory[METRIC_ID!] || []);
 
   const slices = [
     { intent: 'KNOWLEDGE', count: 20, description: "Registry Coverage: specific signal detection" },
@@ -112,18 +130,32 @@ function deriveTaskScenarios(
     const scenarios: TaskScenario[] = [];
 
     slices.forEach(slice => {
-      for (let i = 0; i < slice.count; i++) {
-        const signal = semantics.signal_groups[i % semantics.signal_groups.length];
+      let addedForSlice = 0;
+      let attempt = 0;
+      const maxAttempts = 100;
 
-        scenarios.push({
-          id: `${taskId}_${slice.intent.toLowerCase()}_${i + 1}`,
-          type: slice.intent === 'AMBIGUITY' ? 'doubt' : (i % 2 === 0 ? 'pass' : 'fail'),
-          description: `${slice.description} using ${signal?.display_name || 'core'} definitions.`,
-          archetype,
-          contract: {
-            intents: [slice.intent as Intent]
-          } as any
-        });
+      while (addedForSlice < slice.count && attempt < maxAttempts) {
+        const signalIdx = (addedForSlice + attempt) % semantics.signal_groups.length;
+        const signal = semantics.signal_groups[signalIdx];
+        
+        // Create a unique key based on task + signal + intent
+        const scenarioKey = `${taskId}_${slice.intent}_${signal.group_id}`.toLowerCase();
+        
+        // Only add if we haven't seen this specific clinical combination before
+        if (!seenInMetric.has(scenarioKey)) {
+            scenarios.push({
+              id: `${scenarioKey}_v${Date.now()}`,
+              type: slice.intent === 'AMBIGUITY' ? 'doubt' : (addedForSlice % 2 === 0 ? 'pass' : 'fail'),
+              description: `${slice.description} using ${signal?.display_name || 'core'} definitions.`,
+              archetype,
+              contract: {
+                intents: [slice.intent as Intent]
+              }
+            });
+            seenInMetric.add(scenarioKey);
+            addedForSlice++;
+        }
+        attempt++;
       }
     });
 
@@ -216,15 +248,16 @@ try {
 
   // 4. Build strategy
   let newStrategy: BatchStrategy;
+  let flattenedScenarios: any[] = [];
 
   if (AUTO_DERIVE && semantics && semantics.signal_groups.length > 0) {
-    console.log(`   Auto-deriving from ${semantics.signal_groups.length} signal groups`);
+    const taskCount = TASK_IDS.length;
     const taskScenarios = deriveTaskScenarios(semantics, primaryArchetype);
     
-    // Count stats
-    const flattened = Object.values(taskScenarios).flatMap(ts => ts.scenarios);
-    const totalScenarios = flattened.length;
-    const doubtScenarios = flattened.filter(s => s.type === 'doubt').length;
+    flattenedScenarios = Object.values(taskScenarios).flatMap(ts => ts.scenarios);
+    const totalScenarios = flattenedScenarios.length;
+    const doubtScenarios = flattenedScenarios.filter(s => s.type === 'doubt').length;
+    const doubtPct = Math.round((doubtScenarios/totalScenarios)*100);
 
     newStrategy = {
       metric_id: METRIC_ID,
@@ -237,11 +270,35 @@ try {
         doubt_mix: ['ambiguity', 'missing_data', 'conflict']
       }
     };
-    console.log(`   Generated ${totalScenarios} total scenarios (${doubtScenarios} doubt)`);
+
+    console.log(`[1/3] STRATEGY · Balanced-50 Per Task`);
+    console.log(`───────────────────────────────────`);
+    console.log(`  tasks        : ${taskCount}`);
+    console.log(`  scenarios    : ${totalScenarios}`);
+    console.log(`  doubt cases  : ${doubtScenarios} (${doubtPct}%)`);
+    console.log(`\n  rubric hooks (intent slices)`);
+    console.log(`  ├─ KNOWLEDGE : 20 cases (Recall/CR)`);
+    console.log(`  ├─ AMBIGUITY : 15 cases (Doubt/DR)`);
+    console.log(`  ├─ SAFETY    : 10 cases (Evidence/AH)`);
+    console.log(`  └─ SYNTHESIS : 5  cases (Context/AC)`);
+
+    console.log(`\n  task set`);
+    TASK_IDS.forEach((id, i) => {
+        const char = i === TASK_IDS.length - 1 ? '└─' : '├─';
+        console.log(`  ${char} ${id}`);
+    });
+    
+    const isOverwrite = fs.existsSync(REGISTRY_PATH);
+    console.log(`\n  registry`);
+    console.log(`  ├─ file       : batch_strategies.metadata.json`);
+    console.log(`  ├─ action     : ${isOverwrite ? 'overwrite' : 'create'}`);
+    console.log(`  └─ status     : ✅ updated`);
+    console.log(`\n  ✔ strategy ready`);
 
   } else {
     console.log(`   Using derivation from Lean Plan signal_catalog`);
     const scenarios = deriveLegacyScenarios(leanPlan, primaryArchetype);
+    flattenedScenarios = scenarios;
 
     newStrategy = {
       metric_id: METRIC_ID,
@@ -277,6 +334,11 @@ try {
     }
 
     fs.writeFileSync(REGISTRY_PATH, JSON.stringify(registry, null, 2));
+    
+    // Update Global History
+    const newScenarioKeys = flattenedScenarios.map((s: any) => s.id?.split('_v')[0]).filter(Boolean) as string[];
+    updateGlobalHistory(METRIC_ID!, newScenarioKeys);
+
     console.log(`✅ Successfully updated Batch Strategy Registry for ${METRIC_ID}`);
   }
 

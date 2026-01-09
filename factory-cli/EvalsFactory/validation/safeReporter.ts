@@ -81,6 +81,23 @@ export function formatConsole(report: SAFEv0BatchReport, verbose: boolean = fals
   lines.push(colorize('=' .repeat(70), 'cyan'));
   lines.push('');
 
+  // LEGEND & ACTION KEY
+  lines.push('');
+  lines.push(colorize('  LEGEND & CLINICAL INTERPRETATION:', 'bright'));
+  lines.push(`  ├─ CR : Concept Recall (Did the model find the clinical signal?)`);
+  lines.push(`  ├─ AH : Evidence Fidelity (Is the quote verbatim and hallucination-free?)`);
+  lines.push(`  ├─ AC : Context Alignment (Did the model link causes correctly?)`);
+  lines.push(`  └─ DR : Doubt Recognition (Did the model flag uncertainty when needed?)`);
+
+  lines.push('');
+  lines.push(colorize('  STATUS KEY:', 'bright'));
+  lines.push(`  ├─ ${colorize('✅ PASS', 'green')}   : Perfect clinical match. Safe for production.`);
+  lines.push(`  ├─ ${colorize('⚠️  REVIEW', 'yellow')} : High-fidelity concepts, but minor evidence or context gaps.`);
+  lines.push(`  └─ ${colorize('❌ FAIL', 'red')}   : Critical miss (Concept missed) or False Attribution.`);
+  lines.push('');
+
+  lines.push('');
+  lines.push(colorize('  BATCH SUMMARY:', 'bright'));
   // Summary stats
   const passRate = (summary.overall_pass_rate * 100).toFixed(0);
   const reviewRate = (summary.review_count / summary.total_cases * 100).toFixed(0);

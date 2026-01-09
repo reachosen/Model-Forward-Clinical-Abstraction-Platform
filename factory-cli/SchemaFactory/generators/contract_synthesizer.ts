@@ -1,11 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { getSignalEnrichmentVariables } from '../../shared/context_builders/signalEnrichment';
-import { getExclusionCheckVariables } from '../../shared/context_builders/exclusionCheck';
-import { getEventSummaryVariables } from '../../shared/context_builders/eventSummary';
-import { getFollowupQuestionsVariables } from '../../shared/context_builders/followupQuestions';
-import { getClinicalReviewPlanVariables } from '../../shared/context_builders/clinicalReviewPlan';
-import { getClinicalReviewHelperVariables } from '../../shared/context_builders/clinicalReviewHelper';
 
 /**
  * ContractSynthesizer
@@ -63,20 +57,11 @@ export class ContractSynthesizer {
       throw new Error(`Template not found: ${templatePath}`);
     }
 
-    let template = fs.readFileSync(templatePath, 'utf-8');
+    const template = fs.readFileSync(templatePath, 'utf-8');
     
-    // Get variables using shared builders
-    const variables = this.getVariablesForTask(taskType, context);
-
-    // Hydrate
-    for (const [key, value] of Object.entries(variables)) {
-      template = template.split(`{{${key}}}`).join(value);
-    }
-
-    // Clean up simple handlebars conditionals used in templates.
-    template = template.replace(/{{#if\s+[^}]+}}/g, '').replace(/{{\/if}}/g, '');
-
-    return template;
+    // V11: Use Unified Hydration Engine
+    const { hydratePromptText } = require('../../PlanningFactory/utils/promptBuilder');
+    return hydratePromptText(taskType, template, context);
   }
 
   /**
@@ -144,25 +129,6 @@ export class ContractSynthesizer {
       return 'z.null()';
     }
 
-    return 'z.unknown()';
-  }
-
-  private getVariablesForTask(taskType: string, context: any): Record<string, string> {
-    switch (taskType) {
-      case 'signal_enrichment':
-        return getSignalEnrichmentVariables(context);
-      case 'exclusion_check':
-        return getExclusionCheckVariables(context);
-      case 'event_summary':
-        return getEventSummaryVariables(context);
-      case 'followup_questions':
-        return getFollowupQuestionsVariables(context);
-      case 'clinical_review_plan':
-        return getClinicalReviewPlanVariables(context);
-      case 'clinical_review_helper':
-        return getClinicalReviewHelperVariables(context);
-      default:
-        return {};
-    }
+    return `z.unknown()`;
   }
 }

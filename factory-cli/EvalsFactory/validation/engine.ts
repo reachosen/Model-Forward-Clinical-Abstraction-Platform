@@ -104,7 +104,40 @@ export async function runI25Engine(input: {
   debug?: boolean;
 }): Promise<EngineOutput> {
   
+  // V11: Always ensure rich hydration, even for custom prompts
+  const domain = detectDomain(input.concern_id);
+  const loader = SemanticPacketLoader.getInstance();
+  const packet = loader.load(domain, input.concern_id);
+
   let promptToUse = input.systemPrompt || buildSmartPrompt(input.concern_id);
+
+  // If a custom systemPrompt is provided (from the Optimizer), wrap it in the clinical frame
+  if (input.systemPrompt && packet) {
+      const builder = require('../../PlanningFactory/utils/promptBuilder');
+      const metricContextString = builder.buildMetricContextString(packet);
+      const metricName = packet.metrics[input.concern_id]?.metric_name;
+      const primaryArch = packet.metrics[input.concern_id]?.primary_archetype || 'Preventability_Detective';
+      
+      // Perform full hydration of coreBody placeholders (e.g. {{signalGroupIdsComma}})
+      const context = {
+          concern_id: input.concern_id,
+          domain: domain,
+          primary_archetype: primaryArch,
+          semantic_context: {
+              packet: packet,
+              ranking: { specialty_name: domain }
+          }
+      };
+      const hydratedCoreBody = builder.hydratePromptText('signal_enrichment', input.systemPrompt, context);
+
+      const roleName = builder.buildDynamicRoleName('signal_enrichment', domain, metricName, [primaryArch]);
+      
+      promptToUse = builder.buildMetricFramedPrompt({
+          roleName,
+          coreBody: hydratedCoreBody,
+          metricContext: metricContextString
+      });
+  }
   
   // Global Safety Guard: OpenAI requires the word 'json' in the system prompt for json_object mode
   if (!promptToUse.toLowerCase().includes('json')) {

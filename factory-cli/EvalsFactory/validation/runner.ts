@@ -32,13 +32,13 @@ function extractArchetype(description: string): Archetype {
   return match ? (match[1] as Archetype) : 'Unknown';
 }
 
-export class BatchRunner {
+export class ClinicalEvalEngine {
   private concernId: string;
   private planPath: string;
   private testDataDir: string;
   private evalConfig: EvalConfig;
   private customPattern: string | null = null; // Filter for specific files
-  public quiet: boolean = false; // Added for lean logging
+  public quiet: boolean = true; // Default to quiet mode for cleaner terminal
 
   constructor(concernId: string, planPath: string, testDataDir: string, evalConfig?: EvalConfig) {
     this.concernId = concernId;
@@ -57,7 +57,6 @@ export class BatchRunner {
         // FALLBACK: Try lean_plan.json
         const leanPath = this.planPath.replace('plan.json', 'lean_plan.json');
         if (fs.existsSync(leanPath)) {
-            console.log(`   ℹ️  BatchRunner: plan.json not found, using ${leanPath}`);
             this.planPath = leanPath;
         } else {
             throw new Error(`Plan not found: ${this.planPath}`);
@@ -79,107 +78,100 @@ export class BatchRunner {
     }
 
     const results: ValidationResult[] = [];
+    const CONCURRENCY_LIMIT = 5;
+
+    // 2.5 Pre-calculate total sampled cases for global progress
+    let totalSampledCases = 0;
+    for (const file of batchFiles) {
+        const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
+        const allTestCases: TestCase[] = data.test_cases;
+        totalSampledCases += sampleCases(allTestCases, this.evalConfig).length;
+    }
+
+    let globalCompleted = 0;
+    const suiteStartTime = Date.now();
 
     // 3. Process each batch
     for (const file of batchFiles) {
       const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
-      const batchPlan = data.batch_plan || data.batch_strategy; // Handle both naming conventions
+      const batchPlan = data.batch_plan || data.batch_strategy; 
       const allTestCases: TestCase[] = data.test_cases;
 
-      // C11: Apply sampling for fast iteration mode
       const testCases = sampleCases(allTestCases, this.evalConfig);
-      if (!this.quiet) {
-          console.log(`Processing ${file} (${testCases.length}/${allTestCases.length} cases)...`);
-      } else {
-          // process.stdout.write(`   🏃 Validating ${testCases.length} cases: `);
-      }
-
-      for (let i = 0; i < testCases.length; i++) {
-        const tc = testCases[i];
-        const scenario = batchPlan?.scenarios?.[i];
+      
+      // Parallel Execution with Concurrency Limit
+      for (let i = 0; i < testCases.length; i += CONCURRENCY_LIMIT) {
+        const chunk = testCases.slice(i, i + CONCURRENCY_LIMIT);
         
-        // Extract scenario metadata
-        const type = (scenario?.type || 'unknown').toUpperCase();
-        const doubtType = (scenario?.doubt?.[0]?.type || 'NONE').toUpperCase();
+        await Promise.all(chunk.map(async (tc, chunkIdx) => {
+            const scenario = batchPlan?.scenarios?.[i + chunkIdx];
+            const archetype = (scenario as any)?.archetype || extractArchetype(tc.description);
+
+            // Run Engine
+            const output = await runI25Engine({
+              concern_id: this.concernId,
+              patient_payload: tc.patient_payload,
+              metadata: { test_id: tc.test_id, batch_index: batchPlan?.batch_index },
+              systemPrompt 
+            });
+
+            // Process results
+            if (output.summary === "ENGINE_ERROR") {
+                const errKey = output.error_message?.includes('json') ? 'ERROR_400_JSON_FORMAT' : 'LLM_ENGINE_ERROR';
+                results.push({
+                    test_id: tc.test_id,
+                    concern_id: tc.concern_id,
+                    archetype,
+                    structural: { passed: false, errors: [errKey] },
+                    semantic: { errors: [output.error_message || 'Unknown error'] },
+                    scores: { signals_recall: 0, summary_coverage: 0, followup_coverage: null },
+                    engine_output: output
+                } as any);
+                return;
+            }
+
+            const structural = validateStructural(output);
+            let semantic = { signals_ok: false, summary_ok: false, followups_ok: false, enrichment_ok: false, errors: [] as string[] };
+            let scores = { signals_recall: 0 as number | null, summary_coverage: 0 as number | null, followup_coverage: 0 as number | null };
+
+            if (structural.passed) {
+              const sigVal = validateSignals(tc, output);
+              const sumVal = validateSummary(tc, output);
+              semantic = { signals_ok: sigVal.ok, summary_ok: sumVal.ok, followups_ok: true, enrichment_ok: true, errors: [...sigVal.errors, ...sumVal.errors] };
+              scores = { signals_recall: sigVal.recall, summary_coverage: sumVal.coverage, followup_coverage: null };
+            }
+
+            results.push({
+              test_id: tc.test_id,
+              concern_id: tc.concern_id,
+              archetype,
+              batch_index: batchPlan?.batch_index || null,
+              scenario_label: (scenario as any)?.description || tc.description || "",
+              structural,
+              semantic,
+              scores,
+              engine_output: output
+            });
+        }));
+
+        // Single-line GLOBAL progress update with ETA
+        globalCompleted += chunk.length;
+        const totalPct = Math.round((globalCompleted / totalSampledCases) * 100);
         
-        let scenarioDescription = (scenario as any)?.description || tc.description || "";
+        // Calculate ETA
+        const elapsedMs = Date.now() - suiteStartTime;
+        const msPerCase = elapsedMs / globalCompleted;
+        const remainingCases = totalSampledCases - globalCompleted;
+        const remainingMs = remainingCases * msPerCase;
+        
+        const etaMinutes = Math.floor(remainingMs / 60000);
+        const etaSeconds = Math.floor((remainingMs % 60000) / 1000);
+        const etaStr = remainingCases > 0 ? `${etaMinutes}m ${etaSeconds}s` : '0s';
 
-        let archetype = (scenario as any)?.archetype || extractArchetype(tc.description);
-
-        if (this.quiet) {
-            console.log(`   [${tc.test_id}] | ${archetype.padEnd(25)} | ${type.padEnd(7)} | Doubt: ${doubtType}`);
-            console.log(`   INTENT: "${scenarioDescription.slice(0, 100)}..."`);
-            const snippet = tc.patient_payload.slice(0, 120).replace(/\n/g, ' ');
-            console.log(`   DATA:   "${snippet}..."`);
-        }
-
-        // Run Engine
-        const output = await runI25Engine({
-          concern_id: this.concernId,
-          patient_payload: tc.patient_payload,
-          metadata: { test_id: tc.test_id, batch_index: batchPlan?.batch_index },
-          systemPrompt // Pass the prompt if provided
-        });
-
-        // Capture Engine Errors
-        if (output.summary === "ENGINE_ERROR") {
-            const errKey = output.error_message?.includes('json') ? 'ERROR_400_JSON_FORMAT' : 'LLM_ENGINE_ERROR';
-            const vResult: any = {
-                test_id: tc.test_id,
-                error_type: errKey,
-                structural: { passed: false, errors: [errKey] },
-                semantic: { errors: [output.error_message || 'Unknown error'] },
-                scores: { signals_recall: 0 }
-            };
-            results.push(vResult);
-            continue;
-        }
-
-        const structural = validateStructural(output);
-        let semantic = { signals_ok: false, summary_ok: false, followups_ok: false, enrichment_ok: false, errors: [] as string[] };
-        let scores = { signals_recall: 0 as number | null, summary_coverage: 0 as number | null, followup_coverage: 0 as number | null };
-
-        if (structural.passed) {
-          const sigVal = validateSignals(tc, output);
-          const sumVal = validateSummary(tc, output);
-          
-          semantic = { 
-              signals_ok: sigVal.ok, 
-              summary_ok: sumVal.ok, 
-              followups_ok: true, 
-              enrichment_ok: true, 
-              errors: [...sigVal.errors, ...sumVal.errors] 
-          };
-          scores = { 
-              signals_recall: sigVal.recall, 
-              summary_coverage: sumVal.coverage, 
-              followup_coverage: null 
-          };
-        }
-
-        if (this.quiet) {
-            const metricKey = this.concernId === 'I32a' && output.summary !== 'ENGINE_ERROR' ? 'Summary' : 'Recall';
-            const scoreVal = (metricKey === 'Summary' ? scores.summary_coverage : scores.signals_recall);
-            const scoreDisplay = (structural.passed && scoreVal !== null ? (scoreVal * 100).toFixed(0) : '0');
-            const status = structural.passed ? '✓' : '❌';
-            console.log(`   OUT:  ${status} ${metricKey}: ${scoreDisplay}% | Summary: ${output.summary.slice(0, 60)}...`);
-            console.log('   ' + '─'.repeat(70));
-        }
-
-        results.push({
-          test_id: tc.test_id,
-          concern_id: tc.concern_id,
-          archetype,
-          batch_index: batchPlan?.batch_index || null,
-          scenario_label: scenarioDescription,
-          structural,
-          semantic,
-          scores,
-          engine_output: output
-        });
+        process.stdout.write(`\r   🏃 progress: ${totalPct}% (${globalCompleted}/${totalSampledCases}) | ETA: ${etaStr}    `);
       }
-      if (this.quiet) process.stdout.write(' Done.\n');
     }
+    process.stdout.write('\n');
 
     return this.aggregate(results);
   }

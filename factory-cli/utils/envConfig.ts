@@ -22,4 +22,9 @@ export function loadEnv() {
         dotenv.config({ path: altPath });
     }
   }
+
+  // Default REFINERY_QUIET to true to suppress JSON observation logs in terminal
+  if (process.env.REFINERY_QUIET === undefined) {
+    process.env.REFINERY_QUIET = 'true';
+  }
 }

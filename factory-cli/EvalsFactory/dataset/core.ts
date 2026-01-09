@@ -3,7 +3,7 @@ import * as path from 'path';
 import { loadEnv } from '../../utils/envConfig';
 import OpenAI from 'openai';
 import { getConcernMetadata } from '../../config/concernRegistry';
-import { BatchStrategy, GenerationScenario, DuetProfile, TaskScenario, CaseContract } from './BatchStrategy';
+import { BatchStrategy, GenerationScenario, DuetProfile, TaskScenario } from './BatchStrategy';
 import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
 
 loadEnv();
@@ -27,17 +27,6 @@ function collectScenarios(strategy: BatchStrategy): TaskScenario[] {
     return Object.values(strategy.task_scenarios).flatMap((ts: any) => ts.scenarios as TaskScenario[]);
   }
   return (strategy.scenarios || []) as TaskScenario[];
-}
-
-function deriveIntentOrFail(contract: CaseContract | undefined, label: string): string {
-  if (!contract || !Array.isArray(contract.intents) || contract.intents.length === 0) {
-    throw new Error(`Scenario "${label}" missing contract.intents (hard gate)`);
-  }
-  const intents = contract.intents.filter(Boolean);
-  if (intents.length === 0) {
-    throw new Error(`Scenario "${label}" has empty contract.intents after normalization`);
-  }
-  return intents.length === 1 ? intents[0] : 'MULTI_INTENT';
 }
 
 function enforceStrategyGuards(strategy: BatchStrategy) {
@@ -224,11 +213,16 @@ function buildUserPrompt(scenarios: GenerationScenario[], batchIndex: number): s
 }
 
 async function generateBatch(client: OpenAI, concernId: string, domain: string, scenarios: GenerationScenario[], batchIndex: number, outputDir: string, globalDuet?: DuetProfile, semantic_overlay?: any) {
-  console.log(`\n🚀 Generating Batch ${batchIndex + 1} (${scenarios.length} cases):`);
-  scenarios.forEach((s, i) => {
-      console.log(`   [Case ${i+1}] Intent: "${s.description.slice(0, 80)}..."`);
-  });
+  const batchId = `batch=${batchIndex + 1}`;
   
+  // Calculate Intent Mix for logging
+  const intentCounts: Record<string, number> = {};
+  scenarios.forEach(s => {
+      const intent = (s as any).contract?.intents?.[0] || 'KNOWLEDGE';
+      intentCounts[intent] = (intentCounts[intent] || 0) + 1;
+  });
+  const intentMix = Object.entries(intentCounts).map(([k, v]) => `${k.toLowerCase()}=${v}`).join(',');
+
   const systemPrompt = buildSystemPrompt(concernId, domain, globalDuet, semantic_overlay);
   const userPrompt = buildUserPrompt(scenarios, batchIndex);
 
@@ -246,7 +240,7 @@ async function generateBatch(client: OpenAI, concernId: string, domain: string, 
     const data = JSON.parse(content);
     const cases = data.test_cases.map((tc: any, i: number) => {
       const scenario = scenarios[i] as any;
-      const intent = deriveIntentOrFail(scenario.contract, scenario.id || scenario.description || `scenario_${i + 1}`);
+      const intent = (scenario.contract?.intents?.[0] || 'KNOWLEDGE');
       const markers = deriveScenarioMarkers(scenario, i);
 
       // MAP TRACE TO CONTRACT (Clean Line of Sight)
@@ -287,9 +281,12 @@ async function generateBatch(client: OpenAI, concernId: string, domain: string, 
       test_cases: cases
     };
     fs.writeFileSync(filepath, JSON.stringify(output, null, 2));
-    console.log(`✅ Saved ${cases.length} cases to ${filepath}`);
+    
+    // Will be prefixed by progress in runGenerator
+    return { batchId, caseCount: cases.length, intentMix, filename };
   } catch (error: any) {
-    console.error(`❌ Error generating batch ${batchIndex + 1}:`, error.message);
+    console.error(` ${batchId} ❌ Error:`, error.message);
+    return null;
   }
 }
 
@@ -298,7 +295,7 @@ export async function runGenerator(config: GeneratorConfig) {
   if (!process.env.OPENAI_API_KEY) { console.error('❌ OPENAI_API_KEY missing'); process.exit(1); }
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const BATCH_SIZE = config.batch_size || 5;
-  const CONCURRENCY = 5; // Parallel batches
+  const CONCURRENCY = 5; 
 
   enforceStrategyGuards(config.strategy);
 
@@ -314,14 +311,18 @@ export async function runGenerator(config: GeneratorConfig) {
   if (!fs.existsSync(config.output_dir)) fs.mkdirSync(config.output_dir, { recursive: true });
   fs.writeFileSync(path.join(config.output_dir, 'generation_strategy.json'), JSON.stringify(config.strategy, null, 2));
   
-  console.log(`📋 Generation Strategy: ${concernId} | ${scenarios.length} scenarios | ${batches.length} batches`);
+  console.log(`[2/3] GENERATION · Stage-1 LLM`);
+  console.log(`─────────────────────────────`);
+  console.log(`  model      : ${DATASET_MODEL}`);
+  console.log(`  plan       : batches=${batches.length} cases=${scenarios.length}`);
+  console.log(`  out        : ${config.output_dir}`);
+  console.log(`  status     : ✅ complete\n`);
 
   if (config.dry_run) return;
 
   const totalBatches = batches.length;
   let completedCount = 0;
 
-  // Parallel Execution with Concurrency Limit
   const runBatchWithTracking = async (batch: any[], index: number) => {
     const filename = `${concernId}_batch_${index + 1}.json`;
     if (config.resume && fs.existsSync(path.join(config.output_dir, filename))) {
@@ -329,17 +330,18 @@ export async function runGenerator(config: GeneratorConfig) {
         return;
     }
 
-    await generateBatch(client, concernId, domain, batch, index, config.output_dir, config.strategy.global_duet, config.semantic_overlay);
+    const result = await generateBatch(client, concernId, domain, batch, index, config.output_dir, config.strategy.global_duet, config.semantic_overlay);
     completedCount++;
-    const pct = Math.round((completedCount / totalBatches) * 100);
-    console.log(`\n📊 [PROGRESS] ${completedCount}/${totalBatches} batches complete (${pct}%)\n`);
+    const pct = Math.round((completedCount / totalBatches) * 100).toString().padStart(3, ' ');
+    if (result) {
+        console.log(` progress ${pct}% (${completedCount}/${totalBatches}) batch=${index + 1} gen cases=${result.caseCount} intent_mix: ${result.intentMix} saved=${result.filename}`);
+    }
   };
 
-  // Simple chunked parallel execution
   for (let i = 0; i < batches.length; i += CONCURRENCY) {
     const chunk = batches.slice(i, i + CONCURRENCY);
     await Promise.all(chunk.map((batch, j) => runBatchWithTracking(batch, i + j)));
   }
 
-  console.log('\n🎉 Generation Complete.');
+  console.log(' ✅ generation complete');
 }

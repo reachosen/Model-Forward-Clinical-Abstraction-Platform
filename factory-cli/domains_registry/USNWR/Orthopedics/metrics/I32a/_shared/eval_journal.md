@@ -60,3 +60,13 @@
 ## 2026-01-07 03:59 | I32a_batch_1 | SAFE v0 | Pass: 1, Review: 1, Fail: 3 | CR: 0.40, AH: 0.50, AC: 1.00
 
 ## 2026-01-08 21:08 | I32a_batch_1 | SAFE v0 | Pass: 0, Review: 1, Fail: 4 | CR: 0.20, AH: 0.30, AC: 1.00
+
+## 2026-01-08 22:55 | I32a_batch_1 | SAFE v0 | Pass: 0, Review: 0, Fail: 5 | CR: 0.00, AH: 0.00, AC: 1.00
+
+## 2026-01-08 22:56 | I32a_batch_1 | SAFE v0 | Pass: 0, Review: 1, Fail: 4 | CR: 0.20, AH: 0.30, AC: 1.00
+
+## 2026-01-09 01:14 | golden_set_v2 | SAFE v0 | Pass: 41, Review: 39, Fail: 39 | CR: 0.59, AH: 0.55, AC: 1.00
+
+## 2026-01-09 01:18 | golden_set_v2 | SAFE v0 | Pass: 43, Review: 39, Fail: 37 | CR: 0.60, AH: 0.58, AC: 1.00
+
+## 2026-01-09 01:21 | golden_set_v2 | SAFE v0 | Pass: 44, Review: 36, Fail: 39 | CR: 0.59, AH: 0.58, AC: 1.00

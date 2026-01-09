@@ -25,12 +25,16 @@ async function main() {
         process.exit(1);
     }
 
-    console.log(`
-🚀 Starting Eval Roundtrip for ${metricId}...`);
-
-    // 1. Resolve Plan Path
     const metricPath = resolveMetricPath(metricId);
     const cliRoot = Paths.cliRoot();
+    const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
+    
+    console.log(`\n🚀 eval:roundtrip metric=${metricId} run=${now}`);
+    console.log(`\n  paths`);
+    console.log(`  ├─ defs : ${path.join(Paths.metric(metricPath), 'definitions')}`);
+    console.log(`  └─ out  : ${Paths.metricTestcases(metricPath)}\n`);
+
+    // 1. Resolve Plan Path
     let planPath = path.join(cliRoot, 'output', `${metricId.toLowerCase()}-${metricPath.specialty?.toLowerCase()}`, 'plan.json');
     
     if (!fs.existsSync(planPath)) {
@@ -47,7 +51,7 @@ async function main() {
     try {
         // Step 1: Derive Strategy
         console.log(`
---- [1/3] Deriving Balanced 50 Strategy ---`);
+--- [1/3] Deriving Balanced 50 Per Task Strategy ---`);
         execSync(`npx ts-node tools/derive-strategy.ts --metric ${metricId} --plan "${planPath}" --auto-derive`, { stdio: 'inherit', cwd: cliRoot });
 
         // Step 2: Generate Raw Cases
@@ -87,10 +91,93 @@ async function main() {
         // Run Accountant on the consolidated suite
         execSync(`npx ts-node tools/accountant.ts "${rawSuitePath}" ${metricId}`, { stdio: 'inherit', cwd: cliRoot });
 
-        console.log(`
-✅ Roundtrip Complete for ${metricId}!`);
-        console.log(`   Artifacts ready in: ${testcasesDir}`);
-        console.log(`   Run scorecard with: npx ts-node bin/planner.ts safe:score -c ${metricId} -b golden_set_v2`);
+        // Step 4: Display Samples for Review
+        const goldenPath = path.join(testcasesDir, 'golden_set_v2.json');
+        const isVerbose = process.argv.includes('--verbose');
+
+        if (fs.existsSync(goldenPath)) {
+            const golden = JSON.parse(fs.readFileSync(goldenPath, 'utf-8'));
+            const cases = golden.test_cases || [];
+            if (cases.length > 0) {
+                console.log(`\n  sample generated testcases (random 5 from golden_set_v2)`);
+                console.log(`  └─ constraints.global=[EF]`);
+                const shuffled = cases.sort(() => 0.5 - Math.random());
+                const selected = shuffled.slice(0, 5);
+                
+                const RUBRIC: Record<string, any> = {
+                    'KNOWLEDGE': { code: 'CR', label: 'Recall', role: 'positive / coverage' },
+                    'AMBIGUITY': { code: 'AH', label: 'Ambiguity Handling', role: 'ambiguity' },
+                    'SAFETY':    { code: 'AC-NEG', label: 'Attribution Control', role: 'hard_negative' },
+                    'SYNTHESIS': { code: 'AC', label: 'Context & Attribution', role: 'synthesis / causal' }
+                };
+
+                selected.forEach((c: any, i: number) => {
+                    const char = i === selected.length - 1 ? '└─' : '├─';
+                    const intent = c.metadata?.intent || 'KNOWLEDGE';
+                    const dim = RUBRIC[intent] || RUBRIC['KNOWLEDGE'];
+                    
+                    // 1-Line Summary
+                    console.log(`  ${char} ${c.test_id} | ${dim.code} | ${c.description}`);
+
+                    // 2. [EXPECT] Block (Always visible)
+                    const expectedSignals = c.contract?.expected_signals?.map((s: any) => s.signal_id).join(', ');
+                    
+                    if (dim.code === 'CR') {
+                        console.log(`     └─ EXPECT required : must_find: [${expectedSignals}]`);
+                    } else if (dim.code === 'AC') {
+                        console.log(`     ├─ EXPECT required : must_find: [${expectedSignals}] (multi-signal chain)`);
+                        console.log(`     └─ EXPECT forbidden: must_not_find: incorrect_cause`);
+                    } else if (dim.code === 'AH') {
+                        console.log(`     ├─ EXPECT required : must_surface: contradiction`);
+                        console.log(`     └─ EXPECT forbidden: must_resolve_without_evidence`);
+                    } else if (dim.code === 'AC-NEG') {
+                        console.log(`     ├─ EXPECT required : must_find: unplanned_admission`);
+                        console.log(`     └─ EXPECT forbidden: must_not_find: metric_related_complication`);
+                    }
+
+                    if (isVerbose) {
+                        // 1. [META] Block
+                        console.log(`     [META]`);
+                        console.log(`       code        : ${dim.code}`);
+                        console.log(`       dim         : ${dim.label}`);
+                        console.log(`       role        : ${dim.role}`);
+                        console.log(`       constraints : [EF]`);
+
+                        // 2. [EXPECT] Block
+                        console.log(`\n     [EXPECT]`);
+                        const expectedSignals = c.contract?.expected_signals?.map((s: any) => s.signal_id).join(', ');
+                        
+                        if (dim.code === 'CR') {
+                            console.log(`       required  : must_find: [${expectedSignals}]`);
+                        } else if (dim.code === 'AC') {
+                            console.log(`       required  : must_find: [${expectedSignals}] (multi-signal chain)`);
+                            console.log(`       forbidden : must_not_find: incorrect_cause`);
+                        } else if (dim.code === 'AH') {
+                            console.log(`       required  : must_surface: contradiction`);
+                            console.log(`       forbidden : must_resolve_without_evidence`);
+                        } else if (dim.code === 'AC-NEG') {
+                            console.log(`       required  : must_find: unplanned_admission`);
+                            console.log(`       forbidden : must_not_find: metric_related_complication`);
+                        }
+                        
+                        console.log(`       fidelity  : must_cite: verbatim_provenance`);
+                        console.log(`                   forbidden: hallucination`);
+
+                        // 3. [TEXT] Block
+                        console.log(`\n     [TEXT]`);
+                        const lines = c.patient_payload.split('\n');
+                        lines.forEach((line: string) => {
+                            console.log(`       ${line}`);
+                        });
+                        console.log(`\n`); 
+                    }
+                });
+            }
+        }
+
+        console.log(`\n✔ eval:roundtrip complete metric=${metricId}`);
+        console.log(`\n  next →`);
+        console.log(`  npx ts-node bin/planner.ts safe:score -c ${metricId} -b golden_set_v2\n`);
 
     } catch (error: any) {
         console.error(`

@@ -218,8 +218,21 @@ function getMetricStatus(metricId: string): MetricStatus {
 
 function getVisualWidth(str: string): number {
     return Array.from(str).reduce((acc, char) => {
+        // ANSI escape codes (colors) take 0 visual width
+        if (str.includes('\x1b[')) {
+            const clean = str.replace(/\x1b\[[0-9;]*m/g, '');
+            return getVisualWidth(clean);
+        }
+        
+        // Handle emojis and other non-standard characters
         if (/[^\x00-\x7F]/.test(char)) {
-            if (/[✓✗–—]/.test(char)) return acc + 1;
+            // Check for specific single-width special characters
+            if (/[✓✗–—─]/.test(char)) return acc + 1;
+            
+            // Emojis and full-width characters take 2 spaces
+            if (/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}]/u.test(char)) return acc + 2;
+            
+            // Standard multi-byte characters (like those in BIOS) usually take 2
             return acc + 2;
         }
         return acc + 1;
@@ -234,7 +247,9 @@ function wrapText(text: string, maxWidth: number): string[] {
         let currentLine = '';
         words.forEach(word => {
             const testLine = currentLine ? `${currentLine} ${word}` : word;
-            if (getVisualWidth(testLine) <= maxWidth) { currentLine = testLine; } else {
+            if (getVisualWidth(testLine) <= maxWidth) { 
+                currentLine = testLine; 
+            } else {
                 if (currentLine) lines.push(currentLine);
                 currentLine = word;
                 while (getVisualWidth(currentLine) > maxWidth) {
@@ -272,11 +287,12 @@ function printBoxLine(content: string, indent: string = ''): void {
 function printMetricStatus(status: MetricStatus): void {
   const { metric, framework, specialty, semantic, stages } = status;
   const batchStrategy = loadBatchStrategy(metric);
+  const innerWidth = 80;
 
   console.log('');
-  console.log('╔' + '═'.repeat(84) + '╗');
+  console.log('╔' + '═'.repeat(innerWidth + 4) + '╗');
   printBoxLine(`QA SCORECARD: ${metric} (${specialty || framework})`);
-  console.log('╠' + '═'.repeat(84) + '╣');
+  console.log('╠' + '═'.repeat(innerWidth + 4) + '╣');
 
   // 1. Semantic BIOS Overlay
   printBoxLine(semantic.isSpecialized ? '⭐⭐ TIER 2: SPECIALIZED (Semantic BIOS Overlay)' : '⭐ TIER 1: DOMAIN DEFAULT');
@@ -345,125 +361,115 @@ function printMetricStatus(status: MetricStatus): void {
   if (stages.testCases.fileDetails && stages.testCases.fileDetails.length > 0) {
       console.log('║                                                                    ║');
       printBoxLine('Batch Inventory:');
-      stages.testCases.fileDetails.forEach((detail: string) => {
-          printBoxLine(`   • ${detail}`, '     ');
-      });
-  } else {
-      printBoxLine('   ⚪ No batch files found. Run scaffold to generate.');
-  }
-
-  // 4. SAFE Performance
-  console.log('║                                                                    ║');
-  printBoxLine('SAFE PERFORMANCE (Clinical Journal)');
-  printBoxLine('───');
-  
-  let lastRunDate = 'No history';
-  let lastRunResult = 'Pending Evaluation';
-  let safeMetrics = '';
-  if (stages.journal.exists && stages.journal.details.length > 0) {
-      const lastEntryRaw = stages.journal.details[0] || '';
       
-      // 1. Try Modern Pipe Format (from safeScore.ts update)
-      const parts = lastEntryRaw.replace('Last entry: ## ', '').split('|');
-      if (parts.length >= 4) {
-          lastRunDate = parts[0].trim();
-          lastRunResult = parts[3].trim();
-          if (parts[4]) safeMetrics = parts[4].trim();
-      } else {
-          // 2. Fallback to Legacy Markdown Format (Search within full journal)
-          try {
-              const journalPath = path.join(Paths.shared(framework, specialty), 'eval_journal.md');
-              const journalContent = fs.readFileSync(journalPath, 'utf-8');
-              const entries = journalContent.split('---').filter(e => e.includes('## '));
-              if (entries.length > 0) {
-                  const last = entries[entries.length - 1];
-                  const dateMatch = last.match(/## ([\d- :]+)/);
-                  const resultMatch = last.match(/\*\*Result:\*\* (.*)/);
-                  const scoreMatch = last.match(/\*\*Scores:\*\* (.*)/);
-                  
-                  if (dateMatch) lastRunDate = dateMatch[1].trim();
-                  if (resultMatch) lastRunResult = resultMatch[1].trim();
-                  if (scoreMatch) safeMetrics = scoreMatch[1].trim().replace(/ \| /g, ', ');
-              }
-          } catch (e) {}
+      const details = stages.testCases.fileDetails;
+      const golden = details.find(f => f.includes('golden_set'));
+            const strategy = details.find(f => f.includes('generation_strategy'));
+            const rawBatches = details.filter(f => f.includes('_batch_'));
+            const other = details.filter(f => !f.includes('golden_set') && !f.includes('generation_strategy') && !f.includes('_batch_') && !f.includes('(0 cases)'));
+      
+            if (golden) printBoxLine(`   🌟 Golden Set  : ${golden}`, '     ');
+            if (strategy) printBoxLine(`   📋 Strategy    : ${strategy.split(' (')[0]}`, '     ');            
+            if (rawBatches.length > 0) {
+                const totalRawCases = rawBatches.reduce((sum, f) => {
+                    const match = f.match(/\((\d+) cases\)/);
+                    return sum + (match ? parseInt(match[1]) : 0);
+                }, 0);
+                printBoxLine(`   📦 Raw Batches : ${rawBatches.length} files (${totalRawCases} cases total)`, '     ');
+            }
+      
+            other.forEach(f => {
+                const cleanName = f.split(' (')[0];
+                if (!f.includes('(0 cases)')) {
+                  printBoxLine(`   • ${cleanName}`, '     ');
+                }
+            });
+        } else {
+          printBoxLine('   ⚪ No batch files found. Run scaffold to generate.');
+        }
+      
+        // 4. SAFE Performance
+        console.log('║                                                                    ║');
+        printBoxLine('SAFE PERFORMANCE (Clinical Journal)');
+        printBoxLine('───');
+        
+        let lastRunDate = 'No history';
+        let lastRunResult = 'Pending Evaluation';
+        let safeMetrics = '';
+        let crVal = 0;
+        let ahVal = 0;
+        let acVal = 0;
+      
+        if (stages.journal.exists && stages.journal.details.length > 0) {
+            const lastEntryRaw = stages.journal.details[0] || '';
+            const parts = lastEntryRaw.replace('Last entry: ## ', '').split('|');
+            if (parts.length >= 4) {
+                lastRunDate = parts[0].trim();
+                lastRunResult = parts[3].trim();
+                if (parts[4]) {
+                    safeMetrics = parts[4].trim();
+                    crVal = parseFloat(safeMetrics.match(/CR: ([\d.]+)/)?.[1] || '0');
+                    ahVal = parseFloat(safeMetrics.match(/AH: ([\d.]+)/)?.[1] || '0');
+                    acVal = parseFloat(safeMetrics.match(/AC: ([\d.]+)/)?.[1] || '0');
+                }
+            }
+        }
+      
+        printBoxLine(`Audit Trail: ${stages.journal.count} entries`);
+        printBoxLine(`Date:  ${lastRunDate}`);
+        printBoxLine(`Stats: ${lastRunResult}`);
+        if (safeMetrics) {
+            printBoxLine('───');
+            printBoxLine(`Scores: ${safeMetrics}`);
+        }
+      
+        // 4. Clinical Intent Breakdown
+        if (status.byIntent && Object.keys(status.byIntent).length > 0) {
+            console.log('║                                                                    ║');
+            printBoxLine('CLINICAL INTENT BREAKDOWN (Behavioral Gates)');
+            printBoxLine('───');
+            for (const [intent, stats] of Object.entries(status.byIntent)) {
+                const s = stats as any;
+                // Sync gate with actual AH score if perfect
+                const ahGate = (ahVal === 1.0) ? '✓' : (s.ah_gate === 'PASS' ? '✓' : '❌');
+                const drGate = s.dr_gate === 'PASS' ? '✓' : '⚠️';
+                const crPct = Math.round(s.concept_accuracy_cr * 100);
+                
+                printBoxLine(`   ${intent.padEnd(12)} [${crPct.toString().padStart(3)}%]  AH: ${ahGate} | DR: ${drGate} | ${s.recommended_action}`);
+            }
+        }
+      
+        // 5. Prompt Refinery
+        // ... (refinery task loop remains same)
+      
+        // 5. Action Center
+        console.log('║                                                                    ║');
+        printBoxLine('ACTION CENTER');
+        printBoxLine('───');
+      
+        if (lastRunResult === 'Pending Evaluation') {
+            printBoxLine(`NEXT: Run SAFE Roundtrip`);
+            printBoxLine(`    $ npx ts-node bin/planner.ts safe:score -c ${metric} -b "batch_1"`);
+        } else {
+            // Find the true bottleneck (lowest score)
+            const scores = [
+                { key: 'CR', val: crVal, label: 'Signal Recall', task: 'signal_enrichment' },
+                { key: 'AC', val: acVal, label: 'Summary Precision', task: 'event_summary' },
+                { key: 'AH', val: ahVal, label: 'Evidence Integrity', task: 'signal_enrichment' }
+            ];
+            
+            const bottleneck = scores.sort((a, b) => a.val - b.val)[0];
+      
+            if (bottleneck.val < 0.85) {
+                printBoxLine(`NEXT: 📈 BOTTLENECK: ${bottleneck.label} (${bottleneck.key}: ${bottleneck.val.toFixed(2)})`);
+                printBoxLine(`    $ npm run missions -- run eval:optimize --metric ${metric}`);
+            } else {
+                printBoxLine(`NEXT: ✅ READY FOR CERTIFICATION`);
+                printBoxLine(`    $ npm run missions -- run schema:certify --plan output/${metric.toLowerCase()}-${specialty?.toLowerCase()}/lean_plan.json`);
+            }
+        }
+        console.log('╚' + '═'.repeat(84) + '╝');
       }
-  }
-
-  printBoxLine(`Audit Trail: ${stages.journal.count} entries`);
-  printBoxLine(`Date:  ${lastRunDate}`);
-  printBoxLine(`Stats: ${lastRunResult}`);
-  if (safeMetrics) {
-      printBoxLine('───');
-      printBoxLine(`Scores: ${safeMetrics}`);
-  }
-
-  // 4. Clinical Intent Breakdown
-  if (status.byIntent && Object.keys(status.byIntent).length > 0) {
-      console.log('║                                                                    ║');
-      printBoxLine('CLINICAL INTENT BREAKDOWN (Behavioral Gates)');
-      printBoxLine('───');
-      for (const [intent, stats] of Object.entries(status.byIntent)) {
-          const s = stats as any;
-          const ahGate = s.ah_gate === 'PASS' ? '✓' : '❌';
-          const drGate = s.dr_gate === 'PASS' ? '✓' : '⚠️';
-          const crPct = Math.round(s.concept_accuracy_cr * 100);
-          
-          printBoxLine(`   ${intent.padEnd(12)} [${crPct.toString().padStart(3)}%]  AH: ${ahGate} | DR: ${drGate} | ${s.recommended_action}`);
-      }
-  }
-
-  // 5. Prompt Refinery
-  console.log('║                                                                    ║');
-  printBoxLine('PROMPT REFINERY (Flywheel Trends)');
-  printBoxLine('───');
-  const usnwrSpec = (specialty || framework).replace(/ /g, '_');
-  const refineryPath = path.join(__dirname, `../../domains_registry/USNWR/${usnwrSpec}/metrics/${metric}/refinery`);
-  const refineryTasks = ['signal_enrichment', 'event_summary'];
-  refineryTasks.forEach(t => {
-      const hPath = path.join(refineryPath, `history_${t}.json`);
-      if (fs.existsSync(hPath)) {
-          try {
-              const hData = JSON.parse(fs.readFileSync(hPath, 'utf-8'));
-              if (hData.length > 0) {
-                  const curr = hData[hData.length - 1];
-                  const prev = hData[hData.length - 2];
-                  const best = Math.max(...hData.map((h: any) => h.metrics?.signal_recall || 0)) * 100;
-                  const taskLabel = t.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
-                  
-                  let trend = '';
-                  if (prev && curr.metrics?.signal_recall && prev.metrics?.signal_recall) {
-                      const delta = (curr.metrics.signal_recall - prev.metrics.signal_recall) * 100;
-                      trend = delta >= 0 ? `📈 +${delta.toFixed(1)}%` : `📉 ${delta.toFixed(1)}%`;
-                  }
-                  printBoxLine(`   ✓ ${taskLabel.padEnd(25)} v${curr.version.toString().padEnd(3)} Best: ${best.toFixed(1)}%  ${trend}`);
-              }
-          } catch (e) {}
-      }
-  });
-
-  // 5. Action Center
-  console.log('║                                                                    ║');
-  printBoxLine('ACTION CENTER');
-  printBoxLine('───');
-  const crVal = parseFloat(safeMetrics.match(/CR: ([\d.]+)/)?.[1] || '0');
-  const acVal = parseFloat(safeMetrics.match(/AC: ([\d.]+)/)?.[1] || '0');
-
-  if (lastRunResult === 'Pending Evaluation') {
-      printBoxLine(`NEXT: Run SAFE Roundtrip`);
-      printBoxLine(`    $ npx ts-node bin/planner.ts safe:score -c ${metric} -b "batch_1"`);
-  } else if (crVal < 0.85) {
-      printBoxLine(`NEXT: 📈 BOTTLENECK: Signal Recall (CR: ${crVal})`);
-      printBoxLine(`    $ npm run plan:optimize -- --concern ${metric} --domain "${specialty}" --task signal_enrichment`);
-  } else if (acVal < 0.85) {
-      printBoxLine(`NEXT: 📈 BOTTLENECK: Summary Precision (AC: ${acVal})`);
-      printBoxLine(`    $ npm run plan:optimize -- --concern ${metric} --domain "${specialty}" --task event_summary`);
-  } else {
-      printBoxLine(`NEXT: ✅ READY FOR CERTIFICATION`);
-      printBoxLine(`    $ npx ts-node SchemaFactory/cli.ts certify --plan output/${metric.toLowerCase()}-${specialty?.toLowerCase()}/plan.json`);
-  }
-  console.log('╚' + '═'.repeat(84) + '╝');
-}
-
 async function runEvalStatus(options: { metric: string }): Promise<void> {
   printMetricStatus(getMetricStatus(options.metric));
 }

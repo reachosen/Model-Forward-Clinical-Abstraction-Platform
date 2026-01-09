@@ -146,9 +146,21 @@ export const MISSIONS: Mission[] = [
     title: 'Prompt Optimizer (Flywheel)',
     purpose: 'Run agentic loop to auto-fix prompts based on failure evidence',
     command: 'npx',
-    args: ['ts-node', 'EvalsFactory/optimizer/loop.ts', '--metric', '{{metric}}'],
+    args: ['ts-node', 'EvalsFactory/optimizer/loop.ts', '--metric', '{{metric}}', '--loops', '{{loops}}', '--task', '{{task}}'],
     examples: [
-      { name: 'I32a Flywheel', args: ['ts-node', 'EvalsFactory/optimizer/loop.ts', '--metric', 'I32a'] },
+      { name: 'I32a Signal Loop', args: ['ts-node', 'EvalsFactory/optimizer/loop.ts', '--metric', 'I32a', '--loops', '3', '--task', 'signal_enrichment'] },
+      { name: 'I32a Summary Loop', args: ['ts-node', 'EvalsFactory/optimizer/loop.ts', '--metric', 'I32a', '--loops', '3', '--task', 'event_summary'] },
+    ],
+  },
+  {
+    id: 'eval:leap',
+    owner: 'Evals',
+    title: 'Leap Forward (Golden Set Upgrade)',
+    purpose: 'Mine failures to build a higher-difficulty Golden Set',
+    command: 'npx',
+    args: ['ts-node', 'EvalsFactory/optimizer/golden_upgrade.ts', '--metric', '{{metric}}'],
+    examples: [
+      { name: 'I32a Level Up', args: ['ts-node', 'EvalsFactory/optimizer/golden_upgrade.ts', '--metric', 'I32a'] },
     ],
   },
   {
@@ -235,6 +247,17 @@ export const MISSIONS: Mission[] = [
     args: ['ts-node', 'MissionControl/process-case.ts', 'demo', '--case', '{{case}}', '--metric', '{{metric}}'],
     examples: [
       { name: 'Emily I32a', args: ['ts-node', 'MissionControl/process-case.ts', 'demo', '--case', 'emily', '--metric', 'I32a'] },
+    ],
+  },
+  {
+    id: 'ops:teardown',
+    owner: 'Ops',
+    title: 'Clean Workspace (Metric-Specific)',
+    purpose: 'Wipe all generated outputs and history for a metric (preserves /certified)',
+    command: 'npx',
+    args: ['ts-node', 'tools/teardown.ts', '--metric', '{{metric}}'],
+    examples: [
+      { name: 'I32a Teardown', args: ['ts-node', 'tools/teardown.ts', '--metric', 'I32a'] },
     ],
   },
   {

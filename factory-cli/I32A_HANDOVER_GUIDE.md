@@ -13,67 +13,79 @@ This guide defines the goals and the end-to-end operational sequence for the **I
 *   **Schema Consistency**: Provide strict technical contracts for every task to prevent downstream parsing failures.
 
 ### For Evals Personnel (The Refinement)
-*   **Metric Anchoring**: Provide the high-fidelity "Clinical Focus" and "Risk Factors" needed to ground the Evaluator's safety logic.
+*   **Metric Anchoring**: Provide high-fidelity "Clinical Focus" and "Risk Factors" needed to ground the Evaluator's safety logic.
 *   **Ground Truth Mapping**: Define canonical signal IDs so the **Accountant** can accurately measure **Recall (CR)**.
-*   **Contextual Richness**: Inject domain-specific benchmarks (Specialty Ranking) to ensure evaluations reflect real-world clinical excellence.
+*   **Contextual Richness**: Inject domain-specific benchmarks (Specialty Ranking) to ensure evaluations reflect clinical excellence.
 
 ---
 
 ## 📑 The Registry: Semantic Source of Truth
-The Registry is the "Source Code" for the clinical logic. It is not an output; it is the **authoritative input** for all factories.
+The Registry is the **authoritative input** for all factories.
 
-1.  **Populating the Registry**: Before running Step 1 (Inception), the Registry must contain the metric's definitions (signals, questions) and v0 prompts. This is usually done via `plan:scaffold`.
-2.  **Planner Interaction**: The Planner (`plan:generate`) scans the Registry to find the best available prompts. It prioritizes the metric folder (`I32a/prompts/`) and falls back to `_shared/prompts/`.
-3.  **Certification Update**: When you run `schema:certify`, the system reads the **current state** of the Registry and "freezes" it into the `certified/` folder. 
-    *   *Note*: The Registry is the "Workspace"; the `certified/` folder is the "Release".
+1.  **Populating the Registry**: Before running Step 1, the Registry must contain the metric's definitions and v0 templates (done via `plan:scaffold`).
+2.  **Planner Interaction**: `plan:generate` scans the Registry and prioritizes the metric folder (`I32a/prompts/`) before falling back to `_shared/`.
+3.  **Certification Update**: `schema:certify` reads the Registry's **current state**, expands it using the **Unified Hydration Engine**, and "freezes" it into the `certified/` release folder. 
 
 ---
 
 ## 🛠️ Prerequisites
 *   **Environment**: Node.js 16+, TypeScript 4.5+.
-*   **API Access**: An OpenAI API Key must be in `factory-cli/.env`.
+*   **API Access**: An OpenAI API Key must be in the **ROOT .env file** (`Model-Forward-Clinical-Abstraction-Platform/.env`).
+    *   *Note*: All factories now use a single centralized environment loader.
 *   **Setup**: Run `npm install` inside the `factory-cli` directory.
 
 ---
 
 ## 🚀 The Mission Control Sequence (I32a)
-Execute these commands in order from the `factory-cli` folder. All commands are now **Metric-Driven**.
+Execute these commands in order from the `factory-cli` folder.
 
-| Step | Mission ID         | Command                                                                          | Result                                         |
-| :--- | :----------------- | :------------------------------------------------------------------------------- | :--------------------------------------------- |
-| **1**| `plan:generate`    | `npm run missions -- run plan:generate --concern I32a --domain orthopedics`      | Builds `lean_plan.json` (The Blueprint).       |
-| **2**| `eval:roundtrip`   | `npm run missions -- run eval:roundtrip --metric I32a`                           | Generates "Balanced 50" tests & **Test Plan**. |
-| **3**| `eval:optimize`    | `npm run missions -- run eval:optimize --metric I32a`                            | Runs AI-driven agentic improvement loop.       |
-| **4**| **Manual Land**    | *See "Landing Protocol" below*                                                   | Promotes Sandbox winner to Source Registry.    |
-| **5**| `eval:qa-scorecard`| `npm run missions -- run eval:qa-scorecard --metric I32a --batch "I32a_batch_*"` | Generates final Clinical Safety Grade.         |
-| **6**| `schema:certify`   | `npm run missions -- run schema:certify --plan output/i32a-Orthopedics/lean_plan.json` | Freezes Registry into `/certified` folder.     |
-| **7**| `schema:seed`      | `npm run missions -- run schema:seed --metric I32a`                              | Generates Snowflake SQL for Handover.          |
+|  Step | Mission ID          | Command                                                                                | What this does (plain English)                    |
+| ----: | ------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **0** | `ops:teardown`      | `npm run missions -- run ops:teardown --metric I32a`                                   | Resets workspace. Keeps `/certified` safe.        |
+| **-** | `eval:status`       | `npm run missions -- run eval:status --metric I32a`                                    | **The Dashboard**: Confirms workspace is clean.   |
+| **1** | `plan:generate`     | `npm run missions -- run plan:generate --concern I32a --domain orthopedics`            | Creates **lean_plan.json** (the blueprint).       |
+| **2** | `eval:roundtrip`    | `npm run missions -- run eval:roundtrip --metric I32a`                                 | Generates **200 clinical cases** (Golden Set).    |
+| **5a**| `eval:qa-scorecard` | `npm run missions -- run eval:qa-scorecard --metric I32a --batch golden_set_v2`        | **Diagnostic Run**: Establish your baseline score.|
+| **3** | `eval:optimize`     | `npm run missions -- run eval:optimize --metric I32a --loops 3 --task signal_enrichment`| Improves prompts using agentic feedback.          |
+| **+** | `eval:leap`         | `npm run missions -- run eval:leap --metric I32a`                                      | **Leap Forward**: Mines hardest cases → v3 set.   |
+| **4** | **Manual Land**     | *See Landing Protocol*                                                                 | Selects best sandbox result → source registry.    |
+| **5b**| `eval:qa-scorecard` | `npm run missions -- run eval:qa-scorecard --metric I32a --batch golden_set_v2`        | **Final Grade**: Verifies improved prompt PASSES. |
+| **6** | `schema:certify`    | `npm run missions -- run schema:certify --plan output/i32a-orthopedics/lean_plan.json` | Freezes config into `/certified`.                 |
+| **7** | `schema:seed`       | `npm run missions -- run schema:seed --metric I32a`                                    | Emits Snowflake SQL for deployment.               |
 
 ---
 
 ## 🏗️ The Landing Protocol (Manual Registry Update)
 The Flywheel generates prompt candidates in a sandbox. To update the Registry with your winner:
 
-1.  **Identify Winner**: Open `data/flywheel/prompts/prompt_history_I32a.json` and pick the highest-scoring text.
-2.  **Land the File**: Overwrite `domains_registry/USNWR/Orthopedics/metrics/I32a/prompts/signal_enrichment.md`.
-3.  **Effect**: Subsequent runs of Step 6 (Certify) will now use this "v2" logic instead of the domain defaults.
+1.  **Identify Winner**: At the end of Step 3, review the **Final Prompt Evolution** summary.
+2.  **Land the File**: Copy the best prompt text and overwrite:
+    *   **Path**: `domains_registry/USNWR/Orthopedics/metrics/I32a/prompts/signal_enrichment.md`
+3.  **Effect**: Step 6 (Certify) will now use this "v2" logic instead of domain defaults.
 
 ---
 
-## 📂 Key File Locations
+## 📈 Score-to-Sequence Mapping (Troubleshooting)
+If your Step 5 Safety Grade fails, use this mapping to iterate.
 
-| Artifact           | Location                                                                              |
-| :----------------- | :------------------------------------------------------------------------------------ |
-| **Source Prompts** | `domains_registry/USNWR/Orthopedics/metrics/I32a/prompts/`                            |
-| **Testbatch Plan** | `domains_registry/USNWR/Orthopedics/metrics/I32a/tests/testcases/generation_strategy.json` |
-| **Clinical Tests** | `domains_registry/USNWR/Orthopedics/metrics/I32a/tests/testcases/`                    |
-| **Certified Release**| `certified/Orthopedics/I32a/`                                                       |
-| **Handover SQL**   | `output/i32a-Orthopedics/seed_snowflake.sql`                                          |
+| If this Score Drops... | It Means the Model... | Fix it in this Step: |
+| :-------------------- | :-------------------- | :------------------- |
+| **CR (Recall)**       | Missed a signal ID.   | **Step 3**: Refine "Extraction Guidance". |
+| **EF (Fidelity)**     | Paraphrased a quote.  | **Step 3**: Strengthen "Strict Rules" for provenance. |
+| **DR (Doubt)**        | Hallucinated certainty| **Step 3**: Enhance "Ambiguity Handling" instructions. |
+| **AC (Context)**      | Linked wrong causes.  | **Step 3**: Refine the "Clinical Focus" narrative. |
+
+---
+
+## 🔍 Understanding the Logs
+*   **Dual-Pass Pipeline**: `plan:generate` runs in two passes (**PASS A** for strategy, **PASS B** for assembly).
+*   **Reconciled Math**: Step 2 audit results now sum perfectly (Golden + Dropped + Other = Total).
+*   **Evolution Summary**: Step 3 displays v0, Last, and Current prompts side-by-side at the absolute end.
+*   **Hierarchical Layout**: All major logs now use a tree structure (`├─`, `└─`) for clarity.
 
 ---
 
 ## ⚠️ Important Rules
-*   **Schema Requirement**: Every prompt **MUST** contain a `**REQUIRED JSON SCHEMA:**` block. If the AI optimizer removes this block, Step 6 (Certification) will fail.
-*   **Plan Dependency**: Steps 2 through 7 depend on the `lean_plan.json` created in Step 1.
-*   **Database Versioning**: Step 7 (SQL Seed) uses content-based hashing. The database maintains the history of all certified versions automatically. **Provenance is handled by the data layer.**
-*   **Rollback**: To revert to the standard v0 prompt, simply delete the metric-specific file in the Registry.
+*   **Schema Requirement**: Every prompt **MUST** contain a `**REQUIRED JSON SCHEMA:**` block. 
+*   **Hydration Logic**: Testing and Certification use the **Unified Hydration Engine**. A prompt tested in the Flywheel is guaranteed to be 1:1 with the certified version.
+*   **Database Versioning**: Step 7 (SQL Seed) hashes content. The database maintains history automatically.

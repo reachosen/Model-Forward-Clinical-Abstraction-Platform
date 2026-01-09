@@ -1,18 +1,18 @@
 {
   "concern_id": "I32a",
-  "updated_at": "2026-01-08T21:08:21.655Z",
+  "updated_at": "2026-01-09T01:21:51.154Z",
   "strategy": {
     "path": "domains_registry\\USNWR\\Orthopedics\\metrics\\I32a\\tests\\testcases\\generation_strategy.json",
     "hash": "087b9e889ad8f1f3c9563cca0108c9a6d17649e83491cf4565b602d7325d8427"
   },
   "golden": {
     "path": "domains_registry\\USNWR\\Orthopedics\\metrics\\I32a\\tests\\testcases\\golden_set_v2.json",
-    "hash": "7061b451133a8c2fd00c5f7018b0ec344c2325efa347864835b54b1260ad1809"
+    "hash": "454198b66214c90155e28321d5acd7499b0c27b455e0afb7ec768b818592fc5b"
   },
   "safe": {
     "latest": {
       "path": "output\\eval\\I32a_latest.json",
-      "hash": "53fbb2702199f642e5e1945c97083af4c0c2a501831347863b534ddf0d5420fc"
+      "hash": "19a67db39cd0684c0441112d24309859cecb6ad25602cff5dae52d6d00b2175c"
     }
   },
   "certified": {

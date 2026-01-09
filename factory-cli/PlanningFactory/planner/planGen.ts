@@ -91,9 +91,14 @@ export async function generatePlan(
   config: PlannerConfig
 ): Promise<any> { // Return Lean Plan
   
-  console.log('🚀 Starting S0-S6 Pipeline via generatePlan...');
-
+  console.log('\n🚀 Starting S0-S6 Pipeline (Dual-Pass Strategy)');
+  
+  console.log('\n[PASS A] Prompt Execution Strategy');
+  console.log('----------------------------------');
   const promptPlan = await generatePromptPlan(input, config);
+
+  console.log('\n[PASS B] Lean Plan Assembly & Context Reconstruction');
+  console.log('----------------------------------------------------');
   const plan = await executePromptPlan(promptPlan, input, config);
 
   return plan;

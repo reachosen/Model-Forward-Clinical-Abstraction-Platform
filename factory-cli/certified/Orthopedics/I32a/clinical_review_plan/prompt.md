@@ -32,10 +32,7 @@ Your verdict MUST be based solely on the artifacts extracted by prior pipeline s
 - [FAIL] Insufficient discharge teaching or follow-up planning
 
 **Ambiguity Triggers (REVIEW):**
-- [AMBIGUITY] Review question: Was the full SSI prevention bundle documented for AIS fusion?
-- [AMBIGUITY] Review question: Is the reason for readmission or return to OR clearly categorized (infection, GI, hardware, pain)?
-- [AMBIGUITY] Review question: Was this return to OR documented as planned vs unplanned?
-- [AMBIGUITY] Review question: Were discharge instructions and follow-up appointments clearly documented?
+
 
 ---
 

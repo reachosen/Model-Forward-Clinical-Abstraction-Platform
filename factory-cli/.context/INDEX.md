@@ -141,6 +141,7 @@ certified/Orthopedics/I32a/*/prompt.md
 
 | Date | LLM | Change Summary |
 |------|-----|----------------|
+| 2026-01-09 | Gemini | **Unified Hydration & 17-Mission Suite**: Established `hydratePromptText` as the single source of truth for both testing and certification. Finalized 17 missions, including `ops:teardown`, `eval:leap`, and the new hierarchical tree logging. |
 | 2026-01-08 | Gemini | **Metric-Driven Architecture**: Parameterized all Flywheel/Schema tools, added `eval:optimize` and `schema:seed` missions, and implemented metric-specific prompt overrides. |
 | 2026-01-07 | Gemini | Refinement Migration: Implemented Lean Plan architecture, hydrated SQL seeding, and 
 robust ID-based evaluation matching for I32a. |

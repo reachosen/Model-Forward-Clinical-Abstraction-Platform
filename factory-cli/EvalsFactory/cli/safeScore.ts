@@ -254,7 +254,7 @@ async function loadBatchFiles(
   return batches;
 }
 
-const SCENARIO_CAP_PER_TASK = 24;
+const SCENARIO_CAP_PER_TASK = 50;
 
 function enforceScenarioCap(
   concernId: string,

@@ -4,7 +4,7 @@
 Determine whether this case should be EXCLUDED from the denominator for metric: Idiopathic scoliosis – 30-day unplanned admission and return to OR
 
 **EXCLUSION CRITERIA:**
-- **age_limit**: Patient age > 18 years at time of surgery
+No exclusion criteria defined.
 
 **EXCEPTION CRITERIA:**
 No exception criteria defined.

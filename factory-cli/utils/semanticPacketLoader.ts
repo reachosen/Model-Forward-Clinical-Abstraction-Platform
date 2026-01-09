@@ -36,6 +36,7 @@ export interface SemanticPacket {
   signals: SemanticSignals;
   priorities: SemanticPriority;
   domain: string;
+  isSpecialized?: boolean;
 }
 
 function normalizeKey(input: string): string {
@@ -84,20 +85,6 @@ export function normalizeSignalGroups(signals: SemanticSignals): SemanticSignals
   return normalized;
 }
 
-/*
-function detectNegatedSignalIds(signals: SemanticSignals): string[] {
-  const bad: string[] = [];
-  const pattern = /(no_|not_|without|absence|negativ)/i;
-  Object.values(signals || {}).forEach(group => {
-    (group as any[]).forEach(sig => {
-      const id = typeof sig === 'string' ? sig : (sig.id || sig.signal_id || sig.name || '');
-      if (id && pattern.test(id)) bad.push(id);
-    });
-  });
-  return bad;
-}
-*/
-
 export class SemanticPacketLoader {
   private static instance: SemanticPacketLoader;
   private packets: Map<string, SemanticPacket> = new Map();
@@ -116,12 +103,10 @@ export class SemanticPacketLoader {
   }
 
   public load(domain: string, metricId?: string): SemanticPacket | null {
-    // 1. Load Base Domain Packet (Cached)
     if (this.packets.has(domain) && !metricId) {
       return this.packets.get(domain)!;
     }
 
-    // Determine Search Paths
     const usnwrSpecialty = domain.replace(/ /g, '_'); 
     const registryPathInCli = path.join(__dirname, '../domains_registry');
     const registryRoot = fs.existsSync(registryPathInCli) ? registryPathInCli : path.join(__dirname, '../../domains_registry');
@@ -157,12 +142,10 @@ export class SemanticPacketLoader {
 
       const basePacket: SemanticPacket = { metrics, signals, priorities, domain };
       
-      // Cache base packet if not already cached
       if (!this.packets.has(domain)) {
         this.packets.set(domain, basePacket);
       }
 
-      // 2. Metric Definition Overlay (The senior architect's required fix)
       let packetToReturn = metricId
         ? this.applyMetricOverlay(basePacket, registryRoot, domain, metricId)
         : basePacket;
@@ -174,11 +157,6 @@ export class SemanticPacketLoader {
         };
       }
 
-      // const negated = detectNegatedSignalIds(packetToReturn.signals);
-      // if (negated.length > 0) {
-      //   throw new Error(`Negated signal IDs are forbidden in registry definitions: ${negated.join(', ')}`);
-      // }
-
       return packetToReturn;
     } catch (error: any) {
       console.error(`❌ Failed to load Semantic Packet for ${domain}: ${error.message}`);
@@ -186,9 +164,6 @@ export class SemanticPacketLoader {
     }
   }
 
-  /**
-   * SPEC: metric-level definitions/* MUST override domain-level _shared/*
-   */
   private applyMetricOverlay(basePacket: SemanticPacket, registryRoot: string, domain: string, metricId: string): SemanticPacket {
     try {
       const usnwrSpecialty = domain.replace(/ /g, '_');
@@ -201,29 +176,33 @@ export class SemanticPacketLoader {
       const defRulesPath = path.join(metricFolder, 'definitions', 'review_rules.json');
 
       if (!fs.existsSync(defSignalsPath) && !fs.existsSync(defMetricPath) && !fs.existsSync(defRulesPath)) {
-        // Guardrail: Log WARN when metricId provided but no definitions found
-        console.warn(`⚠️  [SEMANTIC_DEFAULT] No specialized definitions found for ${metricId} in ${domain}. Using domain defaults.`);
         return basePacket;
       }
 
-      console.log(`⚡ [SEMANTIC_OVERLAY] Aligning Plan with Eval definitions for ${metricId}`);
+      const logKey = `${domain}:${metricId}`;
+      const shouldLog = !(global as any)._overlayLogged?.[logKey];
+      if (shouldLog) {
+        if (!(global as any)._overlayLogged) (global as any)._overlayLogged = {};
+        (global as any)._overlayLogged[logKey] = true;
+        
+        const hashBase = [defSignalsPath, defMetricPath, defRulesPath].filter(p => fs.existsSync(p)).map(p => fs.statSync(p).mtimeMs).join('|');
+        const hash = Buffer.from(hashBase).toString('hex').slice(0, 6);
+        console.log(`\n  semantic overlay  metric=${metricId}  hash=${hash}`);
+      }
       
-      // Deep clone to avoid cache pollution
       const overlaidPacket: SemanticPacket = JSON.parse(JSON.stringify(basePacket));
+      overlaidPacket.isSpecialized = true;
 
-      // 1. Overlay Metric Metadata (Risk Factors, Questions, Signal Group Names)
       if (fs.existsSync(defMetricPath)) {
           const defMetric = JSON.parse(fs.readFileSync(defMetricPath, 'utf-8'));
-          const metricKey = Object.keys(defMetric)[0]; // Usually the ID is the key
+          const metricKey = Object.keys(defMetric)[0]; 
           if (metricKey) {
               overlaidPacket.metrics[metricId] = {
                   ...overlaidPacket.metrics[metricId],
                   ...defMetric[metricKey]
               };
-              console.log(`   → Overlaid metric metadata from metrics.json`);
           }
       } else if (fs.existsSync(defRulesPath)) {
-          // FALLBACK: Extract questions from review_rules.json
           const defRules = JSON.parse(fs.readFileSync(defRulesPath, 'utf-8'));
           const questions = (defRules.ambiguity_triggers || []).map((t: any) => t.reviewer_prompt || t.description);
           
@@ -231,40 +210,45 @@ export class SemanticPacketLoader {
               ...overlaidPacket.metrics[metricId],
               metric_name: overlaidPacket.metrics[metricId]?.metric_name || defRules.description,
               review_questions: questions.length > 0 ? questions : overlaidPacket.metrics[metricId]?.review_questions,
-              signal_groups: overlaidPacket.metrics[metricId]?.signal_groups, // Keep base groups if missing
               rule_in_criteria: defRules.rule_in_criteria,
-              rule_out_criteria: defRules.rule_out_criteria,
-              ambiguity_triggers: defRules.ambiguity_triggers,
-              exclusion_criteria: defRules.exclusion_criteria,
-              exception_criteria: defRules.exception_criteria
+              rule_out_criteria: defRules.rule_out_criteria
           };
-          console.log(`   → Overlaid metric metadata from review_rules.json (${questions.length} questions)`);
+          if (shouldLog) console.log(`  ├─ review_questions : ${questions.length} (review_rules.json)`);
       }
       
-      // 2. Overlay Signals
       if (fs.existsSync(defSignalsPath)) {
         const defs = JSON.parse(fs.readFileSync(defSignalsPath, 'utf-8'));
-        
-        if (defs.signal_groups) {
-            // Mapping table for known group ID mismatches between Registry and definitions
-            const groupIdMap: Record<string, string> = {
-            'infection_prevention': 'infection_risks',
-            'surgical_bundle_compliance': 'bundle_compliance',
-            'outcome_monitoring': 'outcome_risks',
-            'readmission_prevention': 'readmission_risks'
-            };
+        if (shouldLog) {
+            console.log(`  ├─ base groups      : signals.json`);
+            const baseGroupIds = Object.keys(basePacket.signals);
+            baseGroupIds.forEach((gid, i) => {
+                const char = i === baseGroupIds.length - 1 ? '└─' : '├─';
+                console.log(`  │  ${char} ${gid.padEnd(18)} : ${basePacket.signals[gid]?.length || 0}`);
+            });
+        }
 
-            defs.signal_groups.forEach((group: any) => {
-            const rawId = group.group_id.toLowerCase();
-            const targetId = groupIdMap[rawId] || rawId;
-            
-            // Preserve full objects, do not flatten to description
-            const specializedSignals = group.signals || [];
-            
-            if (specializedSignals.length > 0) {
-                overlaidPacket.signals[targetId] = specializedSignals;
-                console.log(`   → Syncing ${targetId}: ${specializedSignals.length} signals imported from definitions`);
-            }
+        if (shouldLog) console.log(`  └─ metric overrides : metric/signal_groups.json`);
+        if (defs.signal_groups) {
+            // Deduplicate overrides by group_id (take the last/latest definition)
+            const overrideMap = new Map<string, any[]>();
+            defs.signal_groups.forEach((g: any) => overrideMap.set(g.group_id.toLowerCase(), g.signals || []));
+
+            const groups = Array.from(overrideMap.entries());
+            groups.forEach(([groupId, specializedSignals], idx) => {
+                const isLast = idx === groups.length - 1;
+                const char = isLast ? '└─' : '├─';
+                const baseCount = basePacket.signals[groupId]?.length || 0;
+                const delta = specializedSignals.length - baseCount;
+                
+                overlaidPacket.signals[groupId] = specializedSignals;
+                
+                if (shouldLog) {
+                    const deltaStr = delta > 0 ? `+${delta}` : `${delta}`;
+                    const deltaInfo = delta !== 0 
+                        ? `: ${deltaStr.padEnd(3)} (${baseCount} → ${specializedSignals.length})` 
+                        : `: no override`;
+                    console.log(`     ${char} ${groupId.padEnd(18)} ${deltaInfo}`);
+                }
             });
         }
       }

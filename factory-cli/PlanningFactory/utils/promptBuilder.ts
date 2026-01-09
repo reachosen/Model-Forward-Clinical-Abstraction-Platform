@@ -134,53 +134,19 @@ export function buildMetricContextString(packet: any): string {
   return `${domainLabel} Metric: ${metric.metric_name}. Focus: ${metric.clinical_focus}. Groups: ${groups}`;
 }
 
-// Helper to load prompt text reusing the S5 logic
-export function getPromptText(taskName: string, context: any): string {
-  // Map taskName (from S6 constants) to task_type (registry keys)
-  const taskMap: Record<string, string> = {
-    'task_event_summary': 'event_summary',
-    'task_followup_questions': 'followup_questions',
-    'task_signal_generation': 'signal_enrichment',
-    'task_clinical_reviewer': 'clinical_review_plan',
-    'clinical_review_helper': 'clinical_review_helper'
-  };
-
-  const taskType = taskMap[taskName] || taskName;
+/**
+ * Core Hydration Engine
+ * Interpolates {{variables}} into a template using the provided clinical context.
+ */
+export function hydratePromptText(taskType: string, template: string, context: any): string {
   const { domain, primary_archetype, semantic_context, archetypes } = context;
   const ranking_context = semantic_context?.ranking;
-  const specialty_name = ranking_context?.specialty_name;
   
-  // V10: Ensure ortho_context.metric is populated if missing
-  const packet = semantic_context?.packet;
-  const concernId = context.concern_id || context.ortho_context?.metric?.metric_id;
-  
-  if (packet && concernId && !packet.metric) {
-      packet.metric = packet.metrics[concernId];
-  }
-
-  // Build metric context string from semantic packet (domain-agnostic)
-  const metricContextString = buildMetricContextString(packet);
-  const metricName = packet?.metric?.metric_name;
-
-  // 1. Load Template from Registry (Unified Control Plane)
-  let promptText = loadPromptFromRegistry(domain, specialty_name, taskType) || '';
-
-  if (!promptText) {
-    // Fallback to internal config using mapped keys
-    const templateEntry = (promptsConfig as any)[taskType];
-    if (templateEntry && templateEntry.template) {
-        promptText = templateEntry.template;
-    } else {
-        return `Analyze this case for ${taskName}.`;
-    }
-  }
-
-  // 2. Hydrate Variables
   // Create promptContext using the same structure S5 expects
   const promptContext = {
     domain,
     archetype: primary_archetype,
-    archetypes: archetypes || [primary_archetype], // Pass plural if available
+    archetypes: archetypes || [primary_archetype],
     ortho_context: semantic_context?.packet,
     ranking_context: ranking_context,
     skeleton: null,
@@ -188,13 +154,13 @@ export function getPromptText(taskName: string, context: any): string {
 
   let variables: Record<string, string> = {};
 
-  if (taskType === 'signal_enrichment') {
+  if (taskType === 'signal_enrichment' || taskType === 'task_signal_generation') {
     variables = getSignalEnrichmentVariables(promptContext);
-  } else if (taskType === 'event_summary') {
+  } else if (taskType === 'event_summary' || taskType === 'task_event_summary') {
     variables = getEventSummaryVariables(promptContext);
-  } else if (taskType === 'followup_questions') {
+  } else if (taskType === 'followup_questions' || taskType === 'task_followup_questions') {
     variables = getFollowupQuestionsVariables(promptContext);
-  } else if (taskType === 'clinical_review_plan') {
+  } else if (taskType === 'clinical_review_plan' || taskType === 'task_clinical_reviewer') {
     variables = getClinicalReviewPlanVariables(promptContext);
   } else if (taskType === 'clinical_review_helper') {
     variables = getClinicalReviewHelperVariables({
@@ -209,17 +175,62 @@ export function getPromptText(taskName: string, context: any): string {
     variables = getExclusionCheckVariables(promptContext);
   }
 
-  // 3. Interpolate
+  let promptText = template;
+  // Interpolate
   for (const [key, value] of Object.entries(variables)) {
     promptText = promptText.split(`{{${key}}}`).join(value);
   }
 
-  // 4. Wrap
-  const roleName = buildDynamicRoleName(taskType, domain, metricName, promptContext.archetypes);
+  // Clean up simple handlebars conditionals used in templates.
+  promptText = promptText.replace(/{{#if\s+[^}]+}}/g, '').replace(/{{\/if}}/g, '');
+
+  return promptText;
+}
+
+// Helper to load prompt text reusing the S5 logic
+export function getPromptText(taskName: string, context: any): string {
+  const taskMap: Record<string, string> = {
+    'task_event_summary': 'event_summary',
+    'task_followup_questions': 'followup_questions',
+    'task_signal_generation': 'signal_enrichment',
+    'task_clinical_reviewer': 'clinical_review_plan',
+    'clinical_review_helper': 'clinical_review_helper'
+  };
+
+  const taskType = taskMap[taskName] || taskName;
+  const { domain, semantic_context } = context;
+  const ranking_context = semantic_context?.ranking;
+  const specialty_name = ranking_context?.specialty_name;
+  
+  const packet = semantic_context?.packet;
+  const concernId = context.concern_id || context.ortho_context?.metric?.metric_id;
+  
+  if (packet && concernId && !packet.metric) {
+      packet.metric = packet.metrics[concernId];
+  }
+
+  const metricContextString = buildMetricContextString(packet);
+  const metricName = packet?.metric?.metric_name;
+
+  // 1. Load Template from Registry
+  let promptText = loadPromptFromRegistry(domain, specialty_name, taskType) || '';
+
+  if (!promptText) {
+    const templateEntry = (promptsConfig as any)[taskType];
+    if (templateEntry && templateEntry.template) {
+        promptText = templateEntry.template;
+    } else {
+        return `Analyze this case for ${taskName}.`;
+    }
+  }
+
+  // 2. Hydrate & Wrap
+  const coreBody = hydratePromptText(taskType, promptText, context);
+  const roleName = buildDynamicRoleName(taskType, domain, metricName, context.archetypes || [context.primary_archetype]);
   
   return buildMetricFramedPrompt({
     roleName,
-    coreBody: promptText,
+    coreBody,
     metricContext: metricContextString
   });
 }
