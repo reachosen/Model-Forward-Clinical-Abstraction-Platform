@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import OpenAI from 'openai';
+import { getOpenAIClientOptions } from '../utils/envConfig';
 import * as dotenv from 'dotenv';
 import { BatchRunner } from '../EvalsFactory/validation/runner';
 import { AggregateReport } from '../EvalsFactory/validation/types';
@@ -46,7 +47,7 @@ const OPTIMIZER_FALLBACK_MODEL = process.env.OPTIMIZER_FALLBACK_MODEL || 'gpt-4o
 const OPTIMIZER_MAX_TOKENS = parseInt(process.env.OPTIMIZER_MAX_TOKENS || '2000', 10);
 const MAX_EVIDENCE_TOKENS = parseInt(process.env.OPTIMIZER_MAX_EVIDENCE_TOKENS || '600', 10);
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const client = new OpenAI(getOpenAIClientOptions());
 
 function hydratePrompt(template: string, packet: any, metricId: string, domain: string, task: string): string {
     const metric = packet.metrics[metricId];

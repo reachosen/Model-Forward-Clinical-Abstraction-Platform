@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
 import OpenAI from 'openai';
+import { getOpenAIClientOptions, resolveOpenAIConfig } from '../utils/envConfig';
 import { PlannerPlan } from '../models/PlannerPlan';
 
 // Load environment variables
@@ -58,13 +59,13 @@ async function runBattle() {
     throw new Error('Plan missing "eval_main" task prompt');
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    console.error('❌ Error: OPENAI_API_KEY not found in environment variables.');
+  const resolved = resolveOpenAIConfig();
+  if (!resolved.apiKey) {
+    console.error('❌ Error: API key not found in environment variables.');
     process.exit(1);
   }
 
-  const client = new OpenAI({ apiKey });
+  const client = new OpenAI(getOpenAIClientOptions());
   const results: EvalResult[] = [];
 
   console.log(`Running Battle on ${testCases.length} cases using ${process.env.MODEL || 'gpt-4o-mini'}...`);

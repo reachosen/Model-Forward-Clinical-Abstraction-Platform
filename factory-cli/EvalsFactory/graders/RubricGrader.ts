@@ -1,5 +1,6 @@
 import { BaseGrader, GradeResult } from './BaseGrader';
 import OpenAI from 'openai';
+import { getOpenAIClientOptions } from '../../utils/envConfig';
 
 /**
  * E7: RubricGrader
@@ -11,7 +12,7 @@ export class RubricGrader extends BaseGrader {
 
   constructor(apiKey: string) {
     super();
-    this.client = new OpenAI({ apiKey });
+    this.client = new OpenAI(getOpenAIClientOptions(apiKey));
   }
 
   async gradeNuanced(testCase: any, output: any, rubric: string): Promise<GradeResult> {

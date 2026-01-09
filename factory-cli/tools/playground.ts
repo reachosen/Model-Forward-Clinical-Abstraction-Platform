@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import { SemanticPacketLoader } from '../utils/semanticPacketLoader';
 import { getSignalEnrichmentVariables } from '../shared/context_builders/signalEnrichment';
 import { runI25Engine } from '../EvalsFactory/validation/engine';
+import { resolveOpenAIConfig } from '../utils/envConfig';
 
 // Load env vars
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
@@ -74,7 +75,8 @@ async function main() {
     // 4. Run Engine (Optional)
     const patientPayload = "NARRATIVE: 14F s/p PSF T4-L1. POD10 phone call: Mom reports patient has low grade fever 100.2 and increased back pain. Notes some redness and drainage from the inferior aspect of the incision. Advised to come to ED.";
     
-    if (process.env.OPENAI_API_KEY) {
+    const resolved = resolveOpenAIConfig();
+    if (resolved.apiKey) {
         console.log(`
 🚀 Running Engine with Test Payload...`);
         const result = await runI25Engine({
@@ -93,7 +95,7 @@ async function main() {
 ✅ Signal Extracted? ${extracted ? "YES" : "NO"}`);
     } else {
         console.log(`
-⚠️  Skipping Engine Run (No OPENAI_API_KEY)`);
+⚠️  Skipping Engine Run (No API key)`);
     }
 }
 

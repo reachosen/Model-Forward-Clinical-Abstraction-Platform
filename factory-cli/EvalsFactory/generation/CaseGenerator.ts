@@ -3,6 +3,7 @@ import * as path from 'path';
 import OpenAI from 'openai';
 import { BatchPlan, GenerationScenario } from '../../flywheel/dataset/BatchConfig';
 import { buildSystemPrompt, buildUserPrompt } from '../../flywheel/dataset/core';
+import { getOpenAIClientOptions } from '../../utils/envConfig';
 
 /**
  * E3/E4: CaseGenerator
@@ -13,7 +14,7 @@ export class CaseGenerator {
   private client: OpenAI;
 
   constructor(apiKey: string) {
-    this.client = new OpenAI({ apiKey });
+    this.client = new OpenAI(getOpenAIClientOptions(apiKey));
   }
 
   async generate(plan: BatchPlan, batchIndex: number, seed?: number): Promise<any[]> {

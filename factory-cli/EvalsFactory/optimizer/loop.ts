@@ -3,7 +3,7 @@ import * as path from 'path';
 import OpenAI from 'openai';
 import { ClinicalEvalEngine } from '../validation/runner';
 import { AggregateReport } from '../validation/types';
-import { loadEnv } from '../../utils/envConfig';
+import { loadEnv, getOpenAIClientOptions } from '../../utils/envConfig';
 import { resolveMetricPath, Paths } from '../../utils/pathConfig';
 
 loadEnv();
@@ -61,7 +61,7 @@ if (fs.existsSync(templateFile)) {
     console.warn(`⚠️  Baseline template not found at ${templateFile}. Using generic fallback.`);
 }
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const client = new OpenAI(getOpenAIClientOptions());
 
 const OPTIMIZER_MODEL = process.env.OPTIMIZER_MODEL || 'gpt-4o-mini';
 const OPTIMIZER_FALLBACK_MODEL = process.env.OPTIMIZER_FALLBACK_MODEL || 'gpt-4o';

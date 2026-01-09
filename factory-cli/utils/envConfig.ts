@@ -28,3 +28,56 @@ export function loadEnv() {
     process.env.REFINERY_QUIET = 'true';
   }
 }
+
+export interface OpenAIResolvedConfig {
+  apiKey?: string;
+  baseURL: string;
+  defaultHeaders?: Record<string, string>;
+  defaultQuery?: Record<string, string>;
+  isAzure: boolean;
+}
+
+export function resolveOpenAIConfig(apiKey?: string): OpenAIResolvedConfig {
+  const resolvedKey = apiKey || process.env.AZURE_OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+  const azureEndpoint = process.env.AZURE_OPENAI_ENDPOINT;
+  const azureDeployment = process.env.AZURE_OPENAI_DEPLOYMENT;
+  const azureApiVersion = process.env.AZURE_OPENAI_API_VERSION;
+  const hasAzureConfig = Boolean(azureEndpoint || azureDeployment || azureApiVersion || process.env.AZURE_OPENAI_API_KEY);
+
+  if (hasAzureConfig) {
+    if (!azureEndpoint || !azureDeployment || !azureApiVersion) {
+      throw new Error('Azure OpenAI requires AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT, and AZURE_OPENAI_API_VERSION.');
+    }
+
+    const trimmedEndpoint = azureEndpoint.replace(/\/+$/, '');
+    return {
+      apiKey: resolvedKey,
+      baseURL: `${trimmedEndpoint}/openai/deployments/${azureDeployment}`,
+      defaultHeaders: resolvedKey ? { 'api-key': resolvedKey } : undefined,
+      defaultQuery: { 'api-version': azureApiVersion },
+      isAzure: true,
+    };
+  }
+
+  return {
+    apiKey: resolvedKey,
+    baseURL: 'https://api.openai.com/v1',
+    defaultHeaders: resolvedKey ? { Authorization: `Bearer ${resolvedKey}` } : undefined,
+    isAzure: false,
+  };
+}
+
+export function getOpenAIClientOptions(apiKey?: string) {
+  const resolved = resolveOpenAIConfig(apiKey);
+
+  if (resolved.isAzure) {
+    return {
+      apiKey: resolved.apiKey,
+      baseURL: resolved.baseURL,
+      defaultHeaders: resolved.defaultHeaders,
+      defaultQuery: resolved.defaultQuery,
+    };
+  }
+
+  return { apiKey: resolved.apiKey };
+}

@@ -10,7 +10,7 @@
  */
 
 // Load environment variables from root .env file
-import { loadEnv } from '../utils/envConfig';
+import { loadEnv, resolveOpenAIConfig } from '../utils/envConfig';
 import * as path from 'path';
 
 // Load from root directory (single global config)
@@ -82,8 +82,9 @@ program
         }
       };
 
+      const resolved = resolveOpenAIConfig(options.apiKey);
       const config: PlannerConfig = {
-        apiKey: options.apiKey || process.env.OPENAI_API_KEY,
+        apiKey: resolved.apiKey,
         model: options.model,
         temperature: options.temperature
       };

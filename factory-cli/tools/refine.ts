@@ -10,12 +10,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import OpenAI from 'openai';
+import { getOpenAIClientOptions } from '../utils/envConfig';
 import * as dotenv from 'dotenv';
 import { EvalReport } from '../EvalsFactory/reporting/ReportGenerator';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const client = new OpenAI(getOpenAIClientOptions());
 
 const OPTIMIZER_MODEL = process.env.OPTIMIZER_MODEL || 'gpt-4o';
 const OPTIMIZER_MAX_TOKENS = 2000;

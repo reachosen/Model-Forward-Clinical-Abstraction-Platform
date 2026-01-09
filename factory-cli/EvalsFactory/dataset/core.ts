@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { loadEnv } from '../../utils/envConfig';
+import { loadEnv, getOpenAIClientOptions, resolveOpenAIConfig } from '../../utils/envConfig';
 import OpenAI from 'openai';
 import { getConcernMetadata } from '../../config/concernRegistry';
 import { BatchStrategy, GenerationScenario, DuetProfile, TaskScenario } from './BatchStrategy';
@@ -293,9 +293,12 @@ async function generateBatch(client: OpenAI, concernId: string, domain: string, 
 
 export { buildSystemPrompt, buildUserPrompt };
 export async function runGenerator(config: GeneratorConfig) {
-  const apiKey = config.apiKey || process.env.OPENAI_API_KEY;
-  if (!apiKey) { console.error('❌ OPENAI_API_KEY missing (env or arg)'); process.exit(1); }
-  const client = new OpenAI({ apiKey });
+  const resolved = resolveOpenAIConfig(config.apiKey);
+  if (!resolved.apiKey) {
+    console.error('❌ API key missing (env or arg)');
+    process.exit(1);
+  }
+  const client = new OpenAI(getOpenAIClientOptions(config.apiKey));
   const BATCH_SIZE = config.batch_size || 5;
   const CONCURRENCY = 5; 
 

@@ -28,6 +28,11 @@ async function main() {
     const metricPath = resolveMetricPath(metricId);
     const cliRoot = Paths.cliRoot();
     const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
+
+    // Check for API Key flag
+    const apiKeyIdx = process.argv.indexOf('--api-key');
+    const apiKey = apiKeyIdx !== -1 ? process.argv[apiKeyIdx + 1] : undefined;
+    const apiKeyFlag = apiKey ? `--api-key ${apiKey}` : '';
     
     console.log(`\n🚀 eval:roundtrip metric=${metricId} run=${now}`);
     console.log(`\n  paths`);
@@ -57,7 +62,7 @@ async function main() {
         // Step 2: Generate Raw Cases
         console.log(`
 --- [2/3] Generating Raw Test Cases (Stage 1 LLM) ---`);
-        execSync(`npx ts-node EvalsFactory/dataset/generate.ts run ${metricId} --resume`, { stdio: 'inherit', cwd: cliRoot });
+        execSync(`npx ts-node EvalsFactory/dataset/generate.ts run ${metricId} --resume ${apiKeyFlag}`, { stdio: 'inherit', cwd: cliRoot });
 
         // Step 3: Run Accountant
         console.log(`

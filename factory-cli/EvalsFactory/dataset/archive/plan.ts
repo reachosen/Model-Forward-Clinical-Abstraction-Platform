@@ -2,6 +2,7 @@ import { runGenerator } from '../core';
 import * as path from 'path';
 import * as fs from 'fs';
 import OpenAI from 'openai';
+import { getOpenAIClientOptions, resolveOpenAIConfig } from '../../../utils/envConfig';
 import * as dotenv from 'dotenv';
 
 // NOTE: Archived on 2025-12-09. Kept for reference only; not used in current flow.
@@ -11,12 +12,13 @@ dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
 const OUTPUT_DIR = path.join(__dirname, '../../data/flywheel/testcases');
 
 async function generatePlanAndExecute() {
-  if (!process.env.OPENAI_API_KEY) {
-    console.error('⚠️ OPENAI_API_KEY is missing in .env');
+  const resolved = resolveOpenAIConfig();
+  if (!resolved.apiKey) {
+    console.error('⚠️ API key is missing in .env');
     process.exit(1);
   }
 
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const client = new OpenAI(getOpenAIClientOptions());
 
   console.log('🧠 Generating thoughtful batch plan via LLM (iterative)...');
 

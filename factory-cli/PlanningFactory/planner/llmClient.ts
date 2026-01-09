@@ -1,3 +1,5 @@
+import { resolveOpenAIConfig } from '../../utils/envConfig';
+
 /**
  * LLM Client for Planner
  *
@@ -53,10 +55,10 @@ export async function callLLM(
   messages: ChatMessage[],
   config: LLMConfig = {}
 ): Promise<LLMResponse> {
-  const apiKey = config.apiKey || process.env.OPENAI_API_KEY;
+  const resolved = resolveOpenAIConfig(config.apiKey);
 
-  if (!apiKey || apiKey === 'your-openai-api-key-here') {
-    throw new Error('OpenAI API key not configured. Please set OPENAI_API_KEY in .env');
+  if (!resolved.apiKey || resolved.apiKey === 'your-openai-api-key-here') {
+    throw new Error('API key not configured. Please set OPENAI_API_KEY or AZURE_OPENAI_API_KEY in .env');
   }
 
   const model = config.model || 'gpt-4o-mini';
@@ -100,11 +102,18 @@ export async function callLLM(
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const requestUrl = new URL(`${resolved.baseURL}/chat/completions`);
+    if (resolved.defaultQuery) {
+      Object.entries(resolved.defaultQuery).forEach(([key, value]) => {
+        requestUrl.searchParams.set(key, value);
+      });
+    }
+
+    const response = await fetch(requestUrl.toString(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        ...(resolved.defaultHeaders || {}),
       },
       body: bodyString,
       signal: controller.signal,

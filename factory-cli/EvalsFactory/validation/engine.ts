@@ -1,6 +1,6 @@
 import { EngineOutput } from './types';
 import OpenAI from 'openai';
-import { loadEnv } from '../../utils/envConfig';
+import { loadEnv, getOpenAIClientOptions, resolveOpenAIConfig } from '../../utils/envConfig';
 import { SemanticPacketLoader } from '../../utils/semanticPacketLoader';
 import { detectDomain } from '../../utils/domainDetection';
 import { getPromptText } from '../../PlanningFactory/utils/promptBuilder'; 
@@ -8,7 +8,7 @@ import { getPromptText } from '../../PlanningFactory/utils/promptBuilder';
 // Ensure env vars are loaded
 loadEnv();
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const client = new OpenAI(getOpenAIClientOptions());
 
 // C11: Configuration from .env
 const EVAL_MODEL = process.env.EVAL_MODEL || 'gpt-4o-mini';
@@ -152,8 +152,9 @@ export async function runI25Engine(input: {
 
   const start = Date.now();
 
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error("Missing OPENAI_API_KEY");
+  const resolved = resolveOpenAIConfig();
+  if (!resolved.apiKey) {
+    throw new Error("Missing API key");
   }
 
   try {

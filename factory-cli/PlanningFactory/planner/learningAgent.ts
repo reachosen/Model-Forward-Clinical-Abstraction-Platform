@@ -7,14 +7,12 @@
 
 import { LearningQueueItem, LearningPatch } from '../../models/LearningQueue';
 import OpenAI from 'openai';
-import { loadEnv } from '../../utils/envConfig';
+import { loadEnv, getOpenAIClientOptions } from '../../utils/envConfig';
 import * as path from 'path';
 
 loadEnv();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const openai = new OpenAI(getOpenAIClientOptions());
 
 /**
  * System prompt for learning agent
