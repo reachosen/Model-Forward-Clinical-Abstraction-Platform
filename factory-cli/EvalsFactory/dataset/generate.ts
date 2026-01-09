@@ -11,6 +11,10 @@ async function main() {
   const command = args[0];
   const metricId = args[1];
   const resume = args.includes('--resume');
+  
+  // Simple flag parsing for api-key
+  const apiKeyIdx = args.indexOf('--api-key');
+  const apiKey = apiKeyIdx !== -1 ? args[apiKeyIdx + 1] : undefined;
 
   if (command === 'list') {
     const strategies = getAllBatchStrategies();
@@ -42,7 +46,8 @@ async function main() {
         strategy,
         output_dir: outputDir,
         batch_size: 5,
-        resume: resume
+        resume: resume,
+        apiKey: apiKey
       });
     } catch (error: any) {
       console.error(`Error: ${error.message}`);

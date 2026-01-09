@@ -14,10 +14,11 @@ function getArg(name: string): string | undefined {
 const STRATEGY_PATH = getArg('--strategy');
 const OUT_PATH = getArg('--out');
 const BATCH_SIZE = parseInt(getArg('--batch-size') || '5', 10);
+const API_KEY = getArg('--api-key');
 const FORCE = argv.includes('--force');
 
 if (!STRATEGY_PATH || !OUT_PATH) {
-  console.error('Usage: ts-node tools/generate-cases.ts --strategy <path> --out <path> [--batch-size <n>] [--force]');
+  console.error('Usage: ts-node tools/generate-cases.ts --strategy <path> --out <path> [--batch-size <n>] [--api-key <key>] [--force]');
   process.exit(1);
 }
 
@@ -41,7 +42,8 @@ async function main() {
     output_dir: tempDir,
     batch_size: BATCH_SIZE,
     resume: !FORCE,
-    semantic_overlay: packet 
+    semantic_overlay: packet,
+    apiKey: API_KEY
   });
 
   // Consolidate Batches

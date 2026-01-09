@@ -85,7 +85,8 @@ export interface GeneratorConfig {
   batch_size?: number;
   dry_run?: boolean;
   resume?: boolean;
-  semantic_overlay?: any; 
+  semantic_overlay?: any;
+  apiKey?: string;
 }
 
 function buildSystemPrompt(concernId: string, domain: string, globalDuet?: DuetProfile, semantic_overlay?: any): string {
@@ -292,8 +293,9 @@ async function generateBatch(client: OpenAI, concernId: string, domain: string, 
 
 export { buildSystemPrompt, buildUserPrompt };
 export async function runGenerator(config: GeneratorConfig) {
-  if (!process.env.OPENAI_API_KEY) { console.error('❌ OPENAI_API_KEY missing'); process.exit(1); }
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const apiKey = config.apiKey || process.env.OPENAI_API_KEY;
+  if (!apiKey) { console.error('❌ OPENAI_API_KEY missing (env or arg)'); process.exit(1); }
+  const client = new OpenAI({ apiKey });
   const BATCH_SIZE = config.batch_size || 5;
   const CONCURRENCY = 5; 
 
