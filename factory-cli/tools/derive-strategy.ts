@@ -26,22 +26,6 @@ const DOMAINS_REGISTRY_PATH = path.resolve(__dirname, '../domains_registry');
 // Task IDs for per-task scenario generation
 const TASK_IDS = ['signal_enrichment', 'event_summary', 'followup_questions', 'clinical_review_plan'];
 
-// Global History for Dedup
-const HISTORY_DIR = path.resolve(__dirname, '../data/evaluation');
-const GLOBAL_HISTORY_PATH = path.join(HISTORY_DIR, 'scenario_history.json');
-
-function loadGlobalHistory(): Record<string, string[]> {
-    if (!fs.existsSync(HISTORY_DIR)) fs.mkdirSync(HISTORY_DIR, { recursive: true });
-    if (!fs.existsSync(GLOBAL_HISTORY_PATH)) return {};
-    return JSON.parse(fs.readFileSync(GLOBAL_HISTORY_PATH, 'utf-8'));
-}
-
-function updateGlobalHistory(metricId: string, scenarioIds: string[]) {
-    const history = loadGlobalHistory();
-    history[metricId] = Array.from(new Set([...(history[metricId] || []), ...scenarioIds]));
-    fs.writeFileSync(GLOBAL_HISTORY_PATH, JSON.stringify(history, null, 2));
-}
-
 interface SignalGroup {
   group_id: string;
   display_name: string;
@@ -116,8 +100,6 @@ function deriveTaskScenarios(
   archetype: string
 ): Record<string, TaskScenarioConfig> {
   const taskScenarios: Record<string, TaskScenarioConfig> = {};
-  const globalHistory = loadGlobalHistory();
-  const seenInMetric = new Set(globalHistory[METRIC_ID!] || []);
 
   const slices = [
     { intent: 'KNOWLEDGE', count: 20, description: "Registry Coverage: specific signal detection" },
@@ -138,23 +120,19 @@ function deriveTaskScenarios(
         const signalIdx = (addedForSlice + attempt) % semantics.signal_groups.length;
         const signal = semantics.signal_groups[signalIdx];
         
-        // Create a unique key based on task + signal + intent
-        const scenarioKey = `${taskId}_${slice.intent}_${signal.group_id}`.toLowerCase();
+        // Create a unique key based on task + signal + intent + index
+        const scenarioKey = `${taskId}_${slice.intent}_${signal.group_id}_${addedForSlice}`.toLowerCase();
         
-        // Only add if we haven't seen this specific clinical combination before
-        if (!seenInMetric.has(scenarioKey)) {
-            scenarios.push({
-              id: `${scenarioKey}_v${Date.now()}`,
-              type: slice.intent === 'AMBIGUITY' ? 'doubt' : (addedForSlice % 2 === 0 ? 'pass' : 'fail'),
-              description: `${slice.description} using ${signal?.display_name || 'core'} definitions.`,
-              archetype,
-              contract: {
-                intents: [slice.intent as Intent]
-              }
-            });
-            seenInMetric.add(scenarioKey);
-            addedForSlice++;
-        }
+        scenarios.push({
+          id: `${scenarioKey}_v${Date.now()}`,
+          type: slice.intent === 'AMBIGUITY' ? 'doubt' : (addedForSlice % 2 === 0 ? 'pass' : 'fail'),
+          description: `${slice.description} using ${signal?.display_name || 'core'} definitions.`,
+          archetype,
+          contract: {
+            intents: [slice.intent as Intent]
+          }
+        });
+        addedForSlice++;
         attempt++;
       }
     });
@@ -334,10 +312,6 @@ try {
     }
 
     fs.writeFileSync(REGISTRY_PATH, JSON.stringify(registry, null, 2));
-    
-    // Update Global History
-    const newScenarioKeys = flattenedScenarios.map((s: any) => s.id?.split('_v')[0]).filter(Boolean) as string[];
-    updateGlobalHistory(METRIC_ID!, newScenarioKeys);
 
     console.log(`✅ Successfully updated Batch Strategy Registry for ${METRIC_ID}`);
   }

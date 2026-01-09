@@ -333,8 +333,10 @@ export async function runGenerator(config: GeneratorConfig) {
     const result = await generateBatch(client, concernId, domain, batch, index, config.output_dir, config.strategy.global_duet, config.semantic_overlay);
     completedCount++;
     const pct = Math.round((completedCount / totalBatches) * 100).toString().padStart(3, ' ');
+    
+    // Clear line and update progress
     if (result) {
-        console.log(` progress ${pct}% (${completedCount}/${totalBatches}) batch=${index + 1} gen cases=${result.caseCount} intent_mix: ${result.intentMix} saved=${result.filename}`);
+        process.stdout.write(`\r [${pct}%] Processing batch ${index + 1}/${totalBatches} | ${result.intentMix} `.padEnd(80));
     }
   };
 
@@ -343,5 +345,6 @@ export async function runGenerator(config: GeneratorConfig) {
     await Promise.all(chunk.map((batch, j) => runBatchWithTracking(batch, i + j)));
   }
 
+  process.stdout.write('\n'); // Newline after progress bar completes
   console.log(' ✅ generation complete');
 }

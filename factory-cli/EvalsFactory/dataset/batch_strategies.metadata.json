@@ -86,7 +86,7 @@
           "output_schema": "signal_enrichment_output.schema.json",
           "scenarios": [
             {
-              "id": "signal_enrichment_knowledge_infection_risks_v1767927563092",
+              "id": "signal_enrichment_knowledge_infection_risks_0_v1767992566126",
               "type": "pass",
               "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -97,7 +97,7 @@
               }
             },
             {
-              "id": "signal_enrichment_knowledge_outcome_risks_v1767927563092",
+              "id": "signal_enrichment_knowledge_outcome_risks_1_v1767992566126",
               "type": "fail",
               "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -108,7 +108,7 @@
               }
             },
             {
-              "id": "signal_enrichment_knowledge_bundle_compliance_v1767927563092",
+              "id": "signal_enrichment_knowledge_infection_risks_2_v1767992566126",
               "type": "pass",
               "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
@@ -119,7 +119,29 @@
               }
             },
             {
-              "id": "signal_enrichment_knowledge_readmission_risks_v1767927563092",
+              "id": "signal_enrichment_knowledge_outcome_risks_3_v1767992566126",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_bundle_compliance_4_v1767992566126",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_readmission_risks_5_v1767992566126",
               "type": "fail",
               "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -130,7 +152,161 @@
               }
             },
             {
-              "id": "signal_enrichment_ambiguity_infection_risks_v1767927563092",
+              "id": "signal_enrichment_knowledge_bundle_compliance_6_v1767992566126",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_infection_risks_7_v1767992566126",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_outcome_risks_8_v1767992566126",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_infection_risks_9_v1767992566126",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_outcome_risks_10_v1767992566126",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_bundle_compliance_11_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_readmission_risks_12_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_bundle_compliance_13_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_infection_risks_14_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_outcome_risks_15_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_infection_risks_16_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_outcome_risks_17_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_bundle_compliance_18_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_knowledge_readmission_risks_19_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_infection_risks_0_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -141,7 +317,7 @@
               }
             },
             {
-              "id": "signal_enrichment_ambiguity_outcome_risks_v1767927563092",
+              "id": "signal_enrichment_ambiguity_outcome_risks_1_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -152,7 +328,7 @@
               }
             },
             {
-              "id": "signal_enrichment_ambiguity_bundle_compliance_v1767927563092",
+              "id": "signal_enrichment_ambiguity_infection_risks_2_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
               "archetype": "Preventability_Detective",
@@ -163,7 +339,29 @@
               }
             },
             {
-              "id": "signal_enrichment_ambiguity_readmission_risks_v1767927563092",
+              "id": "signal_enrichment_ambiguity_outcome_risks_3_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_bundle_compliance_4_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_readmission_risks_5_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -174,7 +372,106 @@
               }
             },
             {
-              "id": "signal_enrichment_safety_infection_risks_v1767927563092",
+              "id": "signal_enrichment_ambiguity_bundle_compliance_6_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_infection_risks_7_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_outcome_risks_8_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_infection_risks_9_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_outcome_risks_10_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_bundle_compliance_11_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_readmission_risks_12_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_bundle_compliance_13_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_ambiguity_infection_risks_14_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -185,7 +482,7 @@
               }
             },
             {
-              "id": "signal_enrichment_safety_outcome_risks_v1767927563092",
+              "id": "signal_enrichment_safety_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -196,7 +493,7 @@
               }
             },
             {
-              "id": "signal_enrichment_safety_bundle_compliance_v1767927563092",
+              "id": "signal_enrichment_safety_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
               "archetype": "Preventability_Detective",
@@ -207,7 +504,29 @@
               }
             },
             {
-              "id": "signal_enrichment_safety_readmission_risks_v1767927563092",
+              "id": "signal_enrichment_safety_outcome_risks_3_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_readmission_risks_5_v1767992566127",
               "type": "fail",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -218,7 +537,51 @@
               }
             },
             {
-              "id": "signal_enrichment_synthesis_infection_risks_v1767927563092",
+              "id": "signal_enrichment_safety_bundle_compliance_6_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_infection_risks_7_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_outcome_risks_8_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_safety_infection_risks_9_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -229,7 +592,7 @@
               }
             },
             {
-              "id": "signal_enrichment_synthesis_outcome_risks_v1767927563092",
+              "id": "signal_enrichment_synthesis_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Timeline: POD calculation and primary/return linking using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -240,7 +603,7 @@
               }
             },
             {
-              "id": "signal_enrichment_synthesis_bundle_compliance_v1767927563092",
+              "id": "signal_enrichment_synthesis_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Timeline: POD calculation and primary/return linking using core definitions.",
               "archetype": "Preventability_Detective",
@@ -251,9 +614,20 @@
               }
             },
             {
-              "id": "signal_enrichment_synthesis_readmission_risks_v1767927563092",
+              "id": "signal_enrichment_synthesis_outcome_risks_3_v1767992566127",
               "type": "fail",
-              "description": "Timeline: POD calculation and primary/return linking using Readmission Risks definitions.",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "signal_enrichment_synthesis_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Bundle Compliance definitions.",
               "archetype": "Preventability_Detective",
               "contract": {
                 "intents": [
@@ -268,7 +642,7 @@
           "output_schema": "event_summary_output.schema.json",
           "scenarios": [
             {
-              "id": "event_summary_knowledge_infection_risks_v1767927563092",
+              "id": "event_summary_knowledge_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -279,7 +653,7 @@
               }
             },
             {
-              "id": "event_summary_knowledge_outcome_risks_v1767927563092",
+              "id": "event_summary_knowledge_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -290,7 +664,7 @@
               }
             },
             {
-              "id": "event_summary_knowledge_bundle_compliance_v1767927563092",
+              "id": "event_summary_knowledge_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
@@ -301,7 +675,29 @@
               }
             },
             {
-              "id": "event_summary_knowledge_readmission_risks_v1767927563092",
+              "id": "event_summary_knowledge_outcome_risks_3_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_readmission_risks_5_v1767992566127",
               "type": "fail",
               "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -312,7 +708,161 @@
               }
             },
             {
-              "id": "event_summary_ambiguity_infection_risks_v1767927563092",
+              "id": "event_summary_knowledge_bundle_compliance_6_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_infection_risks_7_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_outcome_risks_8_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_infection_risks_9_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_outcome_risks_10_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_bundle_compliance_11_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_readmission_risks_12_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_bundle_compliance_13_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_infection_risks_14_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_outcome_risks_15_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_infection_risks_16_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_outcome_risks_17_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_bundle_compliance_18_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_knowledge_readmission_risks_19_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_infection_risks_0_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -323,7 +873,7 @@
               }
             },
             {
-              "id": "event_summary_ambiguity_outcome_risks_v1767927563092",
+              "id": "event_summary_ambiguity_outcome_risks_1_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -334,7 +884,7 @@
               }
             },
             {
-              "id": "event_summary_ambiguity_bundle_compliance_v1767927563092",
+              "id": "event_summary_ambiguity_infection_risks_2_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
               "archetype": "Preventability_Detective",
@@ -345,7 +895,29 @@
               }
             },
             {
-              "id": "event_summary_ambiguity_readmission_risks_v1767927563092",
+              "id": "event_summary_ambiguity_outcome_risks_3_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_bundle_compliance_4_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_readmission_risks_5_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -356,7 +928,106 @@
               }
             },
             {
-              "id": "event_summary_safety_infection_risks_v1767927563092",
+              "id": "event_summary_ambiguity_bundle_compliance_6_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_infection_risks_7_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_outcome_risks_8_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_infection_risks_9_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_outcome_risks_10_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_bundle_compliance_11_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_readmission_risks_12_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_bundle_compliance_13_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_ambiguity_infection_risks_14_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -367,7 +1038,7 @@
               }
             },
             {
-              "id": "event_summary_safety_outcome_risks_v1767927563092",
+              "id": "event_summary_safety_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -378,7 +1049,7 @@
               }
             },
             {
-              "id": "event_summary_safety_bundle_compliance_v1767927563092",
+              "id": "event_summary_safety_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
               "archetype": "Preventability_Detective",
@@ -389,7 +1060,29 @@
               }
             },
             {
-              "id": "event_summary_safety_readmission_risks_v1767927563092",
+              "id": "event_summary_safety_outcome_risks_3_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_readmission_risks_5_v1767992566127",
               "type": "fail",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -400,7 +1093,51 @@
               }
             },
             {
-              "id": "event_summary_synthesis_infection_risks_v1767927563092",
+              "id": "event_summary_safety_bundle_compliance_6_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_infection_risks_7_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_outcome_risks_8_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_safety_infection_risks_9_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -411,7 +1148,7 @@
               }
             },
             {
-              "id": "event_summary_synthesis_outcome_risks_v1767927563092",
+              "id": "event_summary_synthesis_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Timeline: POD calculation and primary/return linking using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -422,7 +1159,7 @@
               }
             },
             {
-              "id": "event_summary_synthesis_bundle_compliance_v1767927563092",
+              "id": "event_summary_synthesis_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Timeline: POD calculation and primary/return linking using core definitions.",
               "archetype": "Preventability_Detective",
@@ -433,9 +1170,20 @@
               }
             },
             {
-              "id": "event_summary_synthesis_readmission_risks_v1767927563092",
+              "id": "event_summary_synthesis_outcome_risks_3_v1767992566127",
               "type": "fail",
-              "description": "Timeline: POD calculation and primary/return linking using Readmission Risks definitions.",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "event_summary_synthesis_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Bundle Compliance definitions.",
               "archetype": "Preventability_Detective",
               "contract": {
                 "intents": [
@@ -450,7 +1198,7 @@
           "output_schema": "followup_questions_output.schema.json",
           "scenarios": [
             {
-              "id": "followup_questions_knowledge_infection_risks_v1767927563092",
+              "id": "followup_questions_knowledge_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -461,7 +1209,7 @@
               }
             },
             {
-              "id": "followup_questions_knowledge_outcome_risks_v1767927563092",
+              "id": "followup_questions_knowledge_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -472,7 +1220,7 @@
               }
             },
             {
-              "id": "followup_questions_knowledge_bundle_compliance_v1767927563092",
+              "id": "followup_questions_knowledge_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
@@ -483,7 +1231,29 @@
               }
             },
             {
-              "id": "followup_questions_knowledge_readmission_risks_v1767927563092",
+              "id": "followup_questions_knowledge_outcome_risks_3_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_readmission_risks_5_v1767992566127",
               "type": "fail",
               "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -494,7 +1264,161 @@
               }
             },
             {
-              "id": "followup_questions_ambiguity_infection_risks_v1767927563093",
+              "id": "followup_questions_knowledge_bundle_compliance_6_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_infection_risks_7_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_outcome_risks_8_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_infection_risks_9_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_outcome_risks_10_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_bundle_compliance_11_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_readmission_risks_12_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_bundle_compliance_13_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_infection_risks_14_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_outcome_risks_15_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_infection_risks_16_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_outcome_risks_17_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_bundle_compliance_18_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_knowledge_readmission_risks_19_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_infection_risks_0_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -505,7 +1429,7 @@
               }
             },
             {
-              "id": "followup_questions_ambiguity_outcome_risks_v1767927563093",
+              "id": "followup_questions_ambiguity_outcome_risks_1_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -516,7 +1440,7 @@
               }
             },
             {
-              "id": "followup_questions_ambiguity_bundle_compliance_v1767927563093",
+              "id": "followup_questions_ambiguity_infection_risks_2_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
               "archetype": "Preventability_Detective",
@@ -527,7 +1451,29 @@
               }
             },
             {
-              "id": "followup_questions_ambiguity_readmission_risks_v1767927563093",
+              "id": "followup_questions_ambiguity_outcome_risks_3_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_bundle_compliance_4_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_readmission_risks_5_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -538,7 +1484,106 @@
               }
             },
             {
-              "id": "followup_questions_safety_infection_risks_v1767927563093",
+              "id": "followup_questions_ambiguity_bundle_compliance_6_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_infection_risks_7_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_outcome_risks_8_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_infection_risks_9_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_outcome_risks_10_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_bundle_compliance_11_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_readmission_risks_12_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_bundle_compliance_13_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_ambiguity_infection_risks_14_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -549,7 +1594,7 @@
               }
             },
             {
-              "id": "followup_questions_safety_outcome_risks_v1767927563093",
+              "id": "followup_questions_safety_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -560,7 +1605,7 @@
               }
             },
             {
-              "id": "followup_questions_safety_bundle_compliance_v1767927563093",
+              "id": "followup_questions_safety_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
               "archetype": "Preventability_Detective",
@@ -571,7 +1616,29 @@
               }
             },
             {
-              "id": "followup_questions_safety_readmission_risks_v1767927563093",
+              "id": "followup_questions_safety_outcome_risks_3_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_readmission_risks_5_v1767992566127",
               "type": "fail",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -582,7 +1649,51 @@
               }
             },
             {
-              "id": "followup_questions_synthesis_infection_risks_v1767927563093",
+              "id": "followup_questions_safety_bundle_compliance_6_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_infection_risks_7_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_outcome_risks_8_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_safety_infection_risks_9_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -593,7 +1704,7 @@
               }
             },
             {
-              "id": "followup_questions_synthesis_outcome_risks_v1767927563093",
+              "id": "followup_questions_synthesis_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Timeline: POD calculation and primary/return linking using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -604,7 +1715,7 @@
               }
             },
             {
-              "id": "followup_questions_synthesis_bundle_compliance_v1767927563093",
+              "id": "followup_questions_synthesis_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Timeline: POD calculation and primary/return linking using core definitions.",
               "archetype": "Preventability_Detective",
@@ -615,9 +1726,20 @@
               }
             },
             {
-              "id": "followup_questions_synthesis_readmission_risks_v1767927563093",
+              "id": "followup_questions_synthesis_outcome_risks_3_v1767992566127",
               "type": "fail",
-              "description": "Timeline: POD calculation and primary/return linking using Readmission Risks definitions.",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "followup_questions_synthesis_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Bundle Compliance definitions.",
               "archetype": "Preventability_Detective",
               "contract": {
                 "intents": [
@@ -632,7 +1754,7 @@
           "output_schema": "clinical_review_plan_output.schema.json",
           "scenarios": [
             {
-              "id": "clinical_review_plan_knowledge_infection_risks_v1767927563093",
+              "id": "clinical_review_plan_knowledge_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -643,7 +1765,7 @@
               }
             },
             {
-              "id": "clinical_review_plan_knowledge_outcome_risks_v1767927563093",
+              "id": "clinical_review_plan_knowledge_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -654,7 +1776,7 @@
               }
             },
             {
-              "id": "clinical_review_plan_knowledge_bundle_compliance_v1767927563093",
+              "id": "clinical_review_plan_knowledge_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Registry Coverage: specific signal detection using core definitions.",
               "archetype": "Preventability_Detective",
@@ -665,7 +1787,29 @@
               }
             },
             {
-              "id": "clinical_review_plan_knowledge_readmission_risks_v1767927563093",
+              "id": "clinical_review_plan_knowledge_outcome_risks_3_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_readmission_risks_5_v1767992566127",
               "type": "fail",
               "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -676,7 +1820,161 @@
               }
             },
             {
-              "id": "clinical_review_plan_ambiguity_infection_risks_v1767927563093",
+              "id": "clinical_review_plan_knowledge_bundle_compliance_6_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_infection_risks_7_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_outcome_risks_8_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_infection_risks_9_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_outcome_risks_10_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_bundle_compliance_11_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_readmission_risks_12_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_bundle_compliance_13_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_infection_risks_14_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_outcome_risks_15_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_infection_risks_16_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_outcome_risks_17_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_bundle_compliance_18_v1767992566127",
+              "type": "pass",
+              "description": "Registry Coverage: specific signal detection using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_knowledge_readmission_risks_19_v1767992566127",
+              "type": "fail",
+              "description": "Registry Coverage: specific signal detection using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "KNOWLEDGE"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_infection_risks_0_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -687,7 +1985,7 @@
               }
             },
             {
-              "id": "clinical_review_plan_ambiguity_outcome_risks_v1767927563093",
+              "id": "clinical_review_plan_ambiguity_outcome_risks_1_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -698,7 +1996,7 @@
               }
             },
             {
-              "id": "clinical_review_plan_ambiguity_bundle_compliance_v1767927563093",
+              "id": "clinical_review_plan_ambiguity_infection_risks_2_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
               "archetype": "Preventability_Detective",
@@ -709,7 +2007,29 @@
               }
             },
             {
-              "id": "clinical_review_plan_ambiguity_readmission_risks_v1767927563093",
+              "id": "clinical_review_plan_ambiguity_outcome_risks_3_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_bundle_compliance_4_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_readmission_risks_5_v1767992566127",
               "type": "doubt",
               "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -720,7 +2040,106 @@
               }
             },
             {
-              "id": "clinical_review_plan_safety_infection_risks_v1767927563093",
+              "id": "clinical_review_plan_ambiguity_bundle_compliance_6_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_infection_risks_7_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_outcome_risks_8_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_infection_risks_9_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_outcome_risks_10_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_bundle_compliance_11_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_readmission_risks_12_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Readmission Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_bundle_compliance_13_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_ambiguity_infection_risks_14_v1767992566127",
+              "type": "doubt",
+              "description": "Dissonance: conflicting notes (Affirm/Deny) using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "AMBIGUITY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -731,7 +2150,7 @@
               }
             },
             {
-              "id": "clinical_review_plan_safety_outcome_risks_v1767927563093",
+              "id": "clinical_review_plan_safety_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -742,7 +2161,7 @@
               }
             },
             {
-              "id": "clinical_review_plan_safety_bundle_compliance_v1767927563093",
+              "id": "clinical_review_plan_safety_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
               "archetype": "Preventability_Detective",
@@ -753,7 +2172,29 @@
               }
             },
             {
-              "id": "clinical_review_plan_safety_readmission_risks_v1767927563093",
+              "id": "clinical_review_plan_safety_outcome_risks_3_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Bundle Compliance definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_readmission_risks_5_v1767992566127",
               "type": "fail",
               "description": "Hard Negatives: distractor symptoms and out-of-window cases using Readmission Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -764,7 +2205,51 @@
               }
             },
             {
-              "id": "clinical_review_plan_synthesis_infection_risks_v1767927563093",
+              "id": "clinical_review_plan_safety_bundle_compliance_6_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_infection_risks_7_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Infection Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_outcome_risks_8_v1767992566127",
+              "type": "pass",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using Outcome Risks definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_safety_infection_risks_9_v1767992566127",
+              "type": "fail",
+              "description": "Hard Negatives: distractor symptoms and out-of-window cases using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SAFETY"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_infection_risks_0_v1767992566127",
               "type": "pass",
               "description": "Timeline: POD calculation and primary/return linking using Infection Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -775,7 +2260,7 @@
               }
             },
             {
-              "id": "clinical_review_plan_synthesis_outcome_risks_v1767927563093",
+              "id": "clinical_review_plan_synthesis_outcome_risks_1_v1767992566127",
               "type": "fail",
               "description": "Timeline: POD calculation and primary/return linking using Outcome Risks definitions.",
               "archetype": "Preventability_Detective",
@@ -786,7 +2271,7 @@
               }
             },
             {
-              "id": "clinical_review_plan_synthesis_bundle_compliance_v1767927563093",
+              "id": "clinical_review_plan_synthesis_infection_risks_2_v1767992566127",
               "type": "pass",
               "description": "Timeline: POD calculation and primary/return linking using core definitions.",
               "archetype": "Preventability_Detective",
@@ -797,9 +2282,20 @@
               }
             },
             {
-              "id": "clinical_review_plan_synthesis_readmission_risks_v1767927563093",
+              "id": "clinical_review_plan_synthesis_outcome_risks_3_v1767992566127",
               "type": "fail",
-              "description": "Timeline: POD calculation and primary/return linking using Readmission Risks definitions.",
+              "description": "Timeline: POD calculation and primary/return linking using core definitions.",
+              "archetype": "Preventability_Detective",
+              "contract": {
+                "intents": [
+                  "SYNTHESIS"
+                ]
+              }
+            },
+            {
+              "id": "clinical_review_plan_synthesis_bundle_compliance_4_v1767992566127",
+              "type": "pass",
+              "description": "Timeline: POD calculation and primary/return linking using Bundle Compliance definitions.",
               "archetype": "Preventability_Detective",
               "contract": {
                 "intents": [
@@ -812,8 +2308,8 @@
       },
       "coverage_goals": {
         "signal_groups": 7,
-        "min_scenarios": 64,
-        "doubt_ratio": 0.25,
+        "min_scenarios": 200,
+        "doubt_ratio": 0.3,
         "doubt_mix": [
           "ambiguity",
           "missing_data",
